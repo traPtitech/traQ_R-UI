@@ -1,6 +1,4 @@
-# traq-ui
-
-> A Vue.js project
+# traQ-ui
 
 ## Build Setup
 
