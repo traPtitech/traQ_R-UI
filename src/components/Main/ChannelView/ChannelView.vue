@@ -1,11 +1,26 @@
 <template lang="pug">
-  div
+  div.channelview
+    Titlebar
+    Content
+    Information
 </template>
 
 <script>
+import Titlebar from '@/components/Main/ChannelView/Titlebar'
+import Content from '@/components/Main/ChannelView/Content'
+import Information from '@/components/Main/Information/Information'
+
 export default {
+  components: {
+    'Titlebar': Titlebar,
+    'Content': Content,
+    'Information': Information
+  }
 }
 </script>
 
 <style lang="scss">
+.channelview {
+  width: 70vw;
+}
 </style>

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.sidebar
+  div.content
 </template>
 
 <script>
@@ -8,9 +8,4 @@ export default {
 </script>
 
 <style lang="scss">
-.sidebar {
-  width: 30vw;
-  height: 100vh;
-  background-color: rgb(19, 144, 166);
-}
 </style>

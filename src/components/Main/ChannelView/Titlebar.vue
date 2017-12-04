@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.information
+  div.titlebar
 </template>
 
 <script>
@@ -8,9 +8,9 @@ export default {
 </script>
 
 <style lang="scss">
-.information {
-  width: 20vw;
-  height: 100%;
-  background-color: rgb(159, 19, 155);
+.titlebar {
+  width: 100%;
+  height: 60px;
+  background-color: rgb(189, 105, 8);
 }
 </style>

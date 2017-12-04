@@ -1,13 +1,12 @@
 <template lang="pug">
   div.index
     Sidebar
-    div.channel-view
-    Information
+    ChannelView
 </template>
 
 <script>
-import Information from '@/components/Main/Information/Information'
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
+import ChannelView from '@/components/Main/ChannelView/ChannelView'
 
 export default {
   name: 'index',
@@ -16,8 +15,8 @@ export default {
     }
   },
   components: {
-    'Information': Information,
-    'Sidebar': Sidebar
+    'Sidebar': Sidebar,
+    'ChannelView': ChannelView
   }
 }
 </script>
@@ -26,5 +25,6 @@ export default {
 .index {
   display: flex;
   flex-flow: row;
+
 }
 </style>
