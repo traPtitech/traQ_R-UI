@@ -1,8 +1,8 @@
 <template lang="pug">
-  div.channelview
-    Titlebar
-    Content
-    Information
+div.channelview
+  Titlebar
+  Content
+  Information
 </template>
 
 <script>
@@ -19,8 +19,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.channelview {
-  width: 70vw;
-}
+<style lang="sass">
+.channelview
+  width: 70vw
 </style>

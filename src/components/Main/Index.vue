@@ -1,7 +1,7 @@
 <template lang="pug">
-  div.index
-    Sidebar
-    ChannelView
+div.index
+  Sidebar
+  ChannelView
 </template>
 
 <script>
@@ -21,10 +21,8 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.index {
-  display: flex;
-  flex-flow: row;
-
-}
+<style scoped lang="sass">
+.index
+  display: flex
+  flex-flow: row
 </style>
