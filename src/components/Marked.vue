@@ -12,19 +12,21 @@ function escapeBefore (text) {
   let replaced = ''
   text.split(/```/g).forEach((e, i) => {
     if (i % 2 === 0) replaced += e.replace(/</g, '&lt;')
-    replaced += e
+    else replaced += e
   })
   return replaced
 }
 
 function escapeAfter (text) {
   let rank = 0
+  text = text.replace(/$\n/, '')
   for (let i = 0; i < text.length; i++) {
     if (text[i] === '<') rank++
     else if (text[i] === '>' && rank > 0) rank--
     else if (text[i] === '>') text = text.substr(0, i) + '&gt;' + text.substr(i + 1, text.length)
   }
-  return text.replace(/&(?!gt;|lt;|quot;)/g, '&amp;').replace(/\n/g, '<br>')
+  text = text.replace(/&(?!gt;|lt;|quot;)/g, '&amp;').replace(/\n+(?!\n)/g, '<br>')
+  return text
 }
 
 export default {
