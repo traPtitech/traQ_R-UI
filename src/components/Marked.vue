@@ -11,7 +11,7 @@ import marked from 'marked'
 function escapeBefore (text) {
   let replaced = ''
   text.split(/```/g).forEach((e, i) => {
-    if (i % 2 === 0) replaced += e.replace(/</g, '&lt;')
+    if (i % 2 === 0) replaced += e.replace(/</g, '&lt;').replace(/'/g, '&#39;').replace(/"/g, '&quot;')
     else replaced += e
   })
   return replaced
@@ -25,7 +25,7 @@ function escapeAfter (text) {
     else if (text[i] === '>' && rank > 0) rank--
     else if (text[i] === '>') text = text.substr(0, i) + '&gt;' + text.substr(i + 1, text.length)
   }
-  text = text.replace(/&(?!gt;|lt;|quot;)/g, '&amp;').replace(/\n+(?!\n)/g, '<br>')
+  text = text.replace(/&(?!gt;|lt;|quot;|#39;)/g, '&amp;').replace(/\n+(?!\n)/g, '<br>').replace(/`/g, '&#96;')
   return text
 }
 
