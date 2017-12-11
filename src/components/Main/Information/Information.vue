@@ -9,7 +9,6 @@ export default {
 
 <style lang="sass">
 .information
-  width: 20vw
-  height: 100%
-  background-color: rgb(159, 19, 155)
+  grid-area: information
+  background-color: rgb(79, 85, 112)
 </style>

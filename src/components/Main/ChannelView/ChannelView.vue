@@ -21,5 +21,7 @@ export default {
 
 <style lang="sass">
 .channelview
-  width: 70vw
+  display: grid
+  width: 100%
+  
 </style>
