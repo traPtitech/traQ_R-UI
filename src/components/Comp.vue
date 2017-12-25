@@ -114,7 +114,7 @@ export default {
     searchStamps: function (str) {
       let ret = {
         splitWord: ':',
-        suffix: ':',
+        suffix: ': ',
         candidates: [],
         key: str
       }
