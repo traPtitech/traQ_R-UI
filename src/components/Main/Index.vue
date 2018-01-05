@@ -1,43 +1,46 @@
 <template lang="pug">
 div.index
-  Sidebar
   Titlebar
-  Content
+  Message
   Information
+  Sidebar
 </template>
 
 <script>
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
-import Titlebar from '@/components/Main/ChannelView/Titlebar'
-import Content from '@/components/Main/ChannelView/Content'
-import Information from '@/components/Main/Information/Information'
+import Titlebar from '@/components/Main/MessageView/Titlebar'
+import Message from '@/components/Main/MessageView/Message'
+import Information from '@/components/Main/MessageView/Information/Information'
 
 export default {
   name: 'index',
   data () {
     return {
+
     }
   },
   components: {
     'Sidebar': Sidebar,
     'Titlebar': Titlebar,
-    'Content': Content,
+    'Message': Message,
     'Information': Information
   }
 }
 </script>
 
-<style scoped lang="sass">
+<style lang="sass">
 .index
   display: grid
   position: relative
   grid-gap: 0
-  @media (min-width: 480px)
-    grid-template-rows: 80px 1fr
-    grid-template-columns: 200px 1fr 15vw
+  width: 100vw
+  height: 100vh
+  @media (min-width: 680px)
+    grid-template-rows: 60px 1fr
+    grid-template-columns: 250px 1fr 40px
     grid-template-areas: "side titlebar titlebar""side content information"
-  @media (max-width: 479px)
-    grid-template-rows: 80px 1fr
-    grid-template-columns: 1fr
-    grid-template-areas: "titlebar""content"
+  @media (max-width: 679px)
+    grid-template-rows: 60px 1fr
+    grid-template-columns: 1fr 40px
+    grid-template-areas: "titlebar titlebar""content information"
 </style>

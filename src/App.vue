@@ -5,7 +5,11 @@ div#app
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  metaInfo: {
+    title: 'Welcome',
+    titleTemplate: '%s | traQ'
+  }
 }
 </script>
 
@@ -18,5 +22,13 @@ export default {
   color: #2c3e50
   margin-top: 60pxc
 body
+  margin: 0
+li
+  list-style: none
+  margin: 0
+ul
+  margin: 0
+  padding: 0
+p
   margin: 0
 </style>

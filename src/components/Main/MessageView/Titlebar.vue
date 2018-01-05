@@ -1,6 +1,8 @@
 <template lang="pug">
-div.titlebar
-  p.channel-name #general
+header.titlebar
+  div.menu-open
+  h1.channel-name
+    | {{channelName}}
   div.buttons
     div.star
     div.search
@@ -8,20 +10,32 @@ div.titlebar
 
 <script>
 export default {
+  data () {
+    return {
+      channelName: '#general'
+    }
+  }
 }
 </script>
 
 <style lang="sass">
+.menu-open
+  width: 50px
+  height: 50px
+  margin: 0 0 0 10px
+  background-color: gray
+  @media (min-width: 680px)
+    display: none
 .titlebar
   display: flex
   align-items: center
   justify-content: space-between
   grid-area: titlebar
-  background-color: rgb(228, 228, 228)
-  border-bottom: 2px solid rgb(176, 176, 176)
+  background-color: rgb(249, 249, 249)
+  border-bottom: 1px solid rgb(176, 176, 176)
 .channel-name
   color: rgba(0, 0, 0, 0.6)
-  font-size: 2.5em
+  font-size: 2em
   font-weight: bold
   text-align: left
   margin: 0 0 0 10px
@@ -31,6 +45,6 @@ export default {
   div
     width: 50px
     height: 50px
-    background-color: gray
+    // background-color: gray
     margin: 10px
 </style>
