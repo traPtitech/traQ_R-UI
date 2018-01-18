@@ -1,6 +1,6 @@
 <template lang="pug">
 div.input-ui
-  div.upload-button(v-if="isOpened")
+  //- div.upload-button(v-if="isOpened")
   div.submit-button(v-if="isOpened")
   textarea.input-area(v-if="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
@@ -79,7 +79,7 @@ export default {
   background: none
   resize: none
   -webkit-appearance: none
-  padding: 10px 60px
+  padding: 10px 60px 10px 10px
   font-size: 1.1em
   cursor: text
   border: 0

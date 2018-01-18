@@ -2,18 +2,21 @@
 div.content
   InputUI
   div.message-wrap
-    ul
-      li(v-for="i in 6")
-        Message
+    content
+      ul
+        li(v-for="i in 6")
+          MessageElement
 </template>
 
 <script>
 import InputUI from '@/components/Main/MessageView/InputUI'
 import MessageMock from '@/components/Main/MessageView/MessageMock'
+import MessageElement from '@/components/Main/MessageView/MessageElement'
 export default {
   components: {
     'InputUI': InputUI,
-    'Message': MessageMock
+    'MessageElement': MessageElement,
+    'MessageMock': MessageMock
   }
 }
 </script>

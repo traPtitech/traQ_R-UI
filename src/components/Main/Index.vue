@@ -9,7 +9,7 @@ div.index
 <script>
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
 import Titlebar from '@/components/Main/MessageView/Titlebar'
-import Message from '@/components/Main/MessageView/Message'
+import Message from '@/components/Main/MessageView/MessageContainer'
 import Information from '@/components/Main/MessageView/Information/Information'
 
 export default {

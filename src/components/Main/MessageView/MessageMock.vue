@@ -12,7 +12,7 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style scoped lang="sass">
 .message
   display: grid
   grid-template-rows: 60px 1fr
