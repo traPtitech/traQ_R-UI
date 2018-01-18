@@ -2,7 +2,7 @@
 div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-if="isOpened")
-  textarea.input-area(v-if="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+  textarea.input-area(v-if="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか" :rows="inputSize")
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
 </template>
 
@@ -38,7 +38,9 @@ export default {
     }
   },
   computed: {
-
+    inputSize: function () {
+      return Math.min(5, this.inputText.split('\n').length)
+    }
   }
 }
 </script>
@@ -70,7 +72,6 @@ export default {
   position: absolute
   z-index: 100
   width: 100%
-  height: 60px
   right: 0
   left: 0
   bottom: 0
