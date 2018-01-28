@@ -4,28 +4,50 @@
       <br>
       <input v-model="pass" type="password" name="password" placeholder="パスワード" required/>
       <button v-on:click="loginPost()" >ログイン</button>
+      <p v-if="status === 'failed'" >
+        IDまたはパスワードが異なります
+      </p>
   </div>
 </template>
 
 <script>
-import Axios from 'axios'
+import axios from 'axios'
 
 export default {
   name: 'Login',
   data () {
     return {
       name: '',
-      pass: ''
+      pass: '',
+      status: 'default'
     }
   },
   methods: {
     loginPost: function () {
-      Axios.post('/login', {
-        name: this.name,
-        pass: this.pass
+      this.status = 'processing'
+      let self = this
+      axios({
+        method: 'post',
+        url: 'https://traq-dev.herokuapp.com/login',
+        data: {
+          name: this.name,
+          pass: this.pass
+        }
       }).then(function (res) {
+        /*
+        self.$router.push({
+          name: 'Index'
+        })
+        */
+        axios.get('https://traq-dev.herokuapp.com/channels', {}).then(function (res) {
+          console.log(res)
+        }).catch(function (err) {
+          console.log(err)
+        })
+        self.status = 'success'
         console.log(res)
       }).catch(function (err) {
+        self.status = 'failed'
         console.log(err)
       })
     }
