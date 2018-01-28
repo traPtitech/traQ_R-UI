@@ -11,7 +11,10 @@
 </template>
 
 <script>
-import axios from 'axios'
+import Axios from 'axios'
+const axios = Axios.create({
+  withCredentials: true
+})
 
 export default {
   name: 'Login',
@@ -34,15 +37,8 @@ export default {
           pass: this.pass
         }
       }).then(function (res) {
-        /*
         self.$router.push({
           name: 'Index'
-        })
-        */
-        axios.get('https://traq-dev.herokuapp.com/channels', {}).then(function (res) {
-          console.log(res)
-        }).catch(function (err) {
-          console.log(err)
         })
         self.status = 'success'
         console.log(res)
