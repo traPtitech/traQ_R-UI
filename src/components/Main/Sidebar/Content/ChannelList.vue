@@ -10,6 +10,7 @@ div
 <script>
 import ChannelElement from '@/components/Main/Sidebar/Content/ChannelElement'
 import axios from 'axios'
+import channelParser from '@/bin/channelParser'
 export default {
   data () {
     return {
@@ -53,6 +54,7 @@ export default {
     })
     .then(function (res) {
       console.log(res.data)
+      console.log(channelParser(res.data))
     })
     .catch(function (err) {
       console.log(err)
