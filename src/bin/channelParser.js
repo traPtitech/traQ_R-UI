@@ -28,7 +28,7 @@ export default function ChannelParse (channels) {
   let pool = {}
   let root
   channels.forEach(function (channel) {
-    if(channel.parent === '') {
+    if (channel.parent === '') {
       root = channel.channelId
     }
   })
@@ -41,8 +41,8 @@ export default function ChannelParse (channels) {
     }
   })
   Object.keys(pool).forEach(function (id) {
-    if(pool[id].parent === '') return
-    pool[pool[id].parent].push(pool[id])
+    if (pool[id].parent === '') return
+    pool[pool[id].parent].children.push(pool[id])
   })
   Object.keys(pool).forEach(function (id) {
     pool[pool[id].parent].children.sort(function (lhs, rhs) {
