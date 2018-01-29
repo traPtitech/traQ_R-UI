@@ -37,7 +37,8 @@ export default function ChannelParse (channels) {
       channelId: channel.channelId,
       name: channel.name,
       children: [],
-      visibility: channel.visibility
+      visibility: channel.visibility,
+      parent: channel.parent
     }
   })
   Object.keys(pool).forEach(function (id) {
