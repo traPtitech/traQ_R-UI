@@ -53,8 +53,7 @@ export default {
       withCredentials: true
     })
     .then(function (res) {
-      console.log(res.data)
-      console.log(channelParser(res.data))
+      self.channelData = channelParser(res.data)
     })
     .catch(function (err) {
       console.log(err)
