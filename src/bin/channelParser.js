@@ -24,37 +24,32 @@ sorted array
   }
 ]
  */
-function ChannelParse (json) {
-  let channels = JSON.parse(json)
+export default function ChannelParse (channels) {
   let pool = {}
+  let root
+  channels.forEach(function (channel) {
+    if(channel.parent === '') {
+      root = channel.channelId
+    }
+  })
   channels.forEach(function (channel) {
     pool[channel.channelId] = {
       channelId: channel.channelId,
       name: channel.name,
       children: [],
-      childrenIds: channel.children,
       visibility: channel.visibility
     }
   })
-  function gatherChildren (channel) {
-    channel.childrenIds.forEach(function (id) {
-      let child = pool[id]
-      delete(pool[id])
-      gatherChildren(child)
-      channel.children.push(child)
+  Object.keys(pool).forEach(function (id) {
+    if(pool[id].parent === '') return
+    pool[pool[id].parent].push(pool[id])
+  })
+  Object.keys(pool).forEach(function (id) {
+    pool[pool[id].parent].children.sort(function (lhs, rhs) {
+      if (lhs.name < rhs.name) return -1
+      if (lhs.name > rhs.name) return 1
+      return 0
     })
-  }
-  Object.keys(pool).forEach(function (key) {
-    if (pool[key]) gatherChildren(pool[key])
   })
-  let ret = []
-  Object.keys(pool).forEach(function (key) {
-    ret.push(pool[key])
-  })
-  ret.sort(function (lhs, rhs) {
-    if (lhs.name < rhs.name) return -1
-    if (lhs.name > rhs.name) return 1
-    return 0
-  })
-  return ret
+  return pool[root].children
 }
