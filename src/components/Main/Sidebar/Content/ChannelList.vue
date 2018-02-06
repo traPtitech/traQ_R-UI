@@ -9,6 +9,8 @@ div
 
 <script>
 import ChannelElement from '@/components/Main/Sidebar/Content/ChannelElement'
+import axios from 'axios'
+import channelParser from '@/bin/channelParser'
 export default {
   data () {
     return {
@@ -44,6 +46,21 @@ export default {
   },
   components: {
     'ChannelElement': ChannelElement
+  },
+  mounted: function () {
+    let self = this
+    axios.get('https://traq-dev.herokuapp.com/channels', {
+      withCredentials: true
+    })
+    .then(function (res) {
+      self.channelData = channelParser(res.data)
+    })
+    .catch(function (err) {
+      console.log(err)
+      self.$router.push({
+        name: 'Login'
+      })
+    })
   }
 }
 </script>
