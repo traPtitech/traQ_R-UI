@@ -1,11 +1,13 @@
 <template lang="pug">
   div.login this is login page
-    br
-    input(v-model="name" type="text" placeholder="IDまたはメールアドレス")
-    br
-    input(v-model="pass" type="password" placeholder="パスワード")
-    br
-    button(v-on:click="loginPost()")
+    form(method="POST" action="/login")
+      input(type="text" name="name" placeholder="ID または メールアドレス" required)
+      br
+      input(type="password" name="password" placeholder="パスワード" required)
+      br
+      button
+        | ログイン
+    router-link(:to="{name: 'Index'}")
       p login
     br
     p(v-if="status === 'failed'") IDまたはパスワードが異なります
