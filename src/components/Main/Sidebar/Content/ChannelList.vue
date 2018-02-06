@@ -3,8 +3,8 @@ div
   p.content-title
     | Channels
   transition-group(name="list-complete" tag="div" appear)
-    div(v-for="model in channelData" :key="model.name").channel-list-container
-      ChannelElement(:model="model")
+      div(v-for="model in channelData" :key="model.name").channel-list-container
+        ChannelElement(:model="model")
 </template>
 
 <script>
@@ -12,38 +12,15 @@ import ChannelElement from '@/components/Main/Sidebar/Content/ChannelElement'
 export default {
   data () {
     return {
-      channelData: [
-        {
-          name: 'random',
-          children: [
-            {
-              name: 'gamers',
-              children: [
-                {
-                  name: '1',
-                  children: []
-                },
-                {
-                  name: '2',
-                  children: []
-                }
-              ]
-            },
-            {
-              name: 'progress',
-              children: []
-            }
-          ]
-        },
-        {
-          name: 'team',
-          children: []
-        }
-      ]
     }
   },
   components: {
     'ChannelElement': ChannelElement
+  },
+  computed: {
+    channelData () {
+      return this.$store.getters.getChannels
+    }
   }
 }
 </script>
@@ -62,7 +39,6 @@ export default {
 //   opacity: 1
 // .list-complete-enter-active, .list-complete-leave-active
 //   position: absolute
-
 .list-complete-enter
   opacity: 0
   // transform: translateY(-10px)
