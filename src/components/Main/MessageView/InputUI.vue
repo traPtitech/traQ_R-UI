@@ -2,11 +2,13 @@
 div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-if="isOpened")
-  textarea.input-area(v-if="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか" :rows="inputSize")
+  textarea.input-area(id="messageInput" v-if="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか" )
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
+import autosize from 'autosize'
+
 export default {
   data () {
     return {
@@ -37,10 +39,8 @@ export default {
       return this.$refs.inputArea.scrollHeight + 'px'
     }
   },
-  computed: {
-    inputSize: function () {
-      return Math.min(5, this.inputText.split('\n').length)
-    }
+  mounted: function () {
+    autosize(document.getElementById('messageInput'))
   }
 }
 </script>
