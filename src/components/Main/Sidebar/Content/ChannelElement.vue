@@ -1,9 +1,9 @@
 <template lang="pug">
 div.channel-wrap
-  div.channel-box
+  div.channel-box(@click="channelLink(model.name)")
     p.channel-box-name
       | {{model.name}}
-    div(v-if="isFolder" @click="toggle" :class="{'channel-toggled': isOpened}").channel-toggle
+    div.channel-toggle(v-if="isFolder" @click.stop="toggle" :class="{'channel-toggled': isOpened}")
   div.channel-children
     transition-group(name="list-complete" tag="div" appear)
       div(v-show="isOpened" v-for="model in model.children" :key="model.name")
@@ -24,6 +24,9 @@ export default {
   methods: {
     toggle: function () {
       this.isOpened = !this.isOpened
+    },
+    channelLink: function (name) {
+      console.log(name)
     }
   },
   computed: {

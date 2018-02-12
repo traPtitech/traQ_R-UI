@@ -2,7 +2,8 @@
 div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-show="isOpened")
-  textarea.input-area(v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+  div.input-area-wrapper
+    textarea.input-area(v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
 </template>
 
@@ -65,15 +66,21 @@ export default {
   background-color: rgb(207, 207, 207)
   bottom: 10px
   right: 5px
-.input-area
-  box-sizing: border-box
-  position: absolute
-  z-index: 100
+.input-area-wrapper
   width: 100%
-  height: 60px
+  max-height: 150px
+  overflow-x: hidden
+  overflow-y: scroll
+  position: absolute
   right: 0
   left: 0
   bottom: 0
+  border-top: solid 1px rgba(0, 0, 0, 0.5)
+.input-area
+  box-sizing: border-box
+  z-index: 100
+  width: 100%
+  height: 60px
   margin: 0
   padding: 0
   background: none
@@ -84,7 +91,6 @@ export default {
   cursor: text
   border: 0
   line-height: 1
-  border-top: solid 1px rgba(0, 0, 0, 0.5)
   animation: openInputArea 1s ease
 .input-area:focus
   outline: 0
@@ -146,4 +152,5 @@ export default {
   border-width: 0
   border-radius: 0
   opacity: 0
+  z-index: -1
 </style>
