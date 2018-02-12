@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    url: 'http://127.0.0.1:9000'
+    url: 'https://traq-dev.herokuapp.com'
   },
   mutations: {
     setUrl (state, newUrl) { state.url = newUrl }

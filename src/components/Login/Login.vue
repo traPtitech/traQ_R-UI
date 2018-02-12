@@ -36,7 +36,7 @@ export default {
       let self = this
       axios({
         method: 'post',
-        url: this.$store.state.url + '/login',
+        url: self.$store.state.url + '/login',
         data: {
           name: this.name,
           pass: this.pass
