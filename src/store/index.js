@@ -23,28 +23,31 @@ export default new Vuex.Store({
       }
       state.channelData.forEach(dfs)
     },
-    setChannel (state, channelName) {
-      state.channelName = channelName
-      state.channelId = state.channelMap[channelName].channelId
-    },
-    changeChannel (state, channelName) {
-      if (!state.channelMap[channelName]) return
-      state.channelName = channelName
-      state.channelId = state.channelMap[channelName].channelId
-      let requestName = channelName
-      console.log(state.url + '/api/1.0/channels/' + state.channelId + '/messages')
+    getMessages (state) {
+      let requestName = state.channelName
       axios.get(state.url + '/api/1.0/channels/' + state.channelId + '/messages', {
         withCredentials: true
       })
       .then(function (res) {
-        console.log(res.data)
         if (state.channelName === requestName) {
           state.messages = res.data
+          state.messages.reverse()
         }
       })
       .catch(function (err) {
         console.log(err)
       })
+    },
+    setChannel (state, channelName) {
+      state.channelName = channelName
+      state.channelId = state.channelMap[channelName].channelId
+      this.commit('getMessages')
+    },
+    changeChannel (state, channelName) {
+      if (!state.channelMap[channelName]) return
+      state.channelName = channelName
+      state.channelId = state.channelMap[channelName].channelId
+      this.commit('getMessages')
     }
   },
   getters: {
