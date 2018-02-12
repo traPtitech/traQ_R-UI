@@ -49,7 +49,7 @@ export default {
   },
   mounted: function () {
     let self = this
-    axios.get('https://traq-dev.herokuapp.com/channels', {
+    axios.get(this.$store.state.url + '/api/1.0/channels', {
       withCredentials: true
     })
     .then(function (res) {
