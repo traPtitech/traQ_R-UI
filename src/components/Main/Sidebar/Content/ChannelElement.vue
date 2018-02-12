@@ -26,7 +26,7 @@ export default {
       this.isOpened = !this.isOpened
     },
     channelLink: function (name) {
-      console.log(name)
+      this.$store.commit('changeChannel', this.model.channelName)
     }
   },
   computed: {

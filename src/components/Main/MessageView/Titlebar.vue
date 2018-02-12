@@ -2,7 +2,7 @@
 header.titlebar
   div.menu-open
   h1.channel-name
-    | {{channelName}}
+    | {{'#' + $store.state.channelName}}
   div.buttons
     div.star
     div.search
@@ -12,8 +12,10 @@ header.titlebar
 export default {
   data () {
     return {
-      channelName: '#general'
     }
+  },
+  mounted: function () {
+
   }
 }
 </script>
