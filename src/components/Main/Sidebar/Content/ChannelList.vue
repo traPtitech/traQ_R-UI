@@ -14,6 +14,7 @@ import channelParser from '@/bin/channelParser'
 export default {
   data () {
     return {
+      channelData: []
     }
   },
   components: {
