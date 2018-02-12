@@ -26,6 +26,26 @@ export default new Router({
       // }
     },
     {
+      path: '/channels/:channel',
+      component: Index
+    },
+    {
+      path: '/channels/:channel2/:channel',
+      component: Index
+    },
+    {
+      path: '/channels/:channel3/:channel2/:channel',
+      component: Index
+    },
+    {
+      path: '/channels/:channel4/:channel3/:channel2/:channel',
+      component: Index
+    },
+    {
+      path: '/channels/:channel5/:channel4/:channel3/:channel2/:channel',
+      component: Index
+    },
+    {
       path: '*',
       name: 'NotFound',
       component: NotFound

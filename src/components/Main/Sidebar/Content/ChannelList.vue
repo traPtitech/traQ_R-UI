@@ -3,37 +3,18 @@ div
   p.content-title
     | Channels
   transition-group(name="list-complete" tag="div" appear)
-      div(v-for="model in channelData" :key="model.name").channel-list-container
+      div(v-for="model in $store.state.channelData" :key="model.name").channel-list-container
         ChannelElement(:model="model")
 </template>
 
 <script>
 import ChannelElement from '@/components/Main/Sidebar/Content/ChannelElement'
-import axios from 'axios'
-import channelParser from '@/bin/channelParser'
 export default {
   data () {
-    return {
-      channelData: []
-    }
+    return {}
   },
   components: {
     'ChannelElement': ChannelElement
-  },
-  mounted: function () {
-    let self = this
-    axios.get(this.$store.state.url + '/api/1.0/channels', {
-      withCredentials: true
-    })
-    .then(function (res) {
-      self.channelData = channelParser(res.data)
-    })
-    .catch(function (err) {
-      console.log(err)
-      self.$router.push({
-        name: 'Login'
-      })
-    })
   }
 }
 </script>
