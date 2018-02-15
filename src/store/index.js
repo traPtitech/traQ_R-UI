@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+import axios from '@/bin/axios'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    url: 'https://traq-dev.herokuapp.com',
+    loaded: false,
     channelData: [],
-    channelName: '',
-    channelId: '',
     channelMap: {},
+    memberData: [],
+    memberMap: {},
+    currentChannel: {},
     messages: []
   },
   mutations: {
@@ -18,43 +19,81 @@ export default new Vuex.Store({
     setChannelData (state, newChannelData) {
       state.channelData = newChannelData
       function dfs (channel) {
-        state.channelMap[channel.channelName] = channel
-        channel.children.forEach(dfs)
+        state.channelMap[channel.channelId] = channel
       }
       state.channelData.forEach(dfs)
     },
-    getMessages (state) {
-      let requestName = state.channelName
-      axios.get(state.url + '/api/1.0/channels/' + state.channelId + '/messages', {
-        withCredentials: true
+    setMemberData (state, newMemberData) {
+      state.memberData = newMemberData
+      state.memberData.forEach(member => {
+        state.memberMap[member.userId] = member
       })
-      .then(function (res) {
-        if (state.channelName === requestName) {
-          state.messages = res.data
-          state.messages.reverse()
-        }
-      })
-      .catch(function (err) {
-        console.log(err)
-      })
+    },
+    setMessages (state, messages) {
+      state.messages = messages
     },
     setChannel (state, channelName) {
-      state.channelName = channelName
-      state.channelId = state.channelMap[channelName].channelId
-      this.commit('getMessages')
-    },
-    changeChannel (state, channelName) {
       if (!state.channelMap[channelName]) return
       state.channelName = channelName
       state.channelId = state.channelMap[channelName].channelId
-      this.commit('getMessages')
+      state.currentChannel = state.channelMap[channelName]
+      this.dispatch('getMessages')
+    },
+    changeChannel (state, channel) {
+      state.currentChannel = channel
+      this.dispatch('getMessages')
+    },
+    loadStart (state) {
+      state.loaded = false
+    },
+    loadEnd (state) {
+      state.loaded = true
     }
   },
   getters: {
-    url (state) { return state.url },
-    channelData (state) { return state.channelData },
-    channelName (state) { return state.channelName },
-    channelId (state) { return state.channelId },
-    messages (state) { return state.messages }
+    childrenChannels (state) { return parentId => state.channelData.filter(channel => channel.parent === parentId) },
+    getChannelByName (state, getters) {
+      return channelName => {
+        const channelLevels = channelName.split('/')
+        let channel = null
+        let channelId = ''
+        channelLevels.forEach(name => {
+          const levelChannels = getters.childrenChannels(channelId)
+          channel = levelChannels.find(ch => ch.name === name)
+          channelId = channel.channelId
+        })
+        return channel
+      }
+    }
+  },
+  actions: {
+    getMessages ({state, commit}) {
+      return axios.get('/api/1.0/channels/' + state.currentChannel.channelId + '/messages')
+      .then(res => {
+        commit('setMessages', res.data.reverse())
+      })
+      .catch(err => {
+        console.error(err)
+      })
+    },
+    updateChannels ({state, commit}) {
+      return axios.get('/api/1.0/channels')
+      .then(res => {
+        commit('setChannelData', res.data)
+      })
+      .catch(err => {
+        console.error(err)
+        return Promise.reject(err)
+      })
+    },
+    updateMembers ({state, commit}) {
+      return axios.get('/api/1.0/users')
+      .then(res => {
+        commit('setMemberData', res.data)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+    }
   }
 })

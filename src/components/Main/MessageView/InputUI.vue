@@ -3,12 +3,13 @@ div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-show="isOpened")
   div.input-area-wrapper
-    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか" @keydown.enter="sendMessage")
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
 import autosize from 'autosize'
+import axios from '@/bin/axios'
 
 export default {
   data () {
@@ -18,29 +19,39 @@ export default {
     }
   },
   methods: {
-    focus: function () {
+    focus () {
       if (!this.isOpened) {
         return
       }
-      this.$nextTick(
-        function () {
-          this.$refs.inputArea.focus()
-        }
+      this.$nextTick(() => {
+        this.$refs.inputArea.focus()
+      }
       )
     },
-    inputBlur: function () {
+    inputBlur () {
       if (this.inputText === '') {
         this.isOpened = false
       }
+    },
+    sendMessage () {
+      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
+      .then(res => {
+        console.log(res)
+        this.inputText = ''
+        this.$store.dispatch('getMessages')
+      })
+      .catch(err => {
+        console.error(err)
+      })
     }
   },
   watch: {
-    inputAreaHeight: function () {
+    inputAreaHeight () {
       console.log(this.$refs.inputArea.scrollHeight)
       return this.$refs.inputArea.scrollHeight + 'px'
     }
   },
-  mounted: function () {
+  mounted () {
     autosize(document.getElementById('messageInput'))
   }
 }

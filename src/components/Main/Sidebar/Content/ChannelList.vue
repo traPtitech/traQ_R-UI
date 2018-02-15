@@ -3,8 +3,8 @@ div
   p.content-title
     | Channels
   transition-group(name="list-complete" tag="div" appear)
-      div(v-for="model in $store.state.channelData" :key="model.name").channel-list-container
-        ChannelElement(:model="model")
+      div(v-for="model in $store.getters.childrenChannels('')" :key="model.name").channel-list-container
+        ChannelElement(:model="model" :curPath="''")
 </template>
 
 <script>
