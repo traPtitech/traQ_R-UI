@@ -36,12 +36,11 @@ export default {
         this.isOpened = false
       }
     },
-    postMessage: function () {
+    postMessage () {
       if (this.inputText === '') {
         return
       }
       this.postStatus = 'processing'
-      let self = this
       axios({
         method: 'post',
         url: this.$store.state.url + '/api/1.0/channels/' + this.$store.state.channelId + '/messages',
@@ -50,15 +49,15 @@ export default {
         },
         withCredentials: true
       })
-      .then(function () {
-        self.inputText = ''
-        self.postStatus = 'successed'
+      .then(() => {
+        this.inputText = ''
+        this.postStatus = 'successed'
       })
-      .catch(function () {
-        self.postStatus = 'failed'
+      .catch(() => {
+        this.postStatus = 'failed'
       })
     },
-    keydown: function (event) {
+    keydown (event) {
       if (this.postStatus === 'processing') {
         event.returnValue = false
         return
