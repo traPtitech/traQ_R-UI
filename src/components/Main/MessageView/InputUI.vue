@@ -3,18 +3,21 @@ div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-show="isOpened")
   div.input-area-wrapper
-    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
 import autosize from 'autosize'
+import axios from 'axios'
 
 export default {
   data () {
     return {
       isOpened: false,
-      inputText: ''
+      inputText: '',
+      // postStatus: {'default', 'processing', 'successed', 'failed'}
+      postStatus: 'default'
     }
   },
   methods: {
@@ -31,6 +34,39 @@ export default {
     inputBlur: function () {
       if (this.inputText === '') {
         this.isOpened = false
+      }
+    },
+    postMessage: function () {
+      if (this.inputText === '') {
+        return
+      }
+      this.postStatus = 'processing'
+      let self = this
+      axios({
+        method: 'post',
+        url: this.$store.state.url + '/api/1.0/channels/' + this.$store.state.channelId + '/messages',
+        data: {
+          text: this.inputText
+        },
+        withCredentials: true
+      })
+      .then(function () {
+        self.inputText = ''
+        self.postStatus = 'successed'
+      })
+      .catch(function () {
+        self.postStatus = 'failed'
+      })
+    },
+    keydown: function (event) {
+      if (this.postStatus === 'processing') {
+        event.returnValue = false
+        return
+      }
+      this.postStatus = 'default'
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+        this.postMessage()
+        event.returnValue = false
       }
     }
   },
