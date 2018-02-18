@@ -9,7 +9,7 @@ div.input-ui
 
 <script>
 import autosize from 'autosize'
-import axios from 'axios'
+import axios from '@/bin/axios'
 
 export default {
   data () {
@@ -21,17 +21,16 @@ export default {
     }
   },
   methods: {
-    focus: function () {
+    focus () {
       if (!this.isOpened) {
         return
       }
-      this.$nextTick(
-        function () {
-          this.$refs.inputArea.focus()
-        }
+      this.$nextTick(() => {
+        this.$refs.inputArea.focus()
+      }
       )
     },
-    inputBlur: function () {
+    inputBlur () {
       if (this.inputText === '') {
         this.isOpened = false
       }
@@ -41,17 +40,11 @@ export default {
         return
       }
       this.postStatus = 'processing'
-      axios({
-        method: 'post',
-        url: this.$store.state.url + '/api/1.0/channels/' + this.$store.state.channelId + '/messages',
-        data: {
-          text: this.inputText
-        },
-        withCredentials: true
-      })
+      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
       .then(() => {
         this.inputText = ''
         this.postStatus = 'successed'
+        this.$store.dispatch('getMessages')
       })
       .catch(() => {
         this.postStatus = 'failed'
@@ -70,12 +63,12 @@ export default {
     }
   },
   watch: {
-    inputAreaHeight: function () {
+    inputAreaHeight () {
       console.log(this.$refs.inputArea.scrollHeight)
       return this.$refs.inputArea.scrollHeight + 'px'
     }
   },
-  mounted: function () {
+  mounted () {
     autosize(document.getElementById('messageInput'))
   }
 }

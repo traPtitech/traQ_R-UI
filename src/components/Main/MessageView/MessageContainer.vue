@@ -4,8 +4,8 @@ div.content
   div.message-wrap
     content
       ul
-        li(v-for="i in 6")
-          MessageElement
+        li(v-for="message in $store.state.messages")
+          MessageElement(:model="message" :key="message.messageId")
 </template>
 
 <script>

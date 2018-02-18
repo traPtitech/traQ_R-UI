@@ -2,7 +2,7 @@
 header.titlebar
   div.menu-open
   h1.channel-name
-    | {{'#' + $store.state.channelName}}
+    | {{'#' + $route.params.channel}}
   div.buttons
     div.star
     div.search
@@ -14,7 +14,7 @@ export default {
     return {
     }
   },
-  mounted: function () {
+  mounted () {
 
   }
 }
