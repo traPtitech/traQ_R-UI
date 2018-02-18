@@ -3,7 +3,7 @@ div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-show="isOpened")
   div.input-area-wrapper
-    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか" @keydown.enter="sendMessage")
+    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
 </template>
 
@@ -15,7 +15,9 @@ export default {
   data () {
     return {
       isOpened: false,
-      inputText: ''
+      inputText: '',
+      // postStatus: {'default', 'processing', 'successed', 'failed'}
+      postStatus: 'default'
     }
   },
   methods: {
@@ -33,16 +35,31 @@ export default {
         this.isOpened = false
       }
     },
-    sendMessage () {
+    postMessage () {
+      if (this.inputText === '') {
+        return
+      }
+      this.postStatus = 'processing'
       axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
-      .then(res => {
-        console.log(res)
+      .then(() => {
         this.inputText = ''
+        this.postStatus = 'successed'
         this.$store.dispatch('getMessages')
       })
-      .catch(err => {
-        console.error(err)
+      .catch(() => {
+        this.postStatus = 'failed'
       })
+    },
+    keydown (event) {
+      if (this.postStatus === 'processing') {
+        event.returnValue = false
+        return
+      }
+      this.postStatus = 'default'
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+        this.postMessage()
+        event.returnValue = false
+      }
     }
   },
   watch: {
