@@ -5,16 +5,17 @@ div.channel-wrap
       | {{model.name}}
     div.channel-toggle(v-if="isFolder" @click.stop="toggle" :class="{'channel-toggled': isOpened}")
   div.channel-children
-    transition-group(name="list-complete" tag="div" appear)
-      div(v-show="isOpened" v-for="model in model.children" :key="model.name")
-        ChannelElement(:model="model")
+    transition-group(name="list-complete" tag="div" v-if="model.children" appear)
+      div(v-show="isOpened" v-for="child in model.children" :key="child.channelId")
+        ChannelElement(:model="$store.state.channelMap[child]" :curPath="curPath + (curPath!==''?'/':'') + model.name")
 </template>
 
 <script>
 export default {
   name: 'ChannelElement',
   props: {
-    model: Object
+    model: Object,
+    curPath: String
   },
   data () {
     return {
@@ -22,16 +23,16 @@ export default {
     }
   },
   methods: {
-    toggle: function () {
+    toggle () {
       this.isOpened = !this.isOpened
     },
-    channelLink: function (name) {
-      this.$store.commit('changeChannel', this.model.channelName)
+    channelLink (name) {
+      this.$router.push(`/channels/${this.curPath}${this.curPath !== '' ? '/' : ''}${this.model.name}`)
     }
   },
   computed: {
     isFolder: function () {
-      return this.model.children.length > 0
+      return this.model.children && this.model.children.length > 0
     }
   },
   components: {

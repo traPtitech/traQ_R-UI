@@ -1,15 +1,11 @@
 <template lang="pug">
-div.message
-  div.m-icon-wrap
-    div.m-icon
-  div.m-text-wrap
-    div.m-text
-      | {{model.content}}
+div
+  | {{model}}
 </template>
 
 <script>
 export default {
-  name: 'MessageElement',
+  name: 'MemberElement',
   props: {
     model: Object
   }

@@ -1,14 +1,19 @@
 <template lang="pug">
 div#app
-  router-view
+  splash(v-if="!$store.state.loaded")
+  router-view(v-else)
 </template>
 
 <script>
+import Splash from '@/components/Splash/Splash'
 export default {
   name: 'app',
   metaInfo: {
     title: 'Welcome',
     titleTemplate: '%s | traQ'
+  },
+  components: {
+    Splash
   }
 }
 </script>
