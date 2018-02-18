@@ -6,7 +6,7 @@ div.channel-wrap
     div.channel-toggle(v-if="isFolder" @click.stop="toggle" :class="{'channel-toggled': isOpened}")
   div.channel-children
     transition-group(name="list-complete" tag="div" v-if="model.children" appear)
-      div(v-show="isOpened" v-for="child in model.children" :key="child.channelId")
+      div(v-show="isOpened" v-for="child in model.children" :key="child")
         ChannelElement(:model="$store.state.channelMap[child]" :curPath="curPath + (curPath!==''?'/':'') + model.name")
 </template>
 
@@ -21,6 +21,9 @@ export default {
     return {
       isOpened: false
     }
+  },
+  created () {
+    console.log(this.model)
   },
   methods: {
     toggle () {
