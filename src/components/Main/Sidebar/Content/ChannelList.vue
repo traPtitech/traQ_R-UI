@@ -3,7 +3,7 @@ div
   p.content-title
     | Channels
   transition-group(name="list-complete" tag="div" appear)
-      div(v-for="model in $store.getters.childrenChannels('')" :key="model.name").channel-list-container
+      div(v-for="model in $store.getters.childrenChannels('')" :key="model.channelId").channel-list-container
         ChannelElement(:model="model" :curPath="''")
 </template>
 

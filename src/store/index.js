@@ -51,7 +51,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    childrenChannels (state) { return parentId => state.channelData.filter(channel => channel.parent === parentId) },
+    childrenChannels (state) { return parentId => state.channelData.filter(channel => channel.parent === parentId && channel.name !== '') },
     getChannelByName (state, getters) {
       return channelName => {
         const channelLevels = channelName.split('/')

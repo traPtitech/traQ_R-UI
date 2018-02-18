@@ -47,8 +47,10 @@ router.beforeEach(async (to, from, next) => {
   console.log('beforeEach')
   if (!store.state.loaded) {
     try {
-      await store.dispatch('updateChannels')
-        // this.$store.dispatch('updateMembers')
+      await Promise.all([
+        store.dispatch('updateChannels'),
+        store.dispatch('updateMembers')
+      ])
       store.commit('loadEnd')
     } catch (e) {
       store.commit('loadEnd')
