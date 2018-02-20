@@ -1,6 +1,12 @@
+function dfs (channel, root) {
+  channel.channelName = root + channel.name
+  channel.children.forEach(function (elem) {
+    dfs(elem, channel.channelName + '/')
+  })
+}
 
 /* ChannelParse
-required json:
+required data:
 [
   {
     "channelId": UUID(string),
@@ -18,6 +24,7 @@ sorted array
   {
     channelId: UUID(string)
     name: string,
+    channelName: string,
     children: [this type object],
     childrenIds: [UUID(string)],
     visibility: bool
@@ -31,6 +38,7 @@ export default function ChannelParse (channels) {
     pool[channel.channelId] = {
       channelId: channel.channelId,
       name: channel.name,
+      channelName: channel.name,
       children: [],
       visibility: channel.visibility,
       parent: channel.parent
@@ -46,6 +54,9 @@ export default function ChannelParse (channels) {
       if (lhs.name > rhs.name) return 1
       return 0
     })
+  })
+  pool[root].children.forEach(function (elem) {
+    dfs(elem, '')
   })
   return pool[root].children
 }

@@ -12,7 +12,7 @@ div.login this is login page
 </template>
 
 <script>
-import axios from 'axios'
+import axios from '@/bin/axios'
 export default {
   name: 'login',
   data () {
@@ -31,25 +31,24 @@ export default {
   methods: {
     loginPost: function () {
       this.status = 'processing'
-      let self = this
       axios({
         method: 'post',
-        url: self.$store.state.url + '/login',
+        url: '/login',
         data: {
           name: this.name,
           pass: this.pass
         },
         withCredentials: true
       })
-      .then(function (res) {
-        self.status = 'successed'
-        self.$router.push({
-          name: 'Index'
-        })
+      .then(res => {
+        this.status = 'successed'
+        console.log(res)
+        this.$store.commit('loadStart')
+        this.$router.push('/channels/random')
       })
-      .catch(function (err) {
-        self.status = 'failed'
-        console.log(err)
+      .catch(err => {
+        this.status = 'failed'
+        console.error(err)
       })
     }
   }

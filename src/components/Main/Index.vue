@@ -16,7 +16,6 @@ export default {
   name: 'index',
   data () {
     return {
-
     }
   },
   components: {
@@ -24,6 +23,16 @@ export default {
     'Titlebar': Titlebar,
     'Message': Message,
     'Information': Information
+  },
+  async created () {
+    if (!this.$route.params.channel) {
+      this.$router.push('/channels/random')
+    }
+  },
+  watch: {
+    '$route' () {
+      console.log(this.$route.params.channel)
+    }
   }
 }
 </script>

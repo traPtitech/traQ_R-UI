@@ -3,43 +3,73 @@ div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-show="isOpened")
   div.input-area-wrapper
-    textarea.input-area(v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
+import autosize from 'autosize'
+import axios from '@/bin/axios'
+
 export default {
   data () {
     return {
       isOpened: false,
-      inputText: ''
+      inputText: '',
+      // postStatus: {'default', 'processing', 'successed', 'failed'}
+      postStatus: 'default'
     }
   },
   methods: {
-    focus: function () {
+    focus () {
       if (!this.isOpened) {
         return
       }
-      this.$nextTick(
-        function () {
-          this.$refs.inputArea.focus()
-        }
+      this.$nextTick(() => {
+        this.$refs.inputArea.focus()
+      }
       )
     },
-    inputBlur: function () {
+    inputBlur () {
       if (this.inputText === '') {
         this.isOpened = false
+      }
+    },
+    postMessage () {
+      if (this.inputText === '') {
+        return
+      }
+      this.postStatus = 'processing'
+      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
+      .then(() => {
+        this.inputText = ''
+        this.postStatus = 'successed'
+        this.$store.dispatch('getMessages')
+      })
+      .catch(() => {
+        this.postStatus = 'failed'
+      })
+    },
+    keydown (event) {
+      if (this.postStatus === 'processing') {
+        event.returnValue = false
+        return
+      }
+      this.postStatus = 'default'
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+        this.postMessage()
+        event.returnValue = false
       }
     }
   },
   watch: {
-    inputAreaHeight: function () {
+    inputAreaHeight () {
       console.log(this.$refs.inputArea.scrollHeight)
       return this.$refs.inputArea.scrollHeight + 'px'
     }
   },
-  computed: {
-
+  mounted () {
+    autosize(document.getElementById('messageInput'))
   }
 }
 </script>
