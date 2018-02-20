@@ -1,10 +1,11 @@
 <template lang="pug">
 div.content
-  InputUI
+  div.sticky-container.sticky
+    InputUI
   div.message-wrap
-    content
+    content.mes
       ul
-        li(v-for="i in 6")
+        li(v-for="i in 100")
           MessageElement
 </template>
 
@@ -17,6 +18,11 @@ export default {
     'InputUI': InputUI,
     'MessageElement': MessageElement,
     'MessageMock': MessageMock
+  },
+  mounted () {
+    const container = this.$el.querySelector('.message-wrap')
+    container.scrollTop = container.scrollHeight
+    console.log(container)
   }
 }
 </script>
@@ -26,9 +32,21 @@ export default {
   grid-area: content
   position: relative
   background-color: rgb(249, 249, 249)
-  overflow: hidden
+  overflow: scroll
 .message-wrap
   width: 100%
   height: 100%
-  overflow: scroll
+  position: absolute
+  z-index: 0
+  top: 0
+  left: 0
+.sticky-container
+  height: 100%
+  width: 100%
+  top: 0
+  left: 0
+  z-index: 1
+  pointer-events: none
+.sticky-container > *
+  pointer-events: auto
 </style>

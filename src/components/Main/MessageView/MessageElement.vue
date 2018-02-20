@@ -4,6 +4,7 @@ div.message
     div.m-icon
   div.m-text-wrap
     div.m-text
+      | eee
 </template>
 
 <script>
