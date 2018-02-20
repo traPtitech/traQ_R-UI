@@ -45,6 +45,8 @@ export default {
 </script>
 
 <style lang="sass">
+.input-ui > *
+  pointer-events: auto
 .input-ui
   position: absolute
   width: 100%

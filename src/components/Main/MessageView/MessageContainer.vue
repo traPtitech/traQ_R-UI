@@ -47,6 +47,4 @@ export default {
   left: 0
   z-index: 1
   pointer-events: none
-.sticky-container > *
-  pointer-events: auto
 </style>
