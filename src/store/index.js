@@ -43,11 +43,13 @@ export default new Vuex.Store({
       state.channelId = state.channelMap[channelName].channelId
       state.currentChannel = state.channelMap[channelName]
       state.messagesNum = 0
+      state.messages = []
       this.dispatch('getMessages')
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
       state.messagesNum = 0
+      state.messages = []
       this.dispatch('getMessages')
     },
     loadStart (state) {
@@ -88,7 +90,7 @@ export default new Vuex.Store({
       .then(res => {
         if (nowChannel === state.currentChannel) {
           state.messagesNum += res.data.length
-          commit('setMessages', res.data.reverse())
+          commit('setMessages', res.data.reverse().concat(state.messages))
         }
       })
       .catch(err => {
