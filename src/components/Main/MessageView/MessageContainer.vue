@@ -1,6 +1,7 @@
 <template lang="pug">
 div.content
-  InputUI
+  div.sticky-container.sticky
+    InputUI
   div.message-wrap
     button(v-on:click="loadMessages")
       | load
@@ -24,6 +25,11 @@ export default {
     loadMessages () {
       this.$store.dispatch('getMessages')
     }
+  },
+  mounted () {
+    const container = this.$el.querySelector('.message-wrap')
+    container.scrollTop = container.scrollHeight
+    console.log(container)
   }
 }
 </script>
@@ -33,9 +39,19 @@ export default {
   grid-area: content
   position: relative
   background-color: rgb(249, 249, 249)
-  overflow: hidden
+  overflow: scroll
 .message-wrap
   width: 100%
   height: 100%
-  overflow: scroll
+  position: absolute
+  z-index: 0
+  top: 0
+  left: 0
+.sticky-container
+  height: 100%
+  width: 100%
+  top: 0
+  left: 0
+  z-index: 1
+  pointer-events: none
 </style>

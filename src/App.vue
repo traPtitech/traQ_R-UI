@@ -38,4 +38,18 @@ p
   margin: 0
 a
   text-decoration: none
+.sticky
+  position: -webkit-sticky
+  position: sticky
+.sticky.sticky-fixed.is-sticky
+  position: fixed
+  -webkit-backface-visibility: hidden
+  -moz-backface-visibility: hidden
+  backface-visibility: hidden
+.sticky.sticky-fixed.is-sticky:not([style*="margin-top"])
+  margin-top: 0 !important
+.sticky.sticky-fixed.is-sticky:not([style*="margin-bottom"])
+  margin-bottom: 0 !important
+.sticky.sticky-fixed.is-absolute
+  position: absolute
 </style>

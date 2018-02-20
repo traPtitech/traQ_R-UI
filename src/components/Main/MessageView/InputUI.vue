@@ -77,11 +77,14 @@ export default {
 </script>
 
 <style lang="sass">
+.input-ui > *
+  pointer-events: auto
 .input-ui
   position: absolute
   width: 100%
   height: 100%
   bottom: 0
+  pointer-events: none
 .upload-button
   position: absolute
   z-index: 200

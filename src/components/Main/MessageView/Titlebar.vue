@@ -29,6 +29,7 @@ export default {
   @media (min-width: 680px)
     display: none
 .titlebar
+  // position: fixed
   display: flex
   align-items: center
   justify-content: space-between
