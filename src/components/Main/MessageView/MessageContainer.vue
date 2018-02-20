@@ -3,7 +3,9 @@ div.content
   div.sticky-container.sticky
     InputUI
   div.message-wrap
-    content.mes
+    button(v-on:click="loadMessages")
+      | load
+    content
       ul
         li(v-for="message in $store.state.messages")
           MessageElement(:model="message" :key="message.messageId")
@@ -18,6 +20,11 @@ export default {
     'InputUI': InputUI,
     'MessageElement': MessageElement,
     'MessageMock': MessageMock
+  },
+  methods: {
+    loadMessages () {
+      this.$store.dispatch('getMessages')
+    }
   },
   mounted () {
     const container = this.$el.querySelector('.message-wrap')

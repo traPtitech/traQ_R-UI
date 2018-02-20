@@ -27,8 +27,7 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.inputArea.focus()
-      }
-      )
+      })
     },
     inputBlur () {
       if (this.inputText === '') {
@@ -40,11 +39,14 @@ export default {
         return
       }
       this.postStatus = 'processing'
+      let nowChannel = this.$store.state.currentChannel
       axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
-      .then(() => {
+      .then((res) => {
         this.inputText = ''
         this.postStatus = 'successed'
-        this.$store.dispatch('getMessages')
+        if (nowChannel === this.$store.state.currentChannel) {
+          this.$store.commit('addMessages', res.data)
+        }
       })
       .catch(() => {
         this.postStatus = 'failed'
