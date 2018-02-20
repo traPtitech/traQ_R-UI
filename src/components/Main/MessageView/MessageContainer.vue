@@ -2,6 +2,8 @@
 div.content
   InputUI
   div.message-wrap
+    button(v-on:click="loadMessages")
+      | load
     content
       ul
         li(v-for="message in $store.state.messages")
@@ -17,6 +19,11 @@ export default {
     'InputUI': InputUI,
     'MessageElement': MessageElement,
     'MessageMock': MessageMock
+  },
+  methods: {
+    loadMessages () {
+      this.$store.dispatch('getMessages')
+    }
   }
 }
 </script>
