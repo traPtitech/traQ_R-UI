@@ -83,25 +83,13 @@ export default {
     },
     addFiles (event) {
       for (let i = 0; i < event.target.files.length; i++) {
-        let fr = new FileReader()
-        fr.onload = () => {
-          this.files.push(fr)
-          console.log(fr)
-        }
-        fr.name = event.target.files[i].name
-        fr.readAsDataURL(event.target.files[i])
+        this.files.push(event.target.files[i])
       }
     },
     dropFile (event) {
       event.preventDefault()
       for (let i = 0; i < event.dataTransfer.files.length; i++) {
-        let fr = new FileReader()
-        fr.onload = () => {
-          this.files.push(fr)
-          console.log(fr)
-        }
-        fr.name = event.dataTransfer.files[i].name
-        fr.readAsArrayBuffer(event.dataTransfer.files[i])
+        this.files.push(event.dataTransfer.files[i])
       }
     },
     removeFile (id) {
@@ -112,11 +100,11 @@ export default {
     },
     async uploadFiles () {
       this.postStatus = 'processing'
-      axios.post('/api/1.0/files', {file: this.files.shift().result}, {
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
-      })
+      let form = new FormData()
+      let file = this.files.shift()
+      form.enctype = 'multipart/form-data'
+      form.append(file.name, file)
+      axios.post('/api/1.0/files', form)
       .then(res => {
         console.log(res)
         this.submit()
