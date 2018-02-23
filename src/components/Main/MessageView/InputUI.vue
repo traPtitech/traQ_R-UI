@@ -1,5 +1,8 @@
 <template lang="pug">
 div.input-ui
+  form(action="http://localhost:3000/api/1.0/files" method="post" enctype="multipart/form-data")
+    input(type="file" name="file")
+    button(type="submit")
   input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
   div.upload-button(v-show="isOpened" v-on:click="clickUploadButton")
   div.submit-button(v-show="isOpened" v-on:click="submit")
@@ -103,7 +106,7 @@ export default {
       let form = new FormData()
       let file = this.files.shift()
       form.enctype = 'multipart/form-data'
-      form.append(file.name, file)
+      form.append('file', file)
       axios.post('/api/1.0/files', form)
       .then(res => {
         console.log(res)
