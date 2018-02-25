@@ -46,7 +46,7 @@ export default {
   height: 100vh
   @media (min-width: 680px)
     grid-template-rows: 60px 1fr
-    grid-template-columns: 250px 1fr 40px
+    grid-template-columns: 260px 1fr 40px
     grid-template-areas: "side titlebar titlebar""side content information"
   @media (max-width: 679px)
     grid-template-rows: 60px 1fr
