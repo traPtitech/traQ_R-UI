@@ -3,8 +3,8 @@ div
   p.content-title
     | Channels
   transition-group(name="list-complete" tag="div" appear)
-      div(v-for="model in $store.getters.childrenChannels('')" :key="model.channelId").channel-list-container
-        ChannelElement(:model="model" :curPath="''")
+      div(v-for="model in $store.getters.childrenChannels('')" v-bind:key="model.channelId").channel-list-container
+        ChannelElement(:model="model" v-bind:curPath="''")
 </template>
 
 <script>
@@ -23,7 +23,7 @@ export default {
 .channel-list-container
   position: relative
 .content-title
-  color: white
+  color: gray
   font-weight: bold
 // .list-complete-enter, .list-complete-leave-to
 //   opacity: 0
@@ -38,7 +38,6 @@ export default {
   // transform: translateY(-10px)
 .list-complete-enter-active,.list-complete-leave-active
   transition: opacity 0.2s ease-in-out
-  display: static
 .list-complete-enter-to
   opacity: 1
 .list-complete-leave-to
