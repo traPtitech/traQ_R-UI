@@ -13,7 +13,9 @@ export default new Vuex.Store({
     memberMap: {},
     currentChannel: {},
     messages: [],
-    messagesNum: 0
+    messagesNum: 0,
+    myId: '',
+    myName: ''
   },
   mutations: {
     setUrl (state, newUrl) { state.url = newUrl },
@@ -73,6 +75,26 @@ export default new Vuex.Store({
         })
         return channel
       }
+    },
+    getMyId (state) {
+      if (state.myId !== '') {
+        return state.myId
+      }
+      axios.get('/api/1.0/users/me')
+      .then(res => {
+        state.myId = res.data.userId
+        state.myName = res.data.name
+      })
+    },
+    getMyName (state) {
+      if (state.myName !== '') {
+        return state.myName
+      }
+      axios.get('/api/1.0/users/me')
+      .then(res => {
+        state.myId = res.data.userId
+        state.myName = res.data.name
+      })
     }
   },
   actions: {
