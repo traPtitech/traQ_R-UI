@@ -1,8 +1,8 @@
 <template lang="pug">
 div.menu-content
-  ChannelList(v-if="$store.state.menuContent=='channels'")
-  MemberList(v-if="$store.state.menuContent=='members'")
-  LinkList(v-if="$store.state.menuContent=='links'")
+  ChannelList(v-show="$store.state.menuContent=='channels'")
+  MemberList(v-show="$store.state.menuContent=='members'")
+  LinkList(v-show="$store.state.menuContent=='links'")
 </template>
 
 <script>

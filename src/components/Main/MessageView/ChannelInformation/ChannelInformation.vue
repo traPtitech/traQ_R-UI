@@ -14,5 +14,6 @@ export default {
 .information
   grid-area: information
   display: flex
-  background-color: rgb(79, 85, 112)
+  background-color: #c2c2c2
+  border-left: 1px solid #B0B0B0
 </style>

@@ -41,7 +41,7 @@ export default {
   grid-area: menu
   display: flex
   flex-flow: column
-  background-color: #003778
+  background-color: #3a4891
 .menu-button
   display: flex
   margin: 20px auto

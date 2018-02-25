@@ -1,12 +1,11 @@
 <template lang="pug">
-div.content
+div.content-wrap
   div.sticky-container.sticky
     InputUI
-  div.message-wrap
-    content.mes
-      ul
-        li(v-for="message in $store.state.messages")
-          MessageElement(:model="message" :key="message.messageId")
+  content.message-wrap
+    ul
+      li(v-for="message in $store.state.messages")
+        MessageElement(:model="message" v-bind:key="message.messageId")
 </template>
 
 <script>
@@ -28,7 +27,7 @@ export default {
 </script>
 
 <style lang="sass">
-.content
+.content-wrap
   grid-area: content
   position: relative
   background-color: rgb(249, 249, 249)

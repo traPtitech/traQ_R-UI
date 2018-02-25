@@ -1,7 +1,7 @@
 <template lang="pug">
 div.channel-wrap
-  div.channel-box(v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
-    p.channel-box-name(@click="channelLink(model.name)")
+  div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
+    p.channel-box-name()
       | {{model.name}}
     div.channel-status-wrap
       div.channel-notification
@@ -56,12 +56,14 @@ export default {
   align-items: center
   justify-content: space-between
   margin: 0 0
+  cursor: pointer
 .channel-box-name
   position: relative
   color: gray
+  font-weight: bold
   flex: 1
   margin: 2px 5px
-  padding: 1px 10px
+  padding: 1px 10px 1px 5px
   border-radius: 3px
   text-align: left
   transition: all .5s ease-out
@@ -69,15 +71,15 @@ export default {
   background-color: inherit
   overflow: hidden
   z-index: 1
-  .channel-watched &
-    color: white
-    background-color: #c5c5c5
   .channel-opened &
     color: #4f74d6
+  .channel-watched &
+    color: white
+    background-color: #4f74d6
   &:before
     content: '#'
     margin: 0 3px 0 0
-  &:hover
+  &:hover, .channel-box:hover &
     color: white
     background-color: #757575
   &:after
