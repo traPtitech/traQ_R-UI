@@ -19,13 +19,13 @@ export default {
     navClicked: function (n) {
       switch (n) {
         case 'channels':
-          this.$store.commit('changeMenuContent','channels')
+          this.$store.commit('changeMenuContent', 'channels')
           break
         case 'members':
-          this.$store.commit('changeMenuContent','members')
+          this.$store.commit('changeMenuContent', 'members')
           break
         case 'links':
-          this.$store.commit('changeMenuContent','links')
+          this.$store.commit('changeMenuContent', 'links')
           break
         case 'wiki':
           break
