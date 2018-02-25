@@ -12,7 +12,8 @@ export default new Vuex.Store({
     memberData: [],
     memberMap: {},
     currentChannel: {},
-    messages: []
+    messages: [],
+    messagesNum: 0
   },
   mutations: {
     setUrl (state, newUrl) { state.url = newUrl },
@@ -29,6 +30,10 @@ export default new Vuex.Store({
         state.memberMap[member.userId] = member
       })
     },
+    addMessages (state, message) {
+      state.messages.push(message)
+      state.messagesNum++
+    },
     setMessages (state, messages) {
       state.messages = messages
     },
@@ -37,10 +42,14 @@ export default new Vuex.Store({
       state.channelName = channelName
       state.channelId = state.channelMap[channelName].channelId
       state.currentChannel = state.channelMap[channelName]
+      state.messagesNum = 0
+      state.messages = []
       this.dispatch('getMessages')
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
+      state.messagesNum = 0
+      state.messages = []
       this.dispatch('getMessages')
     },
     loadStart (state) {
@@ -68,9 +77,21 @@ export default new Vuex.Store({
   },
   actions: {
     getMessages ({state, commit}) {
-      return axios.get('/api/1.0/channels/' + state.currentChannel.channelId + '/messages')
+      let nowChannel = state.currentChannel
+      return axios.get(
+        '/api/1.0/channels/' + state.currentChannel.channelId + '/messages',
+        {
+          params: {
+            limit: 50,
+            offset: state.messagesNum
+          }
+        }
+      )
       .then(res => {
-        commit('setMessages', res.data.reverse())
+        if (nowChannel === state.currentChannel) {
+          state.messagesNum += res.data.length
+          commit('setMessages', res.data.reverse().concat(state.messages))
+        }
       })
       .catch(err => {
         console.error(err)
