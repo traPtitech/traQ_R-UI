@@ -19,5 +19,6 @@ const md = new MarkdownIt({
 })
 
 md.use(MarkdownItMark)
+md.disable('image')
 
 export default md
