@@ -2,8 +2,6 @@
 div.menu-header
   div.user
     div.user-icon
-    div.user-name
-      | username
   div.search
     i.fa.fa-search(aria-hidden="true")
 </template>
@@ -17,8 +15,9 @@ export default {
 .menu-header
   grid-area: user
   display: flex
-  // background-color: rgba(15, 88, 144, 0.43)
-  border-bottom: solid 1px rgba(255, 255, 255, 0.7)
+  border-right: 1px solid rgb(176, 176, 176)
+  border-bottom: 1px solid rgb(176, 176, 176)
+  background-color: #F5F5F5
   margin: 0
 .user
   display: flex
@@ -37,6 +36,7 @@ export default {
   color: white
   word-wrap: break-word
   margin: 0 0 0 10px
+  color: rgba(0, 0, 0, 0.6)
 .search
   height: 100%
   width: 100%
@@ -47,5 +47,5 @@ export default {
   align-items: center
 .fa-search
   font-size: 1.5em
-  color: white
+  color: rgba(0, 0, 0, 0.6)
 </style>

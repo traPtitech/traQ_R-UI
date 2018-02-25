@@ -1,8 +1,8 @@
 <template lang="pug">
 div.menu-content
-  ChannelList
-  MemberList
-  LinkList
+  ChannelList(v-if="$store.state.menuContent=='channels'")
+  MemberList(v-if="$store.state.menuContent=='members'")
+  LinkList(v-if="$store.state.menuContent=='links'")
 </template>
 
 <script>
@@ -25,6 +25,6 @@ export default {
 <style lang="sass">
 .menu-content
   grid-area: content
-  background-color: rgba(15, 88, 144, 0.43)
-  padding: 5px
+  background-color: #F5F5F5
+  border-right: 1px solid rgb(176, 176, 176)
 </style>
