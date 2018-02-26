@@ -1,14 +1,15 @@
 <template lang="pug">
-div.login this is login page
-  br
-  input(v-model="name" type="text" placeholder="IDまたはメールアドレス")
-  br
-  input(v-model="pass" type="password" placeholder="パスワード")
-  br
-  button(v-on:click="loginPost()")
-    p login
-  br
-  p(v-if="status === 'failed'") IDまたはパスワードが異なります
+div.login
+  div.login-left-box
+    p.login-welcome
+      | Welcome to traQ
+  div.login-right-box
+    div.input-wrap
+      input.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス")
+      input.login-input.input-password(v-model="pass" type="password" placeholder="パスワード")
+    button.login-button(v-on:click="loginPost()")
+      p ログイン
+    p(v-if="status === 'failed'") IDまたはパスワードが異なります
 </template>
 
 <script>
@@ -55,5 +56,52 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="sass">
+.login
+  display: flex
+.login-left-box
+  width: 40vw
+  height: 100vh
+  background-color: #4f74d6
+  display: flex
+  align-items: center
+.login-right-box
+  flex: 1
+  height: 100vh
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-flow: column
+.login-welcome
+  font-weight: bold
+  color: white
+  text-align: center
+  width: 100%
+.input-wrap
+  display: flex
+  flex-flow: column
+  margin: 0 auto
+.login-input
+  width: 200px
+  height: 30px
+  margin: 5px auto
+  box-sizing: border-box
+  &:active
+    border: solid 1px black
+  &::placeholder
+    font-size: 1.1em
+.login-button
+  border: none
+  width: 200px
+  height: 30px
+  font-size: 1em
+  color: white
+  margin: 5px auto
+  background-color: #4f74d6
+  transition: all .5s ease
+  cursor: pointer
+  &:hover
+    background-color: #4254a6
+  &:active
+    border: none
 </style>
