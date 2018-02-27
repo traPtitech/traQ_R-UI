@@ -1,16 +1,16 @@
 <template lang="pug">
 div.input-ui
-  form(action="http://localhost:3000/api/1.0/files" method="post" enctype="multipart/form-data")
+  form(action="http://traq-dev.herokuapp.com/api/1.0/files" method="post" enctype="multipart/form-data")
     input(type="file" name="file")
     button(type="submit")
   input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
-  div.upload-button(v-show="isOpened" v-on:click="clickUploadButton")
+  div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
   div.submit-button(v-show="isOpened" v-on:click="submit")
-  div.input-area-wrapper(v-on:drop="dropFile")
-    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+  div.input-area-wrapper(v-on:drom="dropFile")
+    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
     div(v-for="(file, index) in files" v-on:click="removeFile(index)")
       | {{ file.name }}
-  div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}" v-on:drop="dropFile")
+  div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
@@ -25,7 +25,7 @@ export default {
       // postStatus: {'default', 'processing', 'successed', 'failed'}
       postStatus: 'default',
       files: [],
-      uploadElem: null
+      uploadedIds: []
     }
   },
   methods: {
@@ -61,7 +61,12 @@ export default {
     postMessage () {
       this.postStatus = 'processing'
       let nowChannel = this.$store.state.currentChannel
-      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
+      let message = this.inputText
+      // temporary format
+      this.uploadedIds.forEach(id => {
+        message += ' !{fileId: "' + id + '"}'
+      })
+      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: message})
       .then((res) => {
         this.inputText = ''
         this.postStatus = 'successed'
@@ -109,7 +114,7 @@ export default {
       form.append('file', file)
       axios.post('/api/1.0/files', form)
       .then(res => {
-        console.log(res)
+        this.uploadedIds.push(res.data.fileId)
         this.submit()
       })
     }
@@ -171,8 +176,7 @@ export default {
   width: 100%
   height: 60px
   margin: 0
-  padding: 0
-  background: none
+  background: white
   resize: none
   -webkit-appearance: none
   padding: 10px 60px 10px 10px
@@ -181,6 +185,7 @@ export default {
   border: 0
   line-height: 1
   animation: openInputArea 1s ease
+  /*transition: all .3s ease-in-out*/
 .input-area:focus
   outline: 0
 .input-area::placeholder
@@ -204,12 +209,8 @@ export default {
   right: 0
   left: 0
   margin: auto
-  // border: 2px solid white
   transition: all .2s cubic-bezier(0.645, 0.045, 0.355, 1)
   opacity: 1
-  // border-image: linear-gradient(left,#41c7e0,#c27dec) 1 1 1 1
-  // border-width: 3px
-  // border-style: solid
   border-radius: 15px
   background-clip: content-box
   cursor: pointer
@@ -236,7 +237,7 @@ export default {
 .input-background-opened
   width: 100%
   max-width: 100%
-  bottom: 0px
+  bottom: 0
   height: 60px
   border-width: 0
   border-radius: 0

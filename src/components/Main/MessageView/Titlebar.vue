@@ -34,7 +34,7 @@ export default {
   align-items: center
   justify-content: space-between
   grid-area: titlebar
-  background-color: rgb(249, 249, 249)
+  background-color: #F5F5F5
   border-bottom: 1px solid rgb(176, 176, 176)
 .channel-name
   color: rgba(0, 0, 0, 0.6)
