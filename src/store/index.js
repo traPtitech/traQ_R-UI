@@ -36,23 +36,13 @@ export default new Vuex.Store({
     },
     addMessages (state, message) {
       state.messages.push(message)
-      state.messagesNum++
     },
     setMessages (state, messages) {
       state.messages = messages
     },
-    setChannel (state, channelName) {
-      if (!state.channelMap[channelName]) return
-      state.currentChannel = state.channelMap[channelName]
-      state.messagesNum = 0
-      state.messages = []
-      this.dispatch('loadMessages')
-      this.dispatch('loadChannelTopic')
-    },
     changeChannel (state, channel) {
       state.currentChannel = channel
-      state.messagesNum = 0
-      state.messages = []
+      this.commit('setMessages', [])
       this.dispatch('loadMessages')
       this.dispatch('loadChannelTopic')
     },
@@ -110,13 +100,12 @@ export default new Vuex.Store({
         {
           params: {
             limit: 50,
-            offset: state.messagesNum
+            offset: state.messages.length
           }
         }
       )
       .then(res => {
         if (nowChannel === state.currentChannel) {
-          state.messagesNum += res.data.length
           commit('setMessages', res.data.reverse().concat(state.messages))
         }
       })
@@ -146,7 +135,7 @@ export default new Vuex.Store({
     loadChannelTopic ({state, commit}) {
       return axios.get('/api/1.0/channels/' + state.currentChannel.channelId + '/topic')
       .then(res => {
-        state.channelTopic = res.data
+        commit('setChannelTopic', res.data)
       })
     }
   }
