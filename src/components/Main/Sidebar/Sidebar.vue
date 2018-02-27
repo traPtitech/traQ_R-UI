@@ -23,15 +23,14 @@ export default {
   grid-area: side
   display: grid
   grid-template-rows: 60px 1fr
-  grid-template-columns: 60px 1fr
+  grid-template-columns: 50px 1fr
   grid-template-areas: "user user" "menu content"
   height: 100vh
-  // background: linear-gradient(100deg,#35769E,#3C5786)
-  background: linear-gradient(100deg, #3BCCF3, #362490)
+  background-color: white
   transition: all .5s ease
   @media (max-width: 679px)
-    width: 200px
+    width: 300px
     position: absolute
     z-index: 1000
-    left: -200px
+    left: -300px
 </style>

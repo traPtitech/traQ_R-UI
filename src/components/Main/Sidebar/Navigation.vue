@@ -3,26 +3,29 @@ nav.menu-buttons
   ul
     li.menu-button.channels(@click="navClicked('channels')")
       i.fa.fa-hashtag(aria-hidden="true")
-    li.menu-button.users(@click="navClicked('users')")
+    li.menu-button.members(@click="navClicked('members')")
       i.fa.fa-user-circle-o(aria-hidden="true")
     li.menu-button.links(@click="navClicked('links')")
       i.fa.fa-th-large(aria-hidden="true")
-    li.menu-button.wiki(@click="navClicked('wiki')")
-      i.fa.fa-book(aria-hidden="true")
 </template>
 
 <script>
 export default {
+  data () {
+    return {
+    }
+  },
   methods: {
     navClicked: function (n) {
-      console.log(n)
       switch (n) {
         case 'channels':
-          console.log('hoge')
+          this.$store.commit('changeMenuContent', 'channels')
           break
-        case 'users':
+        case 'members':
+          this.$store.commit('changeMenuContent', 'members')
           break
         case 'links':
+          this.$store.commit('changeMenuContent', 'links')
           break
         case 'wiki':
           break
@@ -38,10 +41,10 @@ export default {
   grid-area: menu
   display: flex
   flex-flow: column
+  background-color: #3a4891
 .menu-button
-  width: 60px
-  height: 60px
   display: flex
+  margin: 20px auto
   cursor: pointer
   align-items: center
   justify-content: center
