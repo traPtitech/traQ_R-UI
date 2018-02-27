@@ -13,7 +13,8 @@ export default new Vuex.Store({
     memberMap: {},
     currentChannel: {},
     messages: [],
-    messagesNum: 0
+    messagesNum: 0,
+    menuContent: 'channels'
   },
   mutations: {
     setUrl (state, newUrl) { state.url = newUrl },
@@ -57,6 +58,9 @@ export default new Vuex.Store({
     },
     loadEnd (state) {
       state.loaded = true
+    },
+    changeMenuContent (state, contentName) {
+      state.menuContent = contentName
     }
   },
   getters: {

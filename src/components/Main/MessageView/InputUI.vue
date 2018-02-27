@@ -3,8 +3,8 @@ div.input-ui
   //- div.upload-button(v-if="isOpened")
   div.submit-button(v-show="isOpened")
   div.input-area-wrapper
-    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" :class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
-  div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" :class="{'input-background-opened': isOpened}")
+    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+  div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
@@ -71,7 +71,8 @@ export default {
     }
   },
   mounted () {
-    autosize(document.getElementById('messageInput'))
+    const inputEl = document.getElementById('messageInput')
+    autosize(inputEl)
   }
 }
 </script>
@@ -117,8 +118,7 @@ export default {
   width: 100%
   height: 60px
   margin: 0
-  padding: 0
-  background: none
+  background: white
   resize: none
   -webkit-appearance: none
   padding: 10px 60px 10px 10px
@@ -127,6 +127,7 @@ export default {
   border: 0
   line-height: 1
   animation: openInputArea 1s ease
+  /*transition: all .3s ease-in-out*/
 .input-area:focus
   outline: 0
 .input-area::placeholder
@@ -150,12 +151,8 @@ export default {
   right: 0
   left: 0
   margin: auto
-  // border: 2px solid white
   transition: all .2s cubic-bezier(0.645, 0.045, 0.355, 1)
   opacity: 1
-  // border-image: linear-gradient(left,#41c7e0,#c27dec) 1 1 1 1
-  // border-width: 3px
-  // border-style: solid
   border-radius: 15px
   background-clip: content-box
   cursor: pointer
@@ -182,7 +179,7 @@ export default {
 .input-background-opened
   width: 100%
   max-width: 100%
-  bottom: 0px
+  bottom: 0
   height: 60px
   border-width: 0
   border-radius: 0
