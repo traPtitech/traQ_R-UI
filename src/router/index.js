@@ -11,7 +11,6 @@ Vue.use(Router)
 Vue.use(Meta)
 
 const router = new Router({
-  mode: 'history',
   routes: [
     {
       path: '/login',
@@ -32,7 +31,8 @@ const router = new Router({
       name: 'NotFound',
       component: NotFound
     }
-  ]
+  ],
+  mode: 'history'
 })
 
 router.beforeEach(async (to, from, next) => {

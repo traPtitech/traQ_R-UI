@@ -1,9 +1,12 @@
 <template lang="pug">
 div.input-ui
-  //- div.upload-button(v-if="isOpened")
-  div.submit-button(v-show="isOpened")
-  div.input-area-wrapper
+  input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
+  div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
+  div.submit-button(v-show="isOpened" v-on:click="submit")
+  div.input-area-wrapper(v-on:drom="dropFile")
     textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    div(v-for="(file, index) in files" v-on:click="removeFile(index)")
+      | {{ file.name }}
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
 </template>
 
@@ -17,7 +20,9 @@ export default {
       isOpened: false,
       inputText: '',
       // postStatus: {'default', 'processing', 'successed', 'failed'}
-      postStatus: 'default'
+      postStatus: 'default',
+      files: [],
+      uploadedIds: []
     }
   },
   methods: {
@@ -30,17 +35,35 @@ export default {
       })
     },
     inputBlur () {
-      if (this.inputText === '') {
-        this.isOpened = false
+      setTimeout(_ => {
+        if (this.inputText === '' && this.files.length === 0) {
+          this.isOpened = false
+        }
+      }, 200)
+    },
+    submit () {
+      if (this.inputText === '' && this.files.length === 0) {
+        return
+      }
+      if (this.files.length > 0) {
+        this.uploadFiles()
+        .catch(err => {
+          console.log(err)
+          this.postStatus = 'failed'
+        })
+      } else {
+        this.postMessage()
       }
     },
     postMessage () {
-      if (this.inputText === '') {
-        return
-      }
       this.postStatus = 'processing'
       let nowChannel = this.$store.state.currentChannel
-      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
+      let message = this.inputText
+      // temporary format
+      this.uploadedIds.forEach(id => {
+        message += ' !{fileId: "' + id + '"}'
+      })
+      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: message})
       .then((res) => {
         this.inputText = ''
         this.postStatus = 'successed'
@@ -59,20 +82,52 @@ export default {
       }
       this.postStatus = 'default'
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
-        this.postMessage()
+        this.submit()
         event.returnValue = false
       }
+    },
+    addFiles (event) {
+      for (let i = 0; i < event.target.files.length; i++) {
+        this.files.push(event.target.files[i])
+      }
+    },
+    dropFile (event) {
+      event.preventDefault()
+      for (let i = 0; i < event.dataTransfer.files.length; i++) {
+        this.files.push(event.dataTransfer.files[i])
+      }
+    },
+    removeFile (id) {
+      this.files.splice(id, 1)
+    },
+    clickUploadButton () {
+      this.uploadElem.click()
+    },
+    async uploadFiles () {
+      this.postStatus = 'processing'
+      let form = new FormData()
+      let file = this.files.shift()
+      form.enctype = 'multipart/form-data'
+      form.append('file', file)
+      axios.post('/api/1.0/files', form)
+      .then(res => {
+        this.uploadedIds.push(res.data.fileId)
+        this.submit()
+      })
     }
   },
   watch: {
     inputAreaHeight () {
       console.log(this.$refs.inputArea.scrollHeight)
       return this.$refs.inputArea.scrollHeight + 'px'
+    },
+    files (newFiles) {
+      this.isOpened = !(newFiles.length === 0 && this.inputText === '')
     }
   },
   mounted () {
-    const inputEl = document.getElementById('messageInput')
-    autosize(inputEl)
+    autosize(document.getElementById('messageInput'))
+    this.uploadElem = document.getElementById('upload')
   }
 }
 </script>
