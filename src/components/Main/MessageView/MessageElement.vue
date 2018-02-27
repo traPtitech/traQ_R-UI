@@ -8,26 +8,66 @@ div.message
     p.message-date
       | {{dateTime(model.datetime)}}
   div.message-content-wrap
-    div.message-content(v-html="renderedText")
+    div.message-content(v-if="!isEditing" v-html="renderedText")
+    div(v-if="isEditing")
+      textarea(v-model="edited" )
+      button(v-on:click="editSubmit" )
+        | submit
+      button(v-on:click="editCancel" )
+        | cancel
+    button(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
+      | edit
+    button(v-on:click="deleteMessage")
+      | delete
   div.message-buttons-wrap
 </template>
 
 <script>
 import md from '@/bin/markdown-it'
+import axios from '@/bin/axios'
 export default {
   name: 'MessageElement',
   props: {
     model: Object
   },
-  computed: {
-    renderedText () {
-      return md.render(this.model.content)
+  data () {
+    return {
+      isEditing: false,
+      edited: ''
     }
   },
   methods: {
+    editMessage () {
+      this.isEditing = true
+      this.edited = this.model.content
+    },
+    editSubmit () {
+      if (this.edited === this.model.content) {
+        this.isEditing = false
+        return
+      }
+      axios.put('/api/1.0/messages/' + this.model.messageId, {
+        text: this.edited
+      })
+      this.isEditing = false
+      this.model.content = this.edited
+    },
+    editCancel () {
+      this.isEditing = false
+    },
+    deleteMessage () {
+      if (window.confirm('このメッセージを削除してもよろしいですか？')) {
+        axios.delete('/api/1.0/messages/' + this.model.messageId)
+      }
+    },
     dateTime: function (datetime) {
       const d = new Date(datetime)
       return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
+    }
+  },
+  computed: {
+    renderedText () {
+      return md.render(this.model.content)
     }
   }
 }
