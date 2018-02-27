@@ -2,7 +2,9 @@
 header.titlebar
   div.menu-open
   h1.channel-name
-    | {{'#' + $route.params.channel}}
+    | {{title}}
+  p.channel-topic
+    | {{$store.state.channelTopic}}
   div.buttons
     div.star
     div.search
@@ -16,6 +18,16 @@ export default {
   },
   mounted () {
 
+  },
+  computed: {
+    title () {
+      let ret = '#'
+      this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
+        ret += e.charAt(0) + '/'
+      })
+      ret += this.$route.params.channel.split('/').pop()
+      return ret
+    }
   }
 }
 </script>

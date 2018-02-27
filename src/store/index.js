@@ -12,6 +12,7 @@ export default new Vuex.Store({
     memberData: [],
     memberMap: {},
     currentChannel: {},
+    channelTopic: '',
     messages: [],
     messagesNum: 0,
     myId: '',
@@ -42,18 +43,18 @@ export default new Vuex.Store({
     },
     setChannel (state, channelName) {
       if (!state.channelMap[channelName]) return
-      state.channelName = channelName
-      state.channelId = state.channelMap[channelName].channelId
       state.currentChannel = state.channelMap[channelName]
       state.messagesNum = 0
       state.messages = []
-      this.dispatch('getMessages')
+      this.dispatch('loadMessages')
+      this.dispatch('loadChannelTopic')
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
       state.messagesNum = 0
       state.messages = []
-      this.dispatch('getMessages')
+      this.dispatch('loadMessages')
+      this.dispatch('loadChannelTopic')
     },
     loadStart (state) {
       state.loaded = false
@@ -102,7 +103,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    getMessages ({state, commit}) {
+    loadMessages ({state, commit}) {
       let nowChannel = state.currentChannel
       return axios.get(
         '/api/1.0/channels/' + state.currentChannel.channelId + '/messages',
@@ -140,6 +141,12 @@ export default new Vuex.Store({
       })
       .catch(err => {
         console.error(err)
+      })
+    },
+    loadChannelTopic ({state, commit}) {
+      return axios.get('/api/1.0/channels/' + state.currentChannel.channelId + '/topic')
+      .then(res => {
+        state.channelTopic = res.data
       })
     }
   }
