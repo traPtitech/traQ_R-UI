@@ -9,7 +9,8 @@ function highlight (code, lang) {
     const result = hljs.highlight(langName, code)
     return `<pre class="traq-code traq-lang">${citeTag}<code class="lang-${result.language}">${result.value}</code></pre>`
   } else {
-    return `<pre class="traq-code">${citeTag}<code>${code}</code></pre>`
+    const result = hljs.highlightAuto(code)
+    return `<pre class="traq-code traq-lang">${citeTag}<code class="lang-${result.language}">${result.value}</code></pre>`
   }
 }
 
