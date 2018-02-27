@@ -1,8 +1,5 @@
 <template lang="pug">
 div.input-ui
-  form(action="http://traq-dev.herokuapp.com/api/1.0/files" method="post" enctype="multipart/form-data")
-    input(type="file" name="file")
-    button(type="submit")
   input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
   div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
   div.submit-button(v-show="isOpened" v-on:click="submit")
