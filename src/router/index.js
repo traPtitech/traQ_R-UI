@@ -39,40 +39,36 @@ router.beforeEach(async (to, from, next) => {
   // if (!store.me) {
   //   next('/login')
   // }
-  let isLogin = false
-  if (!store.state.loaded) {
+  //
+  if (!store.state.me) {
     await store.dispatch('whoAmI')
-    .then(() => { isLogin = true })
   }
 
+  if (!store.state.me) {
+    store.commit('loadEnd')
+    next('/login')
+    return
+  }
+
+  // ここ以下はログインしている
   if (to.path === '/login') {
-    if (!isLogin) {
-      store.commit('loadEnd')
-      next(true)
-      return
-    } else {
-      next('/channels/random')
-      return
-    }
+    next('/channels/random')
+    return
   }
-  console.log('beforeEach')
-  if (!store.state.loaded) {
-    try {
-      await Promise.all([
-        store.dispatch('updateChannels'),
-        store.dispatch('updateMembers')
-      ])
-      store.commit('loadEnd')
-    } catch (e) {
-      store.commit('loadEnd')
-      next('/login')
-      return
-    }
+
+  if (!store.state.isLoaded) {
+    await Promise.all([
+      store.dispatch('updateChannels'),
+      store.dispatch('updateMembers')
+    ])
   }
+
   if (!to.params.channel) {
+    store.commit('loadEnd')
     next(true)
     return
   }
+
   const nextChannel = store.getters.getChannelByName(to.params.channel)
   if (!nextChannel) {
     next(false)
@@ -80,6 +76,7 @@ router.beforeEach(async (to, from, next) => {
     store.commit('changeChannel', nextChannel)
     next(true)
   }
+  store.commit('loadEnd')
 })
 
 export default router
