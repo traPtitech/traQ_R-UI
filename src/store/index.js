@@ -12,6 +12,7 @@ export default new Vuex.Store({
     memberData: [],
     memberMap: {},
     currentChannel: {},
+    clipedMessages: {},
     messages: [],
     messagesNum: 0,
     myId: '',
@@ -63,6 +64,11 @@ export default new Vuex.Store({
     },
     changeMenuContent (state, contentName) {
       state.menuContent = contentName
+    },
+    setClipedMessages (state, data) {
+      data.forEach(message => {
+        Vue.set(state.clipedMessages, message.messageId, message)
+      })
     }
   },
   getters: {
@@ -129,6 +135,12 @@ export default new Vuex.Store({
       return client.getMembers()
       .then(res => {
         commit('setMemberData', res.data)
+      })
+    },
+    updateClipedMessages ({state, commit}) {
+      return client.getClipedMessages()
+      .then(res => {
+        commit('setClipedMessages', res.data)
       })
     }
   }
