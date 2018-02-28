@@ -60,7 +60,8 @@ router.beforeEach(async (to, from, next) => {
     try {
       await Promise.all([
         store.dispatch('updateChannels'),
-        store.dispatch('updateMembers')
+        store.dispatch('updateMembers'),
+        store.dispatch('updateClipedMessages')
       ])
       store.commit('loadEnd')
     } catch (e) {

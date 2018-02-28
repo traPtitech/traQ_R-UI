@@ -165,7 +165,7 @@ const client = {
   },
   unclipMessage (messageId) {
     return middleWare('unclipMessage', () => {
-      return axios.delete(`/api/1.0/users/me/clips`, {messageId})
+      return axios.delete(`/api/1.0/users/me/clips`, {data: {messageId}})
     })
   },
 
