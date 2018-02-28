@@ -14,12 +14,15 @@ export default new Vuex.Store({
     currentChannel: {},
     messages: [],
     messagesNum: 0,
+    me: null,
     myId: '',
     myName: '',
     menuContent: 'channels'
   },
   mutations: {
-    setUrl (state, newUrl) { state.url = newUrl },
+    setMe (state, me) {
+      state.me = me
+    },
     setChannelData (state, newChannelData) {
       state.channelData = newChannelData
       function dfs (channel) {
@@ -81,32 +84,20 @@ export default new Vuex.Store({
       }
     },
     getMyId (state) {
-      if (state.myId !== '') {
-        return state.myId
-      }
-      client.whoAmI()
-      .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
-      })
+      return state.me.userId
     },
     getMyName (state) {
-      if (state.myName !== '') {
-        return state.myName
-      }
-      client.whoAmI()
-      .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
-      })
+      return state.me.name
     }
   },
   actions: {
     whoAmI ({state, commit}) {
       return client.whoAmI()
       .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
+        commit('setMe', res.data)
+      })
+      .catch(() => {
+        commit('setMe', null)
       })
     },
     getMessages ({state, commit}) {
