@@ -39,10 +39,21 @@ router.beforeEach(async (to, from, next) => {
   // if (!store.me) {
   //   next('/login')
   // }
+  let isLogin = false
+  if (!store.state.loaded) {
+    await store.dispatch('whoAmI')
+    .then(() => { isLogin = true })
+  }
+
   if (to.path === '/login') {
-    store.commit('loadEnd')
-    next(true)
-    return
+    if (!isLogin) {
+      store.commit('loadEnd')
+      next(true)
+      return
+    } else {
+      next('/channels/random')
+      return
+    }
   }
   console.log('beforeEach')
   if (!store.state.loaded) {

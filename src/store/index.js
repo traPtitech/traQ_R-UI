@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from '@/bin/axios'
+import client from '@/bin/client'
 
 Vue.use(Vuex)
 
@@ -84,7 +84,7 @@ export default new Vuex.Store({
       if (state.myId !== '') {
         return state.myId
       }
-      axios.get('/api/1.0/users/me')
+      client.whoAmI()
       .then(res => {
         state.myId = res.data.userId
         state.myName = res.data.name
@@ -94,7 +94,7 @@ export default new Vuex.Store({
       if (state.myName !== '') {
         return state.myName
       }
-      axios.get('/api/1.0/users/me')
+      client.whoAmI()
       .then(res => {
         state.myId = res.data.userId
         state.myName = res.data.name
@@ -102,44 +102,33 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    whoAmI ({state, commit}) {
+      return client.whoAmI()
+      .then(res => {
+        state.myId = res.data.userId
+        state.myName = res.data.name
+      })
+    },
     getMessages ({state, commit}) {
       let nowChannel = state.currentChannel
-      return axios.get(
-        '/api/1.0/channels/' + state.currentChannel.channelId + '/messages',
-        {
-          params: {
-            limit: 50,
-            offset: state.messagesNum
-          }
-        }
-      )
+      return client.loadMessages(state.currentChannel.channelId, 50, state.messagesNum)
       .then(res => {
         if (nowChannel === state.currentChannel) {
           state.messagesNum += res.data.length
           commit('setMessages', res.data.reverse().concat(state.messages))
         }
       })
-      .catch(err => {
-        console.error(err)
-      })
     },
     updateChannels ({state, commit}) {
-      return axios.get('/api/1.0/channels')
+      return client.getChannels()
       .then(res => {
         commit('setChannelData', res.data)
       })
-      .catch(err => {
-        console.error(err)
-        return Promise.reject(err)
-      })
     },
     updateMembers ({state, commit}) {
-      return axios.get('/api/1.0/users')
+      return client.getMembers()
       .then(res => {
         commit('setMemberData', res.data)
-      })
-      .catch(err => {
-        console.error(err)
       })
     }
   }

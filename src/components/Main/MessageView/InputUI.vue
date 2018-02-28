@@ -12,7 +12,7 @@ div.input-ui
 
 <script>
 import autosize from 'autosize'
-import axios from '@/bin/axios'
+import client from '@/bin/client'
 
 export default {
   data () {
@@ -63,7 +63,7 @@ export default {
       this.uploadedIds.forEach(id => {
         message += ' !{fileId: "' + id + '"}'
       })
-      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: message})
+      client.postMessage(nowChannel.channelId, message)
       .then((res) => {
         this.inputText = ''
         this.postStatus = 'successed'
@@ -105,15 +105,16 @@ export default {
     },
     async uploadFiles () {
       this.postStatus = 'processing'
-      let form = new FormData()
-      let file = this.files.shift()
-      form.enctype = 'multipart/form-data'
-      form.append('file', file)
-      axios.post('/api/1.0/files', form)
-      .then(res => {
-        this.uploadedIds.push(res.data.fileId)
-        this.submit()
+      this.files = this.files.filter(async file => {
+        try {
+          const res = await client.uploadFile(file)
+          this.uploadedIds.push(res.data.fileId)
+          return true
+        } catch (e) {
+          return false
+        }
       })
+      this.submit()
     }
   },
   watch: {
