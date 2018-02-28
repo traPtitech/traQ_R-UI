@@ -6,9 +6,6 @@ div
     ul
       li(v-for="pin in $store.state.currentChannelPinnedMessages")
         MessageElement(:model="pin.message" :key="pin.pinId")
-    
-
-
 </template>
 
 <script>
@@ -34,4 +31,3 @@ export default {
 <style lang="sass">
 
 </style>
-
