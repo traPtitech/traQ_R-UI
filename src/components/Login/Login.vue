@@ -12,7 +12,7 @@ div.login this is login page
 </template>
 
 <script>
-import axios from '@/bin/axios'
+import client from '@/bin/client'
 export default {
   name: 'login',
   data () {
@@ -31,15 +31,7 @@ export default {
   methods: {
     loginPost: function () {
       this.status = 'processing'
-      axios({
-        method: 'post',
-        url: '/login',
-        data: {
-          name: this.name,
-          pass: this.pass
-        },
-        withCredentials: true
-      })
+      client.login(this.name, this.pass)
       .then(res => {
         this.status = 'successed'
         console.log(res)

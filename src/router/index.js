@@ -39,29 +39,36 @@ router.beforeEach(async (to, from, next) => {
   // if (!store.me) {
   //   next('/login')
   // }
+  //
+  if (!store.state.me) {
+    await store.dispatch('whoAmI')
+  }
+
+  if (!store.state.me) {
+    store.commit('loadEnd')
+    next('/login')
+    return
+  }
+
+  // ここ以下はログインしている
   if (to.path === '/login') {
+    next('/channels/random')
+    return
+  }
+
+  if (!store.state.isLoaded) {
+    await Promise.all([
+      store.dispatch('updateChannels'),
+      store.dispatch('updateMembers')
+    ])
+  }
+
+  if (!to.params.channel) {
     store.commit('loadEnd')
     next(true)
     return
   }
-  console.log('beforeEach')
-  if (!store.state.loaded) {
-    try {
-      await Promise.all([
-        store.dispatch('updateChannels'),
-        store.dispatch('updateMembers')
-      ])
-      store.commit('loadEnd')
-    } catch (e) {
-      store.commit('loadEnd')
-      next('/login')
-      return
-    }
-  }
-  if (!to.params.channel) {
-    next(true)
-    return
-  }
+
   const nextChannel = store.getters.getChannelByName(to.params.channel)
   if (!nextChannel) {
     next(false)
@@ -69,6 +76,7 @@ router.beforeEach(async (to, from, next) => {
     store.commit('changeChannel', nextChannel)
     next(true)
   }
+  store.commit('loadEnd')
 })
 
 export default router

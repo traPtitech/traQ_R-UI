@@ -24,7 +24,7 @@ div.message
 
 <script>
 import md from '@/bin/markdown-it'
-import axios from '@/bin/axios'
+import client from '@/bin/client'
 export default {
   name: 'MessageElement',
   props: {
@@ -46,9 +46,7 @@ export default {
         this.isEditing = false
         return
       }
-      axios.put('/api/1.0/messages/' + this.model.messageId, {
-        text: this.edited
-      })
+      client.editMessage(this.model.messageId, this.edited)
       this.isEditing = false
       this.model.content = this.edited
     },
@@ -57,7 +55,7 @@ export default {
     },
     deleteMessage () {
       if (window.confirm('このメッセージを削除してもよろしいですか？')) {
-        axios.delete('/api/1.0/messages/' + this.model.messageId)
+        client.deleteMessage(this.model.messageId)
       }
     },
     dateTime: function (datetime) {

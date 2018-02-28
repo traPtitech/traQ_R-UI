@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from '@/bin/axios'
+import client from '@/bin/client'
 
 Vue.use(Vuex)
 
@@ -14,13 +14,15 @@ export default new Vuex.Store({
     currentChannel: {},
     channelTopic: '',
     messages: [],
-    messagesNum: 0,
+    me: null,
     myId: '',
     myName: '',
     menuContent: 'channels'
   },
   mutations: {
-    setUrl (state, newUrl) { state.url = newUrl },
+    setMe (state, me) {
+      state.me = me
+    },
     setChannelData (state, newChannelData) {
       state.channelData = newChannelData
       function dfs (channel) {
@@ -43,8 +45,7 @@ export default new Vuex.Store({
     changeChannel (state, channel) {
       state.currentChannel = channel
       this.commit('setMessages', [])
-      this.dispatch('loadMessages')
-      this.dispatch('loadChannelTopic')
+      this.dispatch('getMessages')
     },
     loadStart (state) {
       state.loaded = false
@@ -72,70 +73,41 @@ export default new Vuex.Store({
       }
     },
     getMyId (state) {
-      if (state.myId !== '') {
-        return state.myId
-      }
-      axios.get('/api/1.0/users/me')
-      .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
-      })
+      return state.me.userId
     },
     getMyName (state) {
-      if (state.myName !== '') {
-        return state.myName
-      }
-      axios.get('/api/1.0/users/me')
-      .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
-      })
+      return state.me.name
     }
   },
   actions: {
-    loadMessages ({state, commit}) {
+    whoAmI ({state, commit}) {
+      return client.whoAmI()
+      .then(res => {
+        commit('setMe', res.data)
+      })
+      .catch(() => {
+        commit('setMe', null)
+      })
+    },
+    getMessages ({state, commit}) {
       let nowChannel = state.currentChannel
-      return axios.get(
-        '/api/1.0/channels/' + state.currentChannel.channelId + '/messages',
-        {
-          params: {
-            limit: 50,
-            offset: state.messages.length
-          }
-        }
-      )
+      return client.loadMessages(state.currentChannel.channelId, 50, state.messages.length)
       .then(res => {
         if (nowChannel === state.currentChannel) {
           commit('setMessages', res.data.reverse().concat(state.messages))
         }
       })
-      .catch(err => {
-        console.error(err)
-      })
     },
     updateChannels ({state, commit}) {
-      return axios.get('/api/1.0/channels')
+      return client.getChannels()
       .then(res => {
         commit('setChannelData', res.data)
       })
-      .catch(err => {
-        console.error(err)
-        return Promise.reject(err)
-      })
     },
     updateMembers ({state, commit}) {
-      return axios.get('/api/1.0/users')
+      return client.getMembers()
       .then(res => {
         commit('setMemberData', res.data)
-      })
-      .catch(err => {
-        console.error(err)
-      })
-    },
-    loadChannelTopic ({state, commit}) {
-      return axios.get('/api/1.0/channels/' + state.currentChannel.channelId + '/topic')
-      .then(res => {
-        commit('setChannelTopic', res.data)
       })
     }
   }
