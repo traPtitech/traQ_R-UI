@@ -19,7 +19,7 @@ div.message
       | edit
     button(v-on:click="deleteMessage")
       | delete
-    button(v-on:click="unpinMessage" v-if="this.model.pin")
+    button(v-on:click="unpinMessage" v-if="pinned")
       | unpin
     button(v-on:click="pinMessage" v-else)
       | pin
@@ -41,7 +41,8 @@ export default {
   data () {
     return {
       isEditing: false,
-      edited: ''
+      edited: '',
+      pin: null
     }
   },
   methods: {
@@ -66,11 +67,13 @@ export default {
         client.deleteMessage(this.model.messageId)
       }
     },
-    pinMessage () {
-      client.pinMessage(this.$store.state.currentChannel.channelId, this.model.messageId)
+    async pinMessage () {
+      await client.pinMessage(this.$store.state.currentChannel.channelId, this.model.messageId)
+      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
     },
-    unpinMessage () {
-      client.unpinMessage(this.pinId)
+    async unpinMessage () {
+      await client.unpinMessage(this.pin.pinId)
+      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
     },
     clipMessage () {
       client.clipMessage(this.model.messageId)
@@ -95,6 +98,10 @@ export default {
     },
     cliped () {
       return this.$store.state.clipedMessages[this.model.messageId]
+    },
+    pinned () {
+      this.pin = this.$store.getters.isPinned(this.model.messageId)
+      return this.pin
     }
   }
 }

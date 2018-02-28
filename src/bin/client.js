@@ -53,12 +53,12 @@ const client = {
   // Tag: topic
   getChannelTopic (channelId) {
     return middleWare('getChannelTopic', () => {
-      return axios.get(`/api/1.0/channels/${channelId}`)
+      return axios.get(`/api/1.0/channels/${channelId}/topic`)
     })
   },
-  channgeChannelTopic (channelId, text) {
+  changeChannelTopic (channelId, text) {
     return middleWare('changeChannelTopic', () => {
-      return axios.put(`/api/1.0/channels/${channelId}`, {text})
+      return axios.put(`/api/1.0/channels/${channelId}/topic`, {text})
     })
   },
 

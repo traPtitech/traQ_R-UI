@@ -28,6 +28,7 @@ export default {
     'Information': Information
   },
   async created () {
+    client.getNotifications(this.$store.state.currentChannel.channelId)
     if (!this.$route.params.channel) {
       this.$router.push('/channels/random')
     }
@@ -37,6 +38,9 @@ export default {
     })
     this.heartbeat = setInterval(() => {
       client.postHeartbeat(this.getStatus, this.$store.state.currentChannel.channelId)
+      .then(res => {
+        this.$store.commit('updateHeartbeatStatus', res.data)
+      })
     }, 3000)
   },
   beforeDestroy () {

@@ -15,12 +15,16 @@ export default new Vuex.Store({
     clipedMessages: {},
     messages: [],
     messagesNum: 0,
-    myId: '',
-    myName: '',
-    menuContent: 'channels'
+    currentChannelTopic: {},
+    currentChannelPinnedMessages: [],
+    me: null,
+    menuContent: 'channels',
+    heartbeatStatus: {userStatuses: []}
   },
   mutations: {
-    setUrl (state, newUrl) { state.url = newUrl },
+    setMe (state, me) {
+      state.me = me
+    },
     setChannelData (state, newChannelData) {
       state.channelData = newChannelData
       function dfs (channel) {
@@ -54,7 +58,6 @@ export default new Vuex.Store({
       state.currentChannel = channel
       state.messagesNum = 0
       state.messages = []
-      this.dispatch('getMessages')
     },
     loadStart (state) {
       state.loaded = false
@@ -69,6 +72,15 @@ export default new Vuex.Store({
       data.forEach(message => {
         Vue.set(state.clipedMessages, message.messageId, message)
       })
+    },
+    updateHeartbeatStatus (state, data) {
+      state.heartbeatStatus = data
+    },
+    setCurrentChannelTopic (state, data) {
+      state.currentChannelTopic = data
+    },
+    setCurrentChannelPinnedMessages (state, data) {
+      state.currentChannelPinnedMessages = data
     }
   },
   getters: {
@@ -86,33 +98,26 @@ export default new Vuex.Store({
         return channel
       }
     },
-    getMyId (state) {
-      if (state.myId !== '') {
-        return state.myId
+    isPinned (state) {
+      return messageId => {
+        return state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)
       }
-      client.whoAmI()
-      .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
-      })
+    },
+    getMyId (state) {
+      return state.me.userId
     },
     getMyName (state) {
-      if (state.myName !== '') {
-        return state.myName
-      }
-      client.whoAmI()
-      .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
-      })
+      return state.me.name
     }
   },
   actions: {
     whoAmI ({state, commit}) {
       return client.whoAmI()
       .then(res => {
-        state.myId = res.data.userId
-        state.myName = res.data.name
+        commit('setMe', res.data)
+      })
+      .catch(() => {
+        commit('setMe', null)
       })
     },
     getMessages ({state, commit}) {
@@ -141,6 +146,18 @@ export default new Vuex.Store({
       return client.getClipedMessages()
       .then(res => {
         commit('setClipedMessages', res.data)
+      })
+    },
+    getCurrentChannelTopic ({state, commit}, channelId) {
+      return client.getChannelTopic(channelId)
+      .then(res => {
+        commit('setCurrentChannelTopic', res.data)
+      })
+    },
+    getCurrentChannelPinnedMessages ({state, commit}, channelId) {
+      return client.getPinnedMessages(channelId)
+      .then(res => {
+        commit('setCurrentChannelPinnedMessages', res.data)
       })
     }
   }
