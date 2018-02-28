@@ -55,7 +55,6 @@ router.beforeEach(async (to, from, next) => {
       return
     }
   }
-  console.log('beforeEach')
   if (!store.state.loaded) {
     try {
       await Promise.all([

@@ -11,11 +11,14 @@ import Sidebar from '@/components/Main/Sidebar/Sidebar'
 import Titlebar from '@/components/Main/MessageView/Titlebar'
 import Message from '@/components/Main/MessageView/MessageContainer'
 import Information from '@/components/Main/MessageView/ChannelInformation/ChannelInformation'
+import sse from '@/bin/sse'
+import client from '@/bin/client'
 
 export default {
   name: 'index',
   data () {
     return {
+      heartbeat: null
     }
   },
   components: {
@@ -27,6 +30,28 @@ export default {
   async created () {
     if (!this.$route.params.channel) {
       this.$router.push('/channels/random')
+    }
+    sse.startListen()
+    sse.on('MESSAGE_CREATED', data => {
+      console.log('Index.vue', data)
+    })
+    this.heartbeat = setInterval(() => {
+      client.postHeartbeat(this.getStatus, this.$store.state.currentChannel.channelId)
+    }, 3000)
+  },
+  beforeDestroy () {
+    sse.stopListen()
+    clearInterval(this.heartbeat)
+  },
+  methods: {
+    getStatus () {
+      if (this.$store.state.editing) {
+        return 'editing'
+      } else if (document.hasFocus()) {
+        return 'monitoring'
+      } else {
+        return 'none'
+      }
     }
   },
   watch: {

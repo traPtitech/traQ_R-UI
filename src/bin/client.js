@@ -299,9 +299,7 @@ const client = {
     })
   },
   postHeartbeat (status, channelId) {
-    return middleWare('postHeartbeat', () => {
-      return axios.post(`/api/1.0/heartbeat`, {status, channelId})
-    })
+    return axios.post(`/api/1.0/heartbeat`, {status, channelId})
   }
 }
 
