@@ -136,6 +136,11 @@ const client = {
   },
 
   // Tag: user
+  registerUser (name, password, email) {
+    return middleWare('registerUser', () => {
+      return axios.post(`/api/1.0/register`, {name, password, email})
+    })
+  },
   getMembers () {
     return middleWare('getMembers', () => {
       return axios.get(`/api/1.0/users`)
