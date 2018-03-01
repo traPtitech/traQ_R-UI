@@ -65,8 +65,11 @@ export default {
       let message = this.inputText
       // temporary format
       this.uploadedIds.forEach(id => {
-        message += ' !{fileId: "' + id + '"}'
+        message += `!{"type": "file", "raw": "", "id": "${id}"}`
       })
+      message = this.replaceUser(message)
+      message = this.replaceChannel(message)
+      message = this.replaceTag(message)
       client.postMessage(nowChannel.channelId, message)
       .then((res) => {
         this.inputText = ''
@@ -77,6 +80,39 @@ export default {
       })
       .catch(() => {
         this.postStatus = 'failed'
+      })
+    },
+    replaceUser (message) {
+      return message.replace(/@([a-zA-Z0-9_-]+)/g, (match, name) => {
+        console.log('user ' + name)
+        const user = this.$store.getters.getUserByName(name)
+        if (user) {
+          return `!{"type": "user", "raw": "${match}", "id": "${user.userId}"}`
+        } else {
+          return match
+        }
+      })
+    },
+    replaceChannel (message) {
+      return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
+        console.log('channel ' + name)
+        const channel = this.$store.getters.getChannelByName(name)
+        if (channel) {
+          return `!{"type": "channel", "raw": "${match}", "id": "${channel.channelId}"}`
+        } else {
+          return match
+        }
+      })
+    },
+    replaceTag (message) {
+      return message.replace(/(?:^@|(?:[^"]@))([^\s]+)/g, (match, content) => {
+        console.log('tag ' + content)
+        const tag = this.$store.getters.getTagByContent(content)
+        if (tag) {
+          return `!{"type": "tag", "raw": "${match}", "id": "${tag.tagId}"}`
+        } else {
+          return match
+        }
       })
     },
     keydown (event) {

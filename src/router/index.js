@@ -67,6 +67,9 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('updateMembers'),
       store.dispatch('updateClipedMessages')
     ])
+    .then(() => {
+      store.dispatch('updateTags')
+    })
   }
 
   if (!to.params.channel) {
