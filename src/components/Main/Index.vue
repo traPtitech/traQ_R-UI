@@ -45,6 +45,9 @@ export default {
       client.getMessage(data.id)
       .then(res => {
         const user = this.$store.state.memberMap[res.data.userId]
+        if (user.userId === this.$store.state.me.userId) {
+          return
+        }
         const channel = this.$store.state.channelMap[res.data.parentChannelId]
         const title = this.$store.getters.getChannelPathById(channel.channelId)
         const options = {
@@ -52,6 +55,10 @@ export default {
           body: user.name + ':' + res.data.content
         }
         this.notify(title, options)
+
+        if (channel.channelId === this.$store.state.currentChannel.channelId) {
+          this.$store.commit('addMessages', res.data)
+        }
       })
     })
     this.heartbeat = setInterval(() => {
