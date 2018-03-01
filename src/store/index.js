@@ -93,9 +93,20 @@ export default new Vuex.Store({
         channelLevels.forEach(name => {
           const levelChannels = getters.childrenChannels(channelId)
           channel = levelChannels.find(ch => ch.name === name)
+          if (channel === undefined) return null
           channelId = channel.channelId
         })
         return channel
+      }
+    },
+    getUserByName (state, getters) {
+      return userName => {
+        const user = state.memberData.find(user => user.name === userName)
+        if (user) {
+          return user
+        } else {
+          return null
+        }
       }
     },
     isPinned (state) {
