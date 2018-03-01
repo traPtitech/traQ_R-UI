@@ -11,6 +11,8 @@ export default new Vuex.Store({
     channelMap: {},
     memberData: [],
     memberMap: {},
+    tagData: [],
+    tagMap: {},
     currentChannel: {},
     clipedMessages: {},
     messages: [],
@@ -36,6 +38,12 @@ export default new Vuex.Store({
       state.memberData = newMemberData
       state.memberData.forEach(member => {
         state.memberMap[member.userId] = member
+      })
+    },
+    setTagData (state, newTagData) {
+      state.tagData = newTagData
+      state.tagData.forEach(tag => {
+        state.tagMap[tag.tagId] = tag
       })
     },
     addMessages (state, message) {
@@ -125,6 +133,16 @@ export default new Vuex.Store({
         }
       }
     },
+    getTagByContent (state) {
+      return tagContent => {
+        const tag = state.tagData.find(tag => tag.tag === tagContent)
+        if (tag) {
+          return tag
+        } else {
+          return null
+        }
+      }
+    },
     isPinned (state) {
       return messageId => {
         return state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)
@@ -168,6 +186,15 @@ export default new Vuex.Store({
       .then(res => {
         commit('setMemberData', res.data)
       })
+    },
+    updateTags ({state, commit}) {
+      return Promise.all(state.memberData.map(async user => {
+        return client.getUserTags(user.userId)
+        .then(res => {
+          const tags = res.data.filter(tag => !state.tagData.includes(tag))
+          commit('setTagData', state.tagData.concat(tags))
+        })
+      }))
     },
     updateClipedMessages ({state, commit}) {
       return client.getClipedMessages()

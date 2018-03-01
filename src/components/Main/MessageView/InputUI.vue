@@ -105,8 +105,15 @@ export default {
       })
     },
     replaceTag (message) {
-      // TODO
-      return message
+      return message.replace(/(?:^@|(?:[^"]@))([^\s]+)/g, (match, content) => {
+        console.log('tag ' + content)
+        const tag = this.$store.getters.getTagByContent(content)
+        if (tag) {
+          return `!{"type": "tag", "raw": "${match}", "id": "${tag.tagId}"}`
+        } else {
+          return match
+        }
+      })
     },
     keydown (event) {
       if (this.postStatus === 'processing') {
