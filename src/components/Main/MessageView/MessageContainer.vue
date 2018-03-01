@@ -25,10 +25,6 @@ export default {
     loadMessages () {
       this.$store.dispatch('getMessages')
     }
-  },
-  mounted () {
-    const container = this.$el.querySelector('.message-wrap')
-    container.scrollTop = container.scrollHeight
   }
 }
 </script>
