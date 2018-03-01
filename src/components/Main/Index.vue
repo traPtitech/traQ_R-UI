@@ -41,7 +41,44 @@ export default {
     }
 
     sse.startListen()
-    sse.on('MESSAGE_CREATED', data => {
+    sse.on('MESSAGE_CREATED', this.messageCreated)
+    this.heartbeat = setInterval(() => {
+      client.postHeartbeat(this.getStatus, this.$store.state.currentChannel.channelId)
+      .then(res => {
+        this.$store.commit('updateHeartbeatStatus', res.data)
+      })
+    }, 3000)
+
+    this.$store.subscribe(async mutation => {
+      const container = this.$el.querySelector('.content-wrap')
+      await this.$nextTick()
+      if (mutation.type === 'addMessages') {
+        console.log(container.scrollHeight - container.scrollTop)
+        if (container.scrollHeight - container.scrollTop < 1000) {
+          container.scrollTop = container.scrollHeight
+        }
+      }
+
+      if (mutation.type === 'setMessages') {
+        container.scrollTop = container.scrollHeight
+      }
+    })
+  },
+  beforeDestroy () {
+    sse.stopListen()
+    clearInterval(this.heartbeat)
+  },
+  methods: {
+    getStatus () {
+      if (this.$store.state.editing) {
+        return 'editing'
+      } else if (document.hasFocus()) {
+        return 'monitoring'
+      } else {
+        return 'none'
+      }
+    },
+    messageCreated (data) {
       client.getMessage(data.id)
       .then(res => {
         const user = this.$store.state.memberMap[res.data.userId]
@@ -60,27 +97,6 @@ export default {
           this.$store.commit('addMessages', res.data)
         }
       })
-    })
-    this.heartbeat = setInterval(() => {
-      client.postHeartbeat(this.getStatus, this.$store.state.currentChannel.channelId)
-      .then(res => {
-        this.$store.commit('updateHeartbeatStatus', res.data)
-      })
-    }, 3000)
-  },
-  beforeDestroy () {
-    sse.stopListen()
-    clearInterval(this.heartbeat)
-  },
-  methods: {
-    getStatus () {
-      if (this.$store.state.editing) {
-        return 'editing'
-      } else if (document.hasFocus()) {
-        return 'monitoring'
-      } else {
-        return 'none'
-      }
     },
     notify (title, options) {
       if (Notification.permission === 'granted') {
