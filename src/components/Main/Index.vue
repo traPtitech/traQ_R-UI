@@ -28,13 +28,31 @@ export default {
     'Information': Information
   },
   async created () {
-    client.getNotifications(this.$store.state.currentChannel.channelId)
     if (!this.$route.params.channel) {
       this.$router.push('/channels/random')
     }
+
+    if (Notification.permission === 'default') {
+      Notification.requestPermission(permission => {
+        if (permission === 'granted') {
+          this.notify('ようこそtraQへ！！')
+        }
+      })
+    }
+
     sse.startListen()
     sse.on('MESSAGE_CREATED', data => {
-      console.log('Index.vue', data)
+      client.getMessage(data.id)
+      .then(res => {
+        const user = this.$store.state.memberMap[res.data.userId]
+        const channel = this.$store.state.channelMap[res.data.parentChannelId]
+        const title = this.$store.getters.getChannelPathById(channel.channelId)
+        const options = {
+          icon: null,
+          body: user.name + ':' + res.data.content
+        }
+        this.notify(title, options)
+      })
     })
     this.heartbeat = setInterval(() => {
       client.postHeartbeat(this.getStatus, this.$store.state.currentChannel.channelId)
@@ -56,6 +74,13 @@ export default {
       } else {
         return 'none'
       }
+    },
+    notify (title, options) {
+      if (Notification.permission === 'granted') {
+        // eslint-disable-next-line no-new
+        return new Notification(title, options)
+      }
+      return null
     }
   },
   watch: {

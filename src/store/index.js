@@ -98,6 +98,22 @@ export default new Vuex.Store({
         return channel
       }
     },
+    getChannelPathById (state) {
+      return channelId => {
+        console.log(channelId)
+        let current = state.channelMap[channelId]
+        let path = current.name
+        while (true) {
+          const next = state.channelMap[current.parent]
+          console.log(next)
+          if (!next.name) {
+            return path
+          }
+          path = next.name + '/' + path
+          current = next
+        }
+      }
+    },
     isPinned (state) {
       return messageId => {
         return state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)
