@@ -59,7 +59,8 @@ router.beforeEach(async (to, from, next) => {
   if (!store.state.isLoaded) {
     await Promise.all([
       store.dispatch('updateChannels'),
-      store.dispatch('updateMembers')
+      store.dispatch('updateMembers'),
+      store.dispatch('updateClipedMessages')
     ])
   }
 
@@ -74,6 +75,9 @@ router.beforeEach(async (to, from, next) => {
     next(false)
   } else {
     store.commit('changeChannel', nextChannel)
+    store.dispatch('getMessages')
+    store.dispatch('getCurrentChannelTopic', nextChannel.channelId)
+    store.dispatch('getCurrentChannelPinnedMessages', nextChannel.channelId)
     next(true)
   }
   store.commit('loadEnd')

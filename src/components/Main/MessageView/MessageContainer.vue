@@ -29,7 +29,6 @@ export default {
   mounted () {
     const container = this.$el.querySelector('.message-wrap')
     container.scrollTop = container.scrollHeight
-    console.log(container)
   }
 }
 </script>

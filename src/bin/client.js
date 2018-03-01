@@ -53,12 +53,12 @@ const client = {
   // Tag: topic
   getChannelTopic (channelId) {
     return middleWare('getChannelTopic', () => {
-      return axios.get(`/api/1.0/channels/${channelId}`)
+      return axios.get(`/api/1.0/channels/${channelId}/topic`)
     })
   },
-  channgeChannelTopic (channelId, text) {
+  changeChannelTopic (channelId, text) {
     return middleWare('changeChannelTopic', () => {
-      return axios.put(`/api/1.0/channels/${channelId}`, {text})
+      return axios.put(`/api/1.0/channels/${channelId}/topic`, {text})
     })
   },
 
@@ -165,7 +165,7 @@ const client = {
   },
   unclipMessage (messageId) {
     return middleWare('unclipMessage', () => {
-      return axios.delete(`/api/1.0/users/me/clips`, {messageId})
+      return axios.delete(`/api/1.0/users/me/clips`, {data: {messageId}})
     })
   },
 
@@ -299,9 +299,7 @@ const client = {
     })
   },
   postHeartbeat (status, channelId) {
-    return middleWare('postHeartbeat', () => {
-      return axios.post(`/api/1.0/heartbeat`, {status, channelId})
-    })
+    return axios.post(`/api/1.0/heartbeat`, {status, channelId})
   }
 }
 

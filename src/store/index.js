@@ -12,12 +12,14 @@ export default new Vuex.Store({
     memberData: [],
     memberMap: {},
     currentChannel: {},
+    clipedMessages: {},
     messages: [],
     messagesNum: 0,
+    currentChannelTopic: {},
+    currentChannelPinnedMessages: [],
     me: null,
-    myId: '',
-    myName: '',
-    menuContent: 'channels'
+    menuContent: 'channels',
+    heartbeatStatus: {userStatuses: []}
   },
   mutations: {
     setMe (state, me) {
@@ -56,7 +58,6 @@ export default new Vuex.Store({
       state.currentChannel = channel
       state.messagesNum = 0
       state.messages = []
-      this.dispatch('getMessages')
     },
     loadStart (state) {
       state.loaded = false
@@ -66,6 +67,20 @@ export default new Vuex.Store({
     },
     changeMenuContent (state, contentName) {
       state.menuContent = contentName
+    },
+    setClipedMessages (state, data) {
+      data.forEach(message => {
+        Vue.set(state.clipedMessages, message.messageId, message)
+      })
+    },
+    updateHeartbeatStatus (state, data) {
+      state.heartbeatStatus = data
+    },
+    setCurrentChannelTopic (state, data) {
+      state.currentChannelTopic = data
+    },
+    setCurrentChannelPinnedMessages (state, data) {
+      state.currentChannelPinnedMessages = data
     }
   },
   getters: {
@@ -81,6 +96,11 @@ export default new Vuex.Store({
           channelId = channel.channelId
         })
         return channel
+      }
+    },
+    isPinned (state) {
+      return messageId => {
+        return state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)
       }
     },
     getMyId (state) {
@@ -120,6 +140,24 @@ export default new Vuex.Store({
       return client.getMembers()
       .then(res => {
         commit('setMemberData', res.data)
+      })
+    },
+    updateClipedMessages ({state, commit}) {
+      return client.getClipedMessages()
+      .then(res => {
+        commit('setClipedMessages', res.data)
+      })
+    },
+    getCurrentChannelTopic ({state, commit}, channelId) {
+      return client.getChannelTopic(channelId)
+      .then(res => {
+        commit('setCurrentChannelTopic', res.data)
+      })
+    },
+    getCurrentChannelPinnedMessages ({state, commit}, channelId) {
+      return client.getPinnedMessages(channelId)
+      .then(res => {
+        commit('setCurrentChannelPinnedMessages', res.data)
       })
     }
   }

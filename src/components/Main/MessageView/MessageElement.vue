@@ -19,6 +19,14 @@ div.message
       | edit
     button(v-on:click="deleteMessage")
       | delete
+    button(v-on:click="unpinMessage" v-if="pinned")
+      | unpin
+    button(v-on:click="pinMessage" v-else)
+      | pin
+    button(v-on:click="unclipMessage" v-if="cliped")
+      | unclip
+    button(v-on:click="clipMessage" v-else)
+      | clip
   div.message-buttons-wrap
 </template>
 
@@ -33,7 +41,8 @@ export default {
   data () {
     return {
       isEditing: false,
-      edited: ''
+      edited: '',
+      pin: null
     }
   },
   methods: {
@@ -58,6 +67,26 @@ export default {
         client.deleteMessage(this.model.messageId)
       }
     },
+    async pinMessage () {
+      await client.pinMessage(this.$store.state.currentChannel.channelId, this.model.messageId)
+      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
+    },
+    async unpinMessage () {
+      await client.unpinMessage(this.pin.pinId)
+      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
+    },
+    clipMessage () {
+      client.clipMessage(this.model.messageId)
+      .then(res => {
+        this.$store.commit('setClipedMessages', res.data)
+      })
+    },
+    unclipMessage () {
+      client.unclipMessage(this.model.messageId)
+      .then(res => {
+        this.$store.commit('setClipedMessages', res.data)
+      })
+    },
     dateTime: function (datetime) {
       const d = new Date(datetime)
       return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
@@ -66,6 +95,13 @@ export default {
   computed: {
     renderedText () {
       return md.render(this.model.content)
+    },
+    cliped () {
+      return this.$store.state.clipedMessages[this.model.messageId]
+    },
+    pinned () {
+      this.pin = this.$store.getters.isPinned(this.model.messageId)
+      return this.pin
     }
   }
 }
