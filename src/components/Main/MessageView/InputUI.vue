@@ -47,6 +47,10 @@ export default {
       }
       if (this.files.length > 0) {
         this.uploadFiles()
+        .then(() => {
+          this.files = []
+          this.postMessage()
+        })
         .catch(err => {
           console.log(err)
           this.postStatus = 'failed'
@@ -132,18 +136,17 @@ export default {
     clickUploadButton () {
       this.uploadElem.click()
     },
-    async uploadFiles () {
+    uploadFiles () {
       this.postStatus = 'processing'
-      this.files = this.files.filter(async file => {
+      this.uploadedIds = new Array(this.files.length)
+      return Promise.all(this.files.map(async (file, index) => {
         try {
           const res = await client.uploadFile(file)
-          this.uploadedIds.push(res.data.fileId)
-          return true
+          this.uploadedIds[index] = res.data.fileId
         } catch (e) {
-          return false
+          console.log(e)
         }
-      })
-      this.submit()
+      }))
     }
   },
   watch: {
