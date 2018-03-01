@@ -46,13 +46,13 @@ router.beforeEach(async (to, from, next) => {
   // }
   //
   if (!store.state.me && to.path === '/login') {
+    store.commit('loadEnd')
     next(true)
     return
   }
 
   if (!store.state.me) {
     await store.dispatch('whoAmI')
-    store.commit('loadEnd')
     next('/login')
     return
   }
