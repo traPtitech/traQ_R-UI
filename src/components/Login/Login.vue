@@ -36,7 +36,10 @@ export default {
         this.status = 'successed'
         console.log(res)
         this.$store.commit('loadStart')
-        this.$router.push('/channels/random')
+        this.$store.dispatch('whoAmI')
+        .then(() => {
+          this.$router.push('/channels/random')
+        })
       })
       .catch(err => {
         this.status = 'failed'
