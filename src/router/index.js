@@ -6,6 +6,7 @@ import store from '@/store/index'
 import Index from '@/components/Main/Index'
 import Login from '@/components/Login/Login'
 import NotFound from '@/components/NotFound'
+import Register from '@/components/Register/Register'
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -27,6 +28,10 @@ const router = new Router({
       component: Index
     },
     {
+      path: '/register',
+      component: Register
+    },
+    {
       path: '*',
       name: 'NotFound',
       component: NotFound
@@ -36,16 +41,16 @@ const router = new Router({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // if (!store.me) {
-  //   next('/login')
-  // }
-  //
   if (!store.state.me) {
     await store.dispatch('whoAmI')
   }
 
   if (!store.state.me) {
     store.commit('loadEnd')
+    if (to.path === '/login') {
+      next(true)
+      return
+    }
     next('/login')
     return
   }
