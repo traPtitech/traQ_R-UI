@@ -48,7 +48,7 @@ export default {
       }
 
       if (confirm('登録してよろしいですか？')) {
-        client.register(this.name, this.password, this.email)
+        client.registerUser(this.name, this.password, this.email)
         this.name = ''
         this.password = ''
         this.confirmPassword = ''

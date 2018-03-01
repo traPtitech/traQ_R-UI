@@ -41,18 +41,16 @@ const router = new Router({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // if (!store.me) {
-  //   next('/login')
-  // }
-  //
-  if (!store.state.me && to.path === '/login') {
-    store.commit('loadEnd')
-    next(true)
-    return
+  if (!store.state.me) {
+    await store.dispatch('whoAmI')
   }
 
   if (!store.state.me) {
-    await store.dispatch('whoAmI')
+    store.commit('loadEnd')
+    if (to.path === '/login') {
+      next(true)
+      return
+    }
     next('/login')
     return
   }
