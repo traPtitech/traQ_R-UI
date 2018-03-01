@@ -6,6 +6,7 @@ import store from '@/store/index'
 import Index from '@/components/Main/Index'
 import Login from '@/components/Login/Login'
 import NotFound from '@/components/NotFound'
+import Register from '@/components/Register/Register'
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -25,6 +26,10 @@ const router = new Router({
     {
       path: '/channels/:channel(.*)',
       component: Index
+    },
+    {
+      path: '/register',
+      component: Register
     },
     {
       path: '*',
