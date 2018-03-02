@@ -308,4 +308,8 @@ const client = {
   }
 }
 
+if (process.env.NODE_ENV === 'development') {
+  window.client = client
+}
+
 export default client
