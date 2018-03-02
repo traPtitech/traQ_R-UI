@@ -13,6 +13,8 @@ export default new Vuex.Store({
     memberMap: {},
     currentChannel: {},
     clipedMessages: {},
+    unreadMessages: {},
+    staredChannels: [],
     messages: [],
     messagesNum: 0,
     currentChannelTopic: {},
@@ -45,6 +47,17 @@ export default new Vuex.Store({
     setMessages (state, messages) {
       state.messages = messages
     },
+    updateMessage (state, message) {
+      const index = state.messages.findIndex(mes => mes.messageId === message.messageId)
+      if (index === -1) {
+        return false
+      }
+      state.messages[index] = message
+      return true
+    },
+    deleteMessage (state, messageId) {
+      state.messages = state.messages.filter(message => message.messageId !== messageId)
+    },
     setChannel (state, channelName) {
       if (!state.channelMap[channelName]) return
       state.channelName = channelName
@@ -73,6 +86,14 @@ export default new Vuex.Store({
         Vue.set(state.clipedMessages, message.messageId, message)
       })
     },
+    setUnreadMessages (state, data) {
+      data.forEach(message => {
+        Vue.set(state.unreadMessages, message.messageId, message)
+      })
+    },
+    setStaredChannels (state, data) {
+      state.staredChannels = data
+    },
     updateHeartbeatStatus (state, data) {
       state.heartbeatStatus = data
     },
@@ -100,12 +121,10 @@ export default new Vuex.Store({
     },
     getChannelPathById (state) {
       return channelId => {
-        console.log(channelId)
         let current = state.channelMap[channelId]
         let path = current.name
         while (true) {
           const next = state.channelMap[current.parent]
-          console.log(next)
           if (!next.name) {
             return path
           }
@@ -162,6 +181,18 @@ export default new Vuex.Store({
       return client.getClipedMessages()
       .then(res => {
         commit('setClipedMessages', res.data)
+      })
+    },
+    updateUnreadMessages ({state, commit}) {
+      return client.getUnreadMessages()
+      .then(res => {
+        commit('setUnreadMessages', res.data)
+      })
+    },
+    updateStaredChannels ({state, commit}) {
+      return client.getStaredChannels()
+      .then(res => {
+        commit('setStaredChannels', res.data)
       })
     },
     getCurrentChannelTopic ({state, commit}, channelId) {

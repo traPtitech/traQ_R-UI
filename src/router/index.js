@@ -62,10 +62,17 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (!store.state.isLoaded) {
+    // 起動後すぐ必要なもの
     await Promise.all([
       store.dispatch('updateChannels'),
-      store.dispatch('updateMembers'),
-      store.dispatch('updateClipedMessages')
+      store.dispatch('updateMembers')
+    ])
+
+    // 起動後すぐには必要ないもの
+    Promise.all([
+      store.dispatch('updateClipedMessages'),
+      store.dispatch('updateStaredChannels'),
+      store.dispatch('updateUnreadMessages')
     ])
   }
 

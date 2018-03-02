@@ -10,16 +10,8 @@ header.titlebar
 
 <script>
 export default {
-  data () {
-    return {
-    }
-  },
-  mounted () {
-
-  },
   computed: {
     title () {
-      console.log(this.$route.params.channel)
       let ret = '#'
       this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
         ret += e.charAt(0) + '/'
