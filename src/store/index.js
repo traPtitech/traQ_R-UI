@@ -207,13 +207,10 @@ export default new Vuex.Store({
       })
     },
     updateTags ({state, commit}) {
-      return Promise.all(state.memberData.map(async user => {
-        return client.getUserTags(user.userId)
-        .then(res => {
-          const tags = res.data.filter(tag => !state.tagData.includes(tag))
-          commit('setTagData', state.tagData.concat(tags))
-        })
-      }))
+      return client.getAllTags()
+      .then(res => {
+        commit('setTagData', res.data)
+      })
     },
     updateClipedMessages ({state, commit}) {
       return client.getClipedMessages()
