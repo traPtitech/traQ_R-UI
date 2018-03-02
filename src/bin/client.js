@@ -236,6 +236,11 @@ const client = {
       return axios.delete(`/api/1.0/users/${userId}/tags/${tagId}`)
     })
   },
+  getAllTags () {
+    return middleWare('getAllTags', () => {
+      return axios.get('/api/1.0/tags')
+    })
+  },
 
   // Tag: stamp
   getStamps () {
