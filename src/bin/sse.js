@@ -8,6 +8,10 @@ const baseURL = process.env.NODE_ENV === 'development'
   : ''
 
 const callFunction = (eventName, json) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.info('sse:' + eventName, json)
+  }
+
   if (Array.isArray(on[eventName])) {
     on[eventName].forEach(fn => {
       fn(json)

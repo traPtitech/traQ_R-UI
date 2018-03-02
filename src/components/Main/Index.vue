@@ -41,9 +41,32 @@ export default {
     }
 
     sse.startListen()
+    sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
+    sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
+    sse.on('USER_TAGS_UPDATE', () => {})
+    sse.on('USER_ICON_UPDATED', () => {})
+    sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
+    sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
+    sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))
+    sse.on('CHANNEL_STARED', () => this.$store.dispatch('updateStaredChannels'))
+    sse.on('CHANNEL_UNSTARED', () => this.$store.dispatch('updateStaredChannels'))
+    sse.on('CHANNEL_VISIBILITY_CHANGED, () => {}')
     sse.on('MESSAGE_CREATED', this.messageCreated)
+    sse.on('MESSAGE_UPDATED', this.messageUpdated)
+    sse.on('MESSAGE_DELETED', this.messageDeleted)
+    sse.on('MESSAGE_READ', () => {})
+    sse.on('MESSAGE_STAMPED', () => {})
+    sse.on('MESSAGE_UNSTAMPED', () => {})
+    sse.on('MESSAGE_PINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+    sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+    sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
+    sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
+    sse.on('STAMP_CREATED', () => {})
+    sse.on('STAMP_DELETED', () => {})
+    sse.on('TRAQ_UPDATED', () => location.reload(true))
+
     this.heartbeat = setInterval(() => {
-      client.postHeartbeat(this.getStatus, this.$store.state.currentChannel.channelId)
+      client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
       .then(res => {
         this.$store.commit('updateHeartbeatStatus', res.data)
       })
@@ -53,7 +76,6 @@ export default {
       const container = this.$el.querySelector('.content-wrap')
       await this.$nextTick()
       if (mutation.type === 'addMessages') {
-        console.log(container.scrollHeight - container.scrollTop)
         if (container.scrollHeight - container.scrollTop < 1000) {
           container.scrollTop = container.scrollHeight
         }
@@ -98,17 +120,25 @@ export default {
         }
       })
     },
+    messageUpdated (data) {
+      client.getMessage(data.id)
+      .then(res => {
+        // 自分のメッセージはすぐに更新しているため
+        if (res.data.userId === this.$store.state.me.userId) {
+          return
+        }
+        this.$store.commit('updateMessage', res.data)
+      })
+    },
+    messageDeleted (data) {
+      this.$store.commit('deleteMessage', data.id)
+    },
     notify (title, options) {
       if (Notification.permission === 'granted') {
         // eslint-disable-next-line no-new
         return new Notification(title, options)
       }
       return null
-    }
-  },
-  watch: {
-    '$route' () {
-      console.log(this.$route.params.channel)
     }
   }
 }
