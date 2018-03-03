@@ -37,7 +37,7 @@ export default {
       return this.model.children && this.model.children.length > 0
     },
     isWatched: function () {
-      return this.$store.state.currentChannel.name === this.model.name
+      return this.$store.state.currentChannel.channelId === this.model.channelId
     }
   },
   components: {
