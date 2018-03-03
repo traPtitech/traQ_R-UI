@@ -7,7 +7,9 @@ div.content-wrap
       li
         button(v-on:click="loadMessages")
           | load
-      li(v-for="message in $store.state.messages")
+      li(v-for="(message, index) in $store.state.messages")
+        strong(v-if="index === 0 || date($store.state.messages[index - 1].datetime) !== date(message.datetime)")
+          | {{date(message.datetime)}}
         MessageElement(:model="message" v-bind:key="message.messageId")
 </template>
 
@@ -24,6 +26,10 @@ export default {
   methods: {
     loadMessages () {
       this.$store.dispatch('getMessages')
+    },
+    date (datetime) {
+      const d = new Date(datetime)
+      return `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`
     }
   }
 }
