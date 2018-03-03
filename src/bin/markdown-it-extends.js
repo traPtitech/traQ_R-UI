@@ -40,7 +40,7 @@ const isJson = (text) => {
 }
 
 const jsonParse = (text) => {
-  console.log('json parse: ' + text)
+//  console.log('json parse: ' + text)
   const data = JSON.parse(text)
   if (data['type'] === 'user' && store.state.memberMap[data['id']]) {
     return [
@@ -84,11 +84,11 @@ const replacer = (token) => {
         isString ^= true
       } else if (!isString && text[i] === '}') {
         isInside = false
-        if (isJson(text.substr(startIndex + 1, i + 1 - startIndex))) {
+        if (isJson(text.substr(startIndex + 1, i - startIndex))) {
           if (parsed !== startIndex) {
             replaced.push(newTag('text', '', text.substr(parsed, startIndex - parsed), null, 0))
           }
-          replaced = replaced.concat(jsonParse(text.substr(startIndex + 1, i + 1 - startIndex)))
+          replaced = replaced.concat(jsonParse(text.substr(startIndex + 1, i - startIndex)))
           parsed = i + 1
         }
       }
