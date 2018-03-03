@@ -8,7 +8,7 @@ div.message
     p.message-date
       | {{dateTime(model.datetime)}}
   div.message-content-wrap
-    div.message-content(v-if="!isEditing" v-html="renderedText")
+    component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
     div(v-if="isEditing")
       textarea(v-model="edited" )
       button(v-on:click="editSubmit" )
@@ -94,7 +94,10 @@ export default {
   },
   computed: {
     renderedText () {
-      return md.render(this.model.content)
+      return {
+        template: `<div class="message-content">${md.render(this.model.content)}</div>`,
+        props: this.$options.props
+      }
     },
     cliped () {
       return this.$store.state.clipedMessages[this.model.messageId]
