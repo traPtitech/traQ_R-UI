@@ -1,6 +1,8 @@
 <template lang="pug">
 nav.menu-buttons
   ul
+    li.menu-button.user-icon-wrap
+      div.user-icon
     li.menu-button.channels(@click="navClicked('channels')")
       i.fa.fa-hashtag(aria-hidden="true")
     li.menu-button.members(@click="navClicked('members')")
@@ -53,4 +55,15 @@ export default {
   transition: all ease .2s
   &:hover
     color: rgba(255, 255, 255, 0.6)
+.user-icon-wrap
+  height: 40px
+  margin: 20px auto
+  padding: 10px
+  border-bottom: solid 1px white
+  box-sizing: border-box
+.user-icon
+  width: 30px
+  height: 30px
+  border-radius: 100%
+  background-color: white
 </style>
