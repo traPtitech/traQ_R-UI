@@ -2,10 +2,19 @@
 div.menu-header
   div.search
     i.fa.fa-search(aria-hidden="true")
+  button(@click="logout")
+    | logout
 </template>
 
 <script>
+import client from '@/bin/client'
 export default {
+  methods: {
+    logout () {
+      client.logout()
+      this.$router.push('/login')
+    }
+  }
 }
 </script>
 

@@ -8,21 +8,100 @@ div.message
     p.message-date
       | {{dateTime(model.datetime)}}
   div.message-content-wrap
-    div.message-content
-      | {{model.content}}
+    div.message-content(v-if="!isEditing" v-html="renderedText")
+    div(v-if="isEditing")
+      textarea(v-model="edited" )
+      button(v-on:click="editSubmit" )
+        | submit
+      button(v-on:click="editCancel" )
+        | cancel
+    button(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
+      | edit
+    button(v-on:click="deleteMessage")
+      | delete
+    button(v-on:click="unpinMessage" v-if="pinned")
+      | unpin
+    button(v-on:click="pinMessage" v-else)
+      | pin
+    button(v-on:click="unclipMessage" v-if="cliped")
+      | unclip
+    button(v-on:click="clipMessage" v-else)
+      | clip
   div.message-buttons-wrap
 </template>
 
 <script>
+import md from '@/bin/markdown-it'
+import client from '@/bin/client'
 export default {
   name: 'MessageElement',
   props: {
     model: Object
   },
+  data () {
+    return {
+      isEditing: false,
+      edited: '',
+      pin: null
+    }
+  },
   methods: {
+    editMessage () {
+      this.isEditing = true
+      this.edited = this.model.content
+    },
+    editSubmit () {
+      if (this.edited === this.model.content) {
+        this.isEditing = false
+        return
+      }
+      client.editMessage(this.model.messageId, this.edited)
+      this.isEditing = false
+      this.model.content = this.edited
+    },
+    editCancel () {
+      this.isEditing = false
+    },
+    deleteMessage () {
+      if (window.confirm('このメッセージを削除してもよろしいですか？')) {
+        client.deleteMessage(this.model.messageId)
+      }
+    },
+    async pinMessage () {
+      await client.pinMessage(this.$store.state.currentChannel.channelId, this.model.messageId)
+      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
+    },
+    async unpinMessage () {
+      await client.unpinMessage(this.pin.pinId)
+      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
+    },
+    clipMessage () {
+      client.clipMessage(this.model.messageId)
+      .then(res => {
+        this.$store.commit('setClipedMessages', res.data)
+      })
+    },
+    unclipMessage () {
+      client.unclipMessage(this.model.messageId)
+      .then(res => {
+        this.$store.commit('setClipedMessages', res.data)
+      })
+    },
     dateTime: function (datetime) {
       const d = new Date(datetime)
       return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
+    }
+  },
+  computed: {
+    renderedText () {
+      return md.render(this.model.content)
+    },
+    cliped () {
+      return this.$store.state.clipedMessages[this.model.messageId]
+    },
+    pinned () {
+      this.pin = this.$store.getters.isPinned(this.model.messageId)
+      return this.pin
     }
   }
 }

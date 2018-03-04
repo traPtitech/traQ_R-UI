@@ -1,15 +1,18 @@
 <template lang="pug">
 div.input-ui
-  //- div.upload-button(v-if="isOpened")
-  div.submit-button(v-show="isOpened")
-  div.input-area-wrapper
+  input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
+  div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
+  div.submit-button(v-show="isOpened" v-on:click="submit")
+  div.input-area-wrapper(v-on:drom="dropFile")
     textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    div(v-for="(file, index) in files" v-on:click="removeFile(index)")
+      | {{ file.name }}
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
 import autosize from 'autosize'
-import axios from '@/bin/axios'
+import client from '@/bin/client'
 
 export default {
   data () {
@@ -17,7 +20,9 @@ export default {
       isOpened: false,
       inputText: '',
       // postStatus: {'default', 'processing', 'successed', 'failed'}
-      postStatus: 'default'
+      postStatus: 'default',
+      files: [],
+      uploadedIds: []
     }
   },
   methods: {
@@ -27,27 +32,87 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.inputArea.focus()
-      }
-      )
+      })
     },
     inputBlur () {
-      if (this.inputText === '') {
-        this.isOpened = false
+      setTimeout(_ => {
+        if (this.inputText === '' && this.files.length === 0) {
+          this.isOpened = false
+        }
+      }, 200)
+    },
+    submit () {
+      if (this.inputText === '' && this.files.length === 0) {
+        return
+      }
+      if (this.files.length > 0) {
+        this.uploadFiles()
+        .then(() => {
+          this.files = []
+          this.postMessage()
+        })
+        .catch(err => {
+          console.log(err)
+          this.postStatus = 'failed'
+        })
+      } else {
+        this.postMessage()
       }
     },
     postMessage () {
-      if (this.inputText === '') {
-        return
-      }
       this.postStatus = 'processing'
-      axios.post(`/api/1.0/channels/${this.$store.state.currentChannel.channelId}/messages`, {text: this.inputText})
-      .then(() => {
+      let nowChannel = this.$store.state.currentChannel
+      let message = this.inputText
+      // temporary format
+      this.uploadedIds.forEach(id => {
+        message += `!{"type": "file", "raw": "", "id": "${id}"}`
+      })
+      message = this.replaceUser(message)
+      message = this.replaceChannel(message)
+      message = this.replaceTag(message)
+      client.postMessage(nowChannel.channelId, message)
+      .then((res) => {
         this.inputText = ''
         this.postStatus = 'successed'
-        this.$store.dispatch('getMessages')
+        if (nowChannel === this.$store.state.currentChannel) {
+          this.$store.commit('addMessages', res.data)
+        }
       })
       .catch(() => {
         this.postStatus = 'failed'
+      })
+    },
+    replaceUser (message) {
+      return message.replace(/@([a-zA-Z0-9_-]+)/g, (match, name) => {
+        console.log('user ' + name)
+        const user = this.$store.getters.getUserByName(name)
+        if (user) {
+          return `!{"type": "user", "raw": "${match}", "id": "${user.userId}"}`
+        } else {
+          return match
+        }
+      })
+    },
+    replaceChannel (message) {
+      return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
+        console.log('channel ' + name)
+        const channel = this.$store.getters.getChannelByName(name)
+        if (channel) {
+          return `!{"type": "channel", "raw": "${match}", "id": "${channel.channelId}"}`
+        } else {
+          return match
+        }
+      })
+    },
+    replaceTag (message) {
+      return message.replace(/(?:^@|(?:[^"]@))([^\s]+)/g, (match, content) => {
+        console.log('tag ' + content)
+        const tag = this.$store.getters.getTagByContent(content)
+        if (tag) {
+          return `!{"type": "tag", "raw": "${match}", "id": "${tag.tagId}"}`
+        } else {
+          return match
+        }
       })
     },
     keydown (event) {
@@ -57,20 +122,52 @@ export default {
       }
       this.postStatus = 'default'
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
-        this.postMessage()
+        this.submit()
         event.returnValue = false
       }
+    },
+    addFiles (event) {
+      for (let i = 0; i < event.target.files.length; i++) {
+        this.files.push(event.target.files[i])
+      }
+    },
+    dropFile (event) {
+      event.preventDefault()
+      for (let i = 0; i < event.dataTransfer.files.length; i++) {
+        this.files.push(event.dataTransfer.files[i])
+      }
+    },
+    removeFile (id) {
+      this.files.splice(id, 1)
+    },
+    clickUploadButton () {
+      this.uploadElem.click()
+    },
+    uploadFiles () {
+      this.postStatus = 'processing'
+      this.uploadedIds = new Array(this.files.length)
+      return Promise.all(this.files.map(async (file, index) => {
+        try {
+          const res = await client.uploadFile(file)
+          this.uploadedIds[index] = res.data.fileId
+        } catch (e) {
+          console.log(e)
+        }
+      }))
     }
   },
   watch: {
     inputAreaHeight () {
       console.log(this.$refs.inputArea.scrollHeight)
       return this.$refs.inputArea.scrollHeight + 'px'
+    },
+    files (newFiles) {
+      this.isOpened = !(newFiles.length === 0 && this.inputText === '')
     }
   },
   mounted () {
-    const inputEl = document.getElementById('messageInput')
-    autosize(inputEl)
+    autosize(document.getElementById('messageInput'))
+    this.uploadElem = document.getElementById('upload')
   }
 }
 </script>

@@ -4,7 +4,12 @@ div.content-wrap
     InputUI
   content.message-wrap
     ul
-      li(v-for="message in $store.state.messages")
+      li
+        button(v-on:click="loadMessages")
+          | load
+      li(v-for="(message, index) in $store.state.messages")
+        strong(v-if="index === 0 || date($store.state.messages[index - 1].datetime) !== date(message.datetime)")
+          | {{date(message.datetime)}}
         MessageElement(:model="message" v-bind:key="message.messageId")
 </template>
 
@@ -18,10 +23,14 @@ export default {
     'MessageElement': MessageElement,
     'MessageMock': MessageMock
   },
-  mounted () {
-    const container = this.$el.querySelector('.message-wrap')
-    container.scrollTop = container.scrollHeight
-    console.log(container)
+  methods: {
+    loadMessages () {
+      this.$store.dispatch('getMessages')
+    },
+    date (datetime) {
+      const d = new Date(datetime)
+      return `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`
+    }
   }
 }
 </script>

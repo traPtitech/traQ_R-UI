@@ -24,9 +24,6 @@ export default {
       isOpened: false
     }
   },
-  created () {
-    console.log(this.model)
-  },
   methods: {
     toggle () {
       this.isOpened = !this.isOpened
