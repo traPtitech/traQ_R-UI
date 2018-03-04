@@ -5,11 +5,12 @@ div.login
       | Welcome to traQ
   div.login-right-box
     div.input-wrap
-      input.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス")
-      input.login-input.input-password(v-model="pass" type="password" placeholder="パスワード")
-    button.login-button(v-on:click="loginPost()")
-      p ログイン
-    p(v-if="status === 'failed'") IDまたはパスワードが異なります
+      input.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス" required)
+      input.login-input.input-password(v-model="pass" type="password" placeholder="パスワード" required)
+    div.login-button-wrap
+      button.login-button(v-on:click="loginPost()")
+        p ログイン
+      p.login-failed-message(v-if="status === 'failed'") IDまたはパスワードが異なります
 </template>
 
 <script>
@@ -87,9 +88,10 @@ export default {
   margin: 5px auto
   box-sizing: border-box
   &:active
-    border: solid 1px black
   &::placeholder
     font-size: 1.1em
+.login-button-wrap
+  position: relative
 .login-button
   border: none
   width: 200px
@@ -104,4 +106,26 @@ export default {
     background-color: #4254a6
   &:active
     border: none
+.login-failed-message
+  position: absolute
+  display: block
+  margin: 10px 0 0 0
+  width: 250px
+  background-color: #4f74d6
+  border-radius: 3px
+  color: white
+  animation: balloon-shown .8s ease-in-out
+@keyframes balloon-shown
+  0%
+    transform: rotate(0)
+  10%
+    transform: rotate(3deg)
+  20%
+    transform: rotate(-3deg)
+  40%
+    transform: rotate(1deg)
+  50%
+    transform: rotate(-1deg)
+  60%
+    transform: rotate(0)
 </style>

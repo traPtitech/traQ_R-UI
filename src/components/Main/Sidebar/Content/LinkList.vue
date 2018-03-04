@@ -1,6 +1,5 @@
 <template lang="pug">
 div
-  | Links
 </template>
 
 <script>

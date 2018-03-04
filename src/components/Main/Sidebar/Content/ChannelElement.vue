@@ -1,5 +1,5 @@
 <template lang="pug">
-div.channel-wrap
+div.channel-wrap(v-if="model.visibility")
   div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
     p.channel-box-name()
       | {{model.name}}
@@ -40,7 +40,7 @@ export default {
       return this.model.children && this.model.children.length > 0
     },
     isWatched: function () {
-      return this.$store.state.currentChannel.name === this.model.name
+      return this.$store.state.currentChannel.channelId === this.model.channelId
     }
   },
   components: {
