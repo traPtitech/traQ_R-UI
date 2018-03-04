@@ -1,7 +1,5 @@
 <template lang="pug">
 div
-  p.content-title
-    | Channels
   transition-group(name="list-complete" tag="div" appear)
       div(v-for="model in $store.getters.childrenChannels('')" v-bind:key="model.channelId").channel-list-container
         ChannelElement(:model="model" v-bind:curPath="''")
@@ -22,9 +20,6 @@ export default {
 <style lang="sass">
 .channel-list-container
   position: relative
-.content-title
-  color: gray
-  font-weight: bold
 // .list-complete-enter, .list-complete-leave-to
 //   opacity: 0
 //   transform: translateY(30px)

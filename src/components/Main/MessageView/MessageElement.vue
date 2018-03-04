@@ -113,8 +113,8 @@ export default {
 <style lang="sass">
 .message
   display: grid
-  grid-template-areas: "user-icon detail""... content""... buttons"
-  grid-template-rows: 40px 1fr 30px
+  grid-template-areas: "user-icon detail""user-icon content""... buttons"
+  grid-template-rows: 20px 1fr 20px
   grid-template-columns: 40px 1fr
   border-bottom: solid 1px rgba(0, 0, 0, 0.1)
   margin: 10px 0
@@ -138,8 +138,10 @@ export default {
 .message-content-wrap
   grid-area: content
   margin: 0 0 0 10px
+  padding: 10px 0
   text-align: left
   font-size: 0.9em
+  word-break: break-all
 .message-buttons-wrap
   grid-area: buttons
 </style>

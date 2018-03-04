@@ -1,5 +1,5 @@
 <template lang="pug">
-div.channel-wrap
+div.channel-wrap(v-if="model.visibility")
   div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
     p.channel-box-name()
       | {{model.name}}
