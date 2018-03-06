@@ -29,7 +29,7 @@ export default {
     },
     date (datetime) {
       const d = new Date(datetime)
-      return `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`
+      return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
     }
   }
 }
