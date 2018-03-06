@@ -156,6 +156,9 @@ const client = {
       return axios.get(`/api/1.0/users/${userId}`)
     })
   },
+  getUserIconUrl (userId) {
+    return axios.defaults.baseURL + 'api/1.0/users/' + userId + '/icon'
+  },
 
   // Tag: clip
   getClipedMessages () {
