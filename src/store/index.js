@@ -60,7 +60,7 @@ export default new Vuex.Store({
       if (index === -1) {
         return false
       }
-      state.messages[index] = message
+      Vue.set(state.messages, index, message)
       return true
     },
     deleteMessage (state, messageId) {
