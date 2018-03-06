@@ -21,6 +21,7 @@ export default new Vuex.Store({
     messagesNum: 0,
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
+    currentChannelNotifications: [],
     me: null,
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []}
@@ -110,6 +111,9 @@ export default new Vuex.Store({
     },
     setCurrentChannelPinnedMessages (state, data) {
       state.currentChannelPinnedMessages = data
+    },
+    setCurrentChannelNotifications (state, data) {
+      state.currentChannelNotifications = data
     }
   },
   getters: {
@@ -172,6 +176,12 @@ export default new Vuex.Store({
     },
     getMyName (state) {
       return state.me.name
+    },
+    notificationsOnMembers (state) {
+      return state.currentChannelNotifications.map(id => state.memberMap[id])
+    },
+    notificationsOffMembers (state) {
+      return state.memberData.filter(member => !state.currentChannelNotifications.find(id => id === member.userId))
     }
   },
   actions: {
@@ -240,6 +250,12 @@ export default new Vuex.Store({
       return client.getPinnedMessages(channelId)
       .then(res => {
         commit('setCurrentChannelPinnedMessages', res.data)
+      })
+    },
+    getCurrentChannelNotifications ({state, commit}, channelId) {
+      return client.getNotifications(channelId)
+      .then(res => {
+        commit('setCurrentChannelNotifications', res.data)
       })
     }
   }

@@ -121,12 +121,12 @@ const client = {
   // Tag: notification
   getNotifications (channelId) {
     return middleWare('getNotifications', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/notifications`)
+      return axios.get(`/api/1.0/channels/${channelId}/notification`)
     })
   },
   changeNotifications (channelId, state) {
     return middleWare('changeNotifications', () => {
-      return axios.put(`/api/1.0/channels/${channelId}/notifications`, state)
+      return axios.put(`/api/1.0/channels/${channelId}/notification`, state)
     })
   },
   registerDevice (token) {
