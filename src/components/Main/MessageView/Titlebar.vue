@@ -3,6 +3,8 @@ header.titlebar
   div.menu-open
   h1.channel-name
     | {{title}}
+  p.channel-topic
+    | {{topic}}
   div.buttons
     div.star
     div.search
@@ -19,6 +21,9 @@ export default {
       })
       ret += this.$store.state.currentChannel.name
       return ret
+    },
+    topic () {
+      return this.$store.state.currentChannelTopic.text
     }
   }
 }
