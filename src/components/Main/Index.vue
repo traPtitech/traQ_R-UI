@@ -140,6 +140,14 @@ export default {
       }
       return null
     }
+  },
+  watch: {
+    '$route.params.channel': function () {
+      client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
+      .then(res => {
+        this.$store.commit('updateHeartbeatStatus', res.data)
+      })
+    }
   }
 }
 </script>
