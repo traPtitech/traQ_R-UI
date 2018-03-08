@@ -31,7 +31,7 @@ div.message
       a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank")
         img(v-if="file.mime.split('/')[0] === 'image'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name")
       a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
-        | {{`${file.mime} ${file.name} ${file.size}byte`}}
+        | {{`${file.mime.split('/')[0]} ${file.name} ${file.size}byte`}}
   div.message-buttons-wrap
 </template>
 
