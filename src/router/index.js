@@ -73,7 +73,8 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('updateClipedMessages'),
       store.dispatch('updateStaredChannels'),
       store.dispatch('updateUnreadMessages'),
-      store.dispatch('updateTags')
+      store.dispatch('updateTags'),
+      store.dispatch('updateStamps')
     ])
   }
 

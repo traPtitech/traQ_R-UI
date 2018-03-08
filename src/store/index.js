@@ -13,6 +13,9 @@ export default new Vuex.Store({
     memberMap: {},
     tagData: [],
     tagMap: {},
+    stampData: [],
+    stampMap: [],
+    stampNameMap: [],
     currentChannel: {},
     clipedMessages: {},
     unreadMessages: {},
@@ -49,6 +52,13 @@ export default new Vuex.Store({
       state.tagData = newTagData
       state.tagData.forEach(tag => {
         state.tagMap[tag.tagId] = tag
+      })
+    },
+    setStampData (state, newStampData) {
+      state.stampData = newStampData
+      state.stampData.forEach(stamp => {
+        state.stampMap[stamp.id] = stamp
+        state.stampNameMap[stamp.name] = stamp
       })
     },
     addMessages (state, message) {
@@ -227,6 +237,12 @@ export default new Vuex.Store({
       return client.getAllTags()
       .then(res => {
         commit('setTagData', res.data)
+      })
+    },
+    updateStamps ({state, commit}) {
+      return client.getStamps()
+      .then(res => {
+        commit('setStampData', res.data)
       })
     },
     updateClipedMessages ({state, commit}) {
