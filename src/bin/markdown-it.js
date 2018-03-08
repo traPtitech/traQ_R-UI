@@ -1,6 +1,7 @@
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import MarkdownItMark from 'markdown-it-mark'
+import myPlugin from '@/bin/markdown-it-extends'
 
 function highlight (code, lang) {
   const [langName, langCaption] = lang.split(':')
@@ -20,6 +21,7 @@ const md = new MarkdownIt({
 })
 
 md.use(MarkdownItMark)
+md.use(myPlugin)
 md.disable('image')
 
 export default md

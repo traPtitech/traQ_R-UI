@@ -24,7 +24,8 @@ export default new Vuex.Store({
     currentChannelNotifications: [],
     me: null,
     menuContent: 'channels',
-    heartbeatStatus: {userStatuses: []}
+    heartbeatStatus: {userStatuses: []},
+    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.herokuapp.com' : ''
   },
   mutations: {
     setMe (state, me) {
@@ -165,6 +166,11 @@ export default new Vuex.Store({
         } else {
           return null
         }
+      }
+    },
+    getFileDataById (state) {
+      return fileId => {
+        return client.getFileMeta(fileId)
       }
     },
     isPinned (state) {

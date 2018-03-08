@@ -8,7 +8,7 @@ div.message
     p.message-date
       | {{dateTime(model.datetime)}}
   div.message-content-wrap
-    div.message-content(v-if="!isEditing" v-html="renderedText")
+    component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
     div(v-if="isEditing")
       textarea(v-model="edited" )
       button(v-on:click="editSubmit" )
@@ -27,12 +27,57 @@ div.message
       | unclip
     button(v-on:click="clipMessage" v-else)
       | clip
+    div(v-for="file in files")
+      a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank")
+        img(v-if="file.mime.split('/')[0] === 'image'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name")
+      a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
+        | {{`${file.mime.split('/')[0]} ${file.name} ${file.size}byte`}}
   div.message-buttons-wrap
 </template>
 
 <script>
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
+function isFile (text) {
+  try {
+    const data = JSON.parse(text)
+    if (data['type'] === 'file' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
+      return true
+    } else {
+      return false
+    }
+  } catch (e) {
+    return false
+  }
+}
+function detectFiles (text) {
+  let isInside = false
+  let startIndex = -1
+  let isString = false
+  const ret = []
+  for (let i = 0; i < text.length; i++) {
+    if (isInside) {
+      if (text[i] === '"') {
+        isString ^= true
+      } else if (!isString && text[i] === '}') {
+        isInside = false
+        if (isFile(text.substr(startIndex + 1, i - startIndex))) {
+          ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
+        } else {
+          i = startIndex + 1
+        }
+      }
+    } else {
+      if (i < text.length - 1 && text[i] === '!' && text[i + 1] === '{') {
+        startIndex = i
+        i++
+        isInside = true
+        isString = false
+      }
+    }
+  }
+  return ret
+}
 export default {
   name: 'MessageElement',
   props: {
@@ -42,7 +87,8 @@ export default {
     return {
       isEditing: false,
       edited: '',
-      pin: null
+      pin: null,
+      files: []
     }
   },
   methods: {
@@ -58,6 +104,7 @@ export default {
       client.editMessage(this.model.messageId, this.edited)
       this.isEditing = false
       this.model.content = this.edited
+      this.getAttachments()
     },
     editCancel () {
       this.isEditing = false
@@ -90,11 +137,22 @@ export default {
     dateTime: function (datetime) {
       const d = new Date(datetime)
       return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
+    },
+    async getAttachments () {
+      const data = detectFiles(this.model.content)
+      this.files = (await Promise.all(data.map(async e => {
+        return this.$store.getters.getFileDataById(e.id)
+        .then(res => res.data)
+        .catch(e => null)
+      }))).filter(e => e)
     }
   },
   computed: {
     renderedText () {
-      return md.render(this.model.content)
+      return {
+        template: `<div class="message-content">${md.render(this.model.content)}</div>`,
+        props: this.$options.props
+      }
     },
     cliped () {
       return this.$store.state.clipedMessages[this.model.messageId]
@@ -106,6 +164,9 @@ export default {
     userIconSrc () {
       return client.getUserIconUrl(this.model.userId)
     }
+  },
+  mounted () {
+    this.getAttachments()
   }
 }
 </script>
