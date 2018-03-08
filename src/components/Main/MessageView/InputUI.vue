@@ -67,6 +67,7 @@ export default {
       this.uploadedIds.forEach(id => {
         message += `!{"type": "file", "raw": "", "id": "${id}"}`
       })
+      this.uploadedIds = []
       message = this.replaceUser(message)
       message = this.replaceChannel(message)
       message = this.replaceTag(message)

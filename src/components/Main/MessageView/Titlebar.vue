@@ -3,6 +3,8 @@ header.titlebar
   div.menu-open
   h1.channel-name
     | {{title}}
+  p.channel-topic
+    | {{topic}}
   div.buttons
     div.star
     div.search
@@ -12,12 +14,16 @@ header.titlebar
 export default {
   computed: {
     title () {
+      if (!this.$route.params.channel) return ''
       let ret = '#'
       this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
         ret += e.charAt(0) + '/'
       })
-      ret += this.$route.params.channel.split('/').pop()
+      ret += this.$store.state.currentChannel.name
       return ret
+    },
+    topic () {
+      return this.$store.state.currentChannelTopic.text
     }
   }
 }

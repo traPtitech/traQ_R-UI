@@ -121,12 +121,12 @@ const client = {
   // Tag: notification
   getNotifications (channelId) {
     return middleWare('getNotifications', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/notifications`)
+      return axios.get(`/api/1.0/channels/${channelId}/notification`)
     })
   },
   changeNotifications (channelId, state) {
     return middleWare('changeNotifications', () => {
-      return axios.put(`/api/1.0/channels/${channelId}/notifications`, state)
+      return axios.put(`/api/1.0/channels/${channelId}/notification`, state)
     })
   },
   registerDevice (token) {
@@ -138,7 +138,7 @@ const client = {
   // Tag: user
   registerUser (name, password, email) {
     return middleWare('registerUser', () => {
-      return axios.post(`/api/1.0/register`, {name, password, email})
+      return axios.post(`/api/1.0/users`, {name, password, email})
     })
   },
   getMembers () {
@@ -155,6 +155,9 @@ const client = {
     return middleWare('getUserDetail', () => {
       return axios.get(`/api/1.0/users/${userId}`)
     })
+  },
+  getUserIconUrl (userId) {
+    return axios.defaults.baseURL + 'api/1.0/users/' + userId + '/icon'
   },
 
   // Tag: clip
