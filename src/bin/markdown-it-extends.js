@@ -62,9 +62,9 @@ const jsonParse = (text) => {
     ]
   } else {
     return [
-      newTag('traq_extends_resourse_link_open', 'router-link', '', [['to', `/files/${data['id']}`]], 1),
-      newTag('text', '', 'file', null, 0),
-      newTag('traq_extends_resourse_link_close', 'router-link', '', null, -1)
+      newTag('traq_extends_link_open', 'a', '', [['href', `${store.state.baseURL}/api/1.0/files/${data['id']}`], ['download', data['id']]], 1),
+      newTag('text', '', data['raw'], null, 0),
+      newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
   }
 }
@@ -78,9 +78,7 @@ const replacer = (token) => {
   let parsed = 0
   for (let i = 0; i < text.length; i++) {
     if (isInside) {
-      if (text[i] === '\\') {
-        i++
-      } else if (text[i] === '"') {
+      if (text[i] === '"') {
         isString ^= true
       } else if (!isString && text[i] === '}') {
         isInside = false
@@ -90,6 +88,8 @@ const replacer = (token) => {
           }
           replaced = replaced.concat(jsonParse(text.substr(startIndex + 1, i - startIndex)))
           parsed = i + 1
+        } else {
+          i = startIndex + 1
         }
       }
     } else {
