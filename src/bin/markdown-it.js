@@ -2,6 +2,8 @@ import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import MarkdownItMark from 'markdown-it-mark'
 import myPlugin from '@/bin/markdown-it-extends'
+import regexp from 'markdown-it-regexp'
+import store from '@/store/index'
 
 function highlight (code, lang) {
   const [langName, langCaption] = lang.split(':')
@@ -22,6 +24,13 @@ const md = new MarkdownIt({
 
 md.use(MarkdownItMark)
 md.use(myPlugin)
+md.use(regexp(/:(\w+):/, (match, utils) => {
+  if (store.state.stampNameMap[match[1]]) {
+    return `<i class="emoji s32" style="background-image: url(${store.state.baseURL}/api/1.0/files/${store.state.stampNameMap[match[1]].fileId});">:${utils.escape(match[1])}:</i>`
+  } else {
+    return match[0]
+  }
+}))
 md.disable('image')
 
 export default md

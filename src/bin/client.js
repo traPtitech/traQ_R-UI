@@ -265,13 +265,13 @@ const client = {
     })
   },
   stampMessage (messageId, stampId) {
-    return middleWare('unstampMessage', () => {
-      return axios.delete(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
+    return middleWare('stampMessage', () => {
+      return axios.post(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
     })
   },
   unstampMessage (messageId, stampId) {
-    return middleWare('stampMessage', () => {
-      return axios.post(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
+    return middleWare('unstampMessage', () => {
+      return axios.delete(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
     })
   },
 

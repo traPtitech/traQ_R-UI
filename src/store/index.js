@@ -13,6 +13,9 @@ export default new Vuex.Store({
     memberMap: {},
     tagData: [],
     tagMap: {},
+    stampData: [],
+    stampMap: [],
+    stampNameMap: [],
     currentChannel: {},
     clipedMessages: {},
     unreadMessages: {},
@@ -49,6 +52,13 @@ export default new Vuex.Store({
       state.tagData = newTagData
       state.tagData.forEach(tag => {
         state.tagMap[tag.tagId] = tag
+      })
+    },
+    setStampData (state, newStampData) {
+      state.stampData = newStampData
+      state.stampData.forEach(stamp => {
+        state.stampMap[stamp.id] = stamp
+        state.stampNameMap[stamp.name] = stamp
       })
     },
     addMessages (state, message) {
@@ -116,6 +126,44 @@ export default new Vuex.Store({
     },
     setCurrentChannelNotifications (state, data) {
       state.currentChannelNotifications = data
+    },
+    updateMessageStamp (state, data) {
+      const index = state.messages.findIndex(e => e.messageId === data.message_id)
+      if (index >= 0) {
+        const message = state.messages[index]
+        if (message.stampList) {
+          const userData = message.stampList.find(e => e.userId === data.user_id && e.stampId === data.stamp_id)
+          if (userData) {
+            userData.count = data.count
+          } else {
+            message.stampList.push({
+              userId: data.user_id,
+              stampId: data.stamp_id,
+              count: data.count
+            })
+          }
+        } else {
+          message.stampList = [{
+            userId: data.user_id,
+            stampId: data.stamp_id,
+            count: data.count
+          }]
+        }
+        Vue.set(state.messages, index, message)
+      }
+    },
+    deleteMessageStamp (state, data) {
+      const index = state.messages.findIndex(e => e.messageId === data.message_id)
+      if (index >= 0) {
+        const message = state.messages[index]
+        if (message.stampList) {
+          const userDataIndex = message.stampList.findIndex(e => e.userId === data.user_id && e.stampId === data.stamp_id)
+          if (userDataIndex >= 0) {
+            message.stampList = message.stampList.filter((_, i) => i !== userDataIndex)
+            Vue.set(state.messages, index, message)
+          }
+        }
+      }
     }
   },
   getters: {
@@ -227,6 +275,12 @@ export default new Vuex.Store({
       return client.getAllTags()
       .then(res => {
         commit('setTagData', res.data)
+      })
+    },
+    updateStamps ({state, commit}) {
+      return client.getStamps()
+      .then(res => {
+        commit('setStampData', res.data)
       })
     },
     updateClipedMessages ({state, commit}) {
