@@ -15,6 +15,7 @@ div.message
         | submit
       button(v-on:click="editCancel" )
         | cancel
+  div.message-buttons-wrap
     button(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
       | edit
     button(v-on:click="deleteMessage")
@@ -27,12 +28,19 @@ div.message
       | unclip
     button(v-on:click="clipMessage" v-else)
       | clip
+  div.message-stamps-wrap(style="display: table;")
+    div(v-for="stamp in stamps" style="display: table-cell;")
+      div(v-on:click="toggleStamp(stamp.stampId)")
+        i(class="emoji s16" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${stamp.fileId});`")
+          | {{stamp.name}}
+        p
+          | {{stamp.sum}}
+  div.message-files-wrap
     div(v-for="file in files")
       a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank")
         img(v-if="file.mime.split('/')[0] === 'image'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name")
       a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
         | {{`${file.mime.split('/')[0]} ${file.name} ${file.size}byte`}}
-  div.message-buttons-wrap
 </template>
 
 <script>
@@ -145,6 +153,13 @@ export default {
         .then(res => res.data)
         .catch(e => null)
       }))).filter(e => e)
+    },
+    toggleStamp (stampId) {
+      if (this.stamps.find(e => e.stampId === stampId).user.find(e => e.userId === this.$store.state.me.userId)) {
+        client.unstampMessage(this.model.messageId, stampId)
+      } else {
+        client.stampMessage(this.model.messageId, stampId)
+      }
     }
   },
   computed: {
@@ -163,6 +178,33 @@ export default {
     },
     userIconSrc () {
       return client.getUserIconUrl(this.model.userId)
+    },
+    stamps () {
+      const map = {}
+      if (!this.model.stampList) {
+        return []
+      }
+      this.model.stampList.forEach(stamp => {
+        if (map[stamp.stampId]) {
+          map[stamp.stampId].user.push({
+            userId: stamp.userId,
+            count: stamp.count
+          })
+          map[stamp.stampId].sum += stamp.count
+        } else {
+          map[stamp.stampId] = {
+            fileId: this.$store.state.stampMap[stamp.stampId].fileId,
+            stampId: stamp.stampId,
+            name: this.$store.state.stampMap[stamp.stampId].name,
+            user: [{
+              userId: stamp.userId,
+              count: stamp.count
+            }],
+            sum: stamp.count
+          }
+        }
+      })
+      return Object.values(map)
     }
   },
   mounted () {
@@ -205,4 +247,17 @@ export default {
   word-break: break-all
 .message-buttons-wrap
   grid-area: buttons
+.emoji.s16
+  width: 16px
+  height: 16px
+.emoji.s32
+  width: 32px
+  height: 32px
+.emoji
+  display: inline-block
+  text-indent: 999%
+  white-space: nowrap
+  overflow: hidden
+  color: transparent
+  background-size: contain
 </style>

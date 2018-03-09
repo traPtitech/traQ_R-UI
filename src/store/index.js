@@ -126,6 +126,44 @@ export default new Vuex.Store({
     },
     setCurrentChannelNotifications (state, data) {
       state.currentChannelNotifications = data
+    },
+    updateMessageStamp (state, data) {
+      const index = state.messages.findIndex(e => e.messageId === data.message_id)
+      if (index >= 0) {
+        const message = state.messages[index]
+        if (message.stampList) {
+          const userData = message.stampList.find(e => e.userId === data.user_id && e.stampId === data.stamp_id)
+          if (userData) {
+            userData.count = data.count
+          } else {
+            message.stampList.push({
+              userId: data.user_id,
+              stampId: data.stamp_id,
+              count: data.count
+            })
+          }
+        } else {
+          message.stampList = [{
+            userId: data.user_id,
+            stampId: data.stamp_id,
+            count: data.count
+          }]
+        }
+        Vue.set(state.messages, index, message)
+      }
+    },
+    deleteMessageStamp (state, data) {
+      const index = state.messages.findIndex(e => e.messageId === data.message_id)
+      if (index >= 0) {
+        const message = state.messages[index]
+        if (message.stampList) {
+          const userDataIndex = message.stampList.findIndex(e => e.userId === data.user_id && e.stampId === data.stamp_id)
+          if (userDataIndex >= 0) {
+            message.stampList = message.stampList.filter((_, i) => i !== userDataIndex)
+            Vue.set(state.messages, index, message)
+          }
+        }
+      }
     }
   },
   getters: {
