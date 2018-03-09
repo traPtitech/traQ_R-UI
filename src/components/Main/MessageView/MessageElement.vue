@@ -35,6 +35,7 @@ div.message
           | {{stamp.name}}
         p
           | {{stamp.sum}}
+    StampList(:model="{messageId: model.messageId}")
   div.message-files-wrap
     div(v-for="file in files")
       a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank")
@@ -44,6 +45,7 @@ div.message
 </template>
 
 <script>
+import StampList from '@/components/Main/MessageView/StampList'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 function isFile (text) {
@@ -209,6 +211,9 @@ export default {
   },
   mounted () {
     this.getAttachments()
+  },
+  components: {
+    'StampList': StampList
   }
 }
 </script>
