@@ -35,7 +35,18 @@ export default new Vuex.Store({
       state.me = me
     },
     setChannelData (state, newChannelData) {
-      newChannelData.sort((lhs, rhs) => lhs.name > rhs.name)
+      newChannelData.sort((lhs, rhs) => {
+        let ls = lhs.name.toLowerCase()
+        let rs = rhs.name.toLowerCase()
+        if (ls < rs) {
+          return -1
+        } else if (ls > rs) {
+          return 1
+        } else {
+          return 0
+        }
+      })
+      newChannelData.forEach(e => console.log(e.name))
       state.channelData = newChannelData
       function dfs (channel) {
         state.channelMap[channel.channelId] = channel
