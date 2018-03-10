@@ -46,7 +46,6 @@ export default new Vuex.Store({
           return 0
         }
       })
-      newChannelData.forEach(e => console.log(e.name))
       state.channelData = newChannelData
       function dfs (channel) {
         state.channelMap[channel.channelId] = channel
