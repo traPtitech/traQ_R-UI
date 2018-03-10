@@ -14,6 +14,15 @@ export default {
   },
   components: {
     Splash
+  },
+  created () {
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register('/service-worker.js', {scope: '/'})
+        .then(regisration => {
+          console.log('Service Worker Registered!')
+          regisration.update()
+        })
+    }
   }
 }
 </script>
