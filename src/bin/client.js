@@ -157,7 +157,7 @@ const client = {
     })
   },
   getUserIconUrl (userId) {
-    return axios.defaults.baseURL + 'api/1.0/users/' + userId + '/icon'
+    return (axios.defaults.baseURL || '/') + 'api/1.0/users/' + userId + '/icon'
   },
 
   // Tag: clip
