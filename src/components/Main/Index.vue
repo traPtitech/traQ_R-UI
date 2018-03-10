@@ -104,10 +104,15 @@ export default {
       client.getMessage(data.id)
       .then(res => {
         const user = this.$store.state.memberMap[res.data.userId]
+        const channel = this.$store.state.channelMap[res.data.parentChannelId]
         if (user.userId === this.$store.state.me.userId) {
+          if (!this.$store.state.messages.find(m => m.messageId === data.id)) {
+            if (channel.channelId === this.$store.state.currentChannel.channelId) {
+              this.$store.commit('addMessages', res.data)
+            }
+          }
           return
         }
-        const channel = this.$store.state.channelMap[res.data.parentChannelId]
         const title = this.$store.getters.getChannelPathById(channel.channelId)
         const options = {
           icon: null,
@@ -123,10 +128,6 @@ export default {
     messageUpdated (data) {
       client.getMessage(data.id)
       .then(res => {
-        // 自分のメッセージはすぐに更新しているため
-        if (res.data.userId === this.$store.state.me.userId) {
-          return
-        }
         this.$store.commit('updateMessage', res.data)
       })
     },
