@@ -1,40 +1,46 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Meta from 'vue-meta'
 import store from '@/store/index'
 
-import Index from '@/components/Main/Index'
-import Login from '@/components/Login/Login'
-import NotFound from '@/components/NotFound'
-import Register from '@/components/Register/Register'
-
 Vue.use(Router)
-Vue.use(Meta)
+
+const asyncLoadComponents = component => {
+  return () => {
+    return component
+      .then(data => {
+        if (process.env.NODE_ENV) {
+          console.log('async load component:', data.default.name)
+        }
+        store.commit('loadEndComponent')
+        return data
+      })
+  }
+}
 
 const router = new Router({
   routes: [
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: asyncLoadComponents(import('@/components/Login/Login'))
     },
     {
       path: '/',
       name: 'Index',
-      component: Index
+      component: asyncLoadComponents(import('@/components/Main/Index'))
     },
     {
       path: '/channels/:channel(.*)',
-      component: Index
+      component: asyncLoadComponents(import('@/components/Main/Index'))
     },
     {
       path: '/register',
-      component: Register
+      component: asyncLoadComponents(import('@/components/Register/Register'))
     },
     {
       path: '*',
       name: 'NotFound',
-      component: NotFound
+      component: asyncLoadComponents(import('@/components/NotFound'))
     }
   ],
   mode: 'history'

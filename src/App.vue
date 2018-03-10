@@ -1,6 +1,6 @@
 <template lang="pug">
 div#app
-  splash(v-if="!$store.state.loaded")
+  splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
   router-view(v-else)
 </template>
 

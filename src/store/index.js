@@ -27,6 +27,7 @@ const loadGeneralData = (dataName, webLoad, commit) => {
 export default new Vuex.Store({
   state: {
     loaded: false,
+    loadedComponent: false,
     channelData: [],
     channelMap: {},
     memberData: [],
@@ -113,6 +114,9 @@ export default new Vuex.Store({
     },
     loadEnd (state) {
       state.loaded = true
+    },
+    loadEndComponent (state) {
+      state.loadedComponent = true
     },
     changeMenuContent (state, contentName) {
       state.menuContent = contentName
@@ -242,10 +246,10 @@ export default new Vuex.Store({
       }
     },
     getMyId (state) {
-      return state.me.userId
+      return state.me ? state.me.userId : ''
     },
     getMyName (state) {
-      return state.me.name
+      return state.me ? state.me.name : ''
     },
     notificationsOnMembers (state) {
       return state.currentChannelNotifications.map(id => state.memberMap[id])

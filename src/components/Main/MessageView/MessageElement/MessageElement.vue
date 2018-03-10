@@ -45,7 +45,6 @@ div.message
 </template>
 
 <script>
-import StampList from '@/components/Main/MessageView/StampList'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 function isFile (text) {
@@ -212,7 +211,7 @@ export default {
     this.getAttachments()
   },
   components: {
-    'StampList': StampList
+    'StampList': window.asyncLoadComponents(import('@/components/Main/MessageView/StampList'))
   }
 }
 </script>

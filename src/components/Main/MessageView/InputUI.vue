@@ -15,6 +15,7 @@ import autosize from 'autosize'
 import client from '@/bin/client'
 
 export default {
+  name: 'InputUI',
   data () {
     return {
       isOpened: false,
