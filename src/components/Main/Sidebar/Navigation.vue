@@ -2,7 +2,7 @@
 nav.menu-buttons
   ul
     li.menu-button.user-icon-wrap
-      div.user-icon
+      img.user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.me.iconFileId}`")
     li.menu-button.channels(@click="navClicked('channels')")
       i.fa.fa-hashtag(aria-hidden="true")
     li.menu-button.members(@click="navClicked('members')")
