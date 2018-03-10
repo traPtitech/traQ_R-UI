@@ -115,10 +115,14 @@ export default {
         }
         const title = this.$store.getters.getChannelPathById(channel.channelId)
         const options = {
-          icon: null,
+          icon: client.getUserIconUrl(user.userId),
           body: user.name + ':' + res.data.content
         }
-        this.notify(title, options)
+        const notification = this.notify(title, options)
+        notification.onclick = () => {
+          window.focus()
+          this.$router.push(title)
+        }
 
         if (channel.channelId === this.$store.state.currentChannel.channelId) {
           this.$store.commit('addMessages', res.data)
@@ -134,7 +138,7 @@ export default {
     messageDeleted (data) {
       this.$store.commit('deleteMessage', data.id)
     },
-    notify (title, options) {
+    notify (title, options, channelName) {
       if (Notification.permission === 'granted') {
         // eslint-disable-next-line no-new
         return new Notification(title, options)
