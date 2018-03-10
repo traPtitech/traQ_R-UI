@@ -45,7 +45,7 @@ router.beforeEach(async (to, from, next) => {
     await store.dispatch('whoAmI')
   }
 
-  if (!store.state.me) {
+  if (!store.state.me && navigator.onLine) {
     store.commit('loadEnd')
     if (to.path === '/login') {
       next(true)
@@ -61,7 +61,7 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  if (!store.state.isLoaded) {
+  if (!store.state.loaded) {
     // 起動後すぐ必要なもの
     await Promise.all([
       store.dispatch('updateChannels'),

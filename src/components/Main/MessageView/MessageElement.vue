@@ -113,7 +113,6 @@ export default {
       }
       client.editMessage(this.model.messageId, this.edited)
       this.isEditing = false
-      this.model.content = this.edited
       this.getAttachments()
     },
     editCancel () {
