@@ -84,22 +84,20 @@ export default {
       })
     },
     replaceUser (message) {
-      return message.replace(/@([a-zA-Z0-9_-]+)/g, (match, name) => {
-        console.log('user ' + name)
+      return message.replace(/@([a-zA-Z0-9+_-]+)/g, (match, name) => {
         const user = this.$store.getters.getUserByName(name)
         if (user) {
-          return `!{"type": "user", "raw": "${match}", "id": "${user.userId}"}`
+          return `!{"type": "user", "raw": "${match.replace(/_/g, '\\_')}", "id": "${user.userId}"}`
         } else {
           return match
         }
       })
     },
     replaceChannel (message) {
-      return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
-        console.log('channel ' + name)
+      return message.replace(/#([a-zA-Z0-9+_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
-          return `!{"type": "channel", "raw": "${match}", "id": "${channel.channelId}"}`
+          return `!{"type": "channel", "raw": "${match.replace(/_/g, '\\_')}", "id": "${channel.channelId}"}`
         } else {
           return match
         }
@@ -107,7 +105,6 @@ export default {
     },
     replaceTag (message) {
       return message.replace(/(?:^@|(?:[^"]@))([^\s]+)/g, (match, content) => {
-        console.log('tag ' + content)
         const tag = this.$store.getters.getTagByContent(content)
         if (tag) {
           return `!{"type": "tag", "raw": "${match}", "id": "${tag.tagId}"}`
