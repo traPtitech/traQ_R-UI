@@ -9,7 +9,6 @@ div
 </template>
 
 <script>
-import MessageElement from '@/components/Main/MessageView/MessageElement'
 export default {
   name: 'Pinned',
   data () {
@@ -23,7 +22,7 @@ export default {
     }
   },
   components: {
-    'MessageElement': MessageElement
+    'MessageElement': window.asyncLoadComponents(import('@/components/Main/MessageView/MessageElement/MessageElement'))
   }
 }
 </script>

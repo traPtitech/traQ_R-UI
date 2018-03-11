@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     addText () {
-      if (!this.$store.state.loaded) {
+      if (!this.$store.state.loaded || !this.$store.state.loadedComponent) {
         this.text = this.text + '\nローディング中！'
         setTimeout(this.addText, 100)
       }
@@ -31,6 +31,12 @@ export default {
   display: fix
   width: 100vw
   height: 100vh
-  background-color: rgba(0, 0, 0, 0.2)
+  background-color: #6cb8ff
   z-index: 1000
+  animation: gradationTest 3s infinite
+
+@keyframes gradationTest 
+  0% {background-color: #6cb8ff;}
+  50% {background-color: #fff66c;}
+  100% {background-color: #ffa36c;}
 </style>

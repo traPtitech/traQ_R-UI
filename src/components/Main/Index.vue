@@ -7,12 +7,9 @@ div.index
 </template>
 
 <script>
-import Sidebar from '@/components/Main/Sidebar/Sidebar'
-import Titlebar from '@/components/Main/MessageView/Titlebar'
-import Message from '@/components/Main/MessageView/MessageContainer'
-import Information from '@/components/Main/MessageView/ChannelInformation/ChannelInformation'
 import sse from '@/bin/sse'
 import client from '@/bin/client'
+import Message from '@/components/Main/MessageView/MessageContainer'
 
 export default {
   name: 'index',
@@ -22,10 +19,10 @@ export default {
     }
   },
   components: {
-    'Sidebar': Sidebar,
-    'Titlebar': Titlebar,
+    'Sidebar': window.asyncLoadComponents(import('@/components/Main/Sidebar/Sidebar')),
+    'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
-    'Information': Information
+    'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation'))
   },
   async created () {
     if (!this.$route.params.channel) {
@@ -73,6 +70,9 @@ export default {
     }, 3000)
 
     this.$store.subscribe(async mutation => {
+      if (!this.$el) {
+        await this.$nextTick()
+      }
       const container = this.$el.querySelector('.content-wrap')
       await this.$nextTick()
       if (mutation.type === 'addMessages') {
@@ -172,4 +172,11 @@ export default {
     grid-template-rows: 60px 1fr
     grid-template-columns: 1fr 40px
     grid-template-areas: "titlebar titlebar""content information"
+
+*
+  animation: fadein 0.3s ease 0s 1 normal;
+
+@keyframes fadein 
+  0% {opacity: 0}
+  100% {opacity: 1}
 </style>
