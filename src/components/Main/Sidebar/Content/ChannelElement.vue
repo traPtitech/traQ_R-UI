@@ -105,10 +105,10 @@ export default {
   width: 15px
   height: 15px
   cursor: pointer
-  background: url(~/src/assets/img/triangle_down.svg) no-repeat center
+  background: url(/static/img/triangle_down.svg) no-repeat center
   background-size: contain
   .channel-opened &
-    background: url(~/src/assets/img/triangle_up.svg) no-repeat center
+    background: url(/static/img/triangle_up.svg) no-repeat center
     background-size: contain
 
 </style>
