@@ -70,6 +70,9 @@ export default {
     }, 3000)
 
     this.$store.subscribe(async mutation => {
+      if (!this.$el) {
+        await this.$nextTick()
+      }
       const container = this.$el.querySelector('.content-wrap')
       await this.$nextTick()
       if (mutation.type === 'addMessages') {
