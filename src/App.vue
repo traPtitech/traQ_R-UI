@@ -19,9 +19,9 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~normalize.css"
 @import url("//fonts.googleapis.com/earlyaccess/mplus1p.css")
 #app
-  /*font-family: 'Avenir', Helvetica, Arial, sans-serif*/
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale

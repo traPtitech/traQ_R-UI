@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "normalize.css": "^8.0.0",
     "sticky-state": "^2.4.1",
     "vue": "^2.5.14",
     "vue-meta": "^1.4.3",
