@@ -151,13 +151,21 @@ const client = {
       return axios.get(`/api/1.0/users/me`)
     })
   },
+  getUserIconUrl (userId) {
+    return (axios.defaults.baseURL || '/') + 'api/1.0/users/' + userId + '/icon'
+  },
+  changeIcon (file) {
+    return middleWare('changeIcon', () => {
+      const form = new FormData()
+      form.enctype = 'multipart/form-data'
+      form.append('file', file)
+      return axios.post('/api/1.0/users/me/icon', form)
+    })
+  },
   getUserDetail (userId) {
     return middleWare('getUserDetail', () => {
       return axios.get(`/api/1.0/users/${userId}`)
     })
-  },
-  getUserIconUrl (userId) {
-    return (axios.defaults.baseURL || '/') + 'api/1.0/users/' + userId + '/icon'
   },
 
   // Tag: clip
@@ -241,7 +249,7 @@ const client = {
   },
   getAllTags () {
     return middleWare('getAllTags', () => {
-      return axios.get('/api/1.0/tags')
+      return axios.get(`/api/1.0/tags`)
     })
   },
 
@@ -251,8 +259,28 @@ const client = {
       return axios.get(`/api/1.0/stamps`)
     })
   },
-  addStamp () {
-    Promise.reject(console.error(`not implement`))
+  addStamp (name, file) {
+    return middleWare('addStamp', () => {
+      const form = new FormData()
+      form.enctype = 'multipart/form-data'
+      form.append('name', name)
+      form.append('file', file)
+      return axios.post(`/api/1.0/stamps`, form)
+    })
+  },
+  getStampDetail (stampId) {
+    return middleWare('getStampDetail', () => {
+      return axios.get(`/api/1.0/stamps/${stampId}`)
+    })
+  },
+  fixStamp (stampId, name, file) {
+    return middleWare('fixStamp', () => {
+      const form = new FormData()
+      form.enctype = 'multipart/form-data'
+      form.append('name', name)
+      form.append('file', file)
+      return axios.post(`/api/1.0/stamps/${stampId}`, form)
+    })
   },
   deleteStamp (stampId) {
     return middleWare('deleteStamp', () => {
@@ -261,7 +289,7 @@ const client = {
   },
   getMessageStamp (messageId, stampId) {
     return middleWare('getMessageStamp', () => {
-      return axios.get(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
+      return axios.get(`/api/1.0/messages/${messageId}/stamps`)
     })
   },
   stampMessage (messageId, stampId) {

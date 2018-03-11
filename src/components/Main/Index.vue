@@ -61,8 +61,8 @@ export default {
     sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
     sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
     sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
-    sse.on('STAMP_CREATED', () => {})
-    sse.on('STAMP_DELETED', () => {})
+    sse.on('STAMP_CREATED', () => this.$store.dispatch('updateStamps'))
+    sse.on('STAMP_DELETED', () => this.$store.dispatch('updateStamps'))
     sse.on('TRAQ_UPDATED', () => location.reload(true))
 
     this.heartbeat = setInterval(() => {
