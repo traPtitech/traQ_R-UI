@@ -5,6 +5,8 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
+const workboxPlugin = require('workbox-webpack-plugin')
+
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -25,12 +27,12 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      '@': resolve('src')
     }
   },
   module: {
     rules: [
-      ...(config.dev.useEslint? [{
+      ...(config.dev.useEslint ? [{
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
@@ -75,5 +77,15 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new workboxPlugin({
+      globDirectory: resolve('dist'),
+      globPatterns: [
+        '**/*.{js,html,css}'
+      ],
+      swSrc: resolve('static/sw.js'),
+      swDest: resolve('dist/sw.js')
+    })
+  ]
 }

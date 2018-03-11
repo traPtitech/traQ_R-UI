@@ -16,8 +16,8 @@ export default {
     Splash
   },
   created () {
-    if (navigator.serviceWorker) {
-      navigator.serviceWorker.register('/service-worker.js', {scope: '/'})
+    if (process.env.NODE_ENV === 'production' && navigator.serviceWorker) {
+      navigator.serviceWorker.register('/sw.js', {scope: '/'})
         .then(regisration => {
           console.log('Service Worker Registered!')
           regisration.update()
