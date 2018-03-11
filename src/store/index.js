@@ -99,7 +99,7 @@ export default new Vuex.Store({
     },
     setMessages (state, messages) {
       state.messages = messages
-      state.messagesNum += state.messages.length
+      state.messagesNum = state.messages.length
     },
     updateMessage (state, message) {
       const index = state.messages.findIndex(mes => mes.messageId === message.messageId)
