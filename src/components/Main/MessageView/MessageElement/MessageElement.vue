@@ -4,7 +4,9 @@ div.message
     img.message-user-icon(:src='userIconSrc')
   div.message-detail-wrap
     p.message-user-name
-      | {{$store.state.memberMap[model.userId].name}}
+      | {{$store.state.memberMap[model.userId].displayName}}
+    p.message-user-id
+      | @{{$store.state.memberMap[model.userId].name}}
     p.message-date
       | {{dateTime(model.datetime)}}
   div.message-content-wrap
