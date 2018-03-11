@@ -10,6 +10,7 @@ import ChannelList from '@/components/Main/Sidebar/Content/ChannelList'
 import MemberList from '@/components/Main/Sidebar/Content/MemberList'
 import LinkList from '@/components/Main/Sidebar/Content/LinkList'
 export default {
+  name: 'MenuContent',
   data () {
     return {
     }

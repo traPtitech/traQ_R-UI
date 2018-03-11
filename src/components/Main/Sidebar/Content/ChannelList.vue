@@ -8,6 +8,7 @@ div
 <script>
 import ChannelElement from '@/components/Main/Sidebar/Content/ChannelElement'
 export default {
+  name: 'ChannelList',
   data () {
     return {}
   },

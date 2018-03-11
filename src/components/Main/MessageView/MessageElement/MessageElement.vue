@@ -4,7 +4,9 @@ div.message
     img.message-user-icon(:src='userIconSrc')
   div.message-detail-wrap
     p.message-user-name
-      | {{$store.state.memberMap[model.userId].name}}
+      | {{$store.state.memberMap[model.userId].displayName}}
+    p.message-user-id
+      | @{{$store.state.memberMap[model.userId].name}}
     p.message-date
       | {{dateTime(model.datetime)}}
   div.message-content-wrap
@@ -45,7 +47,6 @@ div.message
 </template>
 
 <script>
-import StampList from '@/components/Main/MessageView/StampList'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 function isFile (text) {
@@ -113,7 +114,6 @@ export default {
       }
       client.editMessage(this.model.messageId, this.edited)
       this.isEditing = false
-      this.model.content = this.edited
       this.getAttachments()
     },
     editCancel () {
@@ -213,7 +213,7 @@ export default {
     this.getAttachments()
   },
   components: {
-    'StampList': StampList
+    'StampList': window.asyncLoadComponents(import('@/components/Main/MessageView/StampList'))
   }
 }
 </script>

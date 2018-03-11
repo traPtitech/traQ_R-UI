@@ -7,7 +7,7 @@ div.modal-overlay(v-if="active" @click="$emit('close')")
 
 <script>
 export default {
-  name: 'modal',
+  name: 'Modal',
   props: {
     active: Boolean
   },

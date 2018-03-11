@@ -1,12 +1,33 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import client from '@/bin/client'
+import indexedDB from '@/bin/indexeddb'
+const db = indexedDB.db
 
 Vue.use(Vuex)
+
+const loadGeneralData = (dataName, webLoad, commit) => {
+  let loaded = false
+  return Promise.race([
+    db.read('generalData', dataName)
+      .then(data => {
+        if (!loaded && data) {
+          commit(`set${dataName}Data`, data)
+        }
+      }),
+    webLoad()
+      .then(res => {
+        loaded = true
+        commit(`set${dataName}Data`, res.data)
+        db.write('generalData', {type: dataName, data: res.data})
+      })
+  ])
+}
 
 export default new Vuex.Store({
   state: {
     loaded: false,
+    loadedComponent: false,
     channelData: [],
     channelMap: {},
     memberData: [],
@@ -74,9 +95,11 @@ export default new Vuex.Store({
     addMessages (state, message) {
       state.messages.push(message)
       state.messagesNum++
+      db.write('channelMessages', {channelId: state.currentChannel.channelId, data: state.messages.slice(-50)})
     },
     setMessages (state, messages) {
       state.messages = messages
+      state.messagesNum += state.messages.length
     },
     updateMessage (state, message) {
       const index = state.messages.findIndex(mes => mes.messageId === message.messageId)
@@ -84,19 +107,12 @@ export default new Vuex.Store({
         return false
       }
       Vue.set(state.messages, index, message)
+      db.write('channelMessages', {channelId: state.currentChannel.channelId, data: state.messages.slice(-50)})
       return true
     },
     deleteMessage (state, messageId) {
       state.messages = state.messages.filter(message => message.messageId !== messageId)
-    },
-    setChannel (state, channelName) {
-      if (!state.channelMap[channelName]) return
-      state.channelName = channelName
-      state.channelId = state.channelMap[channelName].channelId
-      state.currentChannel = state.channelMap[channelName]
-      state.messagesNum = 0
-      state.messages = []
-      this.dispatch('getMessages')
+      db.write('channelMessages', {channelId: state.currentChannel.channelId, data: state.messages.slice(-50)})
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
@@ -109,20 +125,23 @@ export default new Vuex.Store({
     loadEnd (state) {
       state.loaded = true
     },
+    loadEndComponent (state) {
+      state.loadedComponent = true
+    },
     changeMenuContent (state, contentName) {
       state.menuContent = contentName
     },
-    setClipedMessages (state, data) {
+    setClipedMessagesData (state, data) {
       data.forEach(message => {
         Vue.set(state.clipedMessages, message.messageId, message)
       })
     },
-    setUnreadMessages (state, data) {
+    setUnreadMessagesData (state, data) {
       data.forEach(message => {
         Vue.set(state.unreadMessages, message.messageId, message)
       })
     },
-    setStaredChannels (state, data) {
+    setStaredChannelsData (state, data) {
       state.staredChannels = data
     },
     updateHeartbeatStatus (state, data) {
@@ -237,10 +256,10 @@ export default new Vuex.Store({
       }
     },
     getMyId (state) {
-      return state.me.userId
+      return state.me ? state.me.userId : ''
     },
     getMyName (state) {
-      return state.me.name
+      return state.me ? state.me.name : ''
     },
     notificationsOnMembers (state) {
       return state.currentChannelNotifications.map(id => state.memberMap[id])
@@ -261,73 +280,70 @@ export default new Vuex.Store({
     },
     getMessages ({state, commit}) {
       let nowChannel = state.currentChannel
-      return client.loadMessages(state.currentChannel.channelId, 50, state.messagesNum)
-      .then(res => {
-        if (nowChannel === state.currentChannel) {
-          state.messagesNum += res.data.length
-          commit('setMessages', res.data.reverse().concat(state.messages))
-        }
-      })
+      let loaded = false
+      const latest = state.messagesNum === 0
+      if (latest) {
+        db.read('channelMessages', nowChannel.channelId)
+          .then(data => {
+            if (!loaded && data) {
+              commit('setMessages', data)
+            }
+          })
+      }
+      return client.loadMessages(nowChannel.channelId, 50, state.messagesNum)
+        .then(res => {
+          loaded = true
+          const messages = res.data.reverse()
+          if (latest) {
+            db.write('channelMessages', {channelId: nowChannel.channelId, data: messages})
+          }
+          if (nowChannel === state.currentChannel) {
+            if (latest) {
+              commit('setMessages', messages)
+            } else {
+              commit('setMessages', messages.concat(state.messages))
+            }
+          }
+        })
     },
     updateChannels ({state, commit}) {
-      return client.getChannels()
-      .then(res => {
-        commit('setChannelData', res.data)
-      })
+      return loadGeneralData('Channel', client.getChannels, commit)
     },
     updateMembers ({state, commit}) {
-      return client.getMembers()
-      .then(res => {
-        commit('setMemberData', res.data)
-      })
+      return loadGeneralData('Member', client.getMembers, commit)
     },
     updateTags ({state, commit}) {
-      return client.getAllTags()
-      .then(res => {
-        commit('setTagData', res.data)
-      })
+      return loadGeneralData('Tag', client.getAllTags, commit)
     },
     updateStamps ({state, commit}) {
-      return client.getStamps()
-      .then(res => {
-        commit('setStampData', res.data)
-      })
+      return loadGeneralData('Stamp', client.getStamps, commit)
     },
     updateClipedMessages ({state, commit}) {
-      return client.getClipedMessages()
-      .then(res => {
-        commit('setClipedMessages', res.data)
-      })
+      return loadGeneralData('ClipedMessages', client.getClipedMessages, commit)
     },
     updateUnreadMessages ({state, commit}) {
-      return client.getUnreadMessages()
-      .then(res => {
-        commit('setUnreadMessages', res.data)
-      })
+      return loadGeneralData('UnreadMessages', client.getUnreadMessages, commit)
     },
     updateStaredChannels ({state, commit}) {
-      return client.getStaredChannels()
-      .then(res => {
-        commit('setStaredChannels', res.data)
-      })
+      return loadGeneralData('StaredChannels', client.getStaredChannels, commit)
     },
     getCurrentChannelTopic ({state, commit}, channelId) {
       return client.getChannelTopic(channelId)
-      .then(res => {
-        commit('setCurrentChannelTopic', res.data)
-      })
+        .then(res => {
+          commit('setCurrentChannelTopic', res.data)
+        })
     },
     getCurrentChannelPinnedMessages ({state, commit}, channelId) {
       return client.getPinnedMessages(channelId)
-      .then(res => {
-        commit('setCurrentChannelPinnedMessages', res.data)
-      })
+        .then(res => {
+          commit('setCurrentChannelPinnedMessages', res.data)
+        })
     },
     getCurrentChannelNotifications ({state, commit}, channelId) {
       return client.getNotifications(channelId)
-      .then(res => {
-        commit('setCurrentChannelNotifications', res.data)
-      })
+        .then(res => {
+          commit('setCurrentChannelNotifications', res.data)
+        })
     }
   }
 })

@@ -11,14 +11,24 @@ div.information
 </template>
 
 <script>
-import Topic from '@/components/Main/MessageView/ChannelInformation/Topic'
-import Pinned from '@/components/Main/MessageView/ChannelInformation/Pinned'
-import Notifications from '@/components/Main/MessageView/ChannelInformation/Notifications'
+const asyncLoadComponents = component => {
+  return () => {
+    return component
+      .then(data => {
+        if (process.env.NODE_ENV) {
+          console.log('async load component:', data.default.name)
+        }
+        return data
+      })
+  }
+}
 export default {
+  name: 'ChannelInformation',
   components: {
-    'Topic': Topic,
-    'Pinned': Pinned,
-    'Notifications': Notifications
+    'Topic': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Topic'
+)),
+    'Pinned': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Pinned')),
+    'Notifications': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Notifications'))
   }
 }
 </script>
