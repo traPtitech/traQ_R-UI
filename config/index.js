@@ -11,7 +11,6 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // '/service-worker.js': 'http://localhost:8080/static/'
     },
 
     // Various Dev Server settings

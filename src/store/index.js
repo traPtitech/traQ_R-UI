@@ -49,7 +49,8 @@ export default new Vuex.Store({
     me: null,
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []},
-    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.herokuapp.com' : ''
+    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.herokuapp.com' : '',
+    files: []
   },
   mutations: {
     setMe (state, me) {
@@ -193,6 +194,12 @@ export default new Vuex.Store({
           }
         }
       }
+    },
+    setFiles (state, files) {
+      state.files = files
+    },
+    clearFiles (state) {
+      state.files = []
     }
   },
   getters: {

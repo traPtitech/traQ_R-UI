@@ -1,7 +1,6 @@
 import axios from '@/bin/axios'
-// import store from '@/store/index'
 
-const middleWare = process.env.NODE_ENV === 'development'
+const middleWare = (process.env.NODE_ENV === 'development' || window.debug)
   ? (name, fn) => {
     return fn().then(res => { console.info(name, res); return Promise.resolve(res) }).catch(err => { console.error(name, err); return Promise.reject(err) })
   }
