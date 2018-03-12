@@ -1,7 +1,7 @@
 <template lang="pug">
 div.channel-wrap(v-if="model.visibility")
   div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
-    p.channel-box-name()
+    p.channel-box-name
       | {{model.name}}
     div.channel-status-wrap
       div.channel-notification
@@ -105,10 +105,10 @@ export default {
   width: 15px
   height: 15px
   cursor: pointer
-  background: url(~/src/assets/img/triangle_down.svg) no-repeat center
+  background: url(/static/img/triangle_down.svg) no-repeat center
   background-size: contain
   .channel-opened &
-    background: url(~/src/assets/img/triangle_up.svg) no-repeat center
+    background: url(/static/img/triangle_up.svg) no-repeat center
     background-size: contain
 
 </style>

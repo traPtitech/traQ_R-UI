@@ -8,12 +8,12 @@ div.sidebar
 <script>
 import MenuHeader from '@/components/Main/Sidebar/MenuHeader'
 import Navigation from '@/components/Main/Sidebar/Navigation'
-import MenuContent from '@/components/Main/Sidebar/MenuContent'
 export default {
+  name: 'Sidebar',
   components: {
     'MenuHeader': MenuHeader,
     'Navigation': Navigation,
-    'MenuContent': MenuContent
+    'MenuContent': window.asyncLoadComponents(import('@/components/Main/Sidebar/MenuContent'))
   }
 }
 </script>

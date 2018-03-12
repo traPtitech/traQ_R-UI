@@ -12,6 +12,7 @@ header.titlebar
 
 <script>
 export default {
+  name: 'Titlebar',
   computed: {
     title () {
       if (!this.$route.params.channel) return ''

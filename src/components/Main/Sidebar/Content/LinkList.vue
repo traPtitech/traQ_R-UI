@@ -4,6 +4,7 @@ div
 
 <script>
 export default {
+  name: 'LinkList'
 }
 </script>
 

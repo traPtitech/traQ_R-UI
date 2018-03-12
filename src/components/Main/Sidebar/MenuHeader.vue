@@ -9,6 +9,7 @@ div.menu-header
 <script>
 import client from '@/bin/client'
 export default {
+  name: 'MenuHeader',
   methods: {
     logout () {
       client.logout()

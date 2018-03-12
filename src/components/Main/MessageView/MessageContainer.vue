@@ -14,14 +14,15 @@ div.content-wrap
 </template>
 
 <script>
-import InputUI from '@/components/Main/MessageView/InputUI'
-import MessageMock from '@/components/Main/MessageView/MessageMock'
-import MessageElement from '@/components/Main/MessageView/MessageElement'
+import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 export default {
+  name: 'MessageContainer',
   components: {
-    'InputUI': InputUI,
-    'MessageElement': MessageElement,
-    'MessageMock': MessageMock
+    'InputUI': window.asyncLoadComponents(import('@/components/Main/MessageView/InputUI')),
+    'MessageElement': MessageElement
+  },
+  created () {
+    this.$store.commit('loadEndComponent')
   },
   methods: {
     loadMessages () {

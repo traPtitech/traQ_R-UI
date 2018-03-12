@@ -1,6 +1,6 @@
 <template lang="pug">
 div#app
-  splash(v-if="!$store.state.loaded")
+  splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
   router-view(v-else)
 </template>
 
@@ -14,6 +14,15 @@ export default {
   },
   components: {
     Splash
+  },
+  created () {
+    if (process.env.NODE_ENV === 'production' && navigator.serviceWorker) {
+      navigator.serviceWorker.register('/sw.js', {scope: '/'})
+        .then(regisration => {
+          console.log('Service Worker Registered!')
+          regisration.update()
+        })
+    }
   }
 }
 </script>
