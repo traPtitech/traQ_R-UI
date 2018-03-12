@@ -92,6 +92,16 @@ export default {
         await this.$nextTick()
         container.scrollTop = container.scrollHeight
       }
+
+      if (mutation.type === 'unshiftMessages') {
+        if (!this.$el) {
+          await this.$nextTick()
+        }
+        const container = this.$el.querySelector('.content-wrap')
+        const height = container.scrollHeight
+        await this.$nextTick()
+        container.scrollTop = container.scrollHeight - height
+      }
     })
   },
   beforeDestroy () {

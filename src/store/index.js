@@ -94,9 +94,21 @@ export default new Vuex.Store({
       })
     },
     addMessages (state, message) {
-      state.messages.push(message)
-      state.messagesNum++
+      if (Array.isArray(message)) {
+        state.messages.push(...message)
+      } else {
+        state.messages.push(message)
+      }
+      state.messagesNum = state.messages.length
       db.write('channelMessages', {channelId: state.currentChannel.channelId, data: state.messages.slice(-50)})
+    },
+    unshiftMessages (state, message) {
+      if (Array.isArray(message)) {
+        state.messages.unshift(...message)
+      } else {
+        state.messages.unshift(message)
+      }
+      state.messagesNum = state.messages.length
     },
     setMessages (state, messages) {
       state.messages = messages
@@ -308,7 +320,7 @@ export default new Vuex.Store({
             if (latest) {
               commit('setMessages', messages)
             } else {
-              commit('setMessages', messages.concat(state.messages))
+              commit('unshiftMessages', messages)
             }
           }
         })
