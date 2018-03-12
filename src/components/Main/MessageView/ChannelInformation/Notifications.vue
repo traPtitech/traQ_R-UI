@@ -1,7 +1,7 @@
 <template lang="pug">
-div
+div.channel-members
   div(@click="showModal")
-    | 通知
+    div.fas.fa-bell
   modal(@close="closeModal" :active="active")
     div
       | オンにしてる人

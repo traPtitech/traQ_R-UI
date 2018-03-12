@@ -1,7 +1,7 @@
 <template lang="pug">
-div
+div.channel-pinned
   div(@click="showModal")
-    | ピン留
+    div.fa.fa-thumbtack
   modal(@close="active = false" :active="active")
     ul
       li(v-for="pin in $store.state.currentChannelPinnedMessages")

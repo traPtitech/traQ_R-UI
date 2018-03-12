@@ -1,13 +1,10 @@
 <template lang="pug">
 div.information
   div.channel-online-users
-    | 見てる人：{{$store.state.heartbeatStatus.userStatuses.length}}
-  div.channel-members
-    Notifications
-  div.channel-pinned
-    Pinned
-  div.channel-topic
-    Topic
+    | {{onlineUsers}}
+  Notifications.channel-button
+  Pinned.channel-button
+  Topic.channel-button
 </template>
 
 <script>
@@ -19,6 +16,11 @@ export default {
     'Topic': Topic,
     'Pinned': Pinned,
     'Notifications': Notifications
+  },
+  computed: {
+    onlineUsers () {
+      return this.$store.state.heartbeatStatus.userStatuses.length
+    }
   }
 }
 </script>
@@ -27,7 +29,20 @@ export default {
 .information
   grid-area: information
   display: flex
-  flex-direction: column;
+  flex-direction: column
   background-color: #c2c2c2
   border-left: 1px solid #B0B0B0
+.channel-online-users
+  color: white
+  width: 80%
+  text-align: center
+  margin: 10px auto 5px
+  padding: 2px 0
+  background: #4e73d6
+  border-radius: 5px
+  user-select: none
+  cursor: pointer
+.channel-button
+  margin: 5px auto
+  cursor: pointer
 </style>
