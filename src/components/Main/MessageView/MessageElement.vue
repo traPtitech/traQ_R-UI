@@ -225,8 +225,7 @@ export default {
   grid-template-rows: 20px 1fr 20px
   grid-template-columns: 40px 1fr
   border-bottom: solid 1px rgba(0, 0, 0, 0.1)
-  margin: 10px 0
-  padding: 5px 10px
+  padding: 10px 10px
 .message-user-icon-wrap
   grid-area: user-icon
 .message-user-icon
@@ -250,6 +249,8 @@ export default {
   text-align: left
   font-size: 0.9em
   word-break: break-all
+  & pre
+    white-space: pre-wrap
 .message-buttons-wrap
   grid-area: buttons
 .emoji.s16
