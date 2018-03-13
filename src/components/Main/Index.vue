@@ -1,5 +1,5 @@
 <template lang="pug">
-div.index
+FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").index
   Titlebar
   Message
   Information
@@ -10,6 +10,7 @@ div.index
 import sse from '@/bin/sse'
 import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
+import FileDroper from '@/components/Util/FileDroper'
 
 export default {
   name: 'index',
@@ -22,7 +23,8 @@ export default {
     'Sidebar': window.asyncLoadComponents(import('@/components/Main/Sidebar/Sidebar')),
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
-    'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation'))
+    'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation')),
+    'FileDroper': FileDroper
   },
   async created () {
     if (!this.$route.params.channel) {
@@ -36,6 +38,7 @@ export default {
         }
       })
     }
+    console.log(process.env.NODE_ENV)
 
     sse.startListen()
     sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
@@ -70,19 +73,34 @@ export default {
     }, 3000)
 
     this.$store.subscribe(async mutation => {
-      if (!this.$el) {
-        await this.$nextTick()
-      }
-      const container = this.$el.querySelector('.content-wrap')
-      await this.$nextTick()
       if (mutation.type === 'addMessages') {
+        if (!this.$el) {
+          await this.$nextTick()
+        }
+        const container = this.$el.querySelector('.content-wrap')
+        await this.$nextTick()
         if (container.scrollHeight - container.scrollTop < 1000) {
           container.scrollTop = container.scrollHeight
         }
       }
 
       if (mutation.type === 'setMessages') {
+        if (!this.$el) {
+          await this.$nextTick()
+        }
+        const container = this.$el.querySelector('.content-wrap')
+        await this.$nextTick()
         container.scrollTop = container.scrollHeight
+      }
+
+      if (mutation.type === 'unshiftMessages') {
+        if (!this.$el) {
+          await this.$nextTick()
+        }
+        const container = this.$el.querySelector('.content-wrap')
+        const height = container.scrollHeight
+        await this.$nextTick()
+        container.scrollTop = container.scrollHeight - height
       }
     })
   },
@@ -144,6 +162,9 @@ export default {
         return new Notification(title, options)
       }
       return null
+    },
+    dropFile (files) {
+      this.$store.commit('setFiles', files)
     }
   },
   watch: {

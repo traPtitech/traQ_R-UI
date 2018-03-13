@@ -26,6 +26,15 @@ export default {
       uploadedIds: []
     }
   },
+  created () {
+    this.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'setFiles') {
+        console.log(state.files)
+        this.dropFile(state.files)
+        this.$store.commit('clearFiles')
+      }
+    })
+  },
   methods: {
     focus () {
       if (!this.isOpened) {
@@ -130,10 +139,9 @@ export default {
         this.files.push(event.target.files[i])
       }
     },
-    dropFile (event) {
-      event.preventDefault()
-      for (let i = 0; i < event.dataTransfer.files.length; i++) {
-        this.files.push(event.dataTransfer.files[i])
+    dropFile (files) {
+      for (let i = 0; i < files.length; i++) {
+        this.files.push(files[i])
       }
     },
     removeFile (id) {

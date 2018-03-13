@@ -25,6 +25,11 @@ const router = new Router({
       component: asyncLoadComponents(import('@/components/Login/Login'))
     },
     {
+      path: '/setting',
+      name: 'Setting',
+      component: asyncLoadComponents(import('@/components/Setting/Index'))
+    },
+    {
       path: '/',
       name: 'Index',
       component: asyncLoadComponents(import('@/components/Main/Index'))
