@@ -104,7 +104,7 @@ export default {
       })
     },
     replaceChannel (message) {
-      return message.replace(/#([a-zA-Z0-9+_/-]+)/g, (match, name) => {
+      return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
           return `!{"type": "channel", "raw": "${match.replace(/_/g, '\\_')}", "id": "${channel.channelId}"}`
