@@ -4,6 +4,7 @@ import MarkdownItMark from 'markdown-it-mark'
 import myPlugin from '@/bin/markdown-it-extends'
 import regexp from 'markdown-it-regexp'
 import store from '@/store/index'
+import milt from 'markdown-it-link-target'
 
 function highlight (code, lang) {
   const [langName, langCaption] = lang.split(':')
@@ -31,6 +32,7 @@ md.use(regexp(/:(\w+):/, (match, utils) => {
     return match[0]
   }
 }))
+md.use(milt)
 md.disable('image')
 
 export default md
