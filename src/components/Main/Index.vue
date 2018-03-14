@@ -8,9 +8,11 @@ FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").inde
 
 <script>
 import sse from '@/bin/sse'
+import indexedDB from '@/bin/indexeddb'
 import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
 import FileDroper from '@/components/Util/FileDroper'
+const db = indexedDB.db
 
 export default {
   name: 'index',
@@ -43,8 +45,8 @@ export default {
     sse.startListen()
     sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
     sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
-    sse.on('USER_TAGS_UPDATE', () => {})
-    sse.on('USER_ICON_UPDATED', () => {})
+    sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTags'))
+    sse.on('USER_ICON_UPDATED', () => this.$store.dispatch('updateMembers'))
     sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
     sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
     sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))
@@ -71,6 +73,36 @@ export default {
         this.$store.commit('updateHeartbeatStatus', res.data)
       })
     }, 3000)
+
+    window.ononline = async () => {
+      if (sse.readyState === 2) {
+        sse.startListen()
+      }
+
+      const currentChannel = this.$store.state.currentChannel
+      this.$store.commit('changeChannel', currentChannel)
+      await this.$store.dispatch('getMessages')
+      .then(() => {
+        this.$store.dispatch('getCurrentChannelTopic', currentChannel.channelId)
+        this.$store.dispatch('getCurrentChannelPinnedMessages', currentChannel.channelId)
+        this.$store.dispatch('getCurrentChannelNotifications', currentChannel.channelId)
+      })
+
+      // 起動後すぐ必要なもの
+      Promise.all([
+        this.$store.dispatch('updateChannels'),
+        this.$store.dispatch('updateMembers')
+      ])
+
+      // 起動後すぐには必要ないもの
+      Promise.all([
+        this.$store.dispatch('updateClipedMessages'),
+        this.$store.dispatch('updateStaredChannels'),
+        this.$store.dispatch('updateUnreadMessages'),
+        this.$store.dispatch('updateTags'),
+        this.$store.dispatch('updateStamps')
+      ])
+    }
 
     this.$store.subscribe(async mutation => {
       if (mutation.type === 'addMessages') {

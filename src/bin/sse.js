@@ -30,6 +30,12 @@ const sse = {
   startListen () {
     source = new EventSource(baseURL + '/api/1.0/notification', {withCredentials: true})
   },
+  readyState () {
+    if (source) {
+      return source.readyState
+    }
+    return 2
+  },
   stopListen () {
     source.close()
     source = null
