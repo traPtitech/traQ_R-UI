@@ -4,6 +4,7 @@ import MarkdownItMark from 'markdown-it-mark'
 import myPlugin from '@/bin/markdown-it-extends'
 import regexp from 'markdown-it-regexp'
 import store from '@/store/index'
+import mila from 'markdown-it-link-attributes'
 
 function highlight (code, lang) {
   const [langName, langCaption] = lang.split(':')
@@ -31,6 +32,12 @@ md.use(regexp(/:(\w+):/, (match, utils) => {
     return match[0]
   }
 }))
+md.use(mila, {
+  attrs: {
+    target: '_blank',
+    rel: 'nofollow noopener noreferrer'
+  }
+})
 md.disable('image')
 
 export default md
