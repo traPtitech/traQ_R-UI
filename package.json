@@ -52,7 +52,7 @@
     "html-webpack-plugin": "^2.30.1",
     "markdown-it": "^8.4.1",
     "markdown-it-for-inline": "^0.1.1",
-    "markdown-it-link-target": "^1.0.2",
+    "markdown-it-link-attributes": "^2.0.0",
     "markdown-it-mark": "^2.0.0",
     "markdown-it-regexp": "^0.4.0",
     "node-notifier": "^5.1.2",
