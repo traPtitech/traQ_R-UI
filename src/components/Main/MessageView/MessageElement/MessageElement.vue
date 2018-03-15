@@ -40,13 +40,17 @@ div.message
     StampList(:model="{messageId: model.messageId}")
   div.message-files-wrap
     div(v-for="file in files")
-      img(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
+      img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
       a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
-        video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-        audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-        img(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
-      a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
-        | {{`${file.mime.split('/')[0]} ${file.name} ${file.size}byte`}}
+        video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+        audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+        img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
+      a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
+        p
+          | {{file.name}}
+        br
+        small
+          | {{encodeByte(file.size)}}
 </template>
 
 <script>
@@ -165,6 +169,20 @@ export default {
       } else {
         client.stampMessage(this.model.messageId, stampId)
       }
+    },
+    encodeByte (byte) {
+      const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+      let rank = 0
+      while (byte >= 1000) {
+        byte /= 1000
+        rank++
+      }
+      const nums = byte.toPrecision(4).split('.')
+      if (nums.length > 1) {
+        return nums[0] + '.' + nums[1][0] + suffixes[rank]
+      } else {
+        return nums[0] + suffixes[rank]
+      }
     }
   },
   computed: {
@@ -268,4 +286,11 @@ export default {
   overflow: hidden
   color: transparent
   background-size: contain
+.attached-image
+  max-width: 360px
+  max-height: 480px
+.attached-video
+  max-width: 360px
+  max-height: 480px
+  background-color: #000000
 </style>
