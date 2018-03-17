@@ -26,6 +26,15 @@ export default {
       uploadedIds: []
     }
   },
+  created () {
+    this.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'setFiles') {
+        console.log(state.files)
+        this.dropFile(state.files)
+        this.$store.commit('clearFiles')
+      }
+    })
+  },
   methods: {
     focus () {
       if (!this.isOpened) {
@@ -85,7 +94,7 @@ export default {
       })
     },
     replaceUser (message) {
-      return message.replace(/@([a-zA-Z0-9+_-]+)/g, (match, name) => {
+      return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
         const user = this.$store.getters.getUserByName(name)
         if (user) {
           return `!{"type": "user", "raw": "${match.replace(/_/g, '\\_')}", "id": "${user.userId}"}`
@@ -95,7 +104,7 @@ export default {
       })
     },
     replaceChannel (message) {
-      return message.replace(/#([a-zA-Z0-9+_/-]+)/g, (match, name) => {
+      return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
           return `!{"type": "channel", "raw": "${match.replace(/_/g, '\\_')}", "id": "${channel.channelId}"}`
@@ -130,10 +139,9 @@ export default {
         this.files.push(event.target.files[i])
       }
     },
-    dropFile (event) {
-      event.preventDefault()
-      for (let i = 0; i < event.dataTransfer.files.length; i++) {
-        this.files.push(event.dataTransfer.files[i])
+    dropFile (files) {
+      for (let i = 0; i < files.length; i++) {
+        this.files.push(files[i])
       }
     },
     removeFile (id) {

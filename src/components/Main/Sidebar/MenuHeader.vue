@@ -2,6 +2,8 @@
 div.menu-header
   div.search
     i.fa.fa-search(aria-hidden="true")
+  button(@click="$router.push('/setting')")
+    | setting
   button(@click="logout")
     | logout
 </template>
@@ -13,7 +15,9 @@ export default {
   methods: {
     logout () {
       client.logout()
-      this.$router.push('/login')
+        .then(() => {
+          location.href = '/login'
+        })
     }
   }
 }

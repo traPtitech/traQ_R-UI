@@ -5,8 +5,8 @@ div.login
       | Welcome to traQ
   div.login-right-box
     div.input-wrap
-      input.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス" required)
-      input.login-input.input-password(v-model="pass" type="password" placeholder="パスワード" required)
+      input.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス" required @keydown.enter="loginPost")
+      input.login-input.input-password(v-model="pass" type="password" placeholder="パスワード" required @keydown.enter="loginPost")
     div.login-button-wrap
       button.login-button(v-on:click="loginPost()")
         p ログイン
