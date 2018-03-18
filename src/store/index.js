@@ -290,12 +290,12 @@ export default new Vuex.Store({
   actions: {
     whoAmI ({state, commit}) {
       return client.whoAmI()
-      .then(res => {
-        commit('setMe', res.data)
-      })
-      .catch(() => {
-        commit('setMe', null)
-      })
+        .then(res => {
+          commit('setMe', res.data)
+        })
+        .catch(() => {
+          commit('setMe', null)
+        })
     },
     getMessages ({state, commit}) {
       let nowChannel = state.currentChannel
