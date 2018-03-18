@@ -24,7 +24,7 @@ export default {
     'OnlineUsers': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/OnlineUsers'
 )),
     'Topic': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Topic'
-)),
+    )),
     'Pinned': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Pinned')),
     'Notifications': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Notifications'))
   }

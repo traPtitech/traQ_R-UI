@@ -34,19 +34,19 @@ export default {
     loginPost: function () {
       this.status = 'processing'
       client.login(this.name, this.pass)
-      .then(res => {
-        this.status = 'successed'
-        console.log(res)
-        this.$store.commit('loadStart')
-        this.$store.dispatch('whoAmI')
-        .then(() => {
-          this.$router.push('/channels/random')
+        .then(res => {
+          this.status = 'successed'
+          console.log(res)
+          this.$store.commit('loadStart')
+          this.$store.dispatch('whoAmI')
+            .then(() => {
+              this.$router.push('/channels/random')
+            })
         })
-      })
-      .catch(err => {
-        this.status = 'failed'
-        console.error(err)
-      })
+        .catch(err => {
+          this.status = 'failed'
+          console.error(err)
+        })
     }
   }
 }

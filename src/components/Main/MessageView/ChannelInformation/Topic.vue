@@ -23,9 +23,9 @@ export default {
   methods: {
     changeChannelTopic () {
       client.changeChannelTopic(this.$store.state.currentChannel.channelId, this.topicText)
-      .then(res => {
-        this.$store.commit('setCurrentChannelTopic', res.data)
-      })
+        .then(res => {
+          this.$store.commit('setCurrentChannelTopic', res.data)
+        })
     },
     showModal () {
       this.active = true
