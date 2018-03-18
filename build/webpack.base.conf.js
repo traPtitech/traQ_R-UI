@@ -5,8 +5,6 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
-const workboxPlugin = require('workbox-webpack-plugin')
-
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -77,15 +75,5 @@ module.exports = {
         }
       }
     ]
-  },
-  plugins: [
-    new workboxPlugin({
-      globDirectory: resolve('dist'),
-      globPatterns: [
-        '**/*.{js,html,css}'
-      ],
-      swSrc: resolve('static/sw.js'),
-      swDest: resolve('dist/sw.js')
-    })
-  ]
+  }
 }

@@ -67,9 +67,9 @@ export default {
 
     this.heartbeat = setInterval(() => {
       client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
-      .then(res => {
-        this.$store.commit('updateHeartbeatStatus', res.data)
-      })
+        .then(res => {
+          this.$store.commit('updateHeartbeatStatus', res.data)
+        })
     }, 3000)
 
     this.$store.subscribe(async mutation => {
@@ -120,38 +120,38 @@ export default {
     },
     messageCreated (data) {
       client.getMessage(data.id)
-      .then(res => {
-        const user = this.$store.state.memberMap[res.data.userId]
-        const channel = this.$store.state.channelMap[res.data.parentChannelId]
-        if (user.userId === this.$store.state.me.userId) {
-          if (!this.$store.state.messages.find(m => m.messageId === data.id)) {
-            if (channel.channelId === this.$store.state.currentChannel.channelId) {
-              this.$store.commit('addMessages', res.data)
+        .then(res => {
+          const user = this.$store.state.memberMap[res.data.userId]
+          const channel = this.$store.state.channelMap[res.data.parentChannelId]
+          if (user.userId === this.$store.state.me.userId) {
+            if (!this.$store.state.messages.find(m => m.messageId === data.id)) {
+              if (channel.channelId === this.$store.state.currentChannel.channelId) {
+                this.$store.commit('addMessages', res.data)
+              }
             }
+            return
           }
-          return
-        }
-        const title = this.$store.getters.getChannelPathById(channel.channelId)
-        const options = {
-          icon: client.getUserIconUrl(user.userId),
-          body: user.name + ':' + res.data.content
-        }
-        const notification = this.notify(title, options)
-        notification.onclick = () => {
-          window.focus()
-          this.$router.push(title)
-        }
+          const title = this.$store.getters.getChannelPathById(channel.channelId)
+          const options = {
+            icon: client.getUserIconUrl(user.userId),
+            body: user.name + ':' + res.data.content
+          }
+          const notification = this.notify(title, options)
+          notification.onclick = () => {
+            window.focus()
+            this.$router.push(title)
+          }
 
-        if (channel.channelId === this.$store.state.currentChannel.channelId) {
-          this.$store.commit('addMessages', res.data)
-        }
-      })
+          if (channel.channelId === this.$store.state.currentChannel.channelId) {
+            this.$store.commit('addMessages', res.data)
+          }
+        })
     },
     messageUpdated (data) {
       client.getMessage(data.id)
-      .then(res => {
-        this.$store.commit('updateMessage', res.data)
-      })
+        .then(res => {
+          this.$store.commit('updateMessage', res.data)
+        })
     },
     messageDeleted (data) {
       this.$store.commit('deleteMessage', data.id)
@@ -170,9 +170,9 @@ export default {
   watch: {
     '$route.params.channel': function () {
       client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
-      .then(res => {
-        this.$store.commit('updateHeartbeatStatus', res.data)
-      })
+        .then(res => {
+          this.$store.commit('updateHeartbeatStatus', res.data)
+        })
     }
   }
 }

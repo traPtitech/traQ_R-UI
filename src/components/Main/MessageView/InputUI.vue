@@ -57,14 +57,14 @@ export default {
       }
       if (this.files.length > 0) {
         this.uploadFiles()
-        .then(() => {
-          this.files = []
-          this.postMessage()
-        })
-        .catch(err => {
-          console.log(err)
-          this.postStatus = 'failed'
-        })
+          .then(() => {
+            this.files = []
+            this.postMessage()
+          })
+          .catch(err => {
+            console.log(err)
+            this.postStatus = 'failed'
+          })
       } else {
         this.postMessage()
       }
@@ -82,16 +82,16 @@ export default {
       message = this.replaceChannel(message)
       message = this.replaceTag(message)
       client.postMessage(nowChannel.channelId, message)
-      .then((res) => {
-        this.inputText = ''
-        this.postStatus = 'successed'
-        if (nowChannel === this.$store.state.currentChannel) {
-          this.$store.commit('addMessages', res.data)
-        }
-      })
-      .catch(() => {
-        this.postStatus = 'failed'
-      })
+        .then((res) => {
+          this.inputText = ''
+          this.postStatus = 'successed'
+          if (nowChannel === this.$store.state.currentChannel) {
+            this.$store.commit('addMessages', res.data)
+          }
+        })
+        .catch(() => {
+          this.postStatus = 'failed'
+        })
     },
     replaceUser (message) {
       return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {

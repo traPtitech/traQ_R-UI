@@ -142,15 +142,15 @@ export default {
     },
     clipMessage () {
       client.clipMessage(this.model.messageId)
-      .then(res => {
-        this.$store.commit('setClipedMessages', res.data)
-      })
+        .then(res => {
+          this.$store.commit('setClipedMessages', res.data)
+        })
     },
     unclipMessage () {
       client.unclipMessage(this.model.messageId)
-      .then(res => {
-        this.$store.commit('setClipedMessages', res.data)
-      })
+        .then(res => {
+          this.$store.commit('setClipedMessages', res.data)
+        })
     },
     dateTime: function (datetime) {
       const d = new Date(datetime)
@@ -160,8 +160,8 @@ export default {
       const data = detectFiles(this.model.content)
       this.files = (await Promise.all(data.map(async e => {
         return this.$store.getters.getFileDataById(e.id)
-        .then(res => res.data)
-        .catch(e => null)
+          .then(res => res.data)
+          .catch(e => null)
       }))).filter(e => e)
     },
     toggleStamp (stampId) {
