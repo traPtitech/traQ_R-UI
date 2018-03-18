@@ -4,11 +4,11 @@ nav.menu-buttons
     li.menu-button.user-icon-wrap
       img.user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[$store.state.me.userId].iconFileId}`")
     li.menu-button.channels(@click="navClicked('channels')")
-      i.fa.fa-hashtag(aria-hidden="true")
+      i.fas.fa-hashtag(aria-hidden="true")
     li.menu-button.members(@click="navClicked('members')")
-      i.fa.fa-user-circle-o(aria-hidden="true")
+      i.fas.fa-user(aria-hidden="true")
     li.menu-button.links(@click="navClicked('links')")
-      i.fa.fa-th-large(aria-hidden="true")
+      i.fas.fa-th-large(aria-hidden="true")
 </template>
 
 <script>

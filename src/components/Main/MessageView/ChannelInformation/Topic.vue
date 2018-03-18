@@ -1,7 +1,7 @@
 <template lang="pug">
-div
+div.channel-topic
   div(@click="showModal")
-    | topic
+    div.fas.fa-comment
   modal(:active="active" @close="active = false")
     div
       | トピックを変更する
