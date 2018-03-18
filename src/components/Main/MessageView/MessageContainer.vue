@@ -3,11 +3,11 @@ div.content-wrap
   div.sticky-container.sticky
     InputUI
   content.message-wrap
-    ul
+    ul.message-list
       li
         button(v-on:click="loadMessages")
           | load
-      li(v-for="(message, index) in $store.state.messages")
+      li.message-item(v-for="(message, index) in $store.state.messages")
         strong(v-if="index === 0 || date($store.state.messages[index - 1].datetime) !== date(message.datetime)")
           | {{date(message.datetime)}}
         MessageElement(:model="message" v-bind:key="message.messageId")
@@ -56,4 +56,8 @@ export default {
   left: 0
   z-index: 1
   pointer-events: none
+.message-item
+  overflow: hidden
+.message-list
+  padding-bottom: 60px
 </style>

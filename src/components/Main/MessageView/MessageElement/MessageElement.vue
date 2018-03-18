@@ -3,10 +3,11 @@ div.message
   div.message-user-icon-wrap
     img.message-user-icon(:src='userIconSrc')
   div.message-detail-wrap
-    p.message-user-name
-      | {{$store.state.memberMap[model.userId].displayName}}
-    p.message-user-id
-      | @{{$store.state.memberMap[model.userId].name}}
+    div.message-detail-left
+      p.message-user-name
+        | {{$store.state.memberMap[model.userId].displayName}}
+      p.message-user-id
+        | @{{$store.state.memberMap[model.userId].name}}
     p.message-date
       | {{dateTime(model.datetime)}}
   div.message-content-wrap
@@ -245,23 +246,29 @@ export default {
   grid-template-areas: "user-icon detail""user-icon content""... buttons"
   grid-template-rows: 20px 1fr 20px
   grid-template-columns: 40px 1fr
-  border-bottom: solid 1px rgba(0, 0, 0, 0.1)
-  margin: 10px 0
-  padding: 5px 10px
+  border-top: solid 1px rgba(0, 0, 0, 0.1)
+  padding: 10px 10px
 .message-user-icon-wrap
   grid-area: user-icon
 .message-user-icon
   width: 40px
   height: 40px
-  background-color: gray
+  background-color: white
   border-radius: 100%
 .message-detail-wrap
   grid-area: detail
   display: flex
   justify-content: space-between
+  align-items: center
+.message-detail-left
+  display: flex
+  align-items: center
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
+.message-user-id
+  margin-left: 5px
+  font-size: 0.8em
 .message-date
   font-size: 0.7em
 .message-content-wrap
@@ -271,6 +278,8 @@ export default {
   text-align: left
   font-size: 0.9em
   word-break: break-all
+  & pre
+    white-space: pre-wrap
 .message-buttons-wrap
   grid-area: buttons
 .emoji.s16

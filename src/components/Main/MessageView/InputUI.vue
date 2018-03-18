@@ -3,8 +3,8 @@ div.input-ui
   input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
   div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
   div.submit-button(v-show="isOpened" v-on:click="submit")
-  div.input-area-wrapper(v-on:drom="dropFile")
-    textarea.input-area(id="messageInput" v-show="isOpened" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+  div.input-area-wrapper(v-on:drom="dropFile" v-show="isOpened")
+    textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
     div(v-for="(file, index) in files" v-on:click="removeFile(index)")
       | {{ file.name }}
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
@@ -206,6 +206,7 @@ export default {
   right: 5px
 .input-area-wrapper
   width: 100%
+  min-height: 60px
   max-height: 150px
   overflow-x: hidden
   overflow-y: scroll
@@ -214,6 +215,7 @@ export default {
   left: 0
   bottom: 0
   border-top: solid 1px rgba(0, 0, 0, 0.5)
+  background-color: white
 .input-area
   box-sizing: border-box
   z-index: 100
