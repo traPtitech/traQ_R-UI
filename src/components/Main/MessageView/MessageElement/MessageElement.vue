@@ -31,6 +31,8 @@ div.message
       | unclip
     button(v-on:click="clipMessage" v-else)
       | clip
+    button(v-on:click="copyMessage")
+      | copy
   div.message-stamps-wrap(style="display: table;")
     div(v-for="stamp in stamps" style="display: table-cell;")
       div(v-on:click="toggleStamp(stamp.stampId)")
@@ -39,6 +41,13 @@ div.message
         p
           | {{stamp.sum}}
     StampList(:model="{messageId: model.messageId}")
+  div.message-messages-wrap
+    blockquote(v-for="m in messages")
+      component(v-bind:is="mark(m.content)" v-bind="$props")
+      small
+        | referenced from
+        router-link(:to="`/channels/${$store.getters.getChannelPathById(m.parentChannelId)}`")
+          | {{`#${$store.getters.getChannelPathById(m.parentChannelId)}`}}
   div.message-files-wrap
     div(v-for="file in files")
       img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
@@ -69,6 +78,18 @@ function isFile (text) {
     return false
   }
 }
+function isMessage (text) {
+  try {
+    const data = JSON.parse(text)
+    if (data['type'] === 'message' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
+      return true
+    } else {
+      return false
+    }
+  } catch (e) {
+    return false
+  }
+}
 function detectFiles (text) {
   let isInside = false
   let startIndex = -1
@@ -80,7 +101,7 @@ function detectFiles (text) {
         isString ^= true
       } else if (!isString && text[i] === '}') {
         isInside = false
-        if (isFile(text.substr(startIndex + 1, i - startIndex))) {
+        if (isFile(text.substr(startIndex + 1, i - startIndex)) || isMessage(text.substr(startIndex + 1, i - startIndex))) {
           ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
         } else {
           i = startIndex + 1
@@ -107,7 +128,8 @@ export default {
       isEditing: false,
       edited: '',
       pin: null,
-      files: []
+      files: [],
+      messages: []
     }
   },
   methods: {
@@ -158,8 +180,13 @@ export default {
     },
     async getAttachments () {
       const data = detectFiles(this.model.content)
-      this.files = (await Promise.all(data.map(async e => {
+      this.files = (await Promise.all(data.filter(e => e.type === 'file').map(async e => {
         return this.$store.getters.getFileDataById(e.id)
+          .then(res => res.data)
+          .catch(e => null)
+      }))).filter(e => e)
+      this.messages = (await Promise.all(data.filter(e => e.type === 'message').map(async e => {
+        return client.getMessage(e.id)
           .then(res => res.data)
           .catch(e => null)
       }))).filter(e => e)
@@ -184,6 +211,22 @@ export default {
       } else {
         return nums[0] + suffixes[rank]
       }
+    },
+    mark (text) {
+      return {
+        template: `<div class="message-content">${md.render(text)}</div>`,
+        props: this.$options.props
+      }
+    },
+    copyMessage () {
+      const body = document.body
+      if (!body) return
+      const textarea = document.createElement('textarea')
+      textarea.value = `!{"raw":"","type":"message","id":"${this.model.messageId}"}`
+      body.appendChild(textarea)
+      textarea.select()
+      document.execCommand('copy')
+      body.removeChild(textarea)
     }
   },
   computed: {
