@@ -31,6 +31,8 @@ div.message
       | unclip
     button(v-on:click="clipMessage" v-else)
       | clip
+    button(v-on:click="copyMessage")
+      | copy
   div.message-stamps-wrap(style="display: table;")
     div(v-for="stamp in stamps" style="display: table-cell;")
       div(v-on:click="toggleStamp(stamp.stampId)")
@@ -39,15 +41,31 @@ div.message
         p
           | {{stamp.sum}}
     StampList(:model="{messageId: model.messageId}")
+  div.message-messages-wrap
+    div.attached-message(v-for="m in messages")
+      img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`")
+      p.message-user-name
+        | {{$store.state.memberMap[m.userId].displayName}}
+      p.message-user-id
+        | @{{$store.state.memberMap[m.userId].name}}
+      component(v-bind:is="mark(m.content)" v-bind="$props")
+      small
+        | referenced from
+        router-link(:to="`/channels/${$store.getters.getChannelPathById(m.parentChannelId)}`")
+          | {{`#${$store.getters.getChannelPathById(m.parentChannelId)}`}}
   div.message-files-wrap
     div(v-for="file in files")
-      img(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
+      img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
       a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
-        video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-        audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-        img(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
-      a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
-        | {{`${file.mime.split('/')[0]} ${file.name} ${file.size}byte`}}
+        video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+        audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+        img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
+      a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
+        p
+          | {{file.name}}
+        br
+        small
+          | {{encodeByte(file.size)}}
 </template>
 
 <script>
@@ -57,6 +75,18 @@ function isFile (text) {
   try {
     const data = JSON.parse(text)
     if (data['type'] === 'file' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
+      return true
+    } else {
+      return false
+    }
+  } catch (e) {
+    return false
+  }
+}
+function isMessage (text) {
+  try {
+    const data = JSON.parse(text)
+    if (data['type'] === 'message' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
       return true
     } else {
       return false
@@ -76,7 +106,7 @@ function detectFiles (text) {
         isString ^= true
       } else if (!isString && text[i] === '}') {
         isInside = false
-        if (isFile(text.substr(startIndex + 1, i - startIndex))) {
+        if (isFile(text.substr(startIndex + 1, i - startIndex)) || isMessage(text.substr(startIndex + 1, i - startIndex))) {
           ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
         } else {
           i = startIndex + 1
@@ -103,7 +133,8 @@ export default {
       isEditing: false,
       edited: '',
       pin: null,
-      files: []
+      files: [],
+      messages: []
     }
   },
   methods: {
@@ -154,8 +185,13 @@ export default {
     },
     async getAttachments () {
       const data = detectFiles(this.model.content)
-      this.files = (await Promise.all(data.map(async e => {
+      this.files = (await Promise.all(data.filter(e => e.type === 'file').map(async e => {
         return this.$store.getters.getFileDataById(e.id)
+          .then(res => res.data)
+          .catch(e => null)
+      }))).filter(e => e)
+      this.messages = (await Promise.all(data.filter(e => e.type === 'message').map(async e => {
+        return client.getMessage(e.id)
           .then(res => res.data)
           .catch(e => null)
       }))).filter(e => e)
@@ -166,6 +202,36 @@ export default {
       } else {
         client.stampMessage(this.model.messageId, stampId)
       }
+    },
+    encodeByte (byte) {
+      const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+      let rank = 0
+      while (byte >= 1000) {
+        byte /= 1000
+        rank++
+      }
+      const nums = byte.toPrecision(4).split('.')
+      if (nums.length > 1) {
+        return nums[0] + '.' + nums[1][0] + suffixes[rank]
+      } else {
+        return nums[0] + suffixes[rank]
+      }
+    },
+    mark (text) {
+      return {
+        template: `<div class="message-content">${md.render(text)}</div>`,
+        props: this.$options.props
+      }
+    },
+    copyMessage () {
+      const body = document.body
+      if (!body) return
+      const textarea = document.createElement('textarea')
+      textarea.value = `!{"raw":"","type":"message","id":"${this.model.messageId}"}`
+      body.appendChild(textarea)
+      textarea.select()
+      document.execCommand('copy')
+      body.removeChild(textarea)
     }
   },
   computed: {
@@ -277,4 +343,14 @@ export default {
   overflow: hidden
   color: transparent
   background-size: contain
+.attached-image
+  max-width: 360px
+  max-height: 480px
+.attached-video
+  max-width: 360px
+  max-height: 480px
+  background-color: #000000
+.attached-message
+  padding: 5px 10px
+  border-left: 5px solid
 </style>

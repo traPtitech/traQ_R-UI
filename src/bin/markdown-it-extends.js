@@ -30,7 +30,7 @@ const isJson = (text) => {
       return true
     } else if (data['type'] === 'tag' && store.state.tagMap[data['id']]) {
       return true
-    } else if (data['type'] === 'file') {
+    } else if (data['type'] === 'file' || data['type'] === 'message') {
       return true
     }
     return false
@@ -60,11 +60,17 @@ const jsonParse = (text) => {
       newTag('text', '', data['raw'], null, 0),
       newTag('traq_extends_link_close', 'router-link', '', null, -1)
     ]
-  } else {
+  } else if (data['type'] === 'file') {
     return [
       newTag('traq_extends_link_open', 'a', '', [['href', `${store.state.baseURL}/api/1.0/files/${data['id']}`], ['download', data['id']]], 1),
       newTag('text', '', data['raw'], null, 0),
       newTag('traq_extends_link_close', 'a', '', null, -1)
+    ]
+  } else {
+    return [
+      newTag('traq_extends_plain_text', 'p', '', [], 1),
+      newTag('text', '', data['raw'], null, 0),
+      newTag('traq_extends_plain_text', 'p', '', null, -1)
     ]
   }
 }
