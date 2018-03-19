@@ -42,7 +42,12 @@ div.message
           | {{stamp.sum}}
     StampList(:model="{messageId: model.messageId}")
   div.message-messages-wrap
-    blockquote(v-for="m in messages")
+    div.attached-message(v-for="m in messages")
+      img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`")
+      p.message-user-name
+        | {{$store.state.memberMap[m.userId].displayName}}
+      p.message-user-id
+        | @{{$store.state.memberMap[m.userId].name}}
       component(v-bind:is="mark(m.content)" v-bind="$props")
       small
         | referenced from
@@ -345,4 +350,7 @@ export default {
   max-width: 360px
   max-height: 480px
   background-color: #000000
+.attached-message
+  padding: 5px 10px
+  border-left: 5px solid
 </style>
