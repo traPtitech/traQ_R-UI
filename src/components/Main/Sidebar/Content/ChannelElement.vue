@@ -3,6 +3,8 @@ div.channel-wrap(v-if="model.visibility")
   div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
     p.channel-box-name
       | {{model.name}}
+    p.channel-unread-num
+      | {{$store.getters.getChannelUnreadMessageNum(model.channelId)}}
     div.channel-status-wrap
       div.channel-notification
       div.channel-toggle(v-if="isFolder" v-on:click.stop="toggle")

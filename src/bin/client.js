@@ -221,7 +221,9 @@ const client = {
   },
   readMessages (messageIds) {
     return middleWare('readMessages', () => {
-      return axios.delete(`/api/1.0/users/me/unread`, messageIds)
+      return axios.delete(`/api/1.0/users/me/unread`, {
+        data: messageIds
+      })
     })
   },
 
