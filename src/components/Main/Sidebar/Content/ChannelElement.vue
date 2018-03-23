@@ -3,8 +3,8 @@ div.channel-wrap(v-if="model.visibility")
   div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
     p.channel-box-name
       | {{model.name}}
-    p.channel-unread-num
-      | {{$store.getters.getChannelUnreadMessageNum(model.channelId)}}
+    p.channel-unread-num(v-if="unreadNum > 0")
+      | {{unreadNum}}
     div.channel-status-wrap
       div.channel-notification
       div.channel-toggle(v-if="isFolder" v-on:click.stop="toggle")
@@ -40,6 +40,9 @@ export default {
     },
     isWatched: function () {
       return this.$store.state.currentChannel.channelId === this.model.channelId
+    },
+    unreadNum: function () {
+      return this.$store.getters.getChannelUnreadMessageNum(this.model.channelId)
     }
   },
   components: {
