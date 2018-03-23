@@ -150,9 +150,16 @@ export default new Vuex.Store({
       })
     },
     setUnreadMessagesData (state, data) {
+      const mp = {}
       data.forEach(message => {
-        Vue.set(state.unreadMessages, message.messageId, message)
+        if (mp[message.parentChannelId]) {
+          mp[message.parentChannelId][message.messageId] = message
+        } else {
+          mp[message.parentChannelId] = {}
+          mp[message.parentChannelId][message.messageId] = message
+        }
       })
+      state.unreadMessages = mp
     },
     setStaredChannelsData (state, data) {
       state.staredChannels = data
@@ -285,6 +292,14 @@ export default new Vuex.Store({
     },
     notificationsOffMembers (state) {
       return state.memberData.filter(member => !state.currentChannelNotifications.find(id => id === member.userId))
+    },
+    getChannelUnreadMessageNum (state) {
+      return channelId => {
+        if (!state.unreadMessages[channelId]) {
+          return 0
+        }
+        return Object.keys(state.unreadMessages[channelId]).length
+      }
     }
   },
   actions: {
@@ -297,7 +312,7 @@ export default new Vuex.Store({
           commit('setMe', null)
         })
     },
-    getMessages ({state, commit}) {
+    getMessages ({state, commit, dispatch}) {
       let nowChannel = state.currentChannel
       let loaded = false
       const latest = state.messagesNum === 0
@@ -313,6 +328,11 @@ export default new Vuex.Store({
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
+          if (state.unreadMessages[nowChannel.channelId] && Object.keys(state.unreadMessages[nowChannel.channelId]).length > 0) {
+            client.readMessages(
+              Object.keys(state.unreadMessages[nowChannel.channelId])
+            ).then(() => dispatch('updateUnreadMessages'))
+          }
           if (latest) {
             db.write('channelMessages', {channelId: nowChannel.channelId, data: messages})
           }

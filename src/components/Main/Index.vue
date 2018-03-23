@@ -130,6 +130,10 @@ export default {
               }
             }
             return
+          } else {
+            if (this.$store.state.currentChannel.channelId !== channel.channelId) {
+              this.$store.dispatch('updateUnreadMessages')
+            }
           }
           const title = this.$store.getters.getChannelPathById(channel.channelId)
           const options = {
@@ -197,7 +201,7 @@ export default {
 *
   animation: fadein 0.3s ease 0s 1 normal;
 
-@keyframes fadein 
+@keyframes fadein
   0% {opacity: 0}
   100% {opacity: 1}
 </style>
