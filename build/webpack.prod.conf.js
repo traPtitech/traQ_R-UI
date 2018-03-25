@@ -9,8 +9,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const workboxPlugin = require('workbox-webpack-plugin')
 
 const env = require('../config/prod.env')
+
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -112,7 +117,16 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+
+    new workboxPlugin.InjectManifest({
+      globDirectory: resolve('dist'),
+      globPatterns: [
+        '**/*.{js,html,css}'
+      ],
+      swSrc: resolve('static/sw.js'),
+      swDest: '/sw.js'
+    })
   ]
 })
 
