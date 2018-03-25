@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-if (process.env.NODE_ENV === 'development' || process.env.ENV === 'dev') {
+if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = 'https://traq-dev.tokyotech.org'
 }
 
