@@ -128,12 +128,23 @@ export default {
               if (channel.channelId === this.$store.state.currentChannel.channelId) {
                 this.$store.commit('addMessages', res.data)
               }
+              return
+            } else {
+              if (this.$store.state.currentChannel.channelId !== channel.channelId) {
+                this.$store.dispatch('updateUnreadMessages')
+              }
+            }
+            const title = this.$store.getters.getChannelPathById(channel.channelId)
+            const options = {
+              icon: client.getUserIconUrl(user.userId),
+              body: user.name + ':' + res.data.content
+            }
+            const notification = this.notify(title, options)
+            notification.onclick = () => {
+              window.focus()
+              this.$router.push(title)
             }
             return
-          } else {
-            if (this.$store.state.currentChannel.channelId !== channel.channelId) {
-              this.$store.dispatch('updateUnreadMessages')
-            }
           }
           const title = this.$store.getters.getChannelPathById(channel.channelId)
           const options = {

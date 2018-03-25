@@ -21,8 +21,10 @@ const asyncLoadComponents = component => {
 export default {
   name: 'ChannelInformation',
   components: {
-    'OnlineUsers': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/OnlineUsers')),
-    'Topic': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Topic')),
+    'OnlineUsers': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/OnlineUsers'
+)),
+    'Topic': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Topic'
+)),
     'Pinned': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Pinned')),
     'Notifications': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Notifications'))
   }

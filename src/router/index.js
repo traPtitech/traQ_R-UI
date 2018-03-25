@@ -102,11 +102,11 @@ router.beforeEach(async (to, from, next) => {
     store.commit('changeChannel', nextChannel)
     // メッセージの取得を優先するため
     store.dispatch('getMessages')
-      .then(() => {
-        store.dispatch('getCurrentChannelTopic', nextChannel.channelId)
-        store.dispatch('getCurrentChannelPinnedMessages', nextChannel.channelId)
-        store.dispatch('getCurrentChannelNotifications', nextChannel.channelId)
-      })
+    .then(() => {
+      store.dispatch('getCurrentChannelTopic', nextChannel.channelId)
+      store.dispatch('getCurrentChannelPinnedMessages', nextChannel.channelId)
+      store.dispatch('getCurrentChannelNotifications', nextChannel.channelId)
+    })
     next(true)
   }
   store.commit('loadEnd')

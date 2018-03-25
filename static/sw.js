@@ -1,9 +1,7 @@
-workbox.skipWaiting()
-workbox.clientsClaim()
+importScripts('/static/workbox-sw.prod.v2.1.3.js')
 
-workbox.routing.registerRoute(
-  new RegExp('https://traq-dev.herokuapp.com/api/1.0/files'),
-  workbox.strategies.staleWhileRevalidate()
-)
-
-workbox.precaching.precacheAndRoute(self.__precacheManifest)
+const workboxSW = new WorkboxSW({
+  cacheId: 'traQ',
+  skipWaiting: true
+})
+workboxSW.precache([])
