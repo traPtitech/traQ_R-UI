@@ -3,7 +3,8 @@ div
   div(@click="showModal")
     | 😀
   modal(@close="active = false" :active="active")
-    i(v-for="stamp in $store.state.stampData" class="emoji s32" v-on:click="addStamp(stamp.id)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`")
+    input(v-model="search")
+    i(v-for="stamp in stamps" class="emoji s32" v-on:click="addStamp(stamp.id)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
       | :{{stamp.name}}:
 </template>
 <script>
@@ -15,7 +16,8 @@ export default {
   },
   data () {
     return {
-      active: false
+      active: false,
+      search: ''
     }
   },
   methods: {
@@ -24,6 +26,14 @@ export default {
     },
     addStamp (stampId) {
       client.stampMessage(this.model.messageId, stampId)
+    }
+  },
+  computed: {
+    stamps () {
+      if (this.search === '') {
+        return this.$store.state.stampData
+      }
+      return this.$store.state.stampData.filter(stamp => stamp.name.substr(0, this.search.length) === this.search)
     }
   }
 }

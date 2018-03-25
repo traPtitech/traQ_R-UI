@@ -88,6 +88,15 @@ export default new Vuex.Store({
     },
     setStampData (state, newStampData) {
       state.stampData = newStampData
+      state.stampData.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1
+        } else if (a.name > b.name) {
+          return 1
+        } else {
+          return 0
+        }
+      })
       state.stampData.forEach(stamp => {
         state.stampMap[stamp.id] = stamp
         state.stampNameMap[stamp.name] = stamp
