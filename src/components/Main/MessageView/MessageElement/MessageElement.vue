@@ -35,7 +35,7 @@ div.message
       | copy
   div.message-stamps-wrap(style="display: table;")
     div(v-for="stamp in stamps" style="display: table-cell;")
-      div(v-on:click="toggleStamp(stamp.stampId)")
+      div(v-on:click="toggleStamp(stamp.stampId)" :title="stamp.title")
         i(class="emoji s16" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${stamp.fileId});`")
           | {{stamp.name}}
         p
@@ -275,6 +275,12 @@ export default {
             sum: stamp.count
           }
         }
+      })
+      Object.keys(map).forEach(key => {
+        map[key].title = `:${map[key].name}: from`
+        map[key].user.forEach(user => {
+          map[key].title += ` ${this.$store.state.memberMap[user.userId].name}(${user.count})`
+        })
       })
       return Object.values(map)
     }
