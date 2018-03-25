@@ -49,7 +49,7 @@ export default new Vuex.Store({
     me: null,
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []},
-    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.herokuapp.com' : '',
+    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.trapti.tech' : '',
     files: []
   },
   mutations: {
