@@ -158,7 +158,14 @@ const client = {
       const form = new FormData()
       form.enctype = 'multipart/form-data'
       form.append('file', file)
-      return axios.post('/api/1.0/users/me/icon', form)
+      return axios.put('/api/1.0/users/me/icon', form)
+    })
+  },
+  changeDisplayName (name) {
+    return middleWare('changeDisplayName', () => {
+      return axios.patch('/api/1.0/users/me', {
+        displayName: name
+      })
     })
   },
   getUserDetail (userId) {
