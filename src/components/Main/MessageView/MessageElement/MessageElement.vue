@@ -1,7 +1,7 @@
 <template lang="pug">
 div.message
   div.message-user-icon-wrap
-    img.message-user-icon(:src='userIconSrc')
+    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
   div.message-detail-wrap
     div.message-detail-left
       p.message-user-name
@@ -247,9 +247,6 @@ export default {
     pinned () {
       this.pin = this.$store.getters.isPinned(this.model.messageId)
       return this.pin
-    },
-    userIconSrc () {
-      return client.getUserIconUrl(this.model.userId)
     },
     stamps () {
       const map = {}
