@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
+import stampCategorizer from '@/bin/stampCategorizer'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -35,7 +36,8 @@ export default new Vuex.Store({
     tagData: [],
     tagMap: {},
     stampData: [],
-    stampMap: [],
+    stampMap: {},
+    stampCategolized: {},
     stampNameMap: [],
     currentChannel: {},
     clipedMessages: {},
@@ -88,6 +90,7 @@ export default new Vuex.Store({
     },
     setStampData (state, newStampData) {
       state.stampData = newStampData
+      state.stampCategolized = stampCategorizer(newStampData)
       state.stampData.sort((a, b) => {
         if (a.name < b.name) {
           return -1
