@@ -60,7 +60,7 @@ div.message
         video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
         audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
         img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
-      a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :download="file.name")
+      a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
         p
           | {{file.name}}
         br
