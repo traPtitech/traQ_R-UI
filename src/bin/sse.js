@@ -4,7 +4,7 @@ let listeningEventList = {}
 let source = null
 
 const baseURL = process.env.NODE_ENV === 'development'
-  ? 'http://traq-dev.herokuapp.com'
+  ? 'https://traq-dev.tokyotech.org'
   : ''
 
 const callFunction = (eventName, json) => {
