@@ -42,9 +42,9 @@ export default {
         }
       })
       client.changeNotifications(this.$store.state.currentChannel.channelId, state)
-        .then(res => {
-          this.$store.commit('setCurrentChannelNotifications', res.data)
-        })
+      .then(res => {
+        this.$store.commit('setCurrentChannelNotifications', res.data)
+      })
       this.active = false
     }
   },

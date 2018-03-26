@@ -10,7 +10,7 @@ const read = (tableName, key) => {
         if (process.env.NODE_ENV === 'development') {
           console.log('read db', tableName, key, event.target.result.data)
         }
-        if (event.target.result.data) {
+        if (event.target.result && event.target.result.data) {
           resolve(event.target.result.data)
         } else {
           resolve(null)

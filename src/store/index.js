@@ -49,7 +49,7 @@ export default new Vuex.Store({
     me: null,
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []},
-    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.herokuapp.com' : '',
+    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
     files: []
   },
   mutations: {
@@ -314,12 +314,12 @@ export default new Vuex.Store({
   actions: {
     whoAmI ({state, commit}) {
       return client.whoAmI()
-        .then(res => {
-          commit('setMe', res.data)
-        })
-        .catch(() => {
-          commit('setMe', null)
-        })
+      .then(res => {
+        commit('setMe', res.data)
+      })
+      .catch(() => {
+        commit('setMe', null)
+      })
     },
     getMessages ({state, commit, dispatch}) {
       let nowChannel = state.currentChannel
