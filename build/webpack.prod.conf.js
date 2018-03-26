@@ -50,7 +50,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       // set the following option to `true` if you want to extract CSS from
       // codesplit chunks into this main css file as well.
       // This will result in *all* of your app's CSS being loaded upfront.
-      allChunks: false,
+      allChunks: false
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
@@ -125,7 +125,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         '**/*.{js,html,css}'
       ],
       swSrc: resolve('static/sw.js'),
-      swDest: '/sw.js'
+      swDest: 'sw.js'
     })
   ]
 })
