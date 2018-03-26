@@ -39,29 +39,24 @@ export default {
         }
       }
 
-      console.log(mutation.type)
       if (mutation.type === 'setMessages') {
-        console.log('aaaa')
         while (!this.$el) {
           await this.$nextTick()
-          console.log('bbbb')
         }
         const container = this.$el.querySelector('.content-wrap')
         await this.$nextTick()
         container.scrollTop = container.scrollHeight
       }
 
-      if (mutation.type === 'unshiftMessages') {
-        if (!this.$el) {
-          await this.$nextTick()
-        }
+      if (mutation.type === 'unshiftMessagesss') {
         const container = this.$el.querySelector('.content-wrap')
-        const height = container.scrollHeight
-        await this.$nextTick()
-        container.scrollTop = container.scrollHeight - height
+        const top = container.scrollTop
+        const beforeHeight = container.scrollHeight
+        setTimeout(() => {
+          container.scrollTop = container.scrollHeight - beforeHeight + top
+        }, 5)
       }
     })
-    console.log('subscribed')
 
     if (!this.$route.params.channel) {
       this.$router.push('/channels/random')

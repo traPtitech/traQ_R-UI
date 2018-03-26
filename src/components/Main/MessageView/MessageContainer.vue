@@ -1,13 +1,12 @@
 <template lang="pug">
-div.content-wrap
+div.content-wrap(@scroll="checkLoad")
   div.sticky-container.sticky
     InputUI
   content.message-wrap
     ul.message-list
-      li
-        button(v-on:click="loadMessages")
-          | load
-      li.message-item(v-for="(message, index) in $store.state.messages")
+      li(v-if="noMoreMessage")
+        | これ以上メッセージはありません
+      li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
         strong(v-if="index === 0 || date($store.state.messages[index - 1].datetime) !== date(message.datetime)")
           | {{date(message.datetime)}}
         MessageElement(:model="message" v-bind:key="message.messageId")
@@ -17,6 +16,13 @@ div.content-wrap
 import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 export default {
   name: 'MessageContainer',
+  data () {
+    return {
+      messageLoading: false,
+      noMoreMessage: false,
+      lastEvent: null
+    }
+  },
   components: {
     'InputUI': window.asyncLoadComponents(import('@/components/Main/MessageView/InputUI')),
     'MessageElement': MessageElement
@@ -27,10 +33,36 @@ export default {
   methods: {
     loadMessages () {
       this.$store.dispatch('getMessages')
+        .then(async res => {
+          if (res) {
+            setTimeout(() => {
+              this.messageLoading = false
+            }, 500)
+          } else {
+            this.noMoreMessage = true
+          }
+        })
     },
     date (datetime) {
       const d = new Date(datetime)
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
+    },
+    checkLoad (event) {
+      if (!this.lastEvent) {
+        this.lastEvent = {timeStamp: event.timeStamp, scrollTop: event.target.scrollTop}
+        return
+      }
+      const diff = event.target.scrollTop - this.lastEvent.scrollTop
+      const time = event.timeStamp - this.lastEvent.timeStamp
+      const speed = Math.max(diff / time, -1.0)
+      console.log(speed)
+      console.log(event.target.scrollTop)
+      if ((event.target.scrollTop + speed * 2500 < 0 || event.target.scrollTop === 0) && !this.messageLoading) {
+        console.log(event)
+        this.messageLoading = true
+        this.loadMessages()
+      }
+      this.lastEvent = {timeStamp: event.timeStamp, scrollTop: event.target.scrollTop}
     }
   }
 }

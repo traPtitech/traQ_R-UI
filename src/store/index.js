@@ -353,6 +353,7 @@ export default new Vuex.Store({
               commit('setMessages', messages)
             } else {
               commit('unshiftMessages', messages)
+              return messages.length > 0
             }
           }
         })
