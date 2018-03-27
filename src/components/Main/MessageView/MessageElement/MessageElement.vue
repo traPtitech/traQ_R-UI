@@ -260,6 +260,9 @@ export default {
             count: stamp.count
           })
           map[stamp.stampId].sum += stamp.count
+          if (stamp.createdAt < map[stamp.stampId].createdAt) {
+            map[stamp.stampId].createdAt = stamp.createdAt
+          }
         } else {
           map[stamp.stampId] = {
             fileId: this.$store.state.stampMap[stamp.stampId].fileId,
@@ -269,7 +272,8 @@ export default {
               userId: stamp.userId,
               count: stamp.count
             }],
-            sum: stamp.count
+            sum: stamp.count,
+            createdAt: stamp.createdAt
           }
         }
       })
@@ -279,7 +283,17 @@ export default {
           map[key].title += ` ${this.$store.state.memberMap[user.userId].name}(${user.count})`
         })
       })
-      return Object.values(map)
+      const stamps = Object.values(map)
+      stamps.sort((lhs, rhs) => {
+        if (lhs.createdAt < rhs.createdAt) {
+          return -1
+        } else if (lhs.createdAt > rhs.createdAt) {
+          return 1
+        } else {
+          return 0
+        }
+      })
+      return stamps
     }
   },
   mounted () {
