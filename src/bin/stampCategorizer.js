@@ -21,15 +21,15 @@ export default function (stampData) {
   })
   categorized.forEach(category => {
     category.stamps = Object.values(category.stamps)
-    category.stamps.sort((lhs, rhs) => {
-      if (lhs.name < rhs.name) {
-        return -1
-      } else if (lhs.name > rhs.name) {
-        return 1
-      } else {
-        return 0
-      }
-    })
+  })
+  categorized[0].stamps.sort((lhs, rhs) => {
+    if (lhs.name < rhs.name) {
+      return -1
+    } else if (lhs.name > rhs.name) {
+      return 1
+    } else {
+      return 0
+    }
   })
   return categorized
 }
