@@ -33,7 +33,7 @@ export default {
   methods: {
     loadMessages () {
       this.$store.dispatch('getMessages')
-        .then(async res => {
+        .then(res => {
           if (res) {
             setTimeout(() => {
               this.messageLoading = false
@@ -55,14 +55,21 @@ export default {
       const diff = event.target.scrollTop - this.lastEvent.scrollTop
       const time = event.timeStamp - this.lastEvent.timeStamp
       const speed = Math.max(diff / time, -1.0)
-      console.log(speed)
-      console.log(event.target.scrollTop)
       if ((event.target.scrollTop + speed * 2500 < 0 || event.target.scrollTop === 0) && !this.messageLoading) {
-        console.log(event)
         this.messageLoading = true
         this.loadMessages()
       }
       this.lastEvent = {timeStamp: event.timeStamp, scrollTop: event.target.scrollTop}
+    }
+  },
+  watch: {
+    nowChannel () {
+      this.messageLoading = false
+    }
+  },
+  computed: {
+    nowChannel () {
+      return this.$store.state.currentChannel
     }
   }
 }
