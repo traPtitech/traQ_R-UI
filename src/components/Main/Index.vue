@@ -27,6 +27,37 @@ export default {
     'FileDroper': FileDroper
   },
   async created () {
+    this.$store.subscribe(async mutation => {
+      if (mutation.type === 'addMessages') {
+        if (!this.$el) {
+          await this.$nextTick()
+        }
+        const container = this.$el.querySelector('.content-wrap')
+        await this.$nextTick()
+        if (container.scrollHeight - container.scrollTop < 1000) {
+          container.scrollTop = container.scrollHeight
+        }
+      }
+
+      if (mutation.type === 'setMessages') {
+        while (!this.$el) {
+          await this.$nextTick()
+        }
+        const container = this.$el.querySelector('.content-wrap')
+        await this.$nextTick()
+        container.scrollTop = container.scrollHeight
+      }
+
+      if (mutation.type === 'unshiftMessagesss') {
+        const container = this.$el.querySelector('.content-wrap')
+        const top = container.scrollTop
+        const beforeHeight = container.scrollHeight
+        setTimeout(() => {
+          container.scrollTop = container.scrollHeight - beforeHeight + top
+        }, 5)
+      }
+    })
+
     if (!this.$route.params.channel) {
       this.$router.push('/channels/random')
     }
@@ -38,19 +69,18 @@ export default {
         }
       })
     }
-    console.log(process.env.NODE_ENV)
 
     sse.startListen()
     sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
     sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
-    sse.on('USER_TAGS_UPDATE', () => {})
-    sse.on('USER_ICON_UPDATED', () => {})
+    sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTgs'))
+    sse.on('USER_ICON_UPDATED', () => this.$store.dispatch('updateMembers'))
     sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
     sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
     sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))
     sse.on('CHANNEL_STARED', () => this.$store.dispatch('updateStaredChannels'))
     sse.on('CHANNEL_UNSTARED', () => this.$store.dispatch('updateStaredChannels'))
-    sse.on('CHANNEL_VISIBILITY_CHANGED', () => {})
+    sse.on('CHANNEL_VISIBILITY_CHANGED', () => this.$store.dispatch('updateChannels'))
     sse.on('MESSAGE_CREATED', this.messageCreated)
     sse.on('MESSAGE_UPDATED', this.messageUpdated)
     sse.on('MESSAGE_DELETED', this.messageDeleted)
@@ -72,37 +102,12 @@ export default {
         })
     }, 3000)
 
-    this.$store.subscribe(async mutation => {
-      if (mutation.type === 'addMessages') {
-        if (!this.$el) {
-          await this.$nextTick()
-        }
-        const container = this.$el.querySelector('.content-wrap')
-        await this.$nextTick()
-        if (container.scrollHeight - container.scrollTop < 1000) {
-          container.scrollTop = container.scrollHeight
-        }
-      }
-
-      if (mutation.type === 'setMessages') {
-        if (!this.$el) {
-          await this.$nextTick()
-        }
-        const container = this.$el.querySelector('.content-wrap')
-        await this.$nextTick()
-        container.scrollTop = container.scrollHeight
-      }
-
-      if (mutation.type === 'unshiftMessages') {
-        if (!this.$el) {
-          await this.$nextTick()
-        }
-        const container = this.$el.querySelector('.content-wrap')
-        const height = container.scrollHeight
-        await this.$nextTick()
-        container.scrollTop = container.scrollHeight - height
-      }
-    })
+    while (!this.$el) {
+      await this.$nextTick()
+    }
+    const container = this.$el.querySelector('.content-wrap')
+    await this.$nextTick()
+    container.scrollTop = container.scrollHeight
   },
   beforeDestroy () {
     sse.stopListen()

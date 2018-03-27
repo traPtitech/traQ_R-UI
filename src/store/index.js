@@ -351,10 +351,13 @@ export default new Vuex.Store({
           if (nowChannel === state.currentChannel) {
             if (latest) {
               commit('setMessages', messages)
+              return messages.length > 0
             } else {
               commit('unshiftMessages', messages)
+              return messages.length > 0
             }
           }
+          return false
         })
     },
     updateChannels ({state, commit}) {
