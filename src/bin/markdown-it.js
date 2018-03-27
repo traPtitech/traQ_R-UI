@@ -25,9 +25,12 @@ const md = new MarkdownIt({
 
 md.use(MarkdownItMark)
 md.use(myPlugin)
-md.use(regexp(/:(\w+):/, (match, utils) => {
+md.use(regexp(/:([a-zA-Z0-9+_-]{1,32}):/, (match, utils) => {
   if (store.state.stampNameMap[match[1]]) {
     return `<i class="emoji s32" title=":${store.state.stampNameMap[match[1]].name}:" style="background-image: url(${store.state.baseURL}/api/1.0/files/${store.state.stampNameMap[match[1]].fileId});">:${utils.escape(match[1])}:</i>`
+  } else if (store.getters.getUserByName(match[1])) {
+    const user = store.getters.getUserByName(match[1])
+    return `<i class="emoji s32" title=":${match[1]}:" style="background-image: url(${store.state.baseURL}/api/1.0/users/${user.userId}/icon);">:${utils.escape(match[1])}:</i>`
   } else {
     return match[0]
   }
