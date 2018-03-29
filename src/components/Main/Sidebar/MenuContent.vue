@@ -28,4 +28,5 @@ export default {
   grid-area: content
   background-color: #F5F5F5
   border-right: 1px solid rgb(176, 176, 176)
+  overflow: scroll
 </style>

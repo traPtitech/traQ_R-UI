@@ -25,6 +25,18 @@ const loadGeneralData = (dataName, webLoad, commit) => {
   ])
 }
 
+const stringSortGen = (key) => (lhs, rhs) => {
+  const ls = lhs[key].toLowerCase()
+  const rs = rhs[key].toLowerCase()
+  if (ls < rs) {
+    return -1
+  } else if (ls > rs) {
+    return 1
+  } else {
+    return 0
+  }
+}
+
 export default new Vuex.Store({
   state: {
     loaded: false,
@@ -59,22 +71,16 @@ export default new Vuex.Store({
       state.me = me
     },
     setChannelData (state, newChannelData) {
-      newChannelData.sort((lhs, rhs) => {
-        let ls = lhs.name.toLowerCase()
-        let rs = rhs.name.toLowerCase()
-        if (ls < rs) {
-          return -1
-        } else if (ls > rs) {
-          return 1
-        } else {
-          return 0
+      newChannelData.sort(stringSortGen('name'))
+      state.channelData = newChannelData
+      state.channelData.forEach(channel => {
+        state.channelMap[channel.channelId] = channel
+      })
+      state.channelData.forEach(channel => {
+        if (channel.children) {
+          channel.children.sort((lhs, rhs) => stringSortGen('name')(state.channelMap[lhs], state.channelMap[rhs]))
         }
       })
-      state.channelData = newChannelData
-      function dfs (channel) {
-        state.channelMap[channel.channelId] = channel
-      }
-      state.channelData.forEach(dfs)
     },
     setMemberData (state, newMemberData) {
       state.memberData = newMemberData
@@ -85,21 +91,14 @@ export default new Vuex.Store({
     setTagData (state, newTagData) {
       state.tagData = newTagData
       state.tagData.forEach(tag => {
+        tag.users.sort(stringSortGen('name'))
         state.tagMap[tag.tagId] = tag
       })
     },
     setStampData (state, newStampData) {
       state.stampData = newStampData
       state.stampCategolized = stampCategorizer(newStampData)
-      state.stampData.sort((a, b) => {
-        if (a.name < b.name) {
-          return -1
-        } else if (a.name > b.name) {
-          return 1
-        } else {
-          return 0
-        }
-      })
+      state.stampData.sort(stringSortGen('name'))
       state.stampData.forEach(stamp => {
         state.stampMap[stamp.id] = stamp
         state.stampNameMap[stamp.name] = stamp

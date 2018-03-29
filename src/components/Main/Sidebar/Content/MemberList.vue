@@ -1,6 +1,6 @@
 <template lang="pug">
-div
-  div.grade-container(v-for="tag in tags" :class="`${gradeMap[tag.tag[2]]} ${tag.tag.substr(0, 2)}`" :style="`border-color: ${color(tag.tag)};`")
+div.member-container
+  div.grade-container(v-for="tag in tags" v-if="tag.users.length > 0" :class="`${gradeMap[tag.tag[2]]} ${tag.tag.substr(0, 2)}`" :style="`border-color: ${color(tag.tag)};`")
     div.grade-name-container(:style="`background-color: ${color(tag.tag)};`")
       p
         | {{tag.tag}}
@@ -61,6 +61,9 @@ export default {
 </script>
 
 <style lang="sass">
+.member-container
+  width: 100%
+  height: 100%
 .grade-container
   text-align: left
   border-left: 8px solid
@@ -68,7 +71,7 @@ export default {
   padding: 5px 10px
 .grade-name-container
   width: 80%
-  margin-left: 5%
+  margin-left: 10px
 .grade-name-container > p
   color: white
   margin-left: 10px
