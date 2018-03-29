@@ -7,7 +7,7 @@ const match = (word, key) => {
 export default function (key, limit) {
   if (key.type === '#') {
     return store.state.channelData
-    .filter(channel => channel.name !== '' && match(store.getters.getChannelPathById(channel.channelId), key.keyword))
+    .filter(channel => channel.name !== '' && (match(store.getters.getChannelPathById(channel.channelId), key.keyword) || match(channel.name, key.keyword)))
     .slice(0, limit)
     .map(channel => {
       return {

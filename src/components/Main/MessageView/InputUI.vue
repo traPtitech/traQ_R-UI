@@ -4,7 +4,7 @@ div.input-ui
   div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
   div.submit-button(v-show="isOpened" v-on:click="submit")
   div.input-area-wrapper(v-on:drom="dropFile" v-show="isOpened")
-    p(v-for="(suggest, id) in suggests" v-on:click="replaceSuggest(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
+    p.suggest-element(v-for="(suggest, id) in suggests" v-on:click="replaceSuggest(id)" v-on:mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
     textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-on:click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
     div(v-for="(file, index) in files" v-on:click="removeFile(index)")
       | {{ file.name }}
@@ -218,6 +218,10 @@ export default {
         })
       }
     },
+    onmouseover (index) {
+      this.suggestMode = true
+      this.suggestIndex = index
+    },
     replaceSuggest (index) {
       this.suggestMode = false
       this.suggestIndex = 0
@@ -414,4 +418,6 @@ export default {
   overflow: hidden
   color: transparent
   background-size: contain
+.suggest-element
+  cursor: pointer
 </style>
