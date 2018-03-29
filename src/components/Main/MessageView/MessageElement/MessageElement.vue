@@ -265,15 +265,19 @@ export default {
           }
         } else {
           map[stamp.stampId] = {
-            fileId: this.$store.state.stampMap[stamp.stampId].fileId,
+            fileId: '',
             stampId: stamp.stampId,
-            name: this.$store.state.stampMap[stamp.stampId].name,
+            name: '',
             user: [{
               userId: stamp.userId,
               count: stamp.count
             }],
             sum: stamp.count,
             createdAt: stamp.createdAt
+          }
+          if (this.$store.state.stampMap[stamp.stampId]) {
+            map[stamp.stampId].fileId = this.$store.state.stampMap[stamp.stampId].fileId
+            map[stamp.stampId].name = this.$store.state.stampMap[stamp.stampId].name
           }
         }
       })
