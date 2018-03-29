@@ -24,9 +24,10 @@ export default {
   background-color: gray
   border-radius: 100%
 .member-element > p
-  padding-left: 10%
+  padding-left: 10px
+  white-space: nowrap
 .member-element > p > ruby
-  padding-left: 5%
+  padding-left: 10px
   display: inline-block
   vertical-align: 40%
 </style>
