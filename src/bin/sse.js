@@ -27,8 +27,12 @@ const callFunction = (eventName, json) => {
 }
 
 const sse = {
-  startListen () {
+  startListen (cb) {
+    if (source && source.readyState < 2) {
+      return
+    }
     source = new EventSource(baseURL + '/api/1.0/notification', {withCredentials: true})
+    source.onopen = cb
   },
   stopListen () {
     source.close()
@@ -36,7 +40,7 @@ const sse = {
     listeningEventList = {}
   },
   isListening () {
-    return !!source
+    return !!source && source.readyState < 2
   },
   on (eventName, cb) {
     if (!listeningEventList[eventName]) {

@@ -56,7 +56,6 @@ export default new Vuex.Store({
     unreadMessages: {},
     staredChannels: [],
     messages: [],
-    messagesNum: 0,
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
     currentChannelNotifications: [],
@@ -110,7 +109,6 @@ export default new Vuex.Store({
       } else {
         state.messages.push(message)
       }
-      state.messagesNum = state.messages.length
       db.write('channelMessages', {channelId: state.currentChannel.channelId, data: state.messages.slice(-50)})
     },
     unshiftMessages (state, message) {
@@ -119,11 +117,9 @@ export default new Vuex.Store({
       } else {
         state.messages.unshift(message)
       }
-      state.messagesNum = state.messages.length
     },
     setMessages (state, messages) {
       state.messages = messages
-      state.messagesNum = state.messages.length
     },
     updateMessage (state, message) {
       const index = state.messages.findIndex(mes => mes.messageId === message.messageId)
@@ -140,7 +136,6 @@ export default new Vuex.Store({
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
-      state.messagesNum = 0
       state.messages = []
     },
     loadStart (state) {
@@ -323,10 +318,10 @@ export default new Vuex.Store({
         commit('setMe', null)
       })
     },
-    getMessages ({state, commit, dispatch}) {
+    getMessages ({state, commit, dispatch}, update) {
       let nowChannel = state.currentChannel
       let loaded = false
-      const latest = state.messagesNum === 0
+      const latest = state.messages.length === 0 || update
       if (latest) {
         db.read('channelMessages', nowChannel.channelId)
           .then(data => {
@@ -335,7 +330,7 @@ export default new Vuex.Store({
             }
           })
       }
-      return client.loadMessages(nowChannel.channelId, 50, state.messagesNum)
+      return client.loadMessages(nowChannel.channelId, 50, latest ? 0 : state.messages.length)
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
