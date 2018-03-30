@@ -39,6 +39,10 @@ const router = new Router({
       component: asyncLoadComponents(import('@/components/Main/Index'))
     },
     {
+      path: '/users/:user',
+      component: asyncLoadComponents(import('@/components/Main/Index'))
+    },
+    {
       path: '/register',
       component: asyncLoadComponents(import('@/components/Register/Register'))
     },
@@ -87,6 +91,17 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('updateUnreadMessages'),
       store.dispatch('updateTags')
     ])
+  }
+
+  const nextUser = store.getters.getUserByName(to.params.user)
+  if (nextUser) {
+    store.commit('changeChannel', nextUser)
+    store.dispatch('getMessages')
+    .then(() => {
+    })
+    store.commit('loadEnd')
+    next(true)
+    return
   }
 
   if (!to.params.channel) {

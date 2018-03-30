@@ -324,7 +324,10 @@ export default new Vuex.Store({
       })
     },
     getMessages ({state, commit, dispatch}) {
-      let nowChannel = state.currentChannel
+      if (state.currentChannel.userId) {
+        return dispatch('getDirectMessages')
+      }
+      const nowChannel = state.currentChannel
       let loaded = false
       const latest = state.messagesNum === 0
       if (latest) {
@@ -348,6 +351,33 @@ export default new Vuex.Store({
             db.write('channelMessages', {channelId: nowChannel.channelId, data: messages})
           }
           if (nowChannel === state.currentChannel) {
+            if (latest) {
+              commit('setMessages', messages)
+              return messages.length > 0
+            } else {
+              commit('unshiftMessages', messages)
+              return messages.length > 0
+            }
+          }
+          return false
+        })
+    },
+    getDirectMessages ({state, commit, dispatch}) {
+      const nowUser = state.currentChannel
+      // let loaded = false
+      const latest = state.messagesNum === 0
+      return client.loadDirectMessages(nowUser.userId, 50, state.messagesNum)
+        .then(res => {
+          // loaded = true
+          const messages = res.data.reverse()
+          /*
+          if (state.unreadMessages[nowChannel.channelId] && Object.keys(state.unreadMessages[nowChannel.channelId]).length > 0) {
+            client.readMessages(
+              Object.keys(state.unreadMessages[nowChannel.channelId])
+            ).then(() => dispatch('updateUnreadMessages'))
+          }
+          */
+          if (nowUser === state.currentChannel) {
             if (latest) {
               commit('setMessages', messages)
               return messages.length > 0

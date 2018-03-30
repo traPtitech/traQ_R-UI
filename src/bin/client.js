@@ -173,6 +173,18 @@ const client = {
       return axios.get(`/api/1.0/users/${userId}`)
     })
   },
+  loadDirectMessages (userId, limit, offset) {
+    return middleWare('loadDirectMessages', () => {
+      return axios.get(`/api/1.0/users/${userId}/messages`,
+        {
+          params: {
+            limit: limit,
+            offset: offset
+          }
+        }
+      )
+    })
+  },
 
   // Tag: clip
   getClipedMessages () {

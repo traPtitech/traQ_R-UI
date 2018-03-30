@@ -59,7 +59,9 @@ export default {
     })
 
     if (!this.$route.params.channel) {
-      this.$router.push('/channels/random')
+      if (!this.$route.params.user) {
+        this.$router.push('/channels/random')
+      }
     }
 
     if (window.Notification) {
@@ -98,10 +100,12 @@ export default {
     sse.on('TRAQ_UPDATED', () => location.reload(true))
 
     this.heartbeat = setInterval(() => {
-      client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
+      if (!this.$route.params.user) {
+        client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
         .then(res => {
           this.$store.commit('updateHeartbeatStatus', res.data)
         })
+      }
     }, 3000)
 
     while (!this.$el) {
