@@ -179,9 +179,11 @@ export default {
       this.$store.commit('deleteMessage', data.id)
     },
     notify (title, options, channelName) {
-      if (Notification.permission === 'granted') {
-        // eslint-disable-next-line no-new
-        return new Notification(title, options)
+      if (Notification) {
+        if (Notification.permission === 'granted') {
+          // eslint-disable-next-line no-new
+          return new Notification(title, options)
+        }
       }
       return null
     },
