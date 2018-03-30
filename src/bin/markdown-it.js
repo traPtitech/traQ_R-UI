@@ -20,6 +20,7 @@ function highlight (code, lang) {
 
 const md = new MarkdownIt({
   breaks: true,
+  linkify: true,
   highlight: highlight
 })
 
