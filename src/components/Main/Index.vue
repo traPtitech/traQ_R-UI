@@ -62,12 +62,14 @@ export default {
       this.$router.push('/channels/random')
     }
 
-    if (Notification.permission === 'default') {
-      Notification.requestPermission(permission => {
-        if (permission === 'granted') {
-          this.notify('ようこそtraQへ！！')
-        }
-      })
+    if (Notification) {
+      if (Notification.permission === 'default') {
+        Notification.requestPermission(permission => {
+          if (permission === 'granted') {
+            this.notify('ようこそtraQへ！！')
+          }
+        })
+      }
     }
 
     sse.startListen()
