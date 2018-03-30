@@ -1,12 +1,12 @@
 <template lang="pug">
 div.message
-  div.message-user-icon-wrap
+  div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
   div.message-detail-wrap
     div.message-detail-left
-      p.message-user-name
+      p.message-user-name(v-on:click="openUserModal(model.userId)")
         | {{$store.state.memberMap[model.userId].displayName}}
-      p.message-user-id
+      p.message-user-id(v-on:click="openUserModal(model.userId)")
         | @{{$store.state.memberMap[model.userId].name}}
     p.message-date
       | {{dateTime(model.datetime)}}
@@ -43,10 +43,10 @@ div.message
     StampList(:model="{messageId: model.messageId}")
   div.message-messages-wrap
     div.attached-message(v-for="m in messages")
-      img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`")
-      p.message-user-name
+      img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`" v-on:click="openUserModal(m.userId)")
+      p.message-user-name(v-on:click="openUserModal(m.userId)")
         | {{$store.state.memberMap[m.userId].displayName}}
-      p.message-user-id
+      p.message-user-id(v-on:click="openUserModal(m.userId)")
         | @{{$store.state.memberMap[m.userId].name}}
       component(v-bind:is="mark(m.content)" v-bind="$props")
       small
@@ -232,6 +232,9 @@ export default {
       textarea.select()
       document.execCommand('copy')
       body.removeChild(textarea)
+    },
+    openUserModal (userId) {
+      this.$store.dispatch('openUserModal', userId)
     }
   },
   computed: {

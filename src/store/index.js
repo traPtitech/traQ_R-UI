@@ -64,7 +64,9 @@ export default new Vuex.Store({
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []},
     baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
-    files: []
+    files: [],
+    userModal: null,
+    currentUserTags: []
   },
   mutations: {
     setMe (state, me) {
@@ -230,6 +232,16 @@ export default new Vuex.Store({
     },
     clearFiles (state) {
       state.files = []
+    },
+    setUserModal (state, user) {
+      state.userModal = user
+    },
+    setCurrentUserTags (state, tags) {
+      tags.sort(stringSortGen('tag'))
+      state.currentUserTags = tags
+    },
+    closeUserModal (state) {
+      state.userModal = null
     }
   },
   getters: {
@@ -427,6 +439,16 @@ export default new Vuex.Store({
         .then(res => {
           commit('setCurrentChannelNotifications', res.data)
         })
+    },
+    updateCurrentUserTags ({state, commit}) {
+      return client.getUserTags(state.userModal.userId)
+      .then(res => {
+        commit('setCurrentUserTags', res.data)
+      })
+    },
+    openUserModal ({state, commit, dispatch}, userId) {
+      commit('setUserModal', state.memberMap[userId])
+      return dispatch('updateCurrentUserTags')
     }
   }
 })
