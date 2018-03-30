@@ -120,10 +120,6 @@ const webpackConfig = merge(baseWebpackConfig, {
     ]),
 
     new workboxPlugin.InjectManifest({
-      globDirectory: resolve('dist'),
-      globPatterns: [
-        '**/*.{js,html,css}'
-      ],
       swSrc: resolve('static/sw.js'),
       swDest: 'sw.js'
     })
