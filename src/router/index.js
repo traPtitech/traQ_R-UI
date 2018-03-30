@@ -76,7 +76,8 @@ router.beforeEach(async (to, from, next) => {
     // 起動後すぐ必要なもの
     await Promise.all([
       store.dispatch('updateChannels'),
-      store.dispatch('updateMembers')
+      store.dispatch('updateMembers'),
+      store.dispatch('updateStamps')
     ])
 
     // 起動後すぐには必要ないもの
@@ -84,8 +85,7 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('updateClipedMessages'),
       store.dispatch('updateStaredChannels'),
       store.dispatch('updateUnreadMessages'),
-      store.dispatch('updateTags'),
-      store.dispatch('updateStamps')
+      store.dispatch('updateTags')
     ])
   }
 
