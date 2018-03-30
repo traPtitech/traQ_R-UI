@@ -81,6 +81,7 @@ export default {
   position: relative
   background-color: rgb(249, 249, 249)
   overflow: scroll
+  -webkit-overflow-scrolling: touch
 .message-wrap
   width: 100%
   height: 100%

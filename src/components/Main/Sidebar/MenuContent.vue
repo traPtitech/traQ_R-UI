@@ -29,4 +29,5 @@ export default {
   background-color: #F5F5F5
   border-right: 1px solid rgb(176, 176, 176)
   overflow: scroll
+  -webkit-overflow-scrolling: touch
 </style>
