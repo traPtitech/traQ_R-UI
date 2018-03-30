@@ -62,7 +62,7 @@ export default {
       this.$router.push('/channels/random')
     }
 
-    if (Notification) {
+    if (window['Notification']) {
       if (Notification.permission === 'default') {
         Notification.requestPermission(permission => {
           if (permission === 'granted') {
@@ -179,7 +179,7 @@ export default {
       this.$store.commit('deleteMessage', data.id)
     },
     notify (title, options, channelName) {
-      if (Notification) {
+      if (window['Notification']) {
         if (Notification.permission === 'granted') {
           // eslint-disable-next-line no-new
           return new Notification(title, options)
