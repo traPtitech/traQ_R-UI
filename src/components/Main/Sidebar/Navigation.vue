@@ -1,7 +1,7 @@
 <template lang="pug">
 nav.menu-buttons
   ul
-    li.menu-button.user-icon-wrap
+    li.user-icon-wrap
       img.user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[$store.state.me.userId].iconFileId}`")
     li.menu-button.channels(@click="navClicked('channels')")
       i.fas.fa-hashtag(aria-hidden="true")
@@ -57,11 +57,22 @@ export default {
   &:hover
     color: rgba(255, 255, 255, 0.6)
 .user-icon-wrap
-  height: 40px
-  margin: 20px auto
-  padding: 10px
-  border-bottom: solid 1px white
+  display: flex
+  justify-content: center
+  align-items: center
+  height: 60px
+  margin: 0 auto
   box-sizing: border-box
+  position: relative
+  &::after
+    position: absolute
+    content: ''
+    display: block
+    bottom: 0
+    width: 60%
+    height: 1px
+    background-color: white
+    opacity: 0.8
 .user-icon
   width: 30px
   height: 30px
