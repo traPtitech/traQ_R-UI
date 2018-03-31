@@ -1,8 +1,8 @@
 <template lang="pug">
 div
   transition-group(name="list-complete" tag="div" appear)
-      div(v-for="model in $store.getters.childrenChannels('')" v-bind:key="model.channelId").channel-list-container
-        ChannelElement(:model="model" v-bind:curPath="''")
+    div(v-for="model in $store.getters.childrenChannels('')" v-bind:key="model.channelId").channel-list-container
+      ChannelElement(:model="model" v-bind:curPath="''")
 </template>
 
 <script>

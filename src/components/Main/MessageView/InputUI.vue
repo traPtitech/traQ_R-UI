@@ -4,7 +4,8 @@ div.input-ui
   div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
   div.submit-button(v-show="isOpened" v-on:click="submit")
   div.input-area-wrapper(v-on:drom="dropFile" v-show="isOpened")
-    textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    p.suggest-element(v-for="(suggest, id) in suggests" v-on:click="replaceSuggest(id)" v-on:mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
+    textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-on:click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
     div(v-for="(file, index) in files" v-on:click="removeFile(index)")
       | {{ file.name }}
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
@@ -13,6 +14,7 @@ div.input-ui
 <script>
 import autosize from 'autosize'
 import client from '@/bin/client'
+import suggest from '@/bin/suggest'
 
 export default {
   name: 'InputUI',
@@ -23,7 +25,15 @@ export default {
       // postStatus: {'default', 'processing', 'successed', 'failed'}
       postStatus: 'default',
       files: [],
-      uploadedIds: []
+      uploadedIds: [],
+      messageInput: null,
+      key: {
+        keyword: '',
+        type: ''
+      },
+      limit: 5,
+      suggestMode: false,
+      suggestIndex: 0
     }
   },
   created () {
@@ -123,15 +133,115 @@ export default {
         }
       })
     },
+    clearKey () {
+      this.key = {
+        type: '',
+        keyword: ''
+      }
+    },
     keydown (event) {
       if (this.postStatus === 'processing') {
         event.returnValue = false
         return
       }
       this.postStatus = 'default'
+      if (this.suggests.length === 0) {
+        this.suggestMode = false
+        this.suggestIndex = 0
+      } else {
+        if (!this.suggestMode) {
+          if (event.keyCode === 40 || event.keyCode === 38) {
+            this.suggestMode = true
+            this.suggestIndex = 0
+            event.returnValue = false
+            return
+          }
+        } else {
+          if (event.keyCode === 40 || event.keyCode === 38) {
+            if (event.keyCode === 40) {
+              this.suggestIndex++
+            } else {
+              this.suggestIndex--
+            }
+            if (this.suggestIndex < 0) {
+              this.suggestIndex = 0
+            }
+            if (this.suggestIndex >= this.suggests.length) {
+              this.suggestIndex = this.suggests.length - 1
+            }
+            event.returnValue = false
+            return
+          } else if (event.keyCode === 13) {
+            this.replaceSuggest(this.suggestIndex)
+            event.returnValue = false
+            return
+          }
+        }
+      }
+      this.key = {
+        type: '',
+        keyword: ''
+      }
+      this.suggestMode = false
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
         this.submit()
         event.returnValue = false
+      } else {
+        this.$nextTick(() => {
+          const selectionStart = this.messageInput.selectionStart
+          const selectionEnd = this.messageInput.selectionEnd
+          if (!selectionStart || selectionStart !== selectionEnd) {
+            return
+          }
+          const inputSubstr = this.inputText.substr(0, selectionStart)
+          inputSubstr.replace(/#([a-zA-Z0-9_/-]*)$/, (match, key) => {
+            this.key = {
+              keyword: key.toLowerCase(),
+              type: '#'
+            }
+            return match
+          })
+          inputSubstr.replace(/@([a-zA-Z0-9_-]*)$/, (match, key) => {
+            this.key = {
+              keyword: key.toLowerCase(),
+              type: '@'
+            }
+            return match
+          })
+          inputSubstr.replace(/:([a-zA-Z0-9+_-]*)$/, (match, key) => {
+            this.key = {
+              keyword: key.toLowerCase(),
+              type: ':'
+            }
+            return match
+          })
+        })
+      }
+    },
+    onmouseover (index) {
+      this.suggestMode = true
+      this.suggestIndex = index
+    },
+    replaceSuggest (index) {
+      this.suggestMode = false
+      this.suggestIndex = 0
+      const messageInput = document.getElementById('messageInput')
+      const startIndex = messageInput.selectionStart
+      const replaceSuffix = this.inputText.substr(startIndex)
+      const prefixes = this.inputText.substr(0, startIndex).split(this.key.type)
+      const lastSize = prefixes.pop().length + this.key.type.length
+      let replacePrefix = prefixes[0]
+      for (let i = 1; i < prefixes.length; i++) {
+        replacePrefix += this.key.type + prefixes[i]
+      }
+      const replace = this.suggests[index].start + this.suggests[index].replace + this.suggests[index].suffix
+      this.inputText = replacePrefix + replace + replaceSuffix
+      this.$nextTick(() => {
+        messageInput.selectionStart = messageInput.selectionEnd = startIndex - lastSize + replace.length
+      })
+      this.key = {
+        keyword: '',
+        type: ''
       }
     },
     addFiles (event) {
@@ -163,6 +273,14 @@ export default {
       }))
     }
   },
+  computed: {
+    suggests () {
+      if (this.key.type === '') {
+        return []
+      }
+      return suggest(this.key, this.limit)
+    }
+  },
   watch: {
     inputAreaHeight () {
       console.log(this.$refs.inputArea.scrollHeight)
@@ -174,6 +292,7 @@ export default {
   },
   mounted () {
     autosize(document.getElementById('messageInput'))
+    this.messageInput = document.getElementById('messageInput')
     this.uploadElem = document.getElementById('upload')
   }
 }
@@ -289,4 +408,16 @@ export default {
   border-radius: 0
   opacity: 0
   z-index: -1
+.emoji.s16
+  width: 16px
+  height: 16px
+.emoji
+  display: inline-block
+  text-indent: 999%
+  white-space: nowrap
+  overflow: hidden
+  color: transparent
+  background-size: contain
+.suggest-element
+  cursor: pointer
 </style>

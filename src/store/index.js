@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
+import stampCategorizer from '@/bin/stampCategorizer'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -24,6 +25,18 @@ const loadGeneralData = (dataName, webLoad, commit) => {
   ])
 }
 
+const stringSortGen = (key) => (lhs, rhs) => {
+  const ls = lhs[key].toLowerCase()
+  const rs = rhs[key].toLowerCase()
+  if (ls < rs) {
+    return -1
+  } else if (ls > rs) {
+    return 1
+  } else {
+    return 0
+  }
+}
+
 export default new Vuex.Store({
   state: {
     loaded: false,
@@ -35,7 +48,8 @@ export default new Vuex.Store({
     tagData: [],
     tagMap: {},
     stampData: [],
-    stampMap: [],
+    stampMap: {},
+    stampCategolized: {},
     stampNameMap: [],
     currentChannel: {},
     clipedMessages: {},
@@ -49,7 +63,7 @@ export default new Vuex.Store({
     me: null,
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []},
-    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.herokuapp.com' : '',
+    baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
     files: []
   },
   mutations: {
@@ -57,22 +71,16 @@ export default new Vuex.Store({
       state.me = me
     },
     setChannelData (state, newChannelData) {
-      newChannelData.sort((lhs, rhs) => {
-        let ls = lhs.name.toLowerCase()
-        let rs = rhs.name.toLowerCase()
-        if (ls < rs) {
-          return -1
-        } else if (ls > rs) {
-          return 1
-        } else {
-          return 0
+      newChannelData.sort(stringSortGen('name'))
+      state.channelData = newChannelData
+      state.channelData.forEach(channel => {
+        state.channelMap[channel.channelId] = channel
+      })
+      state.channelData.forEach(channel => {
+        if (channel.children) {
+          channel.children.sort((lhs, rhs) => stringSortGen('name')(state.channelMap[lhs], state.channelMap[rhs]))
         }
       })
-      state.channelData = newChannelData
-      function dfs (channel) {
-        state.channelMap[channel.channelId] = channel
-      }
-      state.channelData.forEach(dfs)
     },
     setMemberData (state, newMemberData) {
       state.memberData = newMemberData
@@ -83,11 +91,14 @@ export default new Vuex.Store({
     setTagData (state, newTagData) {
       state.tagData = newTagData
       state.tagData.forEach(tag => {
+        tag.users.sort(stringSortGen('name'))
         state.tagMap[tag.tagId] = tag
       })
     },
     setStampData (state, newStampData) {
       state.stampData = newStampData
+      state.stampCategolized = stampCategorizer(newStampData)
+      state.stampData.sort(stringSortGen('name'))
       state.stampData.forEach(stamp => {
         state.stampMap[stamp.id] = stamp
         state.stampNameMap[stamp.name] = stamp
@@ -150,9 +161,16 @@ export default new Vuex.Store({
       })
     },
     setUnreadMessagesData (state, data) {
+      const mp = {}
       data.forEach(message => {
-        Vue.set(state.unreadMessages, message.messageId, message)
+        if (mp[message.parentChannelId]) {
+          mp[message.parentChannelId][message.messageId] = message
+        } else {
+          mp[message.parentChannelId] = {}
+          mp[message.parentChannelId][message.messageId] = message
+        }
       })
+      state.unreadMessages = mp
     },
     setStaredChannelsData (state, data) {
       state.staredChannels = data
@@ -285,6 +303,14 @@ export default new Vuex.Store({
     },
     notificationsOffMembers (state) {
       return state.memberData.filter(member => !state.currentChannelNotifications.find(id => id === member.userId))
+    },
+    getChannelUnreadMessageNum (state) {
+      return channelId => {
+        if (!state.unreadMessages[channelId]) {
+          return 0
+        }
+        return Object.keys(state.unreadMessages[channelId]).length
+      }
     }
   },
   actions: {
@@ -297,7 +323,7 @@ export default new Vuex.Store({
         commit('setMe', null)
       })
     },
-    getMessages ({state, commit}) {
+    getMessages ({state, commit, dispatch}) {
       let nowChannel = state.currentChannel
       let loaded = false
       const latest = state.messagesNum === 0
@@ -313,16 +339,24 @@ export default new Vuex.Store({
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
+          if (state.unreadMessages[nowChannel.channelId] && Object.keys(state.unreadMessages[nowChannel.channelId]).length > 0) {
+            client.readMessages(
+              Object.keys(state.unreadMessages[nowChannel.channelId])
+            ).then(() => dispatch('updateUnreadMessages'))
+          }
           if (latest) {
             db.write('channelMessages', {channelId: nowChannel.channelId, data: messages})
           }
           if (nowChannel === state.currentChannel) {
             if (latest) {
               commit('setMessages', messages)
+              return messages.length > 0
             } else {
               commit('unshiftMessages', messages)
+              return messages.length > 0
             }
           }
+          return false
         })
     },
     updateChannels ({state, commit}) {

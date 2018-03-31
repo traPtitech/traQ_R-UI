@@ -9,8 +9,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const workboxPlugin = require('workbox-webpack-plugin')
 
 const env = require('../config/prod.env')
+
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -45,7 +50,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       // set the following option to `true` if you want to extract CSS from
       // codesplit chunks into this main css file as well.
       // This will result in *all* of your app's CSS being loaded upfront.
-      allChunks: false,
+      allChunks: false
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
@@ -112,7 +117,12 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+
+    new workboxPlugin.InjectManifest({
+      swSrc: resolve('static/sw.js'),
+      swDest: 'sw.js'
+    })
   ]
 })
 

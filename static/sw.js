@@ -1,7 +1,9 @@
-importScripts('/static/workbox-sw.prod.v2.1.3.js')
+workbox.skipWaiting()
+workbox.clientsClaim()
 
-const workboxSW = new WorkboxSW({
-  cacheId: 'traQ',
-  skipWaiting: true
-})
-workboxSW.precache([])
+workbox.routing.registerRoute(
+  new RegExp('https://traq-dev.tokyotech.org/api/1.0/files'),
+  workbox.strategies.staleWhileRevalidate()
+)
+
+workbox.precaching.precacheAndRoute(self.__precacheManifest)
