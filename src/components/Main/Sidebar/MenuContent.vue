@@ -28,11 +28,6 @@ export default {
   grid-area: content
   background-color: #F5F5F5
   border-right: 1px solid rgb(176, 176, 176)
-<<<<<<< HEAD
-  overflow-y: scroll
-  overflow-x: hidden
-=======
   overflow: scroll
   -webkit-overflow-scrolling: touch
->>>>>>> 353f46c9145728e83878875f07867813c534c3b7
 </style>
