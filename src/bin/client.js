@@ -79,6 +79,11 @@ const client = {
       return axios.post(`/api/1.0/channels/${channelId}/messages`, {text})
     })
   },
+  postDirectMessage (userId, text) {
+    return middleWare('postDirectMessage', () => {
+      return axios.post(`/api/1.0/users/${userId}/messages`, {text})
+    })
+  },
   editMessage (messageId, text) {
     return middleWare('editMessage', () => {
       return axios.put(`/api/1.0/messages/${messageId}`, {text})

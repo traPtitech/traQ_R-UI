@@ -91,17 +91,31 @@ export default {
       message = this.replaceUser(message)
       message = this.replaceChannel(message)
       message = this.replaceTag(message)
-      client.postMessage(nowChannel.channelId, message)
-      .then((res) => {
-        this.inputText = ''
-        this.postStatus = 'successed'
-        if (nowChannel === this.$store.state.currentChannel) {
-          this.$store.commit('addMessages', res.data)
-        }
-      })
-      .catch(() => {
-        this.postStatus = 'failed'
-      })
+      if (this.$store.currentChannel.userId) {
+        client.postDirectMessage(nowChannel.userId, message)
+        .then((res) => {
+          this.inputText = ''
+          this.postStatus = 'successed'
+          if (nowChannel === this.$store.state.currentChannel) {
+            this.$store.commit('addMessages', res.data)
+          }
+        })
+        .catch(() => {
+          this.postStatus = 'failed'
+        })
+      } else {
+        client.postMessage(nowChannel.channelId, message)
+        .then((res) => {
+          this.inputText = ''
+          this.postStatus = 'successed'
+          if (nowChannel === this.$store.state.currentChannel) {
+            this.$store.commit('addMessages', res.data)
+          }
+        })
+        .catch(() => {
+          this.postStatus = 'failed'
+        })
+      }
     },
     replaceUser (message) {
       return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
