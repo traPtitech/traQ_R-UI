@@ -91,7 +91,7 @@ export default {
       message = this.replaceUser(message)
       message = this.replaceChannel(message)
       message = this.replaceTag(message)
-      if (this.$store.currentChannel.userId) {
+      if (nowChannel['userId']) {
         client.postDirectMessage(nowChannel.userId, message)
         .then((res) => {
           this.inputText = ''
