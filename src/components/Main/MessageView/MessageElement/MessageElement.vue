@@ -18,21 +18,21 @@ div.message
         | submit
       button(v-on:click="editCancel" )
         | cancel
-  div.message-buttons-wrap
-    button(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
-      | edit
-    button(v-on:click="deleteMessage")
-      | delete
-    button(v-on:click="unpinMessage" v-if="pinned")
-      | unpin
-    button(v-on:click="pinMessage" v-else)
-      | pin
-    button(v-on:click="unclipMessage" v-if="cliped")
-      | unclip
-    button(v-on:click="clipMessage" v-else)
-      | clip
-    button(v-on:click="copyMessage")
-      | copy
+  ul.message-buttons-wrap
+    li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
+      div.fas.fa-edit
+    li(v-on:click="deleteMessage")
+      div.fas.fa-trash-alt
+    li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
+      div.fas.fa-thumbtack
+    li(v-on:click="pinMessage" v-else)
+      div.fas.fa-thumbtack
+    li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
+      div.fas.fa-paperclip
+    li(v-on:click="clipMessage" v-else)
+      div.fas.fa-paperclip
+    li(v-on:click="copyMessage")
+      div.fas.fa-copy
   div.message-stamps-wrap(style="display: table;")
     div(v-for="stamp in stamps" style="display: table-cell;")
       div(v-on:click="toggleStamp(stamp.stampId)" :title="stamp.title")
@@ -354,6 +354,18 @@ export default {
     white-space: pre-wrap
 .message-buttons-wrap
   grid-area: buttons
+  opacity: 0
+  transition: all .2s ease
+  display: flex
+  justify-content: flex-end
+  .message-item:hover &
+    opacity: 1
+  & li
+    margin: 0 5px
+    cursor: pointer
+    color: #797979
+  & li.button-pushed
+    color: #4263da
 .emoji.s16
   width: 16px
   height: 16px

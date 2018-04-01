@@ -65,10 +65,4 @@ export default {
   padding: 5px 10px
   &:hover
     background-color: rgba(255,255,255,0.3)
-.user-icon
-  width: 30px
-  height: 30px
-  overflow: hidden
-  border-radius: 100%
-  margin: 0 5px 0 0
 </style>

@@ -9,6 +9,7 @@ div.member-element(v-on:click="openUserModal")
 </template>
 
 <script>
+import client from '@/bin/client'
 export default {
   name: 'MemberElement',
   props: {
@@ -17,6 +18,9 @@ export default {
   methods: {
     openUserModal () {
       this.$store.dispatch('openUserModal', this.model.userId)
+    },
+    userIconSrc () {
+      return client.getUserIconUrl(this.model.userId)
     }
   }
 }
