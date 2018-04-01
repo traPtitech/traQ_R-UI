@@ -306,6 +306,11 @@ export default new Vuex.Store({
         }
         return Object.keys(state.unreadMessages[channelId]).length
       }
+    },
+    getUnreadMessageNum (state, getters) {
+      return Object.keys(state.unreadMessages).reduce((pre, channelId) => {
+        return pre + getters.getChannelUnreadMessageNum(channelId)
+      }, 0)
     }
   },
   actions: {
