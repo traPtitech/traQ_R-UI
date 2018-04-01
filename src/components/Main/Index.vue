@@ -72,7 +72,17 @@ export default {
       }
     }
 
-    sse.startListen()
+    window.onfocus = () => {
+      if (!sse.isListening()) {
+        sse.startListen(() => {
+          this.$store.dispatch('getMessages', true)
+        })
+      }
+    }
+
+    sse.startListen(() => {
+      this.$store.dispatch('getMessages', true)
+    })
     sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
     sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
     sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTgs'))
