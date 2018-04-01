@@ -9,10 +9,16 @@ div.member-element
 </template>
 
 <script>
+import client from '@/bin/client'
 export default {
   name: 'MemberElement',
   props: {
     model: Object
+  },
+  methods: {
+    userIconSrc () {
+      return client.getUserIconUrl(this.model.userId)
+    }
   }
 }
 </script>
