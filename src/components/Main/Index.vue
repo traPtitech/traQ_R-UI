@@ -73,8 +73,10 @@ export default {
     }
 
     window.onfocus = () => {
+      console.log('on focus')
       if (!sse.isListening()) {
         sse.startListen(() => {
+          console.log('sse reconnect')
           this.$store.dispatch('getMessages', true)
         })
       }
@@ -141,10 +143,14 @@ export default {
           const user = this.$store.state.memberMap[res.data.userId]
           const channel = this.$store.state.channelMap[res.data.parentChannelId]
           const title = this.$store.getters.getChannelPathById(channel.channelId)
-          if (document.hasFocus() && channel.channelId === this.$store.state.currentChannel.channelId) {
+          if (channel.channelId === this.$store.state.currentChannel.channelId) {
             this.$store.commit('addMessages', res.data)
-            client.readMessages([res.data.messageId])
-          } else {
+            if (document.hasFocus()) {
+              client.readMessages([res.data.messageId])
+            }
+          }
+
+          if (!document.hasFocus() || channel.channelId !== this.$store.state.currentChannel.channelId) {
             const options = {
               icon: client.getUserIconUrl(user.userId),
               body: user.name + ':' + res.data.content
@@ -156,8 +162,8 @@ export default {
                 this.$router.push(title)
               }
             }
-            this.$store.dispatch('updateUnreadMessages')
           }
+          this.$store.dispatch('updateUnreadMessages')
         })
     },
     messageUpdated (data) {
