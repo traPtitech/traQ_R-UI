@@ -141,24 +141,22 @@ export default {
           const user = this.$store.state.memberMap[res.data.userId]
           const channel = this.$store.state.channelMap[res.data.parentChannelId]
           const title = this.$store.getters.getChannelPathById(channel.channelId)
-          const options = {
-            icon: client.getUserIconUrl(user.userId),
-            body: user.name + ':' + res.data.content
-          }
-          const notification = this.notify(title, options)
-          if (notification) {
-            notification.onclick = () => {
-              window.focus()
-              this.$router.push(title)
-            }
-          }
-          this.$store.dispatch('updateUnreadMessages')
-
-          if (channel.channelId === this.$store.state.currentChannel.channelId) {
+          if (document.hasFocus() && channel.channelId === this.$store.state.currentChannel.channelId) {
             this.$store.commit('addMessages', res.data)
-            if (document.hasFocus()) {
-              client.readMessages([res.data.messageId])
+            client.readMessages([res.data.messageId])
+          } else {
+            const options = {
+              icon: client.getUserIconUrl(user.userId),
+              body: user.name + ':' + res.data.content
             }
+            const notification = this.notify(title, options)
+            if (notification) {
+              notification.onclick = () => {
+                window.focus()
+                this.$router.push(title)
+              }
+            }
+            this.$store.dispatch('updateUnreadMessages')
           }
         })
     },
