@@ -1,0 +1,15 @@
+{
+  "name": "traQ",
+  "short-name": "traQ",
+  "icons": [
+    {
+      "src": "/static/img/traq_icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#005BAC",
+  "background_color": "#00f"
+}
