@@ -97,7 +97,18 @@ router.beforeEach(async (to, from, next) => {
 
   const nextUser = store.getters.getUserByName(to.params.user)
   if (nextUser) {
-    store.commit('changeChannel', nextUser)
+    if (store.getters.getDirectMessageChannels.filter(channel => nextUser.userId in channel.member).length > 0) {
+      store.commit('changeChannel', store.getters.getDirectMessageChannels.filter(channel => nextUser.userId in channel.member)[0])
+    } else {
+      store.commit('changeChannel', {
+        channelId: store.state.directMessageId,
+        name: `${nextUser.name}`,
+        parent: store.state.directMessageId,
+        children: [],
+        member: [store.state.me.userId, nextUser.userId],
+        visibility: false
+      })
+    }
     store.dispatch('getMessages')
     .then(() => {
     })

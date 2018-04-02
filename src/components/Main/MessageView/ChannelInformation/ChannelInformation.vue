@@ -1,10 +1,10 @@
 <template lang="pug">
 div.information
   OnlineUsers
-  Notifications.channel-button
+  Notifications(v-show="!isDirectMessage").channel-button
   Pinned.channel-button
-  Topic.channel-button
-  CreateChannel.channel-button
+  Topic(v-show="!isDirectMessage").channel-button
+  CreateChannel(v-show="!isDirectMessage").channel-button
 </template>
 
 <script>
@@ -27,6 +27,11 @@ export default {
     'Pinned': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Pinned')),
     'Notifications': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/Notifications')),
     'CreateChannel': asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/CreateChannel'))
+  },
+  computed: {
+    isDirectMessage () {
+      return this.$store.state.currentChannel.channelId === this.$store.state.directMessageId
+    }
   }
 }
 </script>

@@ -66,7 +66,8 @@ export default new Vuex.Store({
     baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
     files: [],
     userModal: null,
-    currentUserTags: []
+    currentUserTags: [],
+    directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa'
   },
   mutations: {
     setMe (state, me) {
@@ -260,6 +261,9 @@ export default new Vuex.Store({
         return channel
       }
     },
+    getDirectMessageChannels (state, getters) {
+      return state.channelData.filter(channel => channel.parentId === state.directMessageId)
+    },
     getUserByName (state, getters) {
       return userName => {
         const user = state.memberData.find(user => user.name === userName)
@@ -336,10 +340,10 @@ export default new Vuex.Store({
       })
     },
     getMessages ({state, commit, dispatch}) {
-      if (state.currentChannel.userId) {
-        return dispatch('getDirectMessages')
-      }
       const nowChannel = state.currentChannel
+      if (nowChannel.channelId === state.directMessageId) {
+        return
+      }
       let loaded = false
       const latest = state.messagesNum === 0
       if (latest) {
@@ -363,33 +367,6 @@ export default new Vuex.Store({
             db.write('channelMessages', {channelId: nowChannel.channelId, data: messages})
           }
           if (nowChannel === state.currentChannel) {
-            if (latest) {
-              commit('setMessages', messages)
-              return messages.length > 0
-            } else {
-              commit('unshiftMessages', messages)
-              return messages.length > 0
-            }
-          }
-          return false
-        })
-    },
-    getDirectMessages ({state, commit, dispatch}) {
-      const nowUser = state.currentChannel
-      // let loaded = false
-      const latest = state.messagesNum === 0
-      return client.loadDirectMessages(nowUser.userId, 50, state.messagesNum)
-        .then(res => {
-          // loaded = true
-          const messages = res.data.reverse()
-          /*
-          if (state.unreadMessages[nowChannel.channelId] && Object.keys(state.unreadMessages[nowChannel.channelId]).length > 0) {
-            client.readMessages(
-              Object.keys(state.unreadMessages[nowChannel.channelId])
-            ).then(() => dispatch('updateUnreadMessages'))
-          }
-          */
-          if (nowUser === state.currentChannel) {
             if (latest) {
               commit('setMessages', messages)
               return messages.length > 0

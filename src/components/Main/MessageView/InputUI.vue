@@ -91,8 +91,8 @@ export default {
       message = this.replaceUser(message)
       message = this.replaceChannel(message)
       message = this.replaceTag(message)
-      if (nowChannel['userId']) {
-        client.postDirectMessage(nowChannel.userId, message)
+      if (nowChannel.parent !== this.$store.state.directMessageId) {
+        client.postMessage(nowChannel.channelId, message)
         .then((res) => {
           this.inputText = ''
           this.postStatus = 'successed'
@@ -104,16 +104,10 @@ export default {
           this.postStatus = 'failed'
         })
       } else {
-        client.postMessage(nowChannel.channelId, message)
-        .then((res) => {
-          this.inputText = ''
-          this.postStatus = 'successed'
-          if (nowChannel === this.$store.state.currentChannel) {
-            this.$store.commit('addMessages', res.data)
-          }
-        })
-        .catch(() => {
-          this.postStatus = 'failed'
+        client.makeChannel('private', nowChannel.member, String((new Date()).getTime()), this.$store.state.directMessageId)
+        .then(res => {
+          client.postMessage(res.data.channelId, message)
+          this.$store.commit('changeChannel', res.data)
         })
       }
     },
