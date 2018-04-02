@@ -335,6 +335,10 @@ export default {
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
+  text-overflow: ellipsis
+  white-space: nowrap
+  max-width: 62%
+  overflow: hidden
 .message-user-id
   margin-left: 5px
   font-size: 0.8em

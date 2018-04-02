@@ -38,7 +38,16 @@ export default {
       left: 0
 @media (max-width: 679px)
   .sidebar-overlay
-    position: absolute
+    position: fixed
+    top: 0
+    right: 0
+    left: 0
     width: 100vw
     height: 100vh
+    z-index: -100
+    background-color: #65656559
+    opacity: 0
+    transition: opacity .5s cubic-bezier(0.645, 0.045, 0.355, 1)
+    .sidebar-opened &
+      opacity: 1
 </style>
