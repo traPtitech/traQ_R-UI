@@ -72,6 +72,26 @@ export default {
       }
     }
 
+    const messaging = window.firebase.messaging()
+    messaging.requestPermission()
+      .then(() => {
+        console.log('permission granted')
+        messaging.getToken()
+          .then(currentToken => {
+            client.registerDevice(currentToken)
+          })
+      })
+      .catch(() => {
+        console.error('permission denied')
+      })
+
+    messaging.onRefreshToken(() => {
+      messaging.getToken()
+        .then(currentToken => {
+          client.registerDevice(currentToken)
+        })
+    })
+
     window.onfocus = () => {
       console.log('on focus')
       if (!sse.isListening()) {
