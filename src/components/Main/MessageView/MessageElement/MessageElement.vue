@@ -21,7 +21,7 @@ div.message
   ul.message-buttons-wrap
     li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
       div.fas.fa-edit
-    li(v-on:click="deleteMessage")
+    li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
       div.fas.fa-trash-alt
     li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
       div.fas.fa-thumbtack
