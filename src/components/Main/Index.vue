@@ -78,6 +78,7 @@ export default {
         console.log('permission granted')
         messaging.getToken()
           .then(currentToken => {
+            console.log(currentToken)
             client.registerDevice(currentToken)
           })
       })
@@ -85,7 +86,7 @@ export default {
         console.error('permission denied')
       })
 
-    messaging.onRefreshToken(() => {
+    messaging.onTokenRefresh(() => {
       messaging.getToken()
         .then(currentToken => {
           client.registerDevice(currentToken)
