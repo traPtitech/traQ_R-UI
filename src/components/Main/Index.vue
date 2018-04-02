@@ -73,39 +73,45 @@ export default {
     }
 
     window.onfocus = () => {
+      console.log('on focus')
       if (!sse.isListening()) {
         sse.startListen(() => {
+          console.log('sse reconnect')
           this.$store.dispatch('getMessages', true)
         })
       }
     }
 
-    sse.startListen(() => {
-      this.$store.dispatch('getMessages', true)
-    })
-    sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
-    sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
-    sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTgs'))
-    sse.on('USER_ICON_UPDATED', () => this.$store.dispatch('updateMembers'))
-    sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
-    sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
-    sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))
-    sse.on('CHANNEL_STARED', () => this.$store.dispatch('updateStaredChannels'))
-    sse.on('CHANNEL_UNSTARED', () => this.$store.dispatch('updateStaredChannels'))
-    sse.on('CHANNEL_VISIBILITY_CHANGED', () => this.$store.dispatch('updateChannels'))
-    sse.on('MESSAGE_CREATED', this.messageCreated)
-    sse.on('MESSAGE_UPDATED', this.messageUpdated)
-    sse.on('MESSAGE_DELETED', this.messageDeleted)
-    sse.on('MESSAGE_READ', () => this.$store.dispatch('updateUnreadMessages'))
-    sse.on('MESSAGE_STAMPED', (data) => this.$store.commit('updateMessageStamp', data))
-    sse.on('MESSAGE_UNSTAMPED', (data) => this.$store.commit('deleteMessageStamp', data))
-    sse.on('MESSAGE_PINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
-    sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
-    sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
-    sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
-    sse.on('STAMP_CREATED', () => this.$store.dispatch('updateStamps'))
-    sse.on('STAMP_DELETED', () => this.$store.dispatch('updateStamps'))
-    sse.on('TRAQ_UPDATED', () => location.reload(true))
+    console.log(sse.isListening())
+    if (!sse.isListening()) {
+      sse.startListen(() => {
+        this.$store.dispatch('getMessages', true)
+      })
+      sse.resetEventListener()
+      sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
+      sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
+      sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTgs'))
+      sse.on('USER_ICON_UPDATED', () => this.$store.dispatch('updateMembers'))
+      sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
+      sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
+      sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))
+      sse.on('CHANNEL_STARED', () => this.$store.dispatch('updateStaredChannels'))
+      sse.on('CHANNEL_UNSTARED', () => this.$store.dispatch('updateStaredChannels'))
+      sse.on('CHANNEL_VISIBILITY_CHANGED', () => this.$store.dispatch('updateChannels'))
+      sse.on('MESSAGE_CREATED', this.messageCreated)
+      sse.on('MESSAGE_UPDATED', this.messageUpdated)
+      sse.on('MESSAGE_DELETED', this.messageDeleted)
+      sse.on('MESSAGE_READ', () => this.$store.dispatch('updateUnreadMessages'))
+      sse.on('MESSAGE_STAMPED', (data) => this.$store.commit('updateMessageStamp', data))
+      sse.on('MESSAGE_UNSTAMPED', (data) => this.$store.commit('deleteMessageStamp', data))
+      sse.on('MESSAGE_PINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+      sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+      sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
+      sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
+      sse.on('STAMP_CREATED', () => this.$store.dispatch('updateStamps'))
+      sse.on('STAMP_DELETED', () => this.$store.dispatch('updateStamps'))
+      sse.on('TRAQ_UPDATED', () => location.reload(true))
+    }
 
     this.heartbeat = setInterval(() => {
       client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
@@ -140,45 +146,28 @@ export default {
         .then(res => {
           const user = this.$store.state.memberMap[res.data.userId]
           const channel = this.$store.state.channelMap[res.data.parentChannelId]
-          if (user.userId === this.$store.state.me.userId) {
-            if (!this.$store.state.messages.find(m => m.messageId === data.id)) {
-              if (channel.channelId === this.$store.state.currentChannel.channelId) {
-                this.$store.commit('addMessages', res.data)
-              }
-              return
-            } else {
-              if (this.$store.state.currentChannel.channelId !== channel.channelId) {
-                this.$store.dispatch('updateUnreadMessages')
-              }
+          const title = this.$store.getters.getChannelPathById(channel.channelId)
+          if (channel.channelId === this.$store.state.currentChannel.channelId) {
+            this.$store.commit('addMessages', res.data)
+            if (document.hasFocus()) {
+              client.readMessages([res.data.messageId])
             }
-            const title = this.$store.getters.getChannelPathById(channel.channelId)
+          }
+
+          if (!document.hasFocus() || channel.channelId !== this.$store.state.currentChannel.channelId) {
             const options = {
               icon: client.getUserIconUrl(user.userId),
               body: user.name + ':' + res.data.content
             }
             const notification = this.notify(title, options)
-            notification.onclick = () => {
-              window.focus()
-              this.$router.push(title)
-            }
-            return
-          }
-          const title = this.$store.getters.getChannelPathById(channel.channelId)
-          const options = {
-            icon: client.getUserIconUrl(user.userId),
-            body: user.name + ':' + res.data.content
-          }
-          const notification = this.notify(title, options)
-          if (notification) {
-            notification.onclick = () => {
-              window.focus()
-              this.$router.push(title)
+            if (notification) {
+              notification.onclick = () => {
+                window.focus()
+                this.$router.push(title)
+              }
             }
           }
-
-          if (channel.channelId === this.$store.state.currentChannel.channelId) {
-            this.$store.commit('addMessages', res.data)
-          }
+          this.$store.dispatch('updateUnreadMessages')
         })
     },
     messageUpdated (data) {
