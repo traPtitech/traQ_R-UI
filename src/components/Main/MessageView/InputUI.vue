@@ -100,9 +100,6 @@ export default {
             this.$store.commit('addMessages', res.data)
           }
         })
-        .catch(() => {
-          this.postStatus = 'failed'
-        })
       } else {
         client.makeChannel('private', nowChannel.member, String((new Date()).getTime()), this.$store.state.directMessageId)
         .then(res => {
