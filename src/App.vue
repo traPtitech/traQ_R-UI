@@ -34,6 +34,7 @@ export default {
 <style lang="sass">
 @import "~normalize.css"
 @import url("//fonts.googleapis.com/earlyaccess/mplus1p.css")
+@import "highlight.js/styles/default.css"
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased
