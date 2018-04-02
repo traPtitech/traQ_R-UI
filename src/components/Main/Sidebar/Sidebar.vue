@@ -1,8 +1,9 @@
 <template lang="pug">
-div.sidebar
+div.sidebar(v-bind:class="{'sidebar-opened': $store.state.sidebarOpened}")
   MenuHeader
   Navigation
   MenuContent
+  div.sidebar-overlay(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened" v-if="$store.state.sidebarOpened")
 </template>
 
 <script>
@@ -33,4 +34,11 @@ export default {
     position: absolute
     z-index: 1000
     left: -300px
+    &.sidebar-opened
+      left: 0
+@media (max-width: 679px)
+  .sidebar-overlay
+    position: absolute
+    width: 100vw
+    height: 100vh
 </style>

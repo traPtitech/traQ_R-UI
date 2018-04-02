@@ -43,6 +43,7 @@ export default new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
+    sidebarOpened: false,
     memberData: [],
     memberMap: {},
     tagData: [],
@@ -67,6 +68,9 @@ export default new Vuex.Store({
     files: []
   },
   mutations: {
+    toggleSidebar (state) {
+      state.sidebarOpened = !state.sidebarOpened
+    },
     setMe (state, me) {
       state.me = me
     },

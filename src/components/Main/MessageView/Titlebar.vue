@@ -1,18 +1,22 @@
 <template lang="pug">
 header.titlebar
-  div.menu-open
+  div.sidebar-open(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened")
+    div.fas.fa-bars.sidebar-open-icon
   h1.channel-name
     | {{title}}
   p.channel-topic
     | {{topic}}
-  div.buttons
-    div.star
-    div.search
+  div.online-member
 </template>
 
 <script>
 export default {
   name: 'Titlebar',
+  data () {
+    return {
+      isSidebarOpened: false
+    }
+  },
   computed: {
     title () {
       if (!this.$route.params.channel) return ''
@@ -31,13 +35,20 @@ export default {
 </script>
 
 <style lang="sass">
-.menu-open
+.sidebar-open
   width: 50px
   height: 50px
   margin: 0 0 0 10px
-  background-color: gray
+  display: flex
+  justify-content: center
+  align-items: center
+  cursor: pointer
   @media (min-width: 680px)
     display: none
+.sidebar-open-icon
+  width: 60%
+  height: 60%
+  color: gray
 .titlebar
   // position: fixed
   display: flex
@@ -51,7 +62,6 @@ export default {
   font-size: 2em
   font-weight: bold
   text-align: left
-  margin: 0 0 0 10px
 .buttons
   display: flex
   flex-flow: row
@@ -60,4 +70,7 @@ export default {
     height: 50px
     // background-color: gray
     margin: 10px
+.channel-topic
+  @media (max-width: 679px)
+    display: none
 </style>
