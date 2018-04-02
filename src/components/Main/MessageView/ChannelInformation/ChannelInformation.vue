@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     isDirectMessage () {
-      return this.$store.state.currentChannel.channelId === this.$store.state.directMessageId
+      return this.$store.state.currentChannel.parent === this.$store.state.directMessageId
     }
   }
 }
