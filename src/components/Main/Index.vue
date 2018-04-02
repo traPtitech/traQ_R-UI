@@ -80,8 +80,8 @@ export default {
     sse.startListen()
     sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
     sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
-    sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTgs'))
-    sse.on('USER_ICON_UPDATED', () => this.$store.dispatch('updateMembers'))
+    sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTags'))
+    sse.on('USER_ICON_UPDATED', (data) => this.userIconUpdated(data))
     sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
     sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
     sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))
@@ -186,6 +186,13 @@ export default {
     },
     messageDeleted (data) {
       this.$store.commit('deleteMessage', data.id)
+    },
+    userIconUpdated (data) {
+      console.log(data)
+      if (data.id === this.$store.state.me.userId) {
+        this.$store.dispatch('whoAmI')
+      }
+      this.$store.dispatch('updateMembers')
     },
     notify (title, options, channelName) {
       if (window.Notification) {

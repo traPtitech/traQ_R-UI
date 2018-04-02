@@ -1,7 +1,7 @@
 <template lang="pug">
 div.message
   div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
-    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
+    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
   div.message-detail-wrap
     div.message-detail-left
       p.message-user-name(v-on:click="openUserModal(model.userId)")
@@ -379,6 +379,8 @@ export default {
   overflow: hidden
   color: transparent
   background-size: contain
+  background-position: center
+  background-repeat: no-repeat
 .attached-image
   max-width: 360px
   max-height: 480px

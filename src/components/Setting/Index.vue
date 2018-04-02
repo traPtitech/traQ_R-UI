@@ -8,7 +8,7 @@ div
     p
       | 表示名
       input(v-model="displayName")
-    img.setting-user-icon(:src="`${$store.state.baseURL}/api/1.0/users/${$store.state.me.userId}/icon`")
+    img.setting-user-icon(:src="iconFileId")
     input(type="file" v-on:change="addFile")
     button(v-on:click="submit")
       | 更新
@@ -72,6 +72,11 @@ export default {
         this.stampFile = null
         this.stampName = ''
       })
+    }
+  },
+  computed: {
+    iconFileId () {
+      return `${this.$store.state.baseURL}/api/1.0/files/${this.$store.state.me.iconFileId}`
     }
   },
   mounted () {
