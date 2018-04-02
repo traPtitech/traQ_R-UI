@@ -331,7 +331,9 @@ export default {
   align-items: center
 .message-detail-left
   display: flex
+  flex-wrap: wrap
   align-items: center
+  width: 100%
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
@@ -342,6 +344,9 @@ export default {
 .message-user-id
   margin-left: 5px
   font-size: 0.8em
+  max-width: 30%
+  overflow: hidden
+  text-overflow: ellipsis
 .message-date
   font-size: 0.7em
 .message-content-wrap
