@@ -414,9 +414,6 @@ export default {
   display: flex
   flex-wrap: wrap
   justify-content: flex-start
-.message-stamp-button
-  margin: 0 5px 0
-  color: #797979
 .message-user-link
   cursor: pointer
   color: #005BAC
@@ -430,7 +427,9 @@ export default {
   font-weight: bold
 .message-tag-link-highlight
   background-color: #FAFFAD
-.emoji.s16
+.message-stamp-button
+  margin: 0 5px 0
+  color: #797979
   width: 16px
   height: 16px
   opacity: 0
