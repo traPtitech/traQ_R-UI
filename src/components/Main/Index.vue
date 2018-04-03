@@ -176,7 +176,21 @@ export default {
         .then(res => {
           const user = this.$store.state.memberMap[res.data.userId]
           const channel = this.$store.state.channelMap[res.data.parentChannelId]
-          const title = this.$store.getters.getChannelPathById(channel.channelId)
+          let path = ''
+          let title = ''
+          if (channel.parent === this.$store.state.directMessageId) {
+            let user = this.$store.state.me.name
+            channel.member.forEach(userId => {
+              if (userId !== this.$store.state.me.userId) {
+                user = this.$store.state.memberMap[userId].name
+              }
+            })
+            title = `@${user}`
+            path = `users/${user}`
+          } else {
+            title = `#${this.$store.getters.getChannelPathById(channel.channelId)}`
+            path = `channels/${this.$store.getters.getChannelPathById(channel.channelId)}`
+          }
           if (channel.channelId === this.$store.state.currentChannel.channelId) {
             this.$store.commit('addMessages', res.data)
             if (document.hasFocus()) {
@@ -193,7 +207,7 @@ export default {
             if (notification) {
               notification.onclick = () => {
                 window.focus()
-                this.$router.push(title)
+                this.$router.push(path)
               }
             }
           }
