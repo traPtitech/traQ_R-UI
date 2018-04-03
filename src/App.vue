@@ -34,6 +34,7 @@ export default {
 <style lang="sass">
 @import "~normalize.css"
 @import url("//fonts.googleapis.com/earlyaccess/mplus1p.css")
+@import url('https://fonts.googleapis.com/css?family=Oxygen+Mono')
 @import "highlight.js/styles/default.css"
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
@@ -54,6 +55,13 @@ p
   margin: 0
 a
   text-decoration: none
+code
+  font-family: 'Oxygen Mono', monospace
+  font-size: 0.9em
+.flex-center
+  display: flex
+  justify-content: center
+  align-items: center
 .sticky
   position: -webkit-sticky
   position: sticky

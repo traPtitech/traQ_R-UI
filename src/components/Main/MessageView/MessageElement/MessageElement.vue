@@ -10,62 +10,64 @@ div.message
         | @{{$store.state.memberMap[model.userId].name}}
     p.message-date
       | {{dateTime(model.datetime)}}
-  div.message-content-wrap
-    component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
-    div(v-if="isEditing")
-      textarea(v-model="edited" )
-      button(v-on:click="editSubmit" )
-        | submit
-      button(v-on:click="editCancel" )
-        | cancel
-  ul.message-buttons-wrap
-    li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
-      div.fas.fa-edit
-    li(v-on:click="deleteMessage")
-      div.fas.fa-trash-alt
-    li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
-      div.fas.fa-thumbtack
-    li(v-on:click="pinMessage" v-else)
-      div.fas.fa-thumbtack
-    li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
-      div.fas.fa-paperclip
-    li(v-on:click="clipMessage" v-else)
-      div.fas.fa-paperclip
-    li(v-on:click="copyMessage")
-      div.fas.fa-copy
-  div.message-stamps-wrap(style="display: table;")
-    div(v-for="stamp in stamps" style="display: table-cell;")
-      div(v-on:click="toggleStamp(stamp.stampId)" :title="stamp.title")
-        i(class="emoji s16" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${stamp.fileId});`")
-          | {{stamp.name}}
-        p
-          | {{stamp.sum}}
-    StampList(:model="{messageId: model.messageId}")
-  div.message-messages-wrap
-    div.attached-message(v-for="m in messages")
-      img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`" v-on:click="openUserModal(m.userId)")
-      p.message-user-name(v-on:click="openUserModal(m.userId)")
-        | {{$store.state.memberMap[m.userId].displayName}}
-      p.message-user-id(v-on:click="openUserModal(m.userId)")
-        | @{{$store.state.memberMap[m.userId].name}}
-      component(v-bind:is="mark(m.content)" v-bind="$props")
-      small
-        | referenced from
-        router-link(:to="parentChannel(m.parentChannelId).to")
-          | {{parentChannel(m.parentChannelId).name}}
-  div.message-files-wrap
-    div(v-for="file in files")
-      img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
-      a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
-        video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-        audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-        img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
-      a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
-        p
-          | {{file.name}}
-        br
+  div.message-contents-wrap
+    div.message-text-wrap
+      component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
+      div(v-if="isEditing")
+        textarea(v-model="edited" )
+        button(v-on:click="editSubmit" )
+          | submit
+        button(v-on:click="editCancel" )
+          | cancel
+    div.message-messages-wrap
+      div.attached-message(v-for="m in messages")
+        img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`")
+        p.message-user-name
+          | {{$store.state.memberMap[m.userId].displayName}}
+        p.message-user-id
+          | @{{$store.state.memberMap[m.userId].name}}
+        component(v-bind:is="mark(m.content)" v-bind="$props")
         small
-          | {{encodeByte(file.size)}}
+          | referenced from
+          router-link(:to="parentChannel(m.parentChannelId).to")
+            | {{parentChannel(m.parentChannelId).name}}
+    div.message-files-wrap
+      div(v-for="file in files")
+        img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
+        a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
+          video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+          audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+          img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
+        a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
+          p
+            | {{file.name}}
+          br
+          small
+            | {{encodeByte(file.size)}}
+    div.message-actions-wrap
+      div.message-stamps-wrap(v-bind:class="{'has-stamps':stamps.length>0}")
+        div(v-for="stamp in stamps")
+          div(v-on:click="toggleStamp(stamp.stampId)" :title="stamp.title")
+            i.emoji(:style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${stamp.fileId});`")
+              | {{stamp.name}}
+            p
+              | {{stamp.sum}}
+        StampList.message-stamp-button(:model="{messageId: model.messageId}")
+      ul.message-buttons-wrap
+        li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
+          div.fas.fa-edit
+        li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
+          div.fas.fa-trash-alt
+        li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
+          div.fas.fa-thumbtack
+        li(v-on:click="pinMessage" v-else)
+          div.fas.fa-thumbtack
+        li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
+          div.fas.fa-paperclip
+        li(v-on:click="clipMessage" v-else)
+          div.fas.fa-paperclip
+        li(v-on:click="copyMessage")
+          div.fas.fa-copy
 </template>
 
 <script>
@@ -341,8 +343,8 @@ export default {
 <style lang="sass">
 .message
   display: grid
-  grid-template-areas: "user-icon detail""user-icon content""... buttons"
-  grid-template-rows: 20px 1fr 20px
+  grid-template-areas: "user-icon detail""user-icon contents""... contents"
+  grid-template-rows: 20px 1fr
   grid-template-columns: 40px 1fr
   border-top: solid 1px rgba(0, 0, 0, 0.1)
   padding: 10px 10px
@@ -360,26 +362,42 @@ export default {
   align-items: center
 .message-detail-left
   display: flex
+  flex-wrap: wrap
   align-items: center
+  width: 100%
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
+  text-overflow: ellipsis
+  white-space: nowrap
+  max-width: 62%
+  overflow: hidden
 .message-user-id
   margin-left: 5px
   font-size: 0.8em
+  max-width: 30%
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
 .message-date
   font-size: 0.7em
-.message-content-wrap
-  grid-area: content
+.message-contents-wrap
+  grid-area: contents
+  display: flex
+  flex-flow: column
+.message-text-wrap
   margin: 0 0 0 10px
-  padding: 10px 0
+  padding: 10px 0 0
   text-align: left
   font-size: 0.9em
   word-break: break-all
   & pre
     white-space: pre-wrap
+.message-actions-wrap
+  display: flex
+  justify-content: space-between
+  margin: 10px 0 5px
 .message-buttons-wrap
-  grid-area: buttons
   opacity: 0
   transition: all .2s ease
   display: flex
@@ -392,6 +410,10 @@ export default {
     color: #797979
   & li.button-pushed
     color: #4263da
+.message-stamps-wrap
+  display: flex
+  flex-wrap: wrap
+  justify-content: flex-start
 .message-user-link
   cursor: pointer
   color: #005BAC
@@ -405,12 +427,18 @@ export default {
   font-weight: bold
 .message-tag-link-highlight
   background-color: #FAFFAD
-.emoji.s16
+.message-stamp-button
+  margin: 0 5px 0
+  color: #797979
   width: 16px
   height: 16px
-.emoji.s32
-  width: 32px
-  height: 32px
+  opacity: 0
+  transition: all .2s ease
+  cursor: pointer
+  .message-item:hover &
+    opacity: 1
+  .has-stamps &
+    opacity: 1
 .emoji
   display: inline-block
   text-indent: 999%
@@ -418,8 +446,11 @@ export default {
   overflow: hidden
   color: transparent
   background-size: contain
-  background-position: center
   background-repeat: no-repeat
+  background-position: center
+  user-select: none
+  width: 16px
+  height: 16px
 .attached-image
   max-width: 360px
   max-height: 480px

@@ -83,6 +83,7 @@ export default {
   margin: 5px auto
   box-sizing: border-box
   &:active
+  &:valid
   &::placeholder
     font-size: 1.1em
 .login-button-wrap
