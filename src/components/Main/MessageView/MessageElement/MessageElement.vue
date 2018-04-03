@@ -238,6 +238,12 @@ export default {
     },
     parentChannel (parentChannelId) {
       const channel = this.$store.state.channelMap[parentChannelId]
+      if (!channel) {
+        return {
+          to: '#',
+          name: '???'
+        }
+      }
       if (channel.parent === this.$store.state.directMessageId) {
         let userName = this.$store.state.me.name
         channel.member.forEach(userId => {
