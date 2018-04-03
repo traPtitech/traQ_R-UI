@@ -5,17 +5,34 @@ div
   div
     h2
       |  プロフィール設定
-    p
-      | 表示名
-      input(v-model="displayName")
     img.setting-user-icon(:src="iconFileId")
     input(type="file" v-on:change="addFile")
-    button(v-on:click="submit")
+    p
+      | 表示名
+    input(v-model="displayName")
+    p
+      | メールアドレス
+    input(v-model="email")
+    p
+      | 新しいパスワード
+    input(v-model="newPassword" type="password")
+    p
+      | 新しいパスワード(確認)
+    input(v-model="checkNewPassword" type="password")
+    br
+    button(v-if="isChanged && !needPass" v-on:click="submit")
       | 更新
+    div(v-if="isChanged && needPass")
+      p
+        | 現在のパスワード
+      input(v-model="oldPassword" type="password")
+      br
+      button( v-on:click="submitWithCertification")
+        | 更新
     p(v-if="state === 'successed'")
       | 変更されました
     p(v-if="state === 'failed'")
-      | 失敗しました
+      | {{error}}
   div
     h2
       | スタンプ新規登録
@@ -33,8 +50,13 @@ export default {
     return {
       displayName: '',
       icon: null,
+      email: '',
+      newPassword: '',
+      checkNewPassword: '',
+      oldPassword: '',
       stampFile: null,
       state: 'default',
+      error: '',
       stampName: ''
     }
   },
@@ -55,7 +77,7 @@ export default {
         tasks.push(client.changeIcon(this.icon))
         this.icon = null
       }
-      if (this.$store.state.me.displayName !== this.displayName) {
+      if (this.displayName !== this.$store.state.me.displayName) {
         tasks.push(client.changeDisplayName(this.displayName))
       }
       Promise.all(tasks).then(() => {
@@ -63,6 +85,49 @@ export default {
         this.$store.dispatch('whoAmI')
       }).catch(e => {
         this.state = 'failed'
+        this.error = '失敗しました'
+      })
+    },
+    async submitWithCertification () {
+      if (this.state === 'processing') {
+        return
+      }
+      this.state = 'processing'
+      if (this.newPassword !== '' && this.newPassword !== this.checkNewPassword) {
+        this.state = 'failed'
+        this.error = '新しいパスワードと確認用が異なります'
+        return
+      }
+      if (this.oldPassword === '') {
+        this.state = 'failed'
+        this.error = '現在のパスワードが必要です'
+        return
+      }
+      const tasks = []
+      if (this.icon) {
+        tasks.push(client.changeIcon(this.icon))
+        this.icon = null
+      }
+      if (this.displayName !== this.$store.state.me.displayName) {
+        tasks.push(client.changeDisplayName(this.displayName))
+      }
+      if (this.email !== '' && this.newPassword === '') {
+        tasks.push(client.changeEmail(this.email, this.oldPassword))
+      } else if (this.email === '' && this.newPassword !== '') {
+        tasks.push(client.changePassword(this.newPassword, this.oldPassword))
+      } else {
+        tasks.push(client.changeSetting(this.newPassword, this.email, this.oldPassword))
+      }
+      Promise.all(tasks).then(() => {
+        this.email = ''
+        this.oldPassword = ''
+        this.newPassword = ''
+        this.checkNewPassword = ''
+        this.state = 'successed'
+        this.$store.dispatch('whoAmI')
+      }).catch(e => {
+        this.state = 'failed'
+        this.error = '失敗しました'
       })
     },
     addStamp () {
@@ -77,6 +142,20 @@ export default {
   computed: {
     iconFileId () {
       return `${this.$store.state.baseURL}/api/1.0/files/${this.$store.state.me.iconFileId}`
+    },
+    isChanged () {
+      if (this.icon) return true
+      if (this.displayName !== this.$store.state.me.displayName) return true
+      if (this.email !== '') return true
+      if (this.newPassword !== '') return true
+      if (this.checkNewPassword !== '') return true
+      return false
+    },
+    needPass () {
+      if (this.email !== '') return true
+      if (this.newPassword !== '') return true
+      if (this.checkNewPassword !== '') return true
+      return false
     }
   },
   mounted () {

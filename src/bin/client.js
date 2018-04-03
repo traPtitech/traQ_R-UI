@@ -173,6 +173,31 @@ const client = {
       })
     })
   },
+  changeEmail (email, pass) {
+    return middleWare('changeEmail', () => {
+      return axios.patch('api/1.0/users/me', {
+        email: email,
+        exPassword: pass
+      })
+    })
+  },
+  changePassword (pass, exPass) {
+    return middleWare('changePassword', () => {
+      return axios.patch('api/1.0/users/me', {
+        password: pass,
+        exPassword: exPass
+      })
+    })
+  },
+  changeSetting (pass, email, exPass) {
+    return middleWare('changeSetting', () => {
+      return axios.patch('api/1.0/users/me', {
+        email: email,
+        password: pass,
+        exPassword: exPass
+      })
+    })
+  },
   getUserDetail (userId) {
     return middleWare('getUserDetail', () => {
       return axios.get(`/api/1.0/users/${userId}`)
