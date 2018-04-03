@@ -63,7 +63,10 @@ export default new Vuex.Store({
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []},
     baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
-    files: []
+    files: [],
+    userModal: null,
+    currentUserTags: [],
+    directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa'
   },
   mutations: {
     setMe (state, me) {
@@ -225,6 +228,16 @@ export default new Vuex.Store({
     },
     clearFiles (state) {
       state.files = []
+    },
+    setUserModal (state, user) {
+      state.userModal = user
+    },
+    setCurrentUserTags (state, tags) {
+      tags.sort(stringSortGen('tag'))
+      state.currentUserTags = tags
+    },
+    closeUserModal (state) {
+      state.userModal = null
     }
   },
   getters: {
@@ -242,6 +255,9 @@ export default new Vuex.Store({
         })
         return channel
       }
+    },
+    getDirectMessageChannels (state, getters) {
+      return state.channelData.filter(channel => channel.parent === state.directMessageId)
     },
     getUserByName (state, getters) {
       return userName => {
@@ -324,7 +340,10 @@ export default new Vuex.Store({
       })
     },
     getMessages ({state, commit, dispatch}, update) {
-      let nowChannel = state.currentChannel
+      const nowChannel = state.currentChannel
+      if (nowChannel.channelId === state.directMessageId) {
+        return
+      }
       let loaded = false
       const latest = state.messages.length === 0 || update
       if (latest) {
@@ -397,6 +416,16 @@ export default new Vuex.Store({
         .then(res => {
           commit('setCurrentChannelNotifications', res.data)
         })
+    },
+    updateCurrentUserTags ({state, commit}) {
+      return client.getUserTags(state.userModal.userId)
+      .then(res => {
+        commit('setCurrentUserTags', res.data)
+      })
+    },
+    openUserModal ({state, commit, dispatch}, userId) {
+      commit('setUserModal', state.memberMap[userId])
+      return dispatch('updateCurrentUserTags')
     }
   }
 })

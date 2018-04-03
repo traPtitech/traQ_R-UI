@@ -1,5 +1,6 @@
 <template lang="pug">
 FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").index
+  User
   Titlebar
   Message
   Information
@@ -11,6 +12,7 @@ import sse from '@/bin/sse'
 import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
 import FileDroper from '@/components/Util/FileDroper'
+import User from '@/components/Main/User'
 
 export default {
   name: 'index',
@@ -24,7 +26,8 @@ export default {
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
     'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation')),
-    'FileDroper': FileDroper
+    'FileDroper': FileDroper,
+    'User': User
   },
   async created () {
     this.$store.subscribe(async mutation => {
@@ -59,7 +62,9 @@ export default {
     })
 
     if (!this.$route.params.channel) {
-      this.$router.push('/channels/random')
+      if (!this.$route.params.user) {
+        this.$router.push('/channels/random')
+      }
     }
 
     if (window.Notification) {
@@ -135,10 +140,14 @@ export default {
     }
 
     this.heartbeat = setInterval(() => {
-      client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
+      if (this.$store.state.channelId !== this.$store.state.directMessageId) {
+        client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
         .then(res => {
           this.$store.commit('updateHeartbeatStatus', res.data)
         })
+      } else {
+        this.$store.commit('updateHeartbeatStatus', {userStatuses: [{userId: this.$store.state.me.userId, status: 'none'}], channelId: ''})
+      }
     }, 3000)
 
     while (!this.$el) {

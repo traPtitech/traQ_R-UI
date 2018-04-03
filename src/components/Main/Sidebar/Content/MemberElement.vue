@@ -1,5 +1,5 @@
 <template lang="pug">
-div.member-element
+div.member-element(v-on:click="openUserModal")
   p
     img.member-element-icon(:src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
     ruby
@@ -16,6 +16,9 @@ export default {
     model: Object
   },
   methods: {
+    openUserModal () {
+      this.$store.dispatch('openUserModal', this.model.userId)
+    },
     userIconSrc () {
       return client.getUserIconUrl(this.model.userId)
     }
@@ -24,6 +27,8 @@ export default {
 </script>
 
 <style lang="sass">
+.member-element
+  cursor: pointer
 .member-element-icon
   width: 40px
   height: 40px

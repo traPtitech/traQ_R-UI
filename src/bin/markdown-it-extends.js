@@ -44,9 +44,9 @@ const jsonParse = (text) => {
   const data = JSON.parse(text)
   if (data['type'] === 'user' && store.state.memberMap[data['id']]) {
     return [
-      newTag('traq_extends_link_open', 'router-link', '', [['to', `/users/${store.state.memberMap[data['id']].name}`]], 1),
+      newTag('traq_extends_link_open', 'a', '', [['href', '#'], ['v-on:click', `$store.dispatch('openUserModal', '${data['id']}')`]], 1),
       newTag('text', '', data['raw'], null, 0),
-      newTag('traq_extends_link_close', 'router-link', '', null, -1)
+      newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
   } else if (data['type'] === 'channel' && store.state.channelMap[data['id']]) {
     return [

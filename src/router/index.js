@@ -39,6 +39,10 @@ const router = new Router({
       component: asyncLoadComponents(import('@/components/Main/Index'))
     },
     {
+      path: '/users/:user',
+      component: asyncLoadComponents(import('@/components/Main/Index'))
+    },
+    {
       path: '/register',
       component: asyncLoadComponents(import('@/components/Register/Register'))
     },
@@ -52,6 +56,8 @@ const router = new Router({
 })
 
 router.beforeEach(async (to, from, next) => {
+  store.commit('closeUserModal')
+
   if (!store.state.me) {
     await store.dispatch('whoAmI')
   }
@@ -87,6 +93,34 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('updateUnreadMessages'),
       store.dispatch('updateTags')
     ])
+  }
+
+  const nextUser = store.getters.getUserByName(to.params.user)
+  if (nextUser) {
+    if (nextUser.name === store.state.me.name && store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.length === 1).length > 0) {
+      store.commit('changeChannel', store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.length === 1)[0])
+    } else if (nextUser.name !== store.state.me.name && store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.includes(nextUser.userId)).length > 0) {
+      store.commit('changeChannel', store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.includes(nextUser.userId))[0])
+    } else {
+      const member = [nextUser.userId]
+      if (store.state.me.userId !== nextUser.userId) {
+        member.push(store.state.me.userId)
+      }
+      store.commit('changeChannel', {
+        channelId: store.state.directMessageId,
+        name: nextUser.name,
+        parent: store.state.directMessageId,
+        children: [],
+        member: member,
+        visibility: false
+      })
+    }
+    store.dispatch('getMessages')
+    .then(() => {
+    })
+    store.commit('loadEnd')
+    next(true)
+    return
   }
 
   if (!to.params.channel) {

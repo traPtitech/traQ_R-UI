@@ -79,6 +79,11 @@ const client = {
       return axios.post(`/api/1.0/channels/${channelId}/messages`, {text})
     })
   },
+  postDirectMessage (userId, text) {
+    return middleWare('postDirectMessage', () => {
+      return axios.post(`/api/1.0/users/${userId}/messages`, {text})
+    })
+  },
   editMessage (messageId, text) {
     return middleWare('editMessage', () => {
       return axios.put(`/api/1.0/messages/${messageId}`, {text})
@@ -171,6 +176,18 @@ const client = {
   getUserDetail (userId) {
     return middleWare('getUserDetail', () => {
       return axios.get(`/api/1.0/users/${userId}`)
+    })
+  },
+  loadDirectMessages (userId, limit, offset) {
+    return middleWare('loadDirectMessages', () => {
+      return axios.get(`/api/1.0/users/${userId}/messages`,
+        {
+          params: {
+            limit: limit,
+            offset: offset
+          }
+        }
+      )
     })
   },
 
