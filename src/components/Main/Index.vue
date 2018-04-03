@@ -20,8 +20,7 @@ export default {
   name: 'index',
   data () {
     return {
-      heartbeat: null,
-      serviceWorkerEnabled: false
+      heartbeat: null
     }
   },
   components: {
@@ -85,9 +84,9 @@ export default {
     messaging.requestPermission()
       .then(() => {
         console.log('permission granted')
-        this.serviceWorkerEnabled = true
         messaging.getToken()
           .then(currentToken => {
+            console.log(currentToken)
             client.registerDevice(currentToken)
           })
       })
@@ -103,13 +102,16 @@ export default {
     })
 
     window.onfocus = () => {
+      console.log('on focus')
       if (!sse.isListening()) {
         sse.startListen(() => {
+          console.log('sse reconnect')
           this.$store.dispatch('getMessages', true)
         })
       }
     }
 
+    console.log(sse.isListening())
     if (!sse.isListening()) {
       sse.startListen(() => {
         this.$store.dispatch('getMessages', true)
@@ -173,9 +175,6 @@ export default {
       }
     },
     messageCreated (data) {
-      if (this.serviceWorkerEnabled && !document.hasFocus()) {
-        return
-      }
       client.getMessage(data.id)
         .then(res => {
           const user = this.$store.state.memberMap[res.data.userId]
@@ -228,6 +227,7 @@ export default {
       this.$store.commit('deleteMessage', data.id)
     },
     userIconUpdated (data) {
+      console.log(data)
       if (data.id === this.$store.state.me.userId) {
         this.$store.dispatch('whoAmI')
       }
