@@ -97,6 +97,9 @@ export default {
           this.inputText = ''
           this.postStatus = 'successed'
         })
+        .catch(() => {
+          this.postStatus = 'failed'
+        })
       } else {
         client.makeChannel('private', nowChannel.member, String((new Date()).getTime()), this.$store.state.directMessageId)
         .then(res => {
