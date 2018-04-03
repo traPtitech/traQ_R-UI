@@ -57,7 +57,6 @@ export default new Vuex.Store({
     unreadMessages: {},
     staredChannels: [],
     messages: [],
-    messagesNum: 0,
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
     currentChannelNotifications: [],
@@ -65,7 +64,11 @@ export default new Vuex.Store({
     menuContent: 'channels',
     heartbeatStatus: {userStatuses: []},
     baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
-    files: []
+    files: [],
+    userModal: null,
+    tagModal: null,
+    currentUserTags: [],
+    directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa'
   },
   mutations: {
     toggleSidebar (state) {
@@ -95,6 +98,7 @@ export default new Vuex.Store({
     setTagData (state, newTagData) {
       state.tagData = newTagData
       state.tagData.forEach(tag => {
+        tag.users = tag.users || []
         tag.users.sort(stringSortGen('name'))
         state.tagMap[tag.tagId] = tag
       })
@@ -114,7 +118,6 @@ export default new Vuex.Store({
       } else {
         state.messages.push(message)
       }
-      state.messagesNum = state.messages.length
       db.write('channelMessages', {channelId: state.currentChannel.channelId, data: state.messages.slice(-50)})
     },
     unshiftMessages (state, message) {
@@ -123,11 +126,9 @@ export default new Vuex.Store({
       } else {
         state.messages.unshift(message)
       }
-      state.messagesNum = state.messages.length
     },
     setMessages (state, messages) {
       state.messages = messages
-      state.messagesNum = state.messages.length
     },
     updateMessage (state, message) {
       const index = state.messages.findIndex(mes => mes.messageId === message.messageId)
@@ -144,7 +145,6 @@ export default new Vuex.Store({
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
-      state.messagesNum = 0
       state.messages = []
     },
     loadStart (state) {
@@ -234,6 +234,22 @@ export default new Vuex.Store({
     },
     clearFiles (state) {
       state.files = []
+    },
+    setUserModal (state, user) {
+      state.userModal = user
+    },
+    setTagModal (state, tag) {
+      state.tagModal = tag
+    },
+    setCurrentUserTags (state, tags) {
+      tags.sort(stringSortGen('tag'))
+      state.currentUserTags = tags
+    },
+    closeUserModal (state) {
+      state.userModal = null
+    },
+    closeTagModal (state) {
+      state.tagModal = null
     }
   },
   getters: {
@@ -251,6 +267,9 @@ export default new Vuex.Store({
         })
         return channel
       }
+    },
+    getDirectMessageChannels (state, getters) {
+      return state.channelData.filter(channel => channel.parent === state.directMessageId)
     },
     getUserByName (state, getters) {
       return userName => {
@@ -315,6 +334,11 @@ export default new Vuex.Store({
         }
         return Object.keys(state.unreadMessages[channelId]).length
       }
+    },
+    getUnreadMessageNum (state, getters) {
+      return Object.keys(state.unreadMessages).reduce((pre, channelId) => {
+        return pre + getters.getChannelUnreadMessageNum(channelId)
+      }, 0)
     }
   },
   actions: {
@@ -327,10 +351,13 @@ export default new Vuex.Store({
         commit('setMe', null)
       })
     },
-    getMessages ({state, commit, dispatch}) {
-      let nowChannel = state.currentChannel
+    getMessages ({state, commit, dispatch}, update) {
+      const nowChannel = state.currentChannel
+      if (nowChannel.channelId === state.directMessageId) {
+        return
+      }
       let loaded = false
-      const latest = state.messagesNum === 0
+      const latest = state.messages.length === 0 || update
       if (latest) {
         db.read('channelMessages', nowChannel.channelId)
           .then(data => {
@@ -339,7 +366,7 @@ export default new Vuex.Store({
             }
           })
       }
-      return client.loadMessages(nowChannel.channelId, 50, state.messagesNum)
+      return client.loadMessages(nowChannel.channelId, 50, latest ? 0 : state.messages.length)
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
@@ -401,6 +428,21 @@ export default new Vuex.Store({
         .then(res => {
           commit('setCurrentChannelNotifications', res.data)
         })
+    },
+    updateCurrentUserTags ({state, commit}) {
+      return client.getUserTags(state.userModal.userId)
+      .then(res => {
+        commit('setCurrentUserTags', res.data)
+      })
+    },
+    openUserModal ({state, commit, dispatch}, userId) {
+      commit('setUserModal', state.memberMap[userId])
+      commit('setTagModal', null)
+      return dispatch('updateCurrentUserTags')
+    },
+    openTagModal ({state, commit, dispatch}, tagId) {
+      commit('setTagModal', state.tagMap[tagId])
+      commit('setUserModal', null)
     }
   }
 })

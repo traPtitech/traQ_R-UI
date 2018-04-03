@@ -19,6 +19,7 @@ export default {
   },
   computed: {
     title () {
+      if (this.$route.params.user) return `@${this.$route.params.user}`
       if (!this.$route.params.channel) return ''
       let ret = '#'
       this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
@@ -28,6 +29,7 @@ export default {
       return ret
     },
     topic () {
+      if (this.$route.params.user) return ''
       return this.$store.state.currentChannelTopic.text
     }
   }

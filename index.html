@@ -3,12 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="manifest" href="/static/manifest.json">
     <title>traQ</title>
-    <link rel="shortcut icon" href="src/assets/img/traq_icon.png">
+    <link id="favicon" rel="shortcut icon" href="static/img/traq_icon.png">
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
   </head>
   <body>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-messaging.js"></script>
+<script>
+  var config = {
+    apiKey: "AIzaSyDee_VkrRtByJCrCZAX3nTSDPl8AaHlWfY",
+    authDomain: "traq-r.firebaseapp.com",
+    databaseURL: "https://traq-r.firebaseio.com",
+    projectId: "traq-r",
+    storageBucket: "traq-r.appspot.com",
+    messagingSenderId: "993645413001"
+  };
+  firebase.initializeApp(config);
+</script>
 </html>

@@ -1,11 +1,13 @@
 <template lang="pug">
 div#app
+  favicon
   splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
   router-view(v-else)
 </template>
 
 <script>
 import Splash from '@/components/Splash/Splash'
+import Favicon from '@/components/Util/Favicon'
 export default {
   name: 'app',
   metaInfo: {
@@ -13,7 +15,8 @@ export default {
     titleTemplate: '%s | traQ'
   },
   components: {
-    Splash
+    Splash,
+    Favicon
   },
   created () {
     console.log('REVISION:' + process.env.REVISION)
@@ -32,6 +35,7 @@ export default {
 @import "~normalize.css"
 @import url("//fonts.googleapis.com/earlyaccess/mplus1p.css")
 @import url('https://fonts.googleapis.com/css?family=Oxygen+Mono')
+@import "highlight.js/styles/default.css"
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased
