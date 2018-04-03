@@ -29,8 +29,8 @@ div
       br
       button( v-on:click="submitWithCertification")
         | 更新
-    p(v-if="state === 'successed'")
-      | 変更されました
+    p(v-if="done !== ''")
+      | {{done}}が更新されました
     p(v-if="state === 'failed'")
       | {{error}}
   div
@@ -57,7 +57,8 @@ export default {
       stampFile: null,
       state: 'default',
       error: '',
-      stampName: ''
+      stampName: '',
+      done: ''
     }
   },
   methods: {
@@ -71,14 +72,19 @@ export default {
       if (this.state === 'processing') {
         return
       }
+      this.done = ''
       this.state = 'processing'
       const tasks = []
       if (this.icon) {
-        tasks.push(client.changeIcon(this.icon))
+        tasks.push(client.changeIcon(this.icon).then(() => {
+          this.done += 'アイコン '
+        }))
         this.icon = null
       }
       if (this.displayName !== this.$store.state.me.displayName) {
-        tasks.push(client.changeDisplayName(this.displayName))
+        tasks.push(client.changeDisplayName(this.displayName).then(() => {
+          this.done += '表示名 '
+        }))
       }
       Promise.all(tasks).then(() => {
         this.state = 'successed'
@@ -92,6 +98,7 @@ export default {
       if (this.state === 'processing') {
         return
       }
+      this.done = ''
       this.state = 'processing'
       if (this.newPassword !== '' && this.newPassword !== this.checkNewPassword) {
         this.state = 'failed'
@@ -105,18 +112,28 @@ export default {
       }
       const tasks = []
       if (this.icon) {
-        tasks.push(client.changeIcon(this.icon))
+        tasks.push(client.changeIcon(this.icon).then(() => {
+          this.done += 'アイコン '
+        }))
         this.icon = null
       }
       if (this.displayName !== this.$store.state.me.displayName) {
-        tasks.push(client.changeDisplayName(this.displayName))
+        tasks.push(client.changeDisplayName(this.displayName).then(() => {
+          this.done += '表示名 '
+        }))
       }
       if (this.email !== '' && this.newPassword === '') {
-        tasks.push(client.changeEmail(this.email, this.oldPassword))
+        tasks.push(client.changeEmail(this.email, this.oldPassword).then(() => {
+          this.done += 'メール '
+        }))
       } else if (this.email === '' && this.newPassword !== '') {
-        tasks.push(client.changePassword(this.newPassword, this.oldPassword))
+        tasks.push(client.changePassword(this.newPassword, this.oldPassword).then(() => {
+          this.done += 'パスワード '
+        }))
       } else {
-        tasks.push(client.changeSetting(this.newPassword, this.email, this.oldPassword))
+        tasks.push(client.changeSetting(this.newPassword, this.email, this.oldPassword).then(() => {
+          this.done += 'メール パスワード '
+        }))
       }
       Promise.all(tasks).then(() => {
         this.email = ''
