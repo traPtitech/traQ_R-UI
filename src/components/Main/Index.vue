@@ -1,6 +1,7 @@
 <template lang="pug">
 FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").index
   User
+  Tag
   Titlebar
   Message
   Information
@@ -13,6 +14,7 @@ import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
 import FileDroper from '@/components/Util/FileDroper'
 import User from '@/components/Main/User'
+import Tag from '@/components/Main/Tag'
 
 export default {
   name: 'index',
@@ -27,7 +29,8 @@ export default {
     'Message': Message,
     'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation')),
     'FileDroper': FileDroper,
-    'User': User
+    'User': User,
+    'Tag': Tag
   },
   async created () {
     this.$store.subscribe(async mutation => {

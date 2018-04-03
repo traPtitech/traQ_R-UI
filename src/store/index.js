@@ -65,6 +65,7 @@ export default new Vuex.Store({
     baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
     files: [],
     userModal: null,
+    tagModal: null,
     currentUserTags: [],
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa'
   },
@@ -233,12 +234,18 @@ export default new Vuex.Store({
     setUserModal (state, user) {
       state.userModal = user
     },
+    setTagModal (state, tag) {
+      state.tagModal = tag
+    },
     setCurrentUserTags (state, tags) {
       tags.sort(stringSortGen('tag'))
       state.currentUserTags = tags
     },
     closeUserModal (state) {
       state.userModal = null
+    },
+    closeTagModal (state) {
+      state.tagModal = null
     }
   },
   getters: {
@@ -426,7 +433,12 @@ export default new Vuex.Store({
     },
     openUserModal ({state, commit, dispatch}, userId) {
       commit('setUserModal', state.memberMap[userId])
+      commit('setTagModal', null)
       return dispatch('updateCurrentUserTags')
+    },
+    openTagModal ({state, commit, dispatch}, tagId) {
+      commit('setTagModal', state.tagMap[tagId])
+      commit('setUserModal', null)
     }
   }
 })
