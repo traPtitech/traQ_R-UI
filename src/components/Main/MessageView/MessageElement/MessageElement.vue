@@ -392,6 +392,19 @@ export default {
     color: #797979
   & li.button-pushed
     color: #4263da
+.message-user-link
+  cursor: pointer
+  color: #005BAC
+  font-weight: bold
+.message-user-link-highlight
+  background-color: #FAFFAD
+.message-channel-link
+.message-tag-link
+  cursor: pointer
+  color: #005BAC
+  font-weight: bold
+.message-tag-link-highlight
+  background-color: #FAFFAD
 .emoji.s16
   width: 16px
   height: 16px

@@ -14,7 +14,7 @@ div.user
         p(v-on:click="addTag(tagInput)")
           | 追加
         div.user-modal-tag-element(v-for="(tag, index) in tags")
-          div
+          div(v-on:click="openTagModal(tag.tagId)")
             | {{tag.tag}}
           div(v-show="!tag.isLocked" v-on:click="eraseTag(index)")
             i.fas.fa-times
@@ -35,6 +35,9 @@ export default {
   methods: {
     closeModal () {
       this.$store.commit('closeUserModal')
+    },
+    openTagModal (tagId) {
+      this.$store.dispatch('openTagModal', tagId)
     },
     addTag (tag) {
       if (tag === '') {
