@@ -53,6 +53,11 @@ a
   text-decoration: none
 code
   font-family: 'Oxygen Mono', monospace
+  font-size: 0.9em
+.flex-center
+  display: flex
+  justify-content: center
+  align-items: center
 .sticky
   position: -webkit-sticky
   position: sticky

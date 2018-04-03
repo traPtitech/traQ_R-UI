@@ -383,7 +383,8 @@ export default {
     color: #4263da
 .message-stamps-wrap
   display: flex
-  justify-content: center
+  flex-wrap: wrap
+  justify-content: flex-start
 .message-stamp-button
   margin: 0 5px 0
   color: #797979
@@ -391,6 +392,7 @@ export default {
   height: 16px
   opacity: 0
   transition: all .2s ease
+  cursor: pointer
   .message-item:hover &
     opacity: 1
   .has-stamps &
