@@ -385,8 +385,8 @@ export default {
   animation: input-background-appeared 1s ease
 .input-background-gradation
   background: linear-gradient(95deg,#00E1FF,#e22af9)
-  animation: input-background-gradient 20s ease infinite
-  background-size: 200% 100%
+  // animation: input-background-gradient 20s ease infinite
+  // background-size: 200% 100%
 @keyframes input-background-gradient
   0%
     background-position: 0% 50%

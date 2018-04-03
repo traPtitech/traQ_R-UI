@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   div(@click="showModal")
-    | 😀
+    div.fas.fa-plus
   modal(@close="active = false" :active="active")
     input(v-model="search")
     div.emoji-container
