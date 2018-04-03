@@ -7,13 +7,3 @@ workbox.routing.registerRoute(
 )
 
 workbox.precaching.precacheAndRoute(self.__precacheManifest)
-
-self.addEventListener('notificationclick', event => {
-  console.log('Notificaton Click')
-
-  event.notification.close()
-
-  event.waitUntil(
-    clients.openWindow(`${event.data.origin}/${event.data.channel_path}`)
-  )
-})
