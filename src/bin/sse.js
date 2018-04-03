@@ -1,11 +1,17 @@
-const once = {}
-const on = {}
+let once = {}
+let on = {}
 let listeningEventList = {}
 let source = null
 
 const baseURL = process.env.NODE_ENV === 'development'
   ? 'https://traq-dev.tokyotech.org'
   : ''
+
+if (process.env.NODE_ENV === 'development') {
+  window.sseCheck = () => {
+    console.log(source)
+  }
+}
 
 const callFunction = (eventName, json) => {
   if (process.env.NODE_ENV === 'development') {
@@ -27,8 +33,12 @@ const callFunction = (eventName, json) => {
 }
 
 const sse = {
-  startListen () {
+  startListen (cb) {
+    if (source) {
+      source.close()
+    }
     source = new EventSource(baseURL + '/api/1.0/notification', {withCredentials: true})
+    source.onopen = cb
   },
   stopListen () {
     source.close()
@@ -36,7 +46,8 @@ const sse = {
     listeningEventList = {}
   },
   isListening () {
-    return !!source
+    console.log(source)
+    return !!source && source.readyState < 2
   },
   on (eventName, cb) {
     if (!listeningEventList[eventName]) {
@@ -63,6 +74,11 @@ const sse = {
       once[eventName] = []
     }
     once[eventName].push(cb)
+  },
+  resetEventListener () {
+    listeningEventList = {}
+    once = {}
+    on = {}
   }
 }
 

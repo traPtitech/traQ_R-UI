@@ -25,6 +25,7 @@ export default {
       return ret
     },
     topic () {
+      if (this.$route.params.user) return ''
       return this.$store.state.currentChannelTopic.text
     }
   }

@@ -51,8 +51,8 @@ div.message
       component(v-bind:is="mark(m.content)" v-bind="$props")
       small
         | referenced from
-        router-link(:to="`/channels/${$store.getters.getChannelPathById(m.parentChannelId)}`")
-          | {{`#${$store.getters.getChannelPathById(m.parentChannelId)}`}}
+        router-link(:to="parentChannel(m.parentChannelId).to")
+          | {{parentChannel(m.parentChannelId).name}}
   div.message-files-wrap
     div(v-for="file in files")
       img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
@@ -235,6 +235,26 @@ export default {
     },
     openUserModal (userId) {
       this.$store.dispatch('openUserModal', userId)
+    },
+    parentChannel (parentChannelId) {
+      const channel = this.$store.state.channelMap[parentChannelId]
+      if (channel.parent === this.$store.state.directMessageId) {
+        let userName = this.$store.state.me.name
+        channel.member.forEach(userId => {
+          if (userId !== this.$store.state.me.userId) {
+            userName = this.$store.state.memberMap[userId].name
+          }
+        })
+        return {
+          to: `/users/${userName}`,
+          name: `@${userName}`
+        }
+      } else {
+        return {
+          to: `/channels/${this.$store.getters.getChannelPathById(parentChannelId)}`,
+          name: `#${this.$store.getters.getChannelPathById(parentChannelId)}`
+        }
+      }
     }
   },
   computed: {
