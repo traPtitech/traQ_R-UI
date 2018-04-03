@@ -137,7 +137,8 @@ export default {
       })
     },
     replaceTag (message) {
-      return message.replace(/(?:^@|(?:[^"]@))([^\s]+)/g, (match, content) => {
+      return message.replace(/^"@([\S]+)|(?:@([\S]+))/g, (match, userId, content) => {
+        if (userId) return match
         const tag = this.$store.getters.getTagByContent(content)
         if (tag) {
           return `!{"type": "tag", "raw": "${match}", "id": "${tag.tagId}"}`
