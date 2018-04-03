@@ -31,6 +31,7 @@ export default {
 <style lang="sass">
 @import "~normalize.css"
 @import url("//fonts.googleapis.com/earlyaccess/mplus1p.css")
+@import url('https://fonts.googleapis.com/css?family=Oxygen+Mono')
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased
@@ -50,6 +51,8 @@ p
   margin: 0
 a
   text-decoration: none
+code
+  font-family: 'Oxygen Mono', monospace
 .sticky
   position: -webkit-sticky
   position: sticky
