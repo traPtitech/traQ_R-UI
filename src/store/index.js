@@ -93,6 +93,7 @@ export default new Vuex.Store({
     setTagData (state, newTagData) {
       state.tagData = newTagData
       state.tagData.forEach(tag => {
+        tag.users = tag.users || []
         tag.users.sort(stringSortGen('name'))
         state.tagMap[tag.tagId] = tag
       })

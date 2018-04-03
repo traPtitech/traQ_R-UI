@@ -96,9 +96,9 @@ export default {
         .then((res) => {
           this.inputText = ''
           this.postStatus = 'successed'
-          if (nowChannel === this.$store.state.currentChannel) {
-            this.$store.commit('addMessages', res.data)
-          }
+        })
+        .catch(() => {
+          this.postStatus = 'failed'
         })
       } else {
         client.makeChannel('private', nowChannel.member, String((new Date()).getTime()), this.$store.state.directMessageId)
