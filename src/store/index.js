@@ -257,7 +257,7 @@ export default new Vuex.Store({
       }
     },
     getDirectMessageChannels (state, getters) {
-      return state.channelData.filter(channel => channel.parentId === state.directMessageId)
+      return state.channelData.filter(channel => channel.parent === state.directMessageId)
     },
     getUserByName (state, getters) {
       return userName => {

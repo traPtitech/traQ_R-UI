@@ -3,7 +3,7 @@ div.channel-pinned
   div(@click="showModal")
     div.fa.fa-thumbtack
   modal(@close="active = false" :active="active")
-    ul
+    ul(v-if="isActiveChannel")
       li(v-for="pin in $store.state.currentChannelPinnedMessages")
         MessageElement(:model="pin.message" :key="pin.pinId")
 </template>
@@ -23,6 +23,11 @@ export default {
   },
   components: {
     'MessageElement': window.asyncLoadComponents(import('@/components/Main/MessageView/MessageElement/MessageElement'))
+  },
+  computed: {
+    isActiveChannel () {
+      return this.$store.state.currentChannel.channelId !== this.$store.state.directMessageId
+    }
   }
 }
 </script>

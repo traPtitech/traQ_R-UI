@@ -140,11 +140,13 @@ export default {
     }
 
     this.heartbeat = setInterval(() => {
-      if (!this.$route.params.user) {
+      if (this.$store.state.channelId !== this.$store.state.directMessageId) {
         client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
         .then(res => {
           this.$store.commit('updateHeartbeatStatus', res.data)
         })
+      } else {
+        this.$store.commit('updateHeartbeatStatus', {userStatuses: [{userId: this.$store.state.me.userId, status: 'none'}], channelId: ''})
       }
     }, 3000)
 
