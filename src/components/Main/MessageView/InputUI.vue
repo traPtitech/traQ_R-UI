@@ -120,7 +120,7 @@ export default {
       return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
         const user = this.$store.getters.getUserByName(name)
         if (user) {
-          return `!{"type": "user", "raw": "${match.replace(/_/g, '\\_')}", "id": "${user.userId}"}`
+          return `!{"type": "user", "raw": "${match}", "id": "${user.userId}"}`
         } else {
           return match
         }
