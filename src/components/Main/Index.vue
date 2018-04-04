@@ -70,7 +70,7 @@ export default {
       }
     }
 
-    if (window.Notification) {
+    if ('Notification' in window) {
       if (Notification.permission === 'default') {
         Notification.requestPermission(permission => {
           if (permission === 'granted') {
