@@ -3,8 +3,9 @@ nav.menu-buttons
   ul
     li.user-icon-wrap
       img.user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[$store.state.me.userId].iconFileId}`" @click="userMenuOpened=!userMenuOpened")
-      div.user-logout.flex-center(v-show="userMenuOpened" @click="logout")
-        | ログアウト
+      div.user-logout(v-show="userMenuOpened" @click="logout")
+        p.flex-center
+          | ログアウト
     li.menu-button.channels(@click="navClicked('channels')")
       i.fas.fa-hashtag(aria-hidden="true")
     li.menu-button.members(@click="navClicked('members')")
@@ -62,7 +63,7 @@ export default {
     align-items: flex-end
 .menu-button
   display: flex
-  margin: 10px auto
+  margin: 15px auto 0
   cursor: pointer
   align-items: center
   justify-content: center
@@ -110,8 +111,13 @@ export default {
   height: 30px
   cursor: pointer
   color: white
+  & p
+    width: 100%
+    height: 100%
+    transition: all .5s ease
+  &:hover p
+    background-color: rgba(255, 255, 255, 0.3)
 .channels
-  margin-top: 15px
 .setting
   margin-top: auto
   margin-bottom: 20px

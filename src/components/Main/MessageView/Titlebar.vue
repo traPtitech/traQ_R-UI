@@ -4,7 +4,7 @@ header.titlebar
     div.fas.fa-bars.sidebar-open-icon
   h1.channel-name
     | {{title}}
-  p.channel-topic
+  p.channel-topic-text
     | {{topic}}
   div.online-member
 </template>
@@ -55,15 +55,17 @@ export default {
   // position: fixed
   display: flex
   align-items: center
-  justify-content: space-between
+  justify-content: flex-start
   grid-area: titlebar
   background-color: #F5F5F5
+  color: #656565
   border-bottom: 1px solid rgb(176, 176, 176)
 .channel-name
   color: rgba(0, 0, 0, 0.6)
   font-size: 2em
   font-weight: bold
   text-align: left
+  margin: 0 0 0 10px
 .buttons
   display: flex
   flex-flow: row
@@ -72,7 +74,13 @@ export default {
     height: 50px
     // background-color: gray
     margin: 10px
-.channel-topic
+.channel-topic-text
+  display: flex
+  align-items: center
+  height: 60%
+  margin: 0 0 0 20px
+  padding: 0 0 0 20px
+  border-left: solid 1px #b0b0b0
   @media (max-width: 679px)
     display: none
 </style>
