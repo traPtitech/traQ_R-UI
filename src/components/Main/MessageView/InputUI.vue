@@ -1,8 +1,10 @@
 <template lang="pug">
 div.input-ui
   input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
-  div.upload-button(v-if="isOpened" v-on:click="clickUploadButton")
-  div.submit-button(v-show="isOpened" v-on:click="submit")
+  div.upload-button.flex-center(v-if="isOpened" v-on:click="clickUploadButton")
+    div.fas.fa-file
+  div.submit-button.flex-center(v-show="isOpened" v-on:click="submit")
+    div.fas.fa-angle-right
   div.input-area-wrapper(v-on:drom="dropFile" v-show="isOpened")
     p.suggest-element(v-for="(suggest, id) in suggests" v-on:click="replaceSuggest(id)" v-on:mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
     textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-on:click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
@@ -321,21 +323,16 @@ export default {
   height: 100%
   bottom: 0
   pointer-events: none
-.upload-button
+.upload-button, .submit-button
   position: absolute
   z-index: 200
   width: 40px
   height: 40px
-  background-color: rgb(207, 207, 207)
   bottom: 10px
+  font-size: 1.5em
+.upload-button
   left: 5px
 .submit-button
-  position: absolute
-  z-index: 200
-  width: 40px
-  height: 40px
-  background-color: rgb(207, 207, 207)
-  bottom: 10px
   right: 5px
 .input-area-wrapper
   width: 100%
@@ -358,11 +355,11 @@ export default {
   background: white
   resize: none
   -webkit-appearance: none
-  padding: 10px 60px 10px 10px
-  font-size: 1.1em
+  padding: 10px 60px 10px
+  font-size: 1em
   cursor: text
   border: 0
-  line-height: 1
+  line-height: 1em
   animation: openInputArea 1s ease
   /*transition: all .3s ease-in-out*/
 .input-area:focus
@@ -401,13 +398,13 @@ export default {
   background: linear-gradient(95deg,#00E1FF,#e22af9)
   // animation: input-background-gradient 20s ease infinite
   // background-size: 200% 100%
-@keyframes input-background-gradient
-  0%
-    background-position: 0% 50%
-  50%
-    background-position: 100% 50%
-  100%
-    background-position: 0% 50%
+// @keyframes input-background-gradient
+//   0%
+//     background-position: 0% 50%
+//   50%
+//     background-position: 100% 50%
+//   100%
+//     background-position: 0% 50%
 @keyframes input-background-appeared
   0%
     bottom: 10px
