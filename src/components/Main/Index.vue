@@ -119,7 +119,7 @@ export default {
       sse.resetEventListener()
       sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
       sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
-      sse.on('USER_TAGS_UPDATE', () => this.$store.dispatch('updateTags'))
+      sse.on('USER_TAGS_UPDATED', (data) => this.userTagsUpdated(data))
       sse.on('USER_ICON_UPDATED', (data) => this.userIconUpdated(data))
       sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
       sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
@@ -232,6 +232,12 @@ export default {
         this.$store.dispatch('whoAmI')
       }
       this.$store.dispatch('updateMembers')
+    },
+    userTagsUpdated (data) {
+      if (data.id === this.$store.state.userModal.userId) {
+        this.$store.dispatch('updateCurrentUserTags')
+      }
+      this.$store.dispatch('updateTags')
     },
     notify (title, options, channelName) {
       if (window.Notification) {

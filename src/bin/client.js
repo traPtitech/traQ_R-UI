@@ -293,7 +293,7 @@ const client = {
     })
   },
   deleteUserTag (userId, tagId) {
-    return middleWare('changeLockUserTag', () => {
+    return middleWare('deleteUserTag', () => {
       return axios.delete(`/api/1.0/users/${userId}/tags/${tagId}`)
     })
   },
