@@ -10,6 +10,7 @@ const baseURL = process.env.NODE_ENV === 'development'
 if (process.env.NODE_ENV === 'development') {
   window.sseCheck = () => {
     console.log(source)
+    return source
   }
 }
 
@@ -36,9 +37,16 @@ const sse = {
   startListen (cb) {
     if (source) {
       source.close()
+      source = null
     }
     source = new EventSource(baseURL + '/api/1.0/notification', {withCredentials: true})
     source.onopen = cb
+    Object.keys(listeningEventList).forEach(eventName => {
+      source.addEventListener(eventName, data => {
+        const json = JSON.parse(data.data)
+        callFunction(eventName, json)
+      })
+    })
   },
   stopListen () {
     source.close()
