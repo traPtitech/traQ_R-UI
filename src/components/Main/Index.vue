@@ -234,7 +234,7 @@ export default {
       this.$store.dispatch('updateMembers')
     },
     userTagsUpdated (data) {
-      if (data.id === this.$store.state.userModal.userId) {
+      if (this.$store.state.userModal && data.id === this.$store.state.userModal.userId) {
         this.$store.dispatch('updateCurrentUserTags')
       }
       this.$store.dispatch('updateTags')
