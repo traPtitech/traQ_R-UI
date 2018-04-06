@@ -103,7 +103,7 @@ export default {
   width: 100%
   font-weight: bold
   position: relative
-  margin: 5px 0
+  margin: 5px 0 10px
   &:before, &:after
     content: ''
     display: block

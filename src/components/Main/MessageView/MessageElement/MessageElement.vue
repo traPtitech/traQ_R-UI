@@ -354,6 +354,8 @@ export default {
     background-color: #efefef
   &.message-pinned
     background-color: #dce3ff
+  &.message-pinned:hover
+    background-color: #cadaff
 .message-user-icon-wrap
   grid-area: user-icon
 .message-user-icon
@@ -379,12 +381,10 @@ export default {
   text-overflow: ellipsis
   white-space: nowrap
   text-align: left
-  // width: 40%
-  // max-width: 500px
-  flex-shrink: 1
-  flex-basis: 43%
+  max-width: 40%
   height: 100%
   overflow: hidden
+  cursor: pointer
 .message-user-id
   margin-left: 5px
   font-size: 0.8em

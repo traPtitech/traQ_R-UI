@@ -10,6 +10,8 @@ nav.menu-buttons
       i.fas.fa-hashtag(aria-hidden="true")
     li.menu-button.members(@click="navClicked('members')")
       i.fas.fa-user(aria-hidden="true")
+    li.menu-button.clips(@click="navClicked('clips')")
+      i.fas.fa-paperclip(aria-hidden="true")
     li.menu-button.links(@click="navClicked('links')")
       i.fas.fa-th-large(aria-hidden="true")
     li.menu-button.setting(@click="$router.push('/setting')")
@@ -29,13 +31,16 @@ export default {
     navClicked: function (n) {
       switch (n) {
         case 'channels':
-          this.$store.commit('changeMenuContent', 'channels')
+          this.$store.commit('changeMenuContent', 'Channels')
           break
         case 'members':
-          this.$store.commit('changeMenuContent', 'members')
+          this.$store.commit('changeMenuContent', 'Members')
           break
         case 'links':
-          this.$store.commit('changeMenuContent', 'links')
+          this.$store.commit('changeMenuContent', 'Links')
+          break
+        case 'clips':
+          this.$store.commit('changeMenuContent', 'Clips')
           break
         case 'wiki':
           break
