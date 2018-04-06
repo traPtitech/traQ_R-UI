@@ -7,8 +7,12 @@ nav.menu-buttons
         | ログアウト
     li.menu-button.channels(@click="navClicked('channels')")
       i.fas.fa-hashtag(aria-hidden="true")
+      p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
+        | {{channelsUnreadNum}}
     li.menu-button.members(@click="navClicked('members')")
       i.fas.fa-user(aria-hidden="true")
+      p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
+        | {{usersUnreadNum}}
     li.menu-button.links(@click="navClicked('links')")
       i.fas.fa-th-large(aria-hidden="true")
     li.menu-button.setting(@click="$router.push('/setting')")
@@ -21,7 +25,8 @@ export default {
   name: 'Navigation',
   data () {
     return {
-      userMenuOpened: false
+      userMenuOpened: false,
+      menuContent: 'channels'
     }
   },
   methods: {
@@ -29,14 +34,18 @@ export default {
       switch (n) {
         case 'channels':
           this.$store.commit('changeMenuContent', 'channels')
+          this.menuContent = 'channels'
           break
         case 'members':
           this.$store.commit('changeMenuContent', 'members')
+          this.menuContent = 'members'
           break
         case 'links':
           this.$store.commit('changeMenuContent', 'links')
+          this.menuContent = 'links'
           break
         case 'wiki':
+          this.menuContent = 'wiki'
           break
         default:
       }
@@ -46,6 +55,14 @@ export default {
         .then(() => {
           location.href = '/login'
         })
+    }
+  },
+  computed: {
+    channelsUnreadNum () {
+      return this.$store.getters.getChannelUnreadMessageSum('')
+    },
+    usersUnreadNum () {
+      return this.$store.getters.getUnreadDirectMessagesSum
     }
   }
 }

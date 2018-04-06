@@ -1,6 +1,8 @@
 <template lang="pug">
 div.member-element(v-on:click="openUserModal")
   p
+    p(v-if="unreadMessagesNum > 0")
+      | {{unreadMessagesNum}}
     img.member-element-icon(:src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
     ruby
       | {{model.displayName}}
@@ -21,6 +23,22 @@ export default {
     },
     userIconSrc () {
       return client.getUserIconUrl(this.model.userId)
+    }
+  },
+  computed: {
+    directMessageChannel () {
+      if (this.model.userId === this.$store.state.me.userId) {
+        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.length === 1)
+      } else {
+        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.model.userId))
+      }
+    },
+    unreadMessagesNum () {
+      if (this.directMessageChannel) {
+        return this.$store.getters.getChannelUnreadMessageNum(this.directMessageChannel.channelId)
+      } else {
+        return 0
+      }
     }
   }
 }
