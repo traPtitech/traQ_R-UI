@@ -1,5 +1,5 @@
 <template lang="pug">
-div.message
+div.message(v-bind:class="{'message-pinned':pinned}")
   div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
   div.message-detail-wrap
@@ -9,6 +9,21 @@ div.message
       //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
       | {{dateTime(model.datetime)}}
+    ul.message-buttons-wrap
+      li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
+        div.fas.fa-edit
+      li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
+        div.fas.fa-trash-alt
+      li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
+        div.fas.fa-thumbtack
+      li(v-on:click="pinMessage" v-else)
+        div.fas.fa-thumbtack
+      li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
+        div.fas.fa-paperclip
+      li(v-on:click="clipMessage" v-else)
+        div.fas.fa-paperclip
+      li(v-on:click="copyMessage")
+        div.fas.fa-copy
   div.message-contents-wrap
     div.message-text-wrap
       component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
@@ -52,21 +67,6 @@ div.message
             p
               | {{stamp.sum}}
         StampList.message-stamp-button(:model="{messageId: model.messageId}")
-      ul.message-buttons-wrap
-        li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
-          div.fas.fa-edit
-        li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
-          div.fas.fa-trash-alt
-        li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
-          div.fas.fa-thumbtack
-        li(v-on:click="pinMessage" v-else)
-          div.fas.fa-thumbtack
-        li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
-          div.fas.fa-paperclip
-        li(v-on:click="clipMessage" v-else)
-          div.fas.fa-paperclip
-        li(v-on:click="copyMessage")
-          div.fas.fa-copy
 </template>
 
 <script>
@@ -352,12 +352,14 @@ export default {
   transition: background-color .5s ease
   &:hover
     background-color: #efefef
+  &.message-pinned
+    background-color: #dce3ff
 .message-user-icon-wrap
   grid-area: user-icon
 .message-user-icon
   width: 40px
   height: 40px
-  background-color: white
+  background-color: #d2d2d2
   border-radius: 100%
   cursor: pointer
 .message-detail-wrap
@@ -376,6 +378,7 @@ export default {
   font-weight: bold
   text-overflow: ellipsis
   white-space: nowrap
+  text-align: left
   // width: 40%
   // max-width: 500px
   flex-shrink: 1
@@ -391,8 +394,11 @@ export default {
   text-overflow: ellipsis
 .message-date
   // flex: 1
+  display: block
   font-size: 0.7em
   margin-left: 5px
+  .message-item:hover &
+    display: none
 .message-contents-wrap
   grid-area: contents
   display: flex
@@ -413,12 +419,11 @@ export default {
   justify-content: space-between
   margin: 10px 0 5px
 .message-buttons-wrap
-  opacity: 0
   transition: all .2s ease
-  display: flex
+  display: none
   justify-content: flex-end
   .message-item:hover &
-    opacity: 1
+    display: flex
   & li
     margin: 0 5px
     cursor: pointer
