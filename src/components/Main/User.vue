@@ -10,8 +10,8 @@ div.user
       div.user-modal-button(v-on:click="openDirectMessage")
         | DM
       div.user-modal-tag-container
-        input(v-model="tagInput" v-on:keydown.enter="addTag(tagInput)")
-        p(v-on:click="addTag(tagInput)")
+        input(v-model="tagInput" v-on:keydown="keydown")
+        p(v-on:click="addTag")
           | 追加
         div.user-modal-tag-element(v-for="(tag, index) in tags")
           div(v-on:click="openTagModal(tag.tagId)")
@@ -39,34 +39,29 @@ export default {
     openTagModal (tagId) {
       this.$store.dispatch('openTagModal', tagId)
     },
-    addTag (tag) {
-      if (tag === '') {
+    keydown (event) {
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+        this.addTag()
+        event.returnValue = false
+      }
+    },
+    addTag () {
+      if (this.tagInput === '') {
         return
       }
-      client.addUserTag(this.model.userId, tag)
+      client.addUserTag(this.model.userId, this.tagInput)
       .then(() => {
         this.tagInput = ''
-        this.$store.dispatch('updateCurrentUserTags')
       })
     },
     eraseTag (id) {
-      console.log(id)
       client.deleteUserTag(this.model.userId, this.tags[id].tagId)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
     },
     lockTag (id) {
       client.changeLockUserTag(this.model.userId, this.tags[id].tagId, true)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
     },
     unlockTag (id) {
       client.changeLockUserTag(this.model.userId, this.tags[id].tagId, false)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
     },
     openDirectMessage () {
       this.$router.push(`/users/${this.model.name}`)

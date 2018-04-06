@@ -8,8 +8,12 @@ nav.menu-buttons
           | ログアウト
     li.menu-button.channels(@click="navClicked('channels')")
       i.fas.fa-hashtag(aria-hidden="true")
+      p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
+        | {{channelsUnreadNum}}
     li.menu-button.members(@click="navClicked('members')")
       i.fas.fa-user(aria-hidden="true")
+      p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
+        | {{usersUnreadNum}}
     li.menu-button.clips(@click="navClicked('clips')")
       i.fas.fa-paperclip(aria-hidden="true")
     li.menu-button.links(@click="navClicked('links')")
@@ -24,7 +28,8 @@ export default {
   name: 'Navigation',
   data () {
     return {
-      userMenuOpened: false
+      userMenuOpened: false,
+      menuContent: 'channels'
     }
   },
   methods: {
@@ -32,17 +37,22 @@ export default {
       switch (n) {
         case 'channels':
           this.$store.commit('changeMenuContent', 'Channels')
+          this.menuContent = 'channels'
           break
         case 'members':
           this.$store.commit('changeMenuContent', 'Members')
-          break
-        case 'links':
-          this.$store.commit('changeMenuContent', 'Links')
+          this.menuContent = 'members'
           break
         case 'clips':
           this.$store.commit('changeMenuContent', 'Clips')
+          this.menuContent = 'clips'
+          break
+        case 'links':
+          this.$store.commit('changeMenuContent', 'Links')
+          this.menuContent = 'links'
           break
         case 'wiki':
+          this.menuContent = 'wiki'
           break
         default:
       }
@@ -52,6 +62,14 @@ export default {
         .then(() => {
           location.href = '/login'
         })
+    }
+  },
+  computed: {
+    channelsUnreadNum () {
+      return this.$store.getters.getChannelUnreadMessageSum('')
+    },
+    usersUnreadNum () {
+      return this.$store.getters.getUnreadDirectMessagesSum
     }
   }
 }

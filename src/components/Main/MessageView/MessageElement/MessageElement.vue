@@ -42,7 +42,7 @@ div.message(v-bind:class="{'message-pinned':pinned}")
           | @{{$store.state.memberMap[m.userId].name}}
         component(v-bind:is="mark(m.content)" v-bind="$props")
         small
-          | referenced from
+          | from
           router-link(:to="parentChannel(m.parentChannelId).to")
             | {{parentChannel(m.parentChannelId).name}}
     div.message-files-wrap

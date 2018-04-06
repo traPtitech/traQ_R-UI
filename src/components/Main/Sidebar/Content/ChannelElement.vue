@@ -5,6 +5,8 @@ div.channel-wrap(v-if="model.visibility")
       | {{model.name}}
     p.channel-unread-num(v-if="unreadNum > 0")
       | {{unreadNum}}
+    p.channel-unread-sum(v-if="!isOpened && unreadSum - unreadNum > 0")
+      | {{unreadSum - unreadNum}}
     div.channel-status-wrap
       div.channel-notification
       div.channel-toggle(v-if="isFolder" v-on:click.stop="toggle")
@@ -35,14 +37,17 @@ export default {
     }
   },
   computed: {
-    isFolder: function () {
+    isFolder () {
       return this.model.children && this.model.children.length > 0
     },
-    isWatched: function () {
+    isWatched () {
       return this.$store.state.currentChannel.channelId === this.model.channelId
     },
-    unreadNum: function () {
+    unreadNum () {
       return this.$store.getters.getChannelUnreadMessageNum(this.model.channelId)
+    },
+    unreadSum () {
+      return this.$store.getters.getChannelUnreadMessageSum(this.model.channelId)
     }
   },
   components: {

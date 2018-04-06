@@ -53,9 +53,12 @@ export default {
 
 <style lang="sass">
 .links-list-wrap
-  padding: 15px 10px
+  padding: 15px 0
 .links-list li
-  margin: 5px 0
+  padding: 5px 10px
+  transition: all .5s ease
+  &:hover
+    background-color: #e4e4e4
 .links-list li a
   display: flex
   align-items: center
@@ -67,4 +70,5 @@ export default {
 .link-title
   margin: 5px 0 5px 10px
   font-size: 1em
+  user-select: none
 </style>

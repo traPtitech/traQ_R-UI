@@ -335,9 +335,26 @@ export default new Vuex.Store({
         return Object.keys(state.unreadMessages[channelId]).length
       }
     },
+    getChannelUnreadMessageSum (state, getters) {
+      return channelId => {
+        let sum = getters.getChannelUnreadMessageNum(channelId)
+        if (!state.channelMap[channelId].children) {
+          return sum
+        }
+        state.channelMap[channelId].children.forEach(child => {
+          sum += getters.getChannelUnreadMessageSum(child)
+        })
+        return sum
+      }
+    },
     getUnreadMessageNum (state, getters) {
       return Object.keys(state.unreadMessages).reduce((pre, channelId) => {
         return pre + getters.getChannelUnreadMessageNum(channelId)
+      }, 0)
+    },
+    getUnreadDirectMessagesSum (state, getters) {
+      return getters.getDirectMessageChannels.reduce((pre, channel) => {
+        return pre + getters.getChannelUnreadMessageNum(channel.channelId)
       }, 0)
     }
   },
