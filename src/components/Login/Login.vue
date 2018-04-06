@@ -5,8 +5,8 @@ div.login
       | Welcome to traQ
   div.login-right-box
     div.input-wrap
-      input.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス" required @keydown.enter="loginPost")
-      input.login-input.input-password(v-model="pass" type="password" placeholder="パスワード" required @keydown.enter="loginPost")
+      input.input-reset.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス" required @keydown.enter="loginPost")
+      input.input-reset.login-input.input-password(v-model="pass" type="password" placeholder="パスワード" required @keydown.enter="loginPost")
     div.login-button-wrap
       button.login-button(v-on:click="loginPost()")
         p ログイン
@@ -81,11 +81,17 @@ export default {
   width: 200px
   height: 30px
   margin: 5px auto
+  padding: 5px 10px
   box-sizing: border-box
+  border: solid 1px #8c8c8c
+  transition: all .5s ease
   &:active
   &:valid
   &::placeholder
-    font-size: 1.1em
+    font-size: 0.8em
+  &:-webkit-autofill
+    box-shadow: 0 0 0 1000px #bfdcff inset
+    border-color: #4e73d6
 .login-button-wrap
   position: relative
 .login-button

@@ -1,24 +1,38 @@
 <template lang="pug">
-div.message
+div.message(v-bind:class="{'message-pinned':pinned}")
   div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
   div.message-detail-wrap
-    div.message-detail-left
-      p.message-user-name(v-on:click="openUserModal(model.userId)")
-        | {{$store.state.memberMap[model.userId].displayName}}
-      p.message-user-id(v-on:click="openUserModal(model.userId)")
-        | @{{$store.state.memberMap[model.userId].name}}
-    p.message-date
+    div.message-user-name(v-on:click="openUserModal(model.userId)")
+      | {{$store.state.memberMap[model.userId].displayName}}
+      //- p.message-user-id(v-on:click="openUserModal(model.userId)")
+      //-   | @{{$store.state.memberMap[model.userId].name}}
+    time.message-date
       | {{dateTime(model.datetime)}}
+    ul.message-buttons-wrap
+      li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
+        div.fas.fa-edit
+      li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
+        div.fas.fa-trash-alt
+      li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
+        div.fas.fa-thumbtack
+      li(v-on:click="pinMessage" v-else)
+        div.fas.fa-thumbtack
+      li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
+        div.fas.fa-paperclip
+      li(v-on:click="clipMessage" v-else)
+        div.fas.fa-paperclip
+      li(v-on:click="copyMessage")
+        div.fas.fa-copy
   div.message-contents-wrap
     div.message-text-wrap
       component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
       div(v-if="isEditing")
-        textarea(v-model="edited" )
-        button(v-on:click="editSubmit" )
-          | submit
-        button(v-on:click="editCancel" )
-          | cancel
+        textarea.input-reset.edit-area(v-model="edited")
+        button.edit-button.edit-cancel(v-on:click="editCancel" )
+          | Esc
+        button.edit-button.edit-submit(v-on:click="editSubmit" )
+          | Shift+Enter
     div.message-messages-wrap
       div.attached-message(v-for="m in messages")
         img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`")
@@ -53,21 +67,6 @@ div.message
             p
               | {{stamp.sum}}
         StampList.message-stamp-button(:model="{messageId: model.messageId}")
-      ul.message-buttons-wrap
-        li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
-          div.fas.fa-edit
-        li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
-          div.fas.fa-trash-alt
-        li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
-          div.fas.fa-thumbtack
-        li(v-on:click="pinMessage" v-else)
-          div.fas.fa-thumbtack
-        li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
-          div.fas.fa-paperclip
-        li(v-on:click="clipMessage" v-else)
-          div.fas.fa-paperclip
-        li(v-on:click="copyMessage")
-          div.fas.fa-copy
 </template>
 
 <script>
@@ -346,15 +345,25 @@ export default {
   grid-template-areas: "user-icon detail""user-icon contents""... contents"
   grid-template-rows: 20px 1fr
   grid-template-columns: 40px 1fr
-  border-top: solid 1px rgba(0, 0, 0, 0.1)
+  // border-top: solid 1px rgba(0, 0, 0, 0.1)
   padding: 10px 10px
+  width: 100%
+  box-sizing: border-box
+  transition: background-color .5s ease
+  &:hover
+    background-color: #efefef
+  &.message-pinned
+    background-color: #dce3ff
+  &.message-pinned:hover
+    background-color: #cadaff
 .message-user-icon-wrap
   grid-area: user-icon
 .message-user-icon
   width: 40px
   height: 40px
-  background-color: white
+  background-color: #d2d2d2
   border-radius: 100%
+  cursor: pointer
 .message-detail-wrap
   grid-area: detail
   display: flex
@@ -364,14 +373,18 @@ export default {
   display: flex
   flex-wrap: wrap
   align-items: center
-  width: 100%
+  max-width: 50%
+  height: 100%
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
   text-overflow: ellipsis
   white-space: nowrap
-  max-width: 62%
+  text-align: left
+  max-width: 40%
+  height: 100%
   overflow: hidden
+  cursor: pointer
 .message-user-id
   margin-left: 5px
   font-size: 0.8em
@@ -380,7 +393,12 @@ export default {
   white-space: nowrap
   text-overflow: ellipsis
 .message-date
+  // flex: 1
+  display: block
   font-size: 0.7em
+  margin-left: 5px
+  .message-item:hover &
+    display: none
 .message-contents-wrap
   grid-area: contents
   display: flex
@@ -393,17 +411,19 @@ export default {
   word-break: break-all
   & pre
     white-space: pre-wrap
+.message-messages-wrap
+  margin-left: 10px
+.message-files-wrap
 .message-actions-wrap
   display: flex
   justify-content: space-between
   margin: 10px 0 5px
 .message-buttons-wrap
-  opacity: 0
   transition: all .2s ease
-  display: flex
+  display: none
   justify-content: flex-end
   .message-item:hover &
-    opacity: 1
+    display: flex
   & li
     margin: 0 5px
     cursor: pointer
@@ -461,4 +481,20 @@ export default {
 .attached-message
   padding: 5px 10px
   border-left: 5px solid
+.edit-area
+  width: 100%
+  resize: none
+  background-color: #d0d0d0
+  padding: 10px
+  box-sizing: border-box
+.edit-button
+  border: none
+  color: white
+  padding: 3px 10px
+  cursor: pointer
+  margin: 2px 5px 0 0
+.edit-cancel
+  background-color: #888888
+.edit-submit
+  background-color: #4e72d6
 </style>

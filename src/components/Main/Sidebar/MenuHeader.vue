@@ -1,6 +1,8 @@
 <template lang="pug">
 div.menu-header
-  div.search
+  div.menu-title.flex-center
+    | {{$store.state.menuContent}}
+  div.search.flex-center
     i.fa.fa-search(aria-hidden="true")
 </template>
 
@@ -16,16 +18,20 @@ export default {
 .menu-header
   grid-area: header
   display: flex
+  justify-content: space-between
   border-right: 1px solid rgb(176, 176, 176)
   border-bottom: 1px solid rgb(176, 176, 176)
   background-color: #F5F5F5
   margin: 0
+.menu-title
+  font-size: 1.5em
+  font-weight: bold
+  color: #626262
+  flex: 1
+  margin: 0 15px
 .search
+  margin: 0 15px
   height: 100%
-  width: 100%
-  display: flex
-  justify-content: center
-  align-items: center
 .fa-search
   font-size: 1.5em
   color: rgba(0, 0, 0, 0.6)

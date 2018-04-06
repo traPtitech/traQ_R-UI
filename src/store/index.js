@@ -61,7 +61,7 @@ export default new Vuex.Store({
     currentChannelPinnedMessages: [],
     currentChannelNotifications: [],
     me: null,
-    menuContent: 'channels',
+    menuContent: 'Channels',
     heartbeatStatus: {userStatuses: []},
     baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
     files: [],

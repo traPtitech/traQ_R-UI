@@ -66,7 +66,7 @@ export default {
   cursor: pointer
 .channel-box-name
   position: relative
-  color: gray
+  color: #626262
   font-weight: bold
   flex: 1
   margin: 2px 5px
@@ -78,6 +78,8 @@ export default {
   background-color: inherit
   overflow: hidden
   z-index: 1
+  user-select: none
+  height: 18px
   .channel-opened &
     color: #4f74d6
   .channel-watched &

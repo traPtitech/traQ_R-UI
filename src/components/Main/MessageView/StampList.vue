@@ -43,9 +43,6 @@ export default {
 }
 </script>
 <style lang="sass">
-.emoji.s16
-  width: 16px
-  height: 16px
 .emoji.s32
   width: 32px
   height: 32px

@@ -43,8 +43,6 @@ export default {
   text-align: center
   color: #2c3e50
   margin-top: 60pxc
-body
-  margin: 0
 li
   list-style: none
   margin: 0
@@ -58,6 +56,16 @@ a
 code
   font-family: 'Oxygen Mono', monospace
   font-size: 0.9em
+// input, button, textarea, select
+.input-reset
+  padding: 0
+  background: none
+  border: none
+  border-radius: 0
+  outline: none
+  -webkit-appearance: none
+  -moz-appearance: none
+  appearance: none
 .flex-center
   display: flex
   justify-content: center

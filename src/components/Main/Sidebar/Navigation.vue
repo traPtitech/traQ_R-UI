@@ -3,8 +3,9 @@ nav.menu-buttons
   ul
     li.user-icon-wrap
       img.user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[$store.state.me.userId].iconFileId}`" @click="userMenuOpened=!userMenuOpened")
-      div.user-logout.flex-center(v-show="userMenuOpened" @click="logout")
-        | ログアウト
+      div.user-logout(v-show="userMenuOpened" @click="logout")
+        p.flex-center
+          | ログアウト
     li.menu-button.channels(@click="navClicked('channels')")
       i.fas.fa-hashtag(aria-hidden="true")
       p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
@@ -13,6 +14,8 @@ nav.menu-buttons
       i.fas.fa-user(aria-hidden="true")
       p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
         | {{usersUnreadNum}}
+    li.menu-button.clips(@click="navClicked('clips')")
+      i.fas.fa-paperclip(aria-hidden="true")
     li.menu-button.links(@click="navClicked('links')")
       i.fas.fa-th-large(aria-hidden="true")
     li.menu-button.setting(@click="$router.push('/setting')")
@@ -33,15 +36,19 @@ export default {
     navClicked: function (n) {
       switch (n) {
         case 'channels':
-          this.$store.commit('changeMenuContent', 'channels')
+          this.$store.commit('changeMenuContent', 'Channels')
           this.menuContent = 'channels'
           break
         case 'members':
-          this.$store.commit('changeMenuContent', 'members')
+          this.$store.commit('changeMenuContent', 'Members')
           this.menuContent = 'members'
           break
+        case 'clips':
+          this.$store.commit('changeMenuContent', 'Clips')
+          this.menuContent = 'clips'
+          break
         case 'links':
-          this.$store.commit('changeMenuContent', 'links')
+          this.$store.commit('changeMenuContent', 'Links')
           this.menuContent = 'links'
           break
         case 'wiki':
@@ -79,7 +86,7 @@ export default {
     align-items: flex-end
 .menu-button
   display: flex
-  margin: 10px auto
+  margin: 15px auto 0
   cursor: pointer
   align-items: center
   justify-content: center
@@ -127,8 +134,13 @@ export default {
   height: 30px
   cursor: pointer
   color: white
+  & p
+    width: 100%
+    height: 100%
+    transition: all .5s ease
+  &:hover p
+    background-color: rgba(255, 255, 255, 0.3)
 .channels
-  margin-top: 15px
 .setting
   margin-top: auto
   margin-bottom: 20px
