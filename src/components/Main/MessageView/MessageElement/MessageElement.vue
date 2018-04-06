@@ -3,11 +3,10 @@ div.message
   div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
   div.message-detail-wrap
-    div.message-detail-left
-      p.message-user-name(v-on:click="openUserModal(model.userId)")
-        | {{$store.state.memberMap[model.userId].displayName}}
-      p.message-user-id(v-on:click="openUserModal(model.userId)")
-        | @{{$store.state.memberMap[model.userId].name}}
+    div.message-user-name(v-on:click="openUserModal(model.userId)")
+      | {{$store.state.memberMap[model.userId].displayName}}
+      //- p.message-user-id(v-on:click="openUserModal(model.userId)")
+      //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
       | {{dateTime(model.datetime)}}
   div.message-contents-wrap
@@ -348,6 +347,8 @@ export default {
   grid-template-columns: 40px 1fr
   // border-top: solid 1px rgba(0, 0, 0, 0.1)
   padding: 10px 10px
+  width: 100%
+  box-sizing: border-box
   transition: background-color .5s ease
   &:hover
     background-color: #efefef
@@ -368,13 +369,18 @@ export default {
   display: flex
   flex-wrap: wrap
   align-items: center
-  width: 100%
+  max-width: 50%
+  height: 100%
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
   text-overflow: ellipsis
   white-space: nowrap
-  max-width: 62%
+  // width: 40%
+  // max-width: 500px
+  flex-shrink: 1
+  flex-basis: 43%
+  height: 100%
   overflow: hidden
 .message-user-id
   margin-left: 5px
@@ -384,7 +390,9 @@ export default {
   white-space: nowrap
   text-overflow: ellipsis
 .message-date
+  // flex: 1
   font-size: 0.7em
+  margin-left: 5px
 .message-contents-wrap
   grid-area: contents
   display: flex
@@ -397,6 +405,9 @@ export default {
   word-break: break-all
   & pre
     white-space: pre-wrap
+.message-messages-wrap
+  margin-left: 10px
+.message-files-wrap
 .message-actions-wrap
   display: flex
   justify-content: space-between

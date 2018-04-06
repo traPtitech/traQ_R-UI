@@ -1,11 +1,11 @@
 <template lang="pug">
 div.channel-online-users(v-on:click="isOpened=!isOpened;clicked" v-on:blur="isOpened = false" v-bind:class="{ 'opened' : isOpened }")
     | {{onlineUsersNumber}}
-    ul.channel-online-users-list(v-show="isOpened")
-      li.channel-online-users-item(v-for="user in onlineUsers")
+    div.channel-online-users-list(v-show="isOpened")
+      div.channel-online-users-item(v-for="user in onlineUsers" @click="openUserModal(user.userId)")
         img.user-icon(:src="userIconSrc(user)")
-        p
-          | {{$store.state.memberMap[user.userId].displayName}}
+        //- p
+        //-   | {{$store.state.memberMap[user.userId].displayName}}
 </template>
 
 <script>
@@ -31,6 +31,9 @@ export default {
     },
     clicked (el) {
       el.focus()
+    },
+    openUserModal (userId) {
+      this.$store.dispatch('openUserModal', userId)
     }
   }
 }
@@ -52,17 +55,19 @@ export default {
   &.opened
     background-color: #3a4890
 .channel-online-users-list
+  display: flex
   position: absolute
+  z-index: 15
   right: calc( 100% + 10px )
   top: 0
-  min-width: 200px
+  max-width: 200px
   background: #4e72d6
   padding: 5px 0
   border-radius: 3px
 .channel-online-users-item
   display: flex
   align-items: center
-  padding: 5px 10px
+  padding: 5px
   &:hover
     background-color: rgba(255,255,255,0.3)
 </style>

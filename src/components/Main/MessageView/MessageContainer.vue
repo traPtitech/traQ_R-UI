@@ -86,7 +86,7 @@ export default {
   width: 100%
   height: 100%
   position: absolute
-  z-index: 0
+  z-index: 10
   top: 0
   left: 0
 .sticky-container
@@ -94,12 +94,28 @@ export default {
   width: 100%
   top: 0
   left: 0
-  z-index: 1
+  z-index: 20
   pointer-events: none
 .message-item
   overflow: hidden
 .date-partition
+  display: inline-block
+  width: 100%
   font-weight: bold
+  position: relative
+  margin: 5px 0
+  &:before, &:after
+    content: ''
+    display: block
+    height: 1px
+    width: 30%
+    top: 50%
+    background-color: #cacaca
+    position: absolute
+  &:before
+    left: 5%
+  &:after
+    right: 5%
 .message-list
   padding-bottom: 60px
 </style>
