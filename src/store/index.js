@@ -68,7 +68,8 @@ export default new Vuex.Store({
     userModal: null,
     tagModal: null,
     currentUserTags: [],
-    directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa'
+    directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
+    editing: false
   },
   mutations: {
     toggleSidebar (state) {
@@ -250,6 +251,9 @@ export default new Vuex.Store({
     },
     closeTagModal (state) {
       state.tagModal = null
+    },
+    setEditing (state, isEditing) {
+      state.editing = isEditing
     }
   },
   getters: {
