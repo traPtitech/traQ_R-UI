@@ -113,7 +113,6 @@ export default {
           .then(() => {
             this.postStatus = 'successed'
             this.inputText = ''
-            this.$store.dispatch('getMessages')
           })
           this.$store.commit('changeChannel', res.data)
         })
