@@ -116,10 +116,6 @@ export default {
             this.$store.dispatch('getMessages')
           })
           this.$store.commit('changeChannel', res.data)
-          client.changeNotifications(res.data.channelId, {
-            on: res.data.member,
-            off: []
-          })
         })
         .catch(() => {
           this.postStatus = 'failed'

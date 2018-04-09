@@ -176,9 +176,12 @@ export default {
     },
     messageCreated (data) {
       client.getMessage(data.id)
-        .then(res => {
-          const user = this.$store.state.memberMap[res.data.userId]
-          const channel = this.$store.state.channelMap[res.data.parentChannelId]
+        .then(async res => {
+          let user = this.$store.state.memberMap[res.data.userId]
+          let channel = this.$store.state.channelMap[res.data.parentChannelId]
+          if (!channel) {
+            channel = await client.getChannelInfo(res.data.parentChannelId).data
+          }
           let path = ''
           let title = ''
           if (channel.parent === this.$store.state.directMessageId) {
