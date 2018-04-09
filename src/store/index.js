@@ -383,7 +383,7 @@ export default new Vuex.Store({
             }
           })
       }
-      return client.loadMessages(nowChannel.channelId, 50, latest ? 0 : state.messages.length)
+      return client.loadMessages(nowChannel.channelId, 10, latest ? 0 : state.messages.length)
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
