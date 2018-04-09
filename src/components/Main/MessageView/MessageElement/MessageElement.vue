@@ -267,7 +267,7 @@ export default {
   computed: {
     renderedText () {
       return {
-        template: `<div class="message-content">${md.render(this.model.content).replace(/{{/g, '{&#8203;{').replace(/}}/g, '}&#8203;}')}</div>`,
+        template: `<div class="message-content">${md.render(this.model.content).replace(/{{/g, '{&#8203;{&#8203;').replace(/}}/g, '}&#8203;}&#8203;')}</div>`,
         props: this.$options.props
       }
     },
