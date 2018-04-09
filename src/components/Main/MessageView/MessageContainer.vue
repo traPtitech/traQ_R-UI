@@ -108,14 +108,14 @@ export default {
     content: ''
     display: block
     height: 1px
-    width: 30%
+    width: calc( 50% - 60px )
     top: 50%
     background-color: #cacaca
     position: absolute
   &:before
-    left: 5%
+    left: 10px
   &:after
-    right: 5%
+    right: 10px
 .message-list
   padding-bottom: 60px
 </style>

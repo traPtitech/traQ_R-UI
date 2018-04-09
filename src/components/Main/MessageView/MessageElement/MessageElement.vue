@@ -1,7 +1,7 @@
 <template lang="pug">
 div.message(v-bind:class="{'message-pinned':pinned}")
-  div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
-    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
+  div.message-user-icon-wrap
+    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
   div.message-detail-wrap
     div.message-user-name(v-on:click="openUserModal(model.userId)")
       | {{$store.state.memberMap[model.userId].displayName}}
@@ -267,7 +267,7 @@ export default {
   computed: {
     renderedText () {
       return {
-        template: `<div class="message-content">${md.render(this.model.content)}</div>`,
+        template: `<div class="message-content">${this.model.content}</div>`,
         props: this.$options.props
       }
     },
