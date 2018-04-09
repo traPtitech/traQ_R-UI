@@ -7,7 +7,7 @@ div.input-ui
     div.fas.fa-angle-right
   div.input-area-wrapper(v-on:drom="dropFile" v-show="isOpened")
     p.suggest-element(v-for="(suggest, id) in suggests" v-on:click="replaceSuggest(id)" v-on:mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
-    textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-model="inputText" v-on:keydown="keydown" v-on:click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-on:focus="inputFocus()" v-model="inputText" v-on:keydown="keydown" v-on:click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
     div(v-for="(file, index) in files" v-on:click="removeFile(index)")
       | {{ file.name }}
   div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
@@ -56,12 +56,16 @@ export default {
         this.$refs.inputArea.focus()
       })
     },
+    inputFocus () {
+      this.$store.commit('setEditing', true)
+    },
     inputBlur () {
       setTimeout(_ => {
         if (this.inputText === '' && this.files.length === 0) {
           this.isOpened = false
         }
       }, 200)
+      this.$store.commit('setEditing', false)
     },
     submit () {
       if (this.inputText === '' && this.files.length === 0) {
