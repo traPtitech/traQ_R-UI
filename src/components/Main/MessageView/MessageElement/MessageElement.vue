@@ -22,7 +22,7 @@ div.message(v-bind:class="{'message-pinned':pinned}")
         div.fas.fa-paperclip
       li(v-on:click="clipMessage" v-else)
         div.fas.fa-paperclip
-      li(v-on:click="copyMessage")
+      li(v-on:click="copyMessage" v-if="!isDirectMessage")
         div.fas.fa-copy
   div.message-contents-wrap
     div.message-text-wrap
@@ -328,6 +328,11 @@ export default {
         }
       })
       return stamps
+    },
+    isDirectMessage () {
+      if (this.$store.state.currentChannel.channelId === this.$store.state.directMessageId) return true
+      if (this.$store.state.currentChannel.member) return true
+      return false
     }
   },
   mounted () {
