@@ -56,6 +56,9 @@ a
 code
   font-family: 'Oxygen Mono', monospace
   font-size: 0.9em
+::selection
+  color: white
+  background-color: #3a4891
 // input, button, textarea, select
 .input-reset
   padding: 0

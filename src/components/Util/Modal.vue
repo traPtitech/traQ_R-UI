@@ -2,7 +2,6 @@
 div.modal-overlay(v-if="active" @click="$emit('close')")
   div.modal(@click.stop="")
     slot
-  
 </template>
 
 <script>
