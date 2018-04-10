@@ -5,6 +5,11 @@ div.member-container
       p
         | {{tag.tag}}
     MemberElement(v-for="member in tag.users" :model="member" :key="member.userId")
+  div.grade-container(v-if="bots.length > 0" :class="``" :style="`border-color: gray;`")
+    div.grade-name-container(:style="`background-color: gray;`")
+      p
+        | BOT
+    MemberElement(v-for="member in bots" :model="member" :key="member.userId")
 </template>
 
 <script>
@@ -55,6 +60,9 @@ export default {
         }
       }
       return ret
+    },
+    bots () {
+      return this.$store.state.memberData.filter(user => user.bot && !/#/.test(user.name))
     }
   }
 }

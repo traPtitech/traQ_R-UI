@@ -243,6 +243,7 @@ export default new Vuex.Store({
       state.tagModal = tag
     },
     setCurrentUserTags (state, tags) {
+      tags = tags || []
       tags.sort(stringSortGen('tag'))
       state.currentUserTags = tags
     },
@@ -457,6 +458,7 @@ export default new Vuex.Store({
       })
     },
     openUserModal ({state, commit, dispatch}, userId) {
+      if (/#/.test(state.memberMap[userId].name)) return
       commit('setUserModal', state.memberMap[userId])
       commit('setTagModal', null)
       return dispatch('updateCurrentUserTags')

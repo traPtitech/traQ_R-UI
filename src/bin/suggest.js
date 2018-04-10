@@ -20,6 +20,7 @@ export default function (key, limit) {
     })
   } else if (key.type === '@') {
     return store.state.memberData
+    .filter(user => !/#/.test(user.name))
     .filter(user => match(user.name, key.keyword))
     .slice(0, limit)
     .map(user => {
