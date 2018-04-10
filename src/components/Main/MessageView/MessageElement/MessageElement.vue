@@ -4,7 +4,7 @@ div.message(v-bind:class="{'message-pinned':pinned}")
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
   div.message-detail-wrap
     div.message-user-name(v-on:click="openUserModal(model.userId)")
-      | {{$store.state.memberMap[model.userId].displayName}}
+      | {{getUserName(model.userId)}}
       //- p.message-user-id(v-on:click="openUserModal(model.userId)")
       //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
@@ -35,11 +35,9 @@ div.message(v-bind:class="{'message-pinned':pinned}")
           | Shift+Enter
     div.message-messages-wrap
       div.attached-message(v-for="m in messages")
-        img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`")
-        p.message-user-name
-          | {{$store.state.memberMap[m.userId].displayName}}
-        p.message-user-id
-          | @{{$store.state.memberMap[m.userId].name}}
+        img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`" v-on:click="openUserModal(m.userId)")
+        p.message-user-name(v-on:click="openUserModal(m.userId)")
+          | {{getUserName(m.userId)}}
         component(v-bind:is="mark(m.content)" v-bind="$props")
         small
           | from
@@ -262,6 +260,11 @@ export default {
           name: `#${this.$store.getters.getChannelPathById(parentChannelId)}`
         }
       }
+    },
+    getUserName (userId) {
+      const user = this.$store.state.memberMap[userId]
+      if (user.bot) return user.displayName + '#bot'
+      else return user.displayName
     }
   },
   computed: {
