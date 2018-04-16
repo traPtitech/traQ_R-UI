@@ -8,7 +8,7 @@ div.message(v-bind:class="{'message-pinned':pinned}")
       //- p.message-user-id(v-on:click="openUserModal(model.userId)")
       //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
-      | {{dateTime(model.datetime)}}
+      | {{displayDateTime}}
     ul.message-buttons-wrap
       li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
         div.fas.fa-edit
@@ -280,6 +280,22 @@ export default {
     pinned () {
       this.pin = this.$store.getters.isPinned(this.model.messageId)
       return this.pin
+    },
+    displayDateTime () {
+      const d = new Date(this.model.datetime)
+      if (this.model.datetime === this.model.updatedAt) {
+        return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
+      } else {
+        const u = new Date(this.model.updatedAt)
+        let result = u.getHours().toString().padStart(2, '0') + ':' + u.getMinutes().toString().padStart(2, '0') + ':' + u.getSeconds().toString().padStart(2, '0') + ' 編集済み'
+        if (d.getDate() !== u.getDate() || d.getMonth() !== u.getMonth()) {
+          result = (u.getMonth() + 1).toString().padStart(2, '0') + '/' + u.getDate().toString().padStart(2, '0') + ' ' + result
+        }
+        if (d.getFullYear() !== u.getFullYear()) {
+          result = u.getFullYear().toString() + '/' + result
+        }
+        return result
+      }
     },
     stamps () {
       const map = {}
