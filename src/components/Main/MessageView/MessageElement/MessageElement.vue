@@ -8,7 +8,7 @@ div.message(v-bind:class="{'message-pinned':pinned}")
       //- p.message-user-id(v-on:click="openUserModal(model.userId)")
       //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
-        | {{displayDateTime}}
+      | {{displayDateTime}}
     ul.message-buttons-wrap
       li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
         div.fas.fa-edit
