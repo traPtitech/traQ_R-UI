@@ -52,10 +52,6 @@ export default {
 .create-channel-modal
   *
     margin: 1rem 0px
-  h2
-    align-self: center
-    margin: 0px
-    font-size: 1.5rem
   button
     margin: 0px 0.5rem
 </style>

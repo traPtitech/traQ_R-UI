@@ -6,72 +6,74 @@ div.channel-members
     div.notifications-item
       div.notifications-fa-wrapper
         span.fas.fa-bell
-      h2 オンにしてる人
+      h2 ONにしてる人
       div.notifications-members
-        div(v-for="member in onMembers")
-          input(type="checkbox" v-model="state[member.userId]")
-          | {{member.name}}
+        div(v-if="toOnMembers.length")
+          transition-group(name="slide-fade" tag="ul")
+            MemberChoice.member-choice(v-for="member in toOnMembers" @input="toggleMemberOff" :model="member" :key="member.userId")
+        div.notifications-empty(v-else)
+          div.fas.fa-3x.fa-moon
+          div 通知がONの人はいません
     div.notifications-item
       div.notifications-fa-wrapper
         span.fas.fa-bell-slash
-      h2 オフにしてる人
+      h2 OFFにしてる人
       div.notifications-members
-        div(v-for="member in offMembers")
-          input(type="checkbox" v-model="state[member.userId]")
-          | {{member.name}}
+        transition-group(v-if="toOffMembers.length" name="slide-fade" tag="ul")
+          MemberChoice.member-choice(v-for="member in toOffMembers" @input="toggleMemberOn" :model="member" :key="member.userId")
+        div.notifications-empty(v-else)
+          div.fas.fa-3x.fa-sun
+          div 通知がOFFの人はいません
 </template>
 
 <script>
 import client from '@/bin/client'
 import ChannelInformationModal from '@/components/Main/MessageView/ChannelInformation/ChannelInformationModal'
+import MemberChoice from '@/components/Main/MessageView/ChannelInformation/MemberChoice'
 export default {
   name: 'Notifications',
   components: {
-    ChannelInformationModal
+    ChannelInformationModal,
+    MemberChoice
   },
   data () {
     return {
       active: false,
-      state: {}
+      state: {},
+      toOnMembers: [],
+      toOffMembers: []
     }
   },
   methods: {
     showModal () {
+      this.toOnMembers = this.$store.getters.notificationsOnMembers
+      this.toOffMembers = this.$store.getters.notificationsOffMembers
       this.active = true
     },
     closeModal () {
       const state = {
-        on: [],
-        off: []
+        on: this.toOnMembers.map(member => member.userId),
+        off: this.toOffMembers.map(member => member.userId)
       }
-      Object.keys(this.state).forEach(key => {
-        if (this.state[key]) {
-          state.on.push(key)
-        } else {
-          state.off.push(key)
-        }
-      })
       client.changeNotifications(this.$store.state.currentChannel.channelId, state)
       .then(res => {
         this.$store.commit('setCurrentChannelNotifications', res.data)
       })
+      this.toOnMembers = []
+      this.toOffMembers = []
       this.active = false
-    }
-  },
-  computed: {
-    onMembers () {
-      const onMembers = this.$store.getters.notificationsOnMembers
-      onMembers.forEach(member => {
-        this.state[member.userId] = true
-      })
-      return onMembers
     },
-    offMembers () {
-      const offMembers = this.$store.getters.notificationsOffMembers
-      offMembers.forEach(member => {
-        this.state[member.userId] = false
-      })
-      return offMembers
+    toggleMemberOff (userId) {
+      const index = this.toOnMembers.findIndex(member => member.userId === userId)
+      const member = this.toOnMembers[index]
+      this.toOnMembers.splice(index, 1)
+      this.toOffMembers.push(member)
+    },
+    toggleMemberOn (userId) {
+      const index = this.toOffMembers.findIndex(member => member.userId === userId)
+      const member = this.toOffMembers[index]
+      this.toOffMembers.splice(index, 1)
+      this.toOnMembers.push(member)
     }
   }
 }
@@ -82,6 +84,7 @@ export default {
   display: grid
   grid-template-rows: 3.5rem 1fr
   grid-template-columns: 3.5rem 1fr
+
   .notifications-fa-wrapper
     grid-row: 1
     grid-column: 1
@@ -93,19 +96,45 @@ export default {
     grid-column: 2
     align-self: center
     margin: 0px
-    font-size: 1.5rem
+    font-size: 1.3rem
+
   .notifications-members
     grid-row: 2
     @media (min-width: 680px)
       grid-column: 2
     @media (max-width: 679px)
       grid-column: 1 / 3
-    max-height: 14rem
+    height: 25vh
     overflow-y: scroll
     border: 1px solid #eeeeee
     background-color: #ffffff
-    div
-      margin: 0.5rem 0px 0.5rem 0.5rem
-      input
-        margin-right: 1rem
+
+  .notifications-empty
+    height: 100%
+    width: 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    color: lightgray
+    *
+      margin: 0.5rem 0px
+    .fa
+      height: 5vh
+      width: 5vh
+
+.slide-fade
+  &-enter-active
+    transition: all .2s ease
+
+  &-leave-active
+    transition: all .1s ease
+
+  &-enter, &-leave-to
+    transform: translateX(10px)
+    opacity: 0
+
+  &-move
+    transition: transform 1s ease
+
 </style>
