@@ -122,5 +122,10 @@ export default {
   .channel-opened &
     background: url(/static/img/triangle_up.svg) no-repeat center
     background-size: contain
-
+.list-complete-enter-active, .list-complete-leave-active
+  transition: opacity .3s, transform .3s
+  transform: translateX(0)
+.list-complete-enter, .list-complete-leave-to
+  opacity: 0
+  transform: translateX(-10px)
 </style>

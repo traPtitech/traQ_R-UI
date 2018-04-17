@@ -104,6 +104,7 @@ export default {
   font-weight: bold
   position: relative
   margin: 5px 0 10px
+  text-align: center
   &:before, &:after
     content: ''
     display: block
