@@ -78,6 +78,7 @@ export default {
 <style lang="sass">
 .menu-buttons
   grid-area: menu
+  user-select: none
   background-color: #3a4891
   ul
     height: 100%
@@ -86,12 +87,13 @@ export default {
     align-items: flex-end
 .menu-button
   display: flex
-  margin: 15px auto 0
+  margin: 0 auto
+  padding: 20px 0 0
   cursor: pointer
   align-items: center
   justify-content: center
   color: white
-  font-size: 1.6em
+  font-size: 1.3em
   transition: all ease .2s
   &:hover
     color: rgba(255, 255, 255, 0.6)

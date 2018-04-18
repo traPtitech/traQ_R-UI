@@ -23,6 +23,7 @@ div.user
           div(v-show="hasAuth && tag.isLocked" v-on:click="unlockTag(index)")
             i.fas.fa-lock
 </template>
+
 <script>
 import client from '@/bin/client'
 export default {

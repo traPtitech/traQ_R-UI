@@ -10,10 +10,11 @@ div.channel-wrap(v-if="model.visibility")
     div.channel-status-wrap
       div.channel-notification
       div.channel-toggle(v-if="isFolder" v-on:click.stop="toggle")
-  div.channel-children
-    transition-group(name="list-complete" tag="div" v-if="model.children" appear)
-      div(v-show="isOpened" v-for="child in model.children" v-bind:key="child")
-        ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
+  div.channel-children(ref="children" v-if="model.children")
+    transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
+      div(ref="childrenWrap" v-show="isOpened")
+        div(v-for="child in model.children")
+          ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
 </template>
 
 <script>
@@ -25,7 +26,8 @@ export default {
   },
   data () {
     return {
-      isOpened: false
+      isOpened: false,
+      height: '0'
     }
   },
   methods: {
@@ -34,6 +36,12 @@ export default {
     },
     channelLink (name) {
       this.$router.push(`/channels/${this.curPath}${this.curPath !== '' ? '/' : ''}${this.model.name}`)
+    },
+    removeHeight () {
+      this.$refs.children.style.height = ''
+    },
+    zeroHeight () {
+      this.$refs.children.style.height = '0px'
     }
   },
   computed: {
@@ -51,6 +59,17 @@ export default {
     }
   },
   components: {
+  },
+  watch: {
+    isOpened: {
+      handler () {
+        this.$nextTick(() => {
+          this.$refs.children.style.height = this.height + 'px'
+          this.height = this.$refs.childrenWrap.clientHeight
+          this.$refs.children.style.height = this.height + 'px'
+        })
+      }
+    }
   }
 }
 </script>
@@ -73,7 +92,7 @@ export default {
   padding: 1px 10px 1px 5px
   border-radius: 3px
   text-align: left
-  transition: all .5s ease-out
+  // transition: all .5s ease-out
   cursor: pointer
   background-color: inherit
   overflow: hidden
@@ -88,7 +107,7 @@ export default {
   &:before
     content: '#'
     margin: 0 3px 0 0
-  &:hover, .channel-box:hover &
+  &:hover
     color: white
     background-color: #757575
   &:after
@@ -103,8 +122,10 @@ export default {
     z-index: 2
 .channel-children
   position: relative
-  border-left: solid 5px #4f74d6
   padding: 0 0 0 0
+  transition: all .1s ease
+  .channel-opened + &
+    border-left: solid 5px #4f74d6
 .channel-status-wrap
   width: 50px
   display: flex
@@ -122,5 +143,9 @@ export default {
   .channel-opened &
     background: url(/static/img/triangle_up.svg) no-repeat center
     background-size: contain
-
+.list-complete-enter-active, .list-complete-leave-active
+  transition: opacity .1s, transform .1s
+.list-complete-enter, .list-complete-leave-to
+  opacity: 0
+  transform: translateX(-5px)
 </style>

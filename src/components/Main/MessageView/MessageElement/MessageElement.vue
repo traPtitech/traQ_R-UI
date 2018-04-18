@@ -1,7 +1,7 @@
 <template lang="pug">
-div.message(v-bind:class="{'message-pinned':pinned}")
-  div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
-    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
+div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$emit('close')")
+  div.message-user-icon-wrap
+    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
   div.message-detail-wrap
     div.message-user-name(v-on:click="openUserModal(model.userId)")
       | {{getUserName(model.userId)}}
@@ -64,7 +64,7 @@ div.message(v-bind:class="{'message-pinned':pinned}")
               | {{stamp.name}}
             p
               | {{stamp.sum}}
-        StampList.message-stamp-button(:model="{messageId: model.messageId}")
+        StampButton.message-stamp-button(:model="{messageId: model.messageId}")
 </template>
 
 <script>
@@ -358,7 +358,7 @@ export default {
     this.getAttachments()
   },
   components: {
-    'StampList': window.asyncLoadComponents(import('@/components/Main/MessageView/StampList'))
+    'StampButton': window.asyncLoadComponents(import('@/components/Main/MessageView/StampButton'))
   }
 }
 </script>
