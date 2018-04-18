@@ -10,11 +10,11 @@ div.channel-wrap(v-if="model.visibility")
     div.channel-status-wrap
       div.channel-notification
       div.channel-toggle(v-if="isFolder" v-on:click.stop="toggle")
-  div.channel-children(ref="children")
-    div(ref="childrenWrap")
-      transition-group(name="list-complete" tag="div" v-if="model.children" appear @after-enter="removeHeight" @after-leave="zeroHeight")
-          div(v-show="isOpened" v-for="child in model.children" v-bind:key="child")
-            ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
+  div.channel-children(ref="children" v-if="model.children")
+    transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
+      div(ref="childrenWrap" v-show="isOpened")
+        div(v-for="child in model.children" v-bind:key="child")
+          ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
 </template>
 
 <script>
@@ -37,10 +37,10 @@ export default {
     channelLink (name) {
       this.$router.push(`/channels/${this.curPath}${this.curPath !== '' ? '/' : ''}${this.model.name}`)
     },
-    removeHeight() {
+    removeHeight () {
       this.$refs.children.style.height = ''
     },
-    zeroHeight() {
+    zeroHeight () {
       this.$refs.children.style.height = '0px'
     }
   },
@@ -121,7 +121,6 @@ export default {
     border-radius: 100%
     z-index: 2
 .channel-children
-  height: 0
   position: relative
   padding: 0 0 0 0
   transition: all .3s ease
