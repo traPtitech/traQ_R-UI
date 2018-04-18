@@ -13,6 +13,8 @@ div
 </template>
 <script>
 import client from '@/bin/client'
+import StampPicker from '@/components/Main/StampPicker'
+
 export default {
   name: 'StampList',
   props: {
@@ -39,6 +41,9 @@ export default {
     }
   },
   computed: {
+  },
+  components: {
+    'StampPicker': StampPicker
   }
 }
 </script>

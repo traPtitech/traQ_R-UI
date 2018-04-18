@@ -53,7 +53,7 @@ export default {
 
 <style lang="sass">
 .links-list-wrap
-  padding: 15px 0
+  padding: 0 0 15px
 .links-list li
   padding: 5px 10px
   transition: all .5s ease

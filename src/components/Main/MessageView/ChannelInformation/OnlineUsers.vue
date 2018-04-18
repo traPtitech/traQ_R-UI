@@ -4,8 +4,8 @@ div.channel-online-users(v-on:click="isOpened=!isOpened;clicked" v-on:blur="isOp
     div.channel-online-users-list(v-show="isOpened")
       div.channel-online-users-item(v-for="user in onlineUsers" @click="openUserModal(user.userId)")
         img.user-icon(:src="userIconSrc(user)")
-        //- p
-        //-   | {{$store.state.memberMap[user.userId].displayName}}
+        p
+          | {{$store.state.memberMap[user.userId].displayName}}
 </template>
 
 <script>
@@ -55,15 +55,16 @@ export default {
   &.opened
     background-color: #3a4890
 .channel-online-users-list
-  display: flex
+  max-height: 50vh
+  overflow-y: scroll
   position: absolute
   z-index: 15
   right: calc( 100% + 10px )
   top: 0
-  max-width: 200px
   background: #4e72d6
   padding: 5px 0
-  border-radius: 3px
+  p
+    margin-left: 5px
 .channel-online-users-item
   display: flex
   align-items: center
