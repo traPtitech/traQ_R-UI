@@ -10,10 +10,11 @@ div.channel-wrap(v-if="model.visibility")
     div.channel-status-wrap
       div.channel-notification
       div.channel-toggle(v-if="isFolder" v-on:click.stop="toggle")
-  div.channel-children
-    transition-group(name="list-complete" tag="div" v-if="model.children" appear)
-      div(v-show="isOpened" v-for="child in model.children" v-bind:key="child")
-        ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
+  div.channel-children(ref="children")
+    div(ref="childrenWrap")
+      transition-group(name="list-complete" tag="div" v-if="model.children" appear @after-enter="removeHeight" @after-leave="zeroHeight")
+          div(v-show="isOpened" v-for="child in model.children" v-bind:key="child")
+            ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
 </template>
 
 <script>
@@ -25,7 +26,8 @@ export default {
   },
   data () {
     return {
-      isOpened: false
+      isOpened: false,
+      height: '0'
     }
   },
   methods: {
@@ -34,6 +36,12 @@ export default {
     },
     channelLink (name) {
       this.$router.push(`/channels/${this.curPath}${this.curPath !== '' ? '/' : ''}${this.model.name}`)
+    },
+    removeHeight() {
+      this.$refs.children.style.height = ''
+    },
+    zeroHeight() {
+      this.$refs.children.style.height = '0px'
     }
   },
   computed: {
@@ -51,6 +59,17 @@ export default {
     }
   },
   components: {
+  },
+  watch: {
+    isOpened: {
+      handler () {
+        this.$nextTick(() => {
+          this.$refs.children.style.height = this.height + 'px'
+          this.height = this.$refs.childrenWrap.clientHeight
+          this.$refs.children.style.height = this.height + 'px'
+        })
+      }
+    }
   }
 }
 </script>
@@ -102,9 +121,12 @@ export default {
     border-radius: 100%
     z-index: 2
 .channel-children
+  height: 0
   position: relative
-  border-left: solid 5px #4f74d6
   padding: 0 0 0 0
+  transition: all .3s ease
+  .channel-opened + &
+    border-left: solid 5px #4f74d6
 .channel-status-wrap
   width: 50px
   display: flex

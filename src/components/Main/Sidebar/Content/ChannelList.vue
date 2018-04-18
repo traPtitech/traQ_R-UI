@@ -21,6 +21,7 @@ export default {
 <style lang="sass">
 .channel-list-container
   position: relative
+  user-select: none
 // .list-complete-enter, .list-complete-leave-to
 //   opacity: 0
 //   transform: translateY(30px)

@@ -66,7 +66,7 @@ div.message(v-bind:class="{'message-pinned':pinned}" @click="$emit('close')")
               | {{stamp.name}}
             p
               | {{stamp.sum}}
-        StampList.message-stamp-button(:model="{messageId: model.messageId}")
+        StampButton.message-stamp-button(:model="{messageId: model.messageId}")
 </template>
 
 <script>
@@ -267,7 +267,7 @@ export default {
   computed: {
     renderedText () {
       return {
-        template: `<div class="message-content">${this.model.content}</div>`,
+        template: `<div class="message-content">${md.render(this.model.content)}</div>`,
         props: this.$options.props
       }
     },
@@ -334,7 +334,7 @@ export default {
     this.getAttachments()
   },
   components: {
-    'StampList': window.asyncLoadComponents(import('@/components/Main/MessageView/StampList'))
+    'StampButton': window.asyncLoadComponents(import('@/components/Main/MessageView/StampButton'))
   }
 }
 </script>
