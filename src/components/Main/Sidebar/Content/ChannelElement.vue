@@ -13,7 +13,7 @@ div.channel-wrap(v-if="model.visibility")
   div.channel-children(ref="children" v-if="model.children")
     transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
       div(ref="childrenWrap" v-show="isOpened")
-        div(v-for="child in model.children" v-bind:key="child")
+        div(v-for="child in model.children")
           ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
 </template>
 
@@ -92,7 +92,7 @@ export default {
   padding: 1px 10px 1px 5px
   border-radius: 3px
   text-align: left
-  transition: all .5s ease-out
+  // transition: all .5s ease-out
   cursor: pointer
   background-color: inherit
   overflow: hidden
@@ -107,7 +107,7 @@ export default {
   &:before
     content: '#'
     margin: 0 3px 0 0
-  &:hover, .channel-box:hover &
+  &:hover
     color: white
     background-color: #757575
   &:after
@@ -123,7 +123,7 @@ export default {
 .channel-children
   position: relative
   padding: 0 0 0 0
-  transition: all .3s ease
+  transition: all .1s ease
   .channel-opened + &
     border-left: solid 5px #4f74d6
 .channel-status-wrap
@@ -144,9 +144,8 @@ export default {
     background: url(/static/img/triangle_up.svg) no-repeat center
     background-size: contain
 .list-complete-enter-active, .list-complete-leave-active
-  transition: opacity .3s, transform .3s
-  transform: translateX(0)
+  transition: opacity .1s, transform .1s
 .list-complete-enter, .list-complete-leave-to
   opacity: 0
-  transform: translateX(-10px)
+  transform: translateX(-5px)
 </style>

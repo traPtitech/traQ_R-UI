@@ -1,9 +1,11 @@
 <template lang="pug">
 div.menu-content
-  ChannelList(v-show="$store.state.menuContent=='Channels'")
-  MemberList(v-show="$store.state.menuContent=='Members'")
-  ClipList(v-show="$store.state.menuContent=='Clips'")
-  LinkList(v-show="$store.state.menuContent=='Links'")
+  transition(name="slide" mode="out-in")
+    keep-alive
+      ChannelList(v-if="$store.state.menuContent=='Channels'")
+      MemberList(v-if="$store.state.menuContent=='Members'")
+      ClipList(v-if="$store.state.menuContent=='Clips'")
+      LinkList(v-if="$store.state.menuContent=='Links'")
 </template>
 
 <script>
@@ -33,4 +35,10 @@ export default {
   border-right: 1px solid rgb(176, 176, 176)
   overflow: scroll
   -webkit-overflow-scrolling: touch
+.slide-enter-active, .slide-leave-active
+  transition: all .1s
+  opacity: 1
+.slide-enter, .slide-leave-to
+  opacity: 0
+  transform: translate(-5px)
 </style>
