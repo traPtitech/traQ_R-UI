@@ -40,9 +40,7 @@ export default {
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
-  text-align: center
   color: #2c3e50
-  margin-top: 60pxc
 li
   list-style: none
   margin: 0
@@ -56,6 +54,9 @@ a
 code
   font-family: 'Oxygen Mono', monospace
   font-size: 0.9em
+::selection
+  color: white
+  background-color: #3a4891
 // input, button, textarea, select
 .input-reset
   padding: 0

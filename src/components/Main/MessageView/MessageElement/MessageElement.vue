@@ -1,14 +1,14 @@
 <template lang="pug">
-div.message(v-bind:class="{'message-pinned':pinned}")
-  div.message-user-icon-wrap(v-on:click="openUserModal(model.userId)")
-    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`")
+div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$emit('close')")
+  div.message-user-icon-wrap
+    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
   div.message-detail-wrap
     div.message-user-name(v-on:click="openUserModal(model.userId)")
       | {{getUserName(model.userId)}}
       //- p.message-user-id(v-on:click="openUserModal(model.userId)")
       //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
-      | {{dateTime(model.datetime)}}
+      | {{displayDateTime}}
     ul.message-buttons-wrap
       li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
         div.fas.fa-edit
@@ -64,7 +64,7 @@ div.message(v-bind:class="{'message-pinned':pinned}")
               | {{stamp.name}}
             p
               | {{stamp.sum}}
-        StampList.message-stamp-button(:model="{messageId: model.messageId}")
+        StampButton.message-stamp-button(:model="{messageId: model.messageId}")
 </template>
 
 <script>
@@ -281,6 +281,22 @@ export default {
       this.pin = this.$store.getters.isPinned(this.model.messageId)
       return this.pin
     },
+    displayDateTime () {
+      const d = new Date(this.model.datetime)
+      if (this.model.datetime === this.model.updatedAt) {
+        return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
+      } else {
+        const u = new Date(this.model.updatedAt)
+        let result = u.getHours().toString().padStart(2, '0') + ':' + u.getMinutes().toString().padStart(2, '0') + ':' + u.getSeconds().toString().padStart(2, '0') + ' 編集済み'
+        if (d.getDate() !== u.getDate() || d.getMonth() !== u.getMonth()) {
+          result = (u.getMonth() + 1).toString().padStart(2, '0') + '/' + u.getDate().toString().padStart(2, '0') + ' ' + result
+        }
+        if (d.getFullYear() !== u.getFullYear()) {
+          result = u.getFullYear().toString() + '/' + result
+        }
+        return result
+      }
+    },
     stamps () {
       const map = {}
       if (!this.model.stampList) {
@@ -342,7 +358,7 @@ export default {
     this.getAttachments()
   },
   components: {
-    'StampList': window.asyncLoadComponents(import('@/components/Main/MessageView/StampList'))
+    'StampButton': window.asyncLoadComponents(import('@/components/Main/MessageView/StampButton'))
   }
 }
 </script>

@@ -1,11 +1,12 @@
 <template lang="pug">
 FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").index
-  User
-  Tag
   Titlebar
   Message
   Information
   Sidebar
+  User
+  Tag
+  StampPicker
 </template>
 
 <script>
@@ -15,6 +16,7 @@ import Message from '@/components/Main/MessageView/MessageContainer'
 import FileDroper from '@/components/Util/FileDroper'
 import User from '@/components/Main/User'
 import Tag from '@/components/Main/Tag'
+import StampPicker from '@/components/Main/StampPicker'
 
 export default {
   name: 'index',
@@ -30,7 +32,8 @@ export default {
     'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation')),
     'FileDroper': FileDroper,
     'User': User,
-    'Tag': Tag
+    'Tag': Tag,
+    'StampPicker': StampPicker
   },
   async created () {
     this.$store.subscribe(async mutation => {
@@ -281,11 +284,4 @@ export default {
     grid-template-rows: 60px 1fr
     grid-template-columns: 1fr 40px
     grid-template-areas: "titlebar titlebar""content information"
-
-*
-  animation: fadein 0.3s ease 0s 1 normal;
-
-@keyframes fadein
-  0% {opacity: 0}
-  100% {opacity: 1}
 </style>

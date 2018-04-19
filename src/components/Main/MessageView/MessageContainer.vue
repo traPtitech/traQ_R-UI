@@ -3,10 +3,10 @@ div.content-wrap(@scroll="checkLoad")
   div.sticky-container.sticky
     InputUI
   content.message-wrap
-    ul.message-list
-      li(v-if="noMoreMessage")
+    ol.message-list
+      li.no-more-message(v-if="noMoreMessage")
         | これ以上メッセージはありません
-      li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
+      li.message-item(v-for="(message, index) in $store.state.messages")
         time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].datetime) !== date(message.datetime)")
           | {{date(message.datetime)}}
         MessageElement(:model="message" v-bind:key="message.messageId")
@@ -96,6 +96,9 @@ export default {
   left: 0
   z-index: 20
   pointer-events: none
+.no-more-message
+  margin: 15px 0
+  text-align: center
 .message-item
   overflow: hidden
 .date-partition
@@ -104,18 +107,19 @@ export default {
   font-weight: bold
   position: relative
   margin: 5px 0 10px
+  text-align: center
   &:before, &:after
     content: ''
     display: block
     height: 1px
-    width: 30%
+    width: calc( 50% - 60px )
     top: 50%
     background-color: #cacaca
     position: absolute
   &:before
-    left: 5%
+    left: 10px
   &:after
-    right: 5%
+    right: 10px
 .message-list
-  padding-bottom: 60px
+  padding: 0 0 60px
 </style>

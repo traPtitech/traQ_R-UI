@@ -2,7 +2,6 @@
 div.modal-overlay(v-if="active" @click="$emit('close')")
   div.modal(@click.stop="")
     slot
-  
 </template>
 
 <script>
@@ -39,7 +38,5 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.75)
-
-
 </style>
 
