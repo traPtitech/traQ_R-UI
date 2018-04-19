@@ -82,8 +82,12 @@ export default {
 <style lang="sass">
 .notifications-item
   display: grid
-  grid-template-rows: 3.5rem 1fr
+  grid-template-rows: 2rem 1fr
   grid-template-columns: 3.5rem 1fr
+  grid-row-gap: 1rem
+
+  &:first-child
+    margin-bottom: 1rem
 
   .notifications-fa-wrapper
     grid-row: 1
