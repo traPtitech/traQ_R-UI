@@ -11,7 +11,7 @@ div.channel-online-users(v-on:click="isOpened=!isOpened;clicked" v-on:blur="isOp
 <script>
 import client from '@/bin/client'
 export default {
-  name: 'OnlineUsers',
+  name: 'WatchingUsers',
   data () {
     return {
       isOpened: false
@@ -65,6 +65,7 @@ export default {
   padding: 5px 0
   p
     margin-left: 5px
+    white-space: nowrap
 .channel-online-users-item
   display: flex
   align-items: center
