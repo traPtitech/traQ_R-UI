@@ -4,8 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import store from './store'
 import router from './router'
+import VueVirtualScroller from 'vue-virtual-scroller'
 
 Vue.config.productionTip = false
+
+Vue.use(VueVirtualScroller)
 
 window.asyncLoadComponents = component => {
   return () => {

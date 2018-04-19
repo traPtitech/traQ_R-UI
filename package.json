@@ -17,6 +17,7 @@
     "vue": "^2.5.16",
     "vue-meta": "^1.5.0",
     "vue-router": "^3.0.1",
+    "vue-virtual-scroller": "^0.11.7",
     "vuex": "^3.0.1",
     "workbox-sw": "^3.0.1",
     "workbox-webpack-plugin": "^3.0.1"
