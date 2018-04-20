@@ -81,28 +81,27 @@ export default {
           }
         })
       }
-    }
+      const messaging = window.firebase.messaging()
+      messaging.requestPermission()
+        .then(() => {
+          console.log('permission granted')
+          messaging.getToken()
+            .then(currentToken => {
+              console.log(currentToken)
+              client.registerDevice(currentToken)
+            })
+        })
+        .catch(() => {
+          console.error('permission denied')
+        })
 
-    const messaging = window.firebase.messaging()
-    messaging.requestPermission()
-      .then(() => {
-        console.log('permission granted')
+      messaging.onTokenRefresh(() => {
         messaging.getToken()
           .then(currentToken => {
-            console.log(currentToken)
             client.registerDevice(currentToken)
           })
       })
-      .catch(() => {
-        console.error('permission denied')
-      })
-
-    messaging.onTokenRefresh(() => {
-      messaging.getToken()
-        .then(currentToken => {
-          client.registerDevice(currentToken)
-        })
-    })
+    }
 
     window.onfocus = () => {
       console.log('on focus')
