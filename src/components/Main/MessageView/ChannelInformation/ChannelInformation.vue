@@ -1,7 +1,9 @@
 <template lang="pug">
 div.information
   OnlineUsers
-  Notifications(v-show="!isDirectMessage").channel-button
+  Notifications(v-show="!isDirectMessage && !isNotificationForced").channel-button
+  div.channel-button(v-show="isNotificationForced")
+    div.fas.fa-exclamation
   Pinned.channel-button
   Topic(v-show="!isDirectMessage").channel-button
   CreateChannel(v-show="!isDirectMessage").channel-button
@@ -31,6 +33,9 @@ export default {
   computed: {
     isDirectMessage () {
       return this.$store.state.currentChannel.parent === this.$store.state.directMessageId
+    },
+    isNotificationForced () {
+      return this.$store.state.currentChannel.force
     }
   }
 }
