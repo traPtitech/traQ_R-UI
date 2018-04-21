@@ -217,19 +217,49 @@ const client = {
   },
 
   // Tag: clip
-  getClipedMessages () {
-    return middleWare('getClipMessages', () => {
+  getAllClipMessages () {
+    return middleWare('getAllClipMessages', () => {
       return axios.get(`/api/1.0/users/me/clips`)
     })
   },
-  clipMessage (messageId) {
-    return middleWare('clipMessage', () => {
-      return axios.post(`/api/1.0/users/me/clips`, {messageId})
+  getClipMessages (folderId) {
+    return middleWare('getClipMessages', () => {
+      return axios.get(`/api/1.0/users/me/clips/folders/${folderId}`)
     })
   },
-  unclipMessage (messageId) {
+  clipMessage (folderId, messageId) {
+    return middleWare('clipMessage', () => {
+      return axios.post(`/api/1.0/users/me/clips`, {folderId, messageId})
+    })
+  },
+  unclipMessage (clipId) {
     return middleWare('unclipMessage', () => {
-      return axios.delete(`/api/1.0/users/me/clips`, {data: {messageId}})
+      return axios.delete(`/api/1.0/users/me/clips/${clipId}`)
+    })
+  },
+  getClipFolders () {
+    return middleWare('getClipFolders', () => {
+      return axios.get(`/api/1.0/users/me/clips/folders`)
+    })
+  },
+  getClipFolderInfo (folderId) {
+    return middleWare('getClipFolder', () => {
+      return axios.get(`/api/1.0/users/me/clips/folders/${folderId}`)
+    })
+  },
+  renameClipFolder (folderId, name) {
+    return middleWare('renameClipFolder', () => {
+      return axios.patch(`/api/1.0/users/me/clips/folders/${folderId}`, {name})
+    })
+  },
+  deleteClipFolder (folderId) {
+    return middleWare('deleteClipFolder', () => {
+      return axios.delete(`/api/1.0/users/me/clips/folders/${folderId}`)
+    })
+  },
+  makeClipFolder (name) {
+    return middleWare('makeClipFolder', () => {
+      return axios.post(`/api/1.0/users/me/clips/folders`, {name})
     })
   },
 

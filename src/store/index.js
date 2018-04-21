@@ -428,7 +428,7 @@ export default new Vuex.Store({
       return loadGeneralData('Stamp', client.getStamps, commit)
     },
     updateClipedMessages ({state, commit}) {
-      return loadGeneralData('ClipedMessages', client.getClipedMessages, commit)
+      return loadGeneralData('ClipedMessages', client.getAllClipMessages, commit)
     },
     updateUnreadMessages ({state, commit}) {
       return loadGeneralData('UnreadMessages', client.getUnreadMessages, commit)
