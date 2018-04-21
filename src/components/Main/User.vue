@@ -8,7 +8,7 @@ div.user
         div.user-modal-profile
           div.user-modal-dm(v-on:click="openDirectMessage")
             div.user-modal-dm-icon
-              div.user-modal-dm-indicator(v-if="unreadMessagesNum > 0")
+              div.user-modal-dm-indicator(v-if="hasUnreadMessages")
               div.fas.fa-envelope
             div.user-modal-button
               | Direct Message
@@ -22,23 +22,25 @@ div.user
           | TAGS
         div.user-modal-detail.user-modal-tag
           div.user-modal-tag-element(v-for="(tag, index) in tags")
-            div.user-modal-icon-wrapper.user-modal-tag-icon
+            div.user-modal-icon--gray.user-modal-tag-icon
               div.fas.fa-tag
             div.user-modal-tag-body(v-on:click="openTagModal(tag.tagId)")
               | {{tag.tag}}
-            div.user-modal-tag-status-icon
-              div.user-modal-icon-wrapper(v-show="hasAuth && !tag.isLocked" v-on:click="lockTag(index)")
+            div.user-modal-tag-status-icon(v-if="tag.editable")
+              div.user-modal-icon--gray(v-show="hasAuth && !tag.isLocked" v-on:click="lockTag(index)")
                 i.fas.fa-lock-open
-              div.user-modal-icon-wrapper(v-show="!tag.isLocked" v-on:click="eraseTag(index)")
+              div.user-modal-icon--gray(v-show="!tag.isLocked" v-on:click="eraseTag(index)")
                 i.fas.fa-times
-              div.user-modal-icon-wrapper(v-show="hasAuth && tag.isLocked" v-on:click="unlockTag(index)")
+              div.user-modal-icon--gray(v-show="hasAuth && tag.isLocked" v-on:click="unlockTag(index)")
+                i.fas.fa-lock
+              div.user-modal-icon--gray.non-clickable(v-show="!hasAuth && tag.isLocked")
                 i.fas.fa-lock
         div.user-modal-detail-input-container
           div.user-modal-detail-input
-            div.user-modal-icon-wrapper.user-modal-tag-icon(:style="detailInputIconStyle")
+            div.user-modal-icon--gray.user-modal-tag-icon(:style="detailInputIconStyle")
               div.fas.fa-tag
             input.user-modal-tag-body(v-model="tagInput" v-on:keydown="keydown" placeholder="タグを追加……")
-            div.user-modal-icon-wrapper.user-modal-plus-icon(v-on:click="addTag" :style="detailInputIconStyle")
+            div.user-modal-icon--gray.user-modal-plus-icon(v-on:click="addTag" :style="detailInputIconStyle")
               i.fas.fa-plus
 </template>
 
@@ -95,11 +97,11 @@ export default {
         return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.model.userId))
       }
     },
-    unreadMessagesNum () {
+    hasUnreadMessages () {
       if (this.directMessageChannel) {
-        return this.$store.getters.getChannelUnreadMessageNum(this.directMessageChannel.channelId)
+        return this.$store.getters.getChannelUnreadMessageNum(this.directMessageChannel.channelId) > 0
       } else {
-        return 0
+        return false
       }
     },
     active () {
@@ -113,7 +115,12 @@ export default {
       return this.$store.state.userModal || {}
     },
     tags () {
-      return this.$store.state.currentUserTags
+      return this.$store.state.currentUserTags.sort((a, b) => {
+        if (!(a.editable ^ b.editable)) {
+          return a.tag.localeCompare(b.tag)
+        }
+        return a.editable ? 1 : -1
+      })
     },
     hasAuth () {
       if (this.$store.state.userModal) {
@@ -244,7 +251,7 @@ export default {
         align-items: center
         background: white
         border: 1px solid lightgray
-        .user-modal-icon-wrapper
+        .user-modal-icon--gray
           transition: color .2s
         .user-modal-tag-icon
           margin-left: 1rem
@@ -261,7 +268,10 @@ export default {
   display: grid
   grid-template-columns: 1rem calc(100% - 5rem - #{$gap} * 2) 4rem
   grid-gap: $gap
-  margin: 1.1rem 2.5rem
+  @media (min-width: 680px)
+    margin: 1.3rem 2.5rem
+  @media (max-width: 679px)
+    margin: 1rem 2rem
   .user-modal-tag-icon
     justify-self: center
     display: flex
@@ -274,10 +284,14 @@ export default {
     display: flex
     justify-content: flex-end
     align-items: center
-    > .user-modal-icon-wrapper
+    > .user-modal-icon--gray
       margin: 0px 0.5rem
       cursor: pointer
 
-.user-modal-icon-wrapper
+.user-modal-icon--gray
   color: gray
+.user-modal-icon--blue
+  color: #3a4891
+.non-clickable
+  cursor: default !important
 </style>
