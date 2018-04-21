@@ -244,8 +244,7 @@ export default {
       align-items: center
       justify-content: center
       .user-modal-detail-input
-        margin: 1rem
-        height: 2rem
+        height: 2.2rem
         width: calc(100% - 3rem)
         display: flex
         align-items: center
