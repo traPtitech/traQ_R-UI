@@ -115,12 +115,8 @@ export default {
       return this.$store.state.userModal || {}
     },
     tags () {
-      return this.$store.state.currentUserTags.sort((a, b) => {
-        if (!(a.editable ^ b.editable)) {
-          return a.tag.localeCompare(b.tag)
-        }
-        return a.editable ? 1 : -1
-      })
+      const current = this.$store.state.currentUserTags
+      return current.filter(tag => !tag.editable).concat(current.filter(tag => tag.editable))
     },
     hasAuth () {
       if (this.$store.state.userModal) {
