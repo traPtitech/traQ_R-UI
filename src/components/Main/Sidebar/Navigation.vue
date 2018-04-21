@@ -6,17 +6,17 @@ nav.menu-buttons
       div.user-logout(v-show="userMenuOpened" @click="logout")
         p.flex-center
           | ログアウト
-    li.menu-button.channels(@click="navClicked('channels')")
+    li.menu-button.channels(@click="navClicked('channels')" :class="{'menu-active':menuContent==='channels'}")
       i.fas.fa-hashtag(aria-hidden="true")
       p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
         | {{channelsUnreadNum}}
-    li.menu-button.members(@click="navClicked('members')")
+    li.menu-button.members(@click="navClicked('members')" :class="{'menu-active':menuContent==='members'}")
       i.fas.fa-user(aria-hidden="true")
       p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
         | {{usersUnreadNum}}
-    li.menu-button.clips(@click="navClicked('clips')")
+    li.menu-button.clips(@click="navClicked('clips')" :class="{'menu-active':menuContent==='clips'}")
       i.fas.fa-paperclip(aria-hidden="true")
-    li.menu-button.links(@click="navClicked('links')")
+    li.menu-button.links(@click="navClicked('links')" :class="{'menu-active':menuContent==='links'}")
       i.fas.fa-th-large(aria-hidden="true")
     li.menu-button.setting(@click="$router.push('/setting')")
       i.fas.fa-cog(aria-hidden="true")
@@ -87,16 +87,30 @@ export default {
     align-items: flex-end
 .menu-button
   display: flex
-  margin: 0 auto
-  padding: 20px 0 0
+  position: relative
+  width: 100%
+  padding: 10px 0
   cursor: pointer
   align-items: center
   justify-content: center
   color: white
   font-size: 1.3em
-  transition: all ease .2s
+  transition: all .2s ease
   &:hover
     color: rgba(255, 255, 255, 0.6)
+  &:after
+    position: absolute
+    display: block
+    content: ''
+    top: 0
+    right: 0
+    width: 0
+    height: 100%
+    background: white
+    transition: width .2s ease
+  &.menu-active
+    &:after
+      width: 8%
 .user-icon-wrap
   display: flex
   justify-content: center
@@ -143,6 +157,7 @@ export default {
   &:hover p
     background-color: rgba(255, 255, 255, 0.3)
 .channels
+  margin-top: 10px
 .setting
   margin-top: auto
   margin-bottom: 20px
