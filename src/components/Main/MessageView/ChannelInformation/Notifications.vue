@@ -46,8 +46,8 @@ export default {
   },
   methods: {
     showModal () {
-      this.toOnMembers = this.$store.getters.notificationsOnMembers
-      this.toOffMembers = this.$store.getters.notificationsOffMembers
+      this.toOnMembers = this.$store.getters.notificationsOnMembers.filter(user => !user.bot)
+      this.toOffMembers = this.$store.getters.notificationsOffMembers.filter(user => !user.bot)
       this.active = true
     },
     closeModal () {

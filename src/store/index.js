@@ -361,6 +361,9 @@ export default new Vuex.Store({
       return getters.getDirectMessageChannels.reduce((pre, channel) => {
         return pre + getters.getChannelUnreadMessageNum(channel.channelId)
       }, 0)
+    },
+    getNonBotMember (state, getters) {
+      return state.memberData.filter(user => !user.bot)
     }
   },
   actions: {
