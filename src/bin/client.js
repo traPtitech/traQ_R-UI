@@ -289,7 +289,7 @@ const client = {
   },
   changeLockUserTag (userId, tagId, isLocked) {
     return middleWare('changeLockUserTag', () => {
-      return axios.put(`/api/1.0/users/${userId}/tags/${tagId}`, {isLocked})
+      return axios.patch(`/api/1.0/users/${userId}/tags/${tagId}`, {isLocked})
     })
   },
   deleteUserTag (userId, tagId) {
