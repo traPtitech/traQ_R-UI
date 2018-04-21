@@ -38,9 +38,9 @@ const client = {
       return axios.get(`/api/1.0/channels/${channelId}`)
     })
   },
-  changeChannelName (channelId, name) {
+  changeChannelInfo (channelId, name, parent, visibiliy, force) {
     return middleWare('changeChannelName', () => {
-      return axios.put(`/api/1.0/channels/${channelId}`, {name})
+      return axios.patch(`/api/1.0/channels/${channelId}`, {name, parent, visibility, force})
     })
   },
   deleteChannel (channelId) {
