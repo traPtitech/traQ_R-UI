@@ -2,7 +2,7 @@
 div.tag
   modal(@close="closeModal" :active="active")
     div.tag-modal
-      ModalHeaderCenterAligned(:title="model.tag" faIconName="tag")
+      ModalHeaderCenterAligned.tag-modal-header(:title="model.tag" faIconName="tag")
       div.tag-modal-description
         | 「{{model.tag}}」 がつけられているユーザー
       div.tag-user-list
@@ -44,15 +44,11 @@ export default {
 </script>
 <style lang="sass">
 .tag-modal
-  $header-height: 5rem
-  $header-height-narrow: 4rem
-  display: grid
-  @media (min-width: 680px)
-    grid-template-rows: $header-height calc(100% - #{$header-height})
-    height: inherit
-  @media (max-width: 679px)
-    grid-template-rows: $header-height-narrow calc(100% - #{$header-height-narrow})
-    height: 100%
+  .tag-modal-header
+    @media (min-width: 680px)
+      min-height: 5rem
+    @media (max-width: 679px)
+      min-height: 4rem
 
   .tag-modal-description
     max-width: calc(80vw - 4rem)
