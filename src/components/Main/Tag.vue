@@ -2,15 +2,22 @@
 div.tag
   modal(@close="closeModal" :active="active")
     div.tag-modal
-      p
-        | {{model.tag}} がつけられているユーザー
-      ul.tag-user-list
-        li.tag-user(v-for="user in model.users" v-on:click="openUserModal(user.userId)")
-          | @{{user.name}}
+      ModalHeaderCenterAligned(:title="model.tag" faIconName="tag")
+      div.tag-modal-description
+        | 「{{model.tag}}」 がつけられているユーザー
+      div.tag-user-list
+        MemberElement.tag-user-element(v-for="member in model.users" :model="member" :key="member.userId")
+
 </template>
 <script>
+import ModalHeaderCenterAligned from '@/components/Util/ModalHeaderCenterAligned'
+import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 export default {
   name: 'Tag',
+  components: {
+    ModalHeaderCenterAligned,
+    MemberElement
+  },
   data () {
     return {
       tagInput: ''
@@ -19,9 +26,6 @@ export default {
   methods: {
     closeModal () {
       this.$store.commit('closeTagModal')
-    },
-    openUserModal (userId) {
-      this.$store.dispatch('openUserModal', userId)
     }
   },
   computed: {
@@ -39,4 +43,28 @@ export default {
 }
 </script>
 <style lang="sass">
+.tag-modal
+  $header-height: 5rem
+  $header-height-narrow: 4rem
+  display: grid
+  @media (min-width: 680px)
+    grid-template-rows: $header-height calc(100% - #{$header-height})
+    height: inherit
+  @media (max-width: 679px)
+    grid-template-rows: $header-height-narrow calc(100% - #{$header-height-narrow})
+    height: 100%
+
+  .tag-modal-description
+    max-width: calc(80vw - 4rem)
+    font-size: 1.3rem
+    margin: 1rem 2rem 0.5rem 2rem
+    overflow-wrap: break-word
+  .tag-user-list
+    margin: 0.5rem 2rem 2rem 2rem
+    height: 25vh
+    overflow-y: scroll
+    border: 1px solid #eeeeee
+    background-color: #ffffff
+  .tag-user-element
+    margin: 0.5rem
 </style>
