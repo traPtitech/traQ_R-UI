@@ -56,8 +56,8 @@ export default {
     margin: 1rem 2rem 0.5rem 2rem
     overflow-wrap: break-word
   .tag-user-list
-    margin: 0.5rem 2rem 2rem 2rem
-    height: 25vh
+    margin: 1rem 2rem 2rem 2rem
+    max-height: 50vh
     overflow-y: scroll
     border: 1px solid #eeeeee
     background-color: #ffffff
