@@ -143,13 +143,14 @@ export default {
 <style lang="sass">
 .user-modal
   display: grid
-  height: 600px
   max-height: 90vh
   @media (min-width: 680px)
+    height: 600px
     grid-template-columns: minmax(200px, auto) 55%
     grid-template-areas: "profile detail"
   @media (max-width: 679px)
-    grid-template-rows: 300px calc(100% - 300px)
+    height: calc(500px + 30vh)
+    grid-template-rows: 40vh calc(100% - 40vh)
     grid-template-areas: "profile""detail"
 
   .user-modal-profile-container
