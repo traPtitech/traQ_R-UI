@@ -12,14 +12,13 @@ div.user
               div.fas.fa-envelope
             div.user-modal-button
               | Direct Message
+          hr
           div.user-modal-display-name
             | {{model.displayName}}
           div.user-modal-name
             | @{{model.name}}
       div.user-modal-detail-container
-        div.user-modal-detail-header
-          div.fas.fa-tags
-          | TAGS
+        ModalHeaderCenterAligned(title="TAGS" faIconName="tags")
         div.user-modal-detail.user-modal-tag
           div.user-modal-tag-element(v-for="(tag, index) in tags")
             div.user-modal-icon--gray.user-modal-tag-icon
@@ -46,8 +45,12 @@ div.user
 
 <script>
 import client from '@/bin/client'
+import ModalHeaderCenterAligned from '@/components/Util/ModalHeaderCenterAligned'
 export default {
   name: 'User',
+  components: {
+    ModalHeaderCenterAligned
+  },
   data () {
     return {
       tagInput: ''
@@ -141,6 +144,7 @@ export default {
 .user-modal
   display: grid
   height: 600px
+  max-height: 90vh
   @media (min-width: 680px)
     grid-template-columns: minmax(200px, auto) 55%
     grid-template-areas: "profile detail"
@@ -170,7 +174,7 @@ export default {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(156, 178, 203, 0.38674) 0.01%, #003778 99.45%);
     .user-modal-profile
       display: grid
-      grid-template-rows: 1fr auto auto
+      grid-template-rows: 1fr 1.5rem auto auto
       height: calc(100% - 5rem)
       width: calc(100% - 4rem)
       flex-direction: column
@@ -197,11 +201,8 @@ export default {
             transform: translate(calc(-#{$indicator-size} / 2), calc(-#{$indicator-size} / 6))
             border-radius: 50%
             background: #EB5757
-      .user-modal-display-name::before
-        content: "";
-        display: block;
-        border-top: 1px solid white;
-        transform: translateY(-1.5rem);
+      hr
+        width: 100%
       .user-modal-display-name
         font-size: 2rem
         margin: 0.2rem 0px
@@ -210,25 +211,16 @@ export default {
 
   .user-modal-detail-container
     $header-height: 5rem
+    $header-height-narrow: 4rem
     $input-height: 4rem
     grid-area: detail
     display: grid
-    grid-template-rows: $header-height calc(100% - #{$header-height} - #{$input-height}) $input-height
     @media (min-width: 680px)
+      grid-template-rows: $header-height calc(100% - #{$header-height} - #{$input-height}) $input-height
       height: inherit
     @media (max-width: 679px)
+      grid-template-rows: $header-height-narrow calc(100% - #{$header-height-narrow} - #{$input-height}) $input-height
       height: 100%
-    .user-modal-detail-header
-      height: 100%
-      width: 100%
-      display: flex
-      justify-content: center
-      align-items: center
-      color: gray
-      font-size: 1.5rem
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1)
-      .fas
-        margin-right: 1rem
 
     .user-modal-detail
       overflow-y: scroll
