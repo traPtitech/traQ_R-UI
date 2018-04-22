@@ -268,6 +268,7 @@ export default {
   .user-modal-tag-body
     flex: auto
     word-wrap: break-word
+    cursor: pointer
   .user-modal-tag-status-icon
     display: flex
     justify-content: flex-end
