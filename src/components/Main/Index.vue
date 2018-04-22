@@ -276,6 +276,7 @@ export default {
   grid-gap: 0
   width: 100vw
   height: 100vh
+  overflow: hidden
   @media (min-width: 680px)
     grid-template-rows: 60px 1fr
     grid-template-columns: 260px 1fr 40px
