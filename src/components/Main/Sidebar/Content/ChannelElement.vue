@@ -99,8 +99,8 @@ export default {
   z-index: 1
   user-select: none
   height: 18px
-  .channel-opened &
-    color: #4f74d6
+  // .channel-opened &
+    // color: #4f74d6
   .channel-watched &
     color: white
     background-color: #4f74d6

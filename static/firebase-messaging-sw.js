@@ -14,12 +14,11 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging()
 
-messaging.setBackgroundMessageHandler(payload => {
+messaging.setBackgroundMessageHandler(function (payload) {
   console.log('[firebase-messaging-sw.js] Received background message ', payload)
   // Customize notification here
-  const notificationTitle = 'Background Message Title'
-  const notificationOptions = payload.notification
-  notificationOptions.click_action = `${payload.data.origin}/${payload.data.channel_path}`
+  const notificationTitle = payload.title || 'poyo'
+  const notificationOptions = payload.notification || 'https://traq-dev.tokyotech.org/channels/random'
 
   return self.registration.showNotification(notificationTitle,
       notificationOptions)
