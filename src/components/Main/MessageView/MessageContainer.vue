@@ -55,7 +55,7 @@ export default {
       const diff = event.target.scrollTop - this.lastEvent.scrollTop
       const time = event.timeStamp - this.lastEvent.timeStamp
       const speed = Math.max(diff / time, -1.0)
-      if ((event.target.scrollTop + speed * 100 < 0 || event.target.scrollTop === 0) && !this.messageLoading) {
+      if ((event.target.scrollTop + speed * 1000 < 0 || event.target.scrollTop === 0) && !this.messageLoading) {
         this.messageLoading = true
         this.loadMessages()
       }
