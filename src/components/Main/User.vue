@@ -141,15 +141,17 @@ export default {
 }
 </script>
 <style lang="sass">
+$modal-height: 600px
+$modal-max-height: 90vh
+
 .user-modal
   display: grid
-  max-height: 90vh
-  @media (min-width: 680px)
-    height: 600px
+  height: $modal-height
+  max-height: $modal-max-height
+  @media (orientation: landscape)
     grid-template-columns: minmax(200px, auto) 55%
     grid-template-areas: "profile detail"
-  @media (max-width: 679px)
-    height: calc(500px + 30vh)
+  @media (orientation: portrait)
     grid-template-rows: 40vh calc(100% - 40vh)
     grid-template-areas: "profile""detail"
 
@@ -159,6 +161,8 @@ export default {
     display: flex
     align-items: center
     justify-content: center
+    height: 100%
+    max-height: $modal-max-height
     .user-modal-img
       position: absolute
       height: 100%
@@ -187,9 +191,9 @@ export default {
         align-self: center
         height: 100%
         cursor: pointer
-        @media (min-width: 680px)
+        @media (orientation: landscape)
           font-size: 1.75rem
-        @media (max-width: 679px)
+        @media (orientation: portrait)
           font-size: 1.25rem
         .user-modal-dm-icon
           .fa-envelope
@@ -214,12 +218,14 @@ export default {
     $header-height: 5rem
     $header-height-narrow: 4rem
     $input-height: 4rem
+    height: 100%
     grid-area: detail
     display: grid
-    @media (min-width: 680px)
+    @media (orientation: landscape)
       grid-template-rows: $header-height calc(100% - #{$header-height} - #{$input-height}) $input-height
       height: inherit
-    @media (max-width: 679px)
+      max-height: $modal-max-height
+    @media (orientation: portrait)
       grid-template-rows: $header-height-narrow calc(100% - #{$header-height-narrow} - #{$input-height}) $input-height
       height: 100%
 
@@ -252,22 +258,22 @@ export default {
           margin-right: 1.5rem
 
 .user-modal-tag-element
-  $gap: 2rem
+  $gap: 1rem
   display: grid
-  grid-template-columns: 1rem calc(100% - 5rem - #{$gap} * 2) 4rem
+  grid-template-columns: 2rem calc(100% - 6rem - 1rem * 2) 4rem
   grid-gap: $gap
-  @media (min-width: 680px)
+  @media (orientation: landscape)
     margin: 1.3rem 2.5rem
-  @media (max-width: 679px)
+  @media (orientation: portrait)
     margin: 1rem 2rem
   .user-modal-tag-icon
-    justify-self: center
     display: flex
     align-items: center
     height: 100%
   .user-modal-tag-body
     flex: auto
     word-wrap: break-word
+    cursor: pointer
   .user-modal-tag-status-icon
     display: flex
     justify-content: flex-end

@@ -46,5 +46,6 @@ export default {
   .modal-header-title
     width: 100%
     max-width: calc(80vw - 5.5rem)
+    margin: 0.5rem 0px
     overflow-wrap: break-word
 </style>
