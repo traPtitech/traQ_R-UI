@@ -283,4 +283,7 @@ export default {
     grid-template-rows: 60px 1fr
     grid-template-columns: 1fr 40px
     grid-template-areas: "titlebar titlebar""content information"
+  width: calc(100vw - env(safe-area-inset-left))
+  padding-left: env(safe-area-inset-left)
+  background-color: #3a4891
 </style>
