@@ -69,8 +69,7 @@ export default {
       }
     },
     mouseX () {
-      if (window.innerWidth >= 680)
-        return
+      if (window.innerWidth >= 680) return
       if (this.isActive) {
         let offsetX = this.mouseX - this.mouseXStart
         offsetX = this.isOpened ? this.width + offsetX : offsetX
