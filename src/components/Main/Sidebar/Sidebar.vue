@@ -1,10 +1,10 @@
 <template lang="pug">
-div.sidebar(v-bind:style="{transform: `translateX(${translateX}px)`}" v-bind:class="{'sidebar-opened': $store.state.sidebarOpened}" v-on="{mousedown: mouseDown,mouseup: mouseUp, mousemove: mouseMove, mouseleave: mouseLeave}" ref="sidebar" draggable="false")
+div.sidebar(v-bind:style="{transform: `translateX(${translateX}px)`}" v-bind:class="{'sidebar-opened': $store.state.sidebarOpened}" v-on="{mousedown: mouseDown,mouseup: mouseUp, mousemove: mouseMove, touchstart: mouseDown, touchend: mouseUp, touchmove: mouseMove, mouseleave: mouseLeave}" ref="sidebar" draggable="false")
   MenuHeader
   Navigation
   MenuContent
   div.sidebar-overlay(draggable="false" v-on:click="close" v-bind:style="{opacity: translateX / width}" v-if="isActive || isOpened")
-  div.slide-trigger(draggable="false" v-on="{mousedown: mouseDown,mouseup: mouseUp, mousemove: mouseMove}" v-bind:class="{'slide-active':isActive}")
+  div.slide-trigger(draggable="false" v-on="{mousedown: mouseDown,mouseup: mouseUp, mousemove: mouseMove, touchstart: mouseDown, touchend: mouseUp, touchmove: mouseMove}" v-bind:class="{'slide-active':isActive}")
 </template>
 
 <script>
