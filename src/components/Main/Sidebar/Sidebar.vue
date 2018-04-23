@@ -69,6 +69,8 @@ export default {
       }
     },
     mouseX () {
+      if (window.innerWidth >= 680)
+        return
       if (this.isActive) {
         let offsetX = this.mouseX - this.mouseXStart
         offsetX = this.isOpened ? this.width + offsetX : offsetX
@@ -92,10 +94,10 @@ export default {
   background-color: white
   transition: all .1s linear
   @media (max-width: 679px)
-    width: 300px
+    width: 260px
     position: absolute
     z-index: 1000
-    left: -300px
+    left: -260px
 @media (max-width: 679px)
   .sidebar-overlay
     position: fixed
