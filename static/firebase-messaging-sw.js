@@ -17,8 +17,8 @@ const messaging = firebase.messaging()
 messaging.setBackgroundMessageHandler(function (payload) {
   console.log('[firebase-messaging-sw.js] Received background message ', payload)
   // Customize notification here
-  const notificationTitle = payload.title || 'poyo'
-  const notificationOptions = payload.notification || 'https://traq-dev.tokyotech.org/channels/random'
+  const notificationTitle = payload.title
+  const notificationOptions = payload.notification
 
   return self.registration.showNotification(notificationTitle,
       notificationOptions)

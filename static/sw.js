@@ -14,6 +14,6 @@ self.addEventListener('notificationclick', event => {
   event.notification.close()
 
   event.waitUntil(
-    clients.openWindow(`${event.data.origin}/${event.data.channel_path}`)
+    clients.openWindow(`https://traq-dev.tokyotech.org/channels/random`)
   )
 })
