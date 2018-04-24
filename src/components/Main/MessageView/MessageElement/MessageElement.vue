@@ -18,9 +18,7 @@ div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$em
         div.fas.fa-thumbtack
       li(v-on:click="pinMessage" v-else)
         div.fas.fa-thumbtack
-      li.button-pushed(v-on:click="unclipMessage" v-if="cliped")
-        div.fas.fa-paperclip
-      li(v-on:click="clipMessage" v-else)
+      li(v-on:click="clipMessage")
         div.fas.fa-paperclip
       li(v-on:click="copyMessage" v-if="!isDirectMessage")
         div.fas.fa-copy
@@ -167,16 +165,7 @@ export default {
       this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
     },
     clipMessage () {
-      client.clipMessage(this.model.messageId)
-      .then(res => {
-        this.$store.commit('setClipedMessages', res.data)
-      })
-    },
-    unclipMessage () {
-      client.unclipMessage(this.model.messageId)
-      .then(res => {
-        this.$store.commit('setClipedMessages', res.data)
-      })
+      client.clipMessage('', this.model.messageId)
     },
     dateTime: function (datetime) {
       const d = new Date(datetime)
@@ -273,9 +262,6 @@ export default {
         template: `<div class="message-content">${md.render(this.model.content).replace(/{{/g, '{&#8203;{&#8203;').replace(/}}/g, '}&#8203;}&#8203;')}</div>`,
         props: this.$options.props
       }
-    },
-    cliped () {
-      return this.$store.state.clipedMessages[this.model.messageId]
     },
     pinned () {
       this.pin = this.$store.getters.isPinned(this.model.messageId)

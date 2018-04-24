@@ -6,10 +6,10 @@ div.content-wrap(@scroll="checkLoad")
     ol.message-list
       li.no-more-message(v-if="noMoreMessage")
         | これ以上メッセージはありません
-      li.message-item(v-for="(message, index) in $store.state.messages")
+      li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
         time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].datetime) !== date(message.datetime)")
           | {{date(message.datetime)}}
-        MessageElement(:model="message" v-bind:key="message.messageId")
+        MessageElement(:model="message")
 </template>
 
 <script>
@@ -55,7 +55,7 @@ export default {
       const diff = event.target.scrollTop - this.lastEvent.scrollTop
       const time = event.timeStamp - this.lastEvent.timeStamp
       const speed = Math.max(diff / time, -1.0)
-      if ((event.target.scrollTop + speed * 2500 < 0 || event.target.scrollTop === 0) && !this.messageLoading) {
+      if ((event.target.scrollTop + speed * 1000 < 0 || event.target.scrollTop === 0) && !this.messageLoading) {
         this.messageLoading = true
         this.loadMessages()
       }
