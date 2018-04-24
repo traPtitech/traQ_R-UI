@@ -48,6 +48,9 @@ export default {
   flex-direction: column
   background-color: #c2c2c2
   border-left: 1px solid #B0B0B0
+  @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
+    width: 40px
+    padding-right: calc(env(safe-area-inset-right) - 7px)
 .channel-button
   margin: 5px auto
   cursor: pointer
