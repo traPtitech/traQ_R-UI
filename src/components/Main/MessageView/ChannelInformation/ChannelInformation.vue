@@ -51,6 +51,7 @@ export default {
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     width: 40px
     padding-right: calc(env(safe-area-inset-right) - 7px)
+    padding-left: 5px
 .channel-button
   margin: 5px auto
   cursor: pointer

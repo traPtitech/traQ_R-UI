@@ -283,7 +283,7 @@ export default {
     grid-template-rows: 60px 1fr
     grid-template-columns: 1fr 40px
     grid-template-areas: "titlebar titlebar""content information"
-  @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
+  @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3)
     grid-template-columns: calc(260px + env(safe-area-inset-left) - 7px) 1fr calc(40px + env(safe-area-inset-right) - 7px)
 
 </style>
