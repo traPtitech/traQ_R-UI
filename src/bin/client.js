@@ -276,7 +276,7 @@ const client = {
   },
   unstarChannel (channelId) {
     return middleWare('unstarChannel', () => {
-      return axios.delete(`/api/1.0/users/me/stars`, {channelId})
+      return axios.delete(`/api/1.0/users/me/stars/${channelId}`)
     })
   },
 
