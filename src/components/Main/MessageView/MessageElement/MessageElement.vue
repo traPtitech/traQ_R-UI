@@ -1,5 +1,6 @@
 <template lang="pug">
-div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$emit('close')")
+div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effect':isClicked}" @click="$emit('close')")
+  div.ripple(ref="ripple")
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
   div.message-detail-wrap
@@ -27,10 +28,10 @@ div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$em
       component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
       div(v-if="isEditing")
         textarea.input-reset.edit-area(v-model="edited")
-        button.edit-button.edit-cancel(v-on:click="editCancel" )
-          | Esc
-        button.edit-button.edit-submit(v-on:click="editSubmit" )
-          | Shift+Enter
+        button.edit-button.edit-cancel(v-on:click.stop="editCancel" )
+          | Cancel
+        button.edit-button.edit-submit(v-on:click.stop="editSubmit" )
+          | Edit
     div.message-messages-wrap
       div.attached-message(v-for="m in messages")
         img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`" v-on:click="openUserModal(m.userId)")
@@ -131,7 +132,8 @@ export default {
       edited: '',
       pin: null,
       files: [],
-      messages: []
+      messages: [],
+      isClicked: false
     }
   },
   methods: {
@@ -355,11 +357,13 @@ export default {
   grid-template-areas: "user-icon detail""user-icon contents""... contents"
   grid-template-rows: 20px 1fr
   grid-template-columns: 40px 1fr
+  position: relative
   // border-top: solid 1px rgba(0, 0, 0, 0.1)
   padding: 10px 10px
   width: 100%
   box-sizing: border-box
-  transition: background-color .5s ease
+  transition: background-color .2s ease
+  overflow: hidden
   &:hover
     background-color: #efefef
   &.message-pinned
@@ -379,19 +383,14 @@ export default {
   display: flex
   justify-content: space-between
   align-items: center
-.message-detail-left
-  display: flex
-  flex-wrap: wrap
-  align-items: center
-  max-width: 50%
-  height: 100%
+  min-width: 0
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
   text-overflow: ellipsis
   white-space: nowrap
   text-align: left
-  max-width: 40%
+  max-width: 50%
   height: 100%
   overflow: hidden
   cursor: pointer
@@ -415,7 +414,7 @@ export default {
   flex-flow: column
 .message-text-wrap
   margin: 0 0 0 10px
-  padding: 10px 0 0
+  padding: 5px 0 0
   text-align: left
   font-size: 0.9em
   word-break: break-all
