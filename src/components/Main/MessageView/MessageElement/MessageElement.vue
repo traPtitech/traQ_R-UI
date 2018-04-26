@@ -281,8 +281,8 @@ export default {
       return this.pin
     },
     displayDateTime () {
-      const d = new Date(this.model.datetime)
-      if (this.model.datetime === this.model.updatedAt) {
+      const d = new Date(this.model.createdAt)
+      if (this.model.createdAt === this.model.updatedAt) {
         return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
       } else {
         const u = new Date(this.model.updatedAt)
