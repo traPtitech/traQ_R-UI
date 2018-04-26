@@ -244,7 +244,6 @@ export default new Vuex.Store({
     },
     setCurrentUserTags (state, tags) {
       tags = tags || []
-      tags.sort(stringSortGen('tag'))
       state.currentUserTags = tags
     },
     closeUserModal (state) {
