@@ -4,43 +4,43 @@ div.links-list-wrap
     li
       a(href="https://trap.jp" target="_blank")
         div.link-icon
-          div.fas.fa-link
+          icon(name="link")
         p.link-title
-          | Official website
+          | traP公式サイト
     li
       a(href="https://wiki.trapti.tech" target="_blank")
         div.link-icon
-          div.fas.fa-book
+          icon(name="book")
         p.link-title
           | Wiki
     li
       a(href="https://blog.trapti.tech" target="_blank")
         div.link-icon
-          div.fab.fa-snapchat-ghost
+          icon(name="snapchat-ghost")
         p.link-title
-          | Ghost
+          | Blog
     li
       a(href="https://drive.trapti.tech" target="_blank")
         div.link-icon
-          div.fas.fa-cloud
+          icon(name="cloud")
         p.link-title
           | Drive
     li
       a(href="https://git.trapti.tech" target="_blank")
         div.link-icon
-          div.fas.fa-code-branch
+          icon(name="code-branch")
         p.link-title
           | Gitea
     li
       a(href="https://showcase.trapti.tech" target="_blank")
         div.link-icon
-          div.fas.fa-cube
+          icon(name="cube")
         p.link-title
           | Showcase
     li
       a(href="https://md.trapti.tech" target="_blank")
         div.link-icon
-          div.fas.fa-file-alt
+          icon(name="file-alt")
         p.link-title
           | Hackmd
 </template>

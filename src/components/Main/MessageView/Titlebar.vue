@@ -1,7 +1,7 @@
 <template lang="pug">
 header.titlebar
   div.sidebar-open(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened")
-    div.fas.fa-bars.sidebar-open-icon
+    icon(name="bars").sidebar-open-icon
   h1.channel-name
     | {{title}}
   p.channel-topic-text

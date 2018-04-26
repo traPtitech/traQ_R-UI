@@ -9,7 +9,7 @@ div.user
           div.user-modal-dm(v-on:click="openDirectMessage")
             div.user-modal-dm-icon
               div.user-modal-dm-indicator(v-if="hasUnreadMessages")
-              div.fas.fa-envelope
+              icon(name="envelope")
             div.user-modal-button
               | Direct Message
           hr
@@ -22,25 +22,25 @@ div.user
         div.user-modal-detail.user-modal-tag
           div.user-modal-tag-element(v-for="(tag, index) in tags")
             div.user-modal-icon--gray.user-modal-tag-icon
-              div.fas.fa-tag
+              icon(name="tag")
             div.user-modal-tag-body(v-on:click="openTagModal(tag.tagId)")
               | {{tag.tag}}
             div.user-modal-tag-status-icon(v-if="tag.editable")
               div.user-modal-icon--gray(v-show="hasAuth && !tag.isLocked" v-on:click="lockTag(index)")
-                i.fas.fa-lock-open
+                icon(name="lock-open")
               div.user-modal-icon--gray(v-show="!tag.isLocked" v-on:click="eraseTag(index)")
-                i.fas.fa-times
+                icon(name="times")
               div.user-modal-icon--gray(v-show="hasAuth && tag.isLocked" v-on:click="unlockTag(index)")
-                i.fas.fa-lock
+                icon(name="lock")
               div.user-modal-icon--gray.non-clickable(v-show="!hasAuth && tag.isLocked")
-                i.fas.fa-lock
+                icon(name="lock")
         div.user-modal-detail-input-container
           div.user-modal-detail-input
             div.user-modal-icon--gray.user-modal-tag-icon(:style="detailInputIconStyle")
-              div.fas.fa-tag
+              icon(name="tag")
             input.user-modal-tag-body(v-model="tagInput" v-on:keydown="keydown" placeholder="タグを追加……")
             div.user-modal-icon--gray.user-modal-plus-icon(v-on:click="addTag" :style="detailInputIconStyle")
-              i.fas.fa-plus
+              icon(name="plus")
 </template>
 
 <script>
@@ -143,6 +143,9 @@ export default {
 <style lang="sass">
 $modal-height: 600px
 $modal-max-height: 90vh
+
+.user .modal
+  width: 80%
 
 .user-modal
   display: grid

@@ -2,9 +2,9 @@
 div.input-ui
   input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
   div.upload-button.flex-center(v-if="isOpened" v-on:click="clickUploadButton")
-    div.fas.fa-file
+    icon(name="file")
   div.submit-button.flex-center(v-show="isOpened" v-on:click="submit")
-    div.fas.fa-angle-right
+    icon(name="angle-right")
   div.input-area-wrapper(v-on:drom="dropFile" v-show="isOpened")
     p.suggest-element(v-for="(suggest, id) in suggests" v-on:click="replaceSuggest(id)" v-on:mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
     textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-on:focus="inputFocus()" v-model="inputText" v-on:keydown="keydown" v-on:click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")

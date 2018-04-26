@@ -1,5 +1,5 @@
 <template lang="pug">
-div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effect':isClicked}" @click="$emit('close')")
+div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$emit('close')")
   div.ripple(ref="ripple")
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
@@ -12,17 +12,17 @@ div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effe
       | {{displayDateTime}}
     ul.message-buttons-wrap
       li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
-        div.fas.fa-edit
+        icon(name="edit")
       li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
-        div.fas.fa-trash-alt
+        icon(name="trash-alt")
       li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
-        div.fas.fa-thumbtack
+        icon(name="thumbtack")
       li(v-on:click="pinMessage" v-else)
-        div.fas.fa-thumbtack
+        icon(name="thumbtack")
       li(v-on:click="clipMessage")
-        div.fas.fa-paperclip
+        icon(name="paperclip")
       li(v-on:click="copyMessage" v-if="!isDirectMessage")
-        div.fas.fa-copy
+        icon(name="copy")
   div.message-contents-wrap
     div.message-text-wrap
       component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
@@ -132,8 +132,7 @@ export default {
       edited: '',
       pin: null,
       files: [],
-      messages: [],
-      isClicked: false
+      messages: []
     }
   },
   methods: {
