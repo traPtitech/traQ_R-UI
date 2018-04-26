@@ -23,6 +23,8 @@ div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effe
         div.fas.fa-paperclip
       li(v-on:click="copyMessage" v-if="!isDirectMessage")
         div.fas.fa-copy
+      li(v-on:click="reportMessage")
+        div.fas.fa-ban
   div.message-contents-wrap
     div.message-text-wrap
       component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
@@ -256,6 +258,15 @@ export default {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
+    },
+    reportMessage () {
+      const reason = window.prompt('このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください')
+      if (reason) {
+        client.reportMessage(this.model.messageId, reason)
+        .then(() => {
+          this.$store.commit('removeMessage', this.model.messageId)
+        })
+      }
     }
   },
   computed: {

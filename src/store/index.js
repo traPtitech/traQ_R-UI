@@ -244,7 +244,6 @@ export default new Vuex.Store({
     },
     setCurrentUserTags (state, tags) {
       tags = tags || []
-      tags.sort(stringSortGen('tag'))
       state.currentUserTags = tags
     },
     closeUserModal (state) {
@@ -255,6 +254,9 @@ export default new Vuex.Store({
     },
     setEditing (state, isEditing) {
       state.editing = isEditing
+    },
+    removeMessage (state, messageId) {
+      state.messages = state.messages.filter(message => message.messageId !== messageId)
     }
   },
   getters: {
