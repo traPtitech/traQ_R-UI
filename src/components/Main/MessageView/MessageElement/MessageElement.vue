@@ -1,5 +1,5 @@
 <template lang="pug">
-div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effect':isClicked}" @click="$emit('close')")
+div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effect':isClicked}" @click="$emit('close')" v-if="!model.reported")
   div.ripple(ref="ripple")
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
