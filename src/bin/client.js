@@ -303,11 +303,9 @@ const client = {
       return axios.get(`/api/1.0/users/me/unread`)
     })
   },
-  readMessages (messageIds) {
+  readMessages (channelId) {
     return middleWare('readMessages', () => {
-      return axios.delete(`/api/1.0/users/me/unread`, {
-        data: messageIds
-      })
+      return axios.delete(`/api/1.0/users/me/unread/${channelId}`)
     })
   },
 
