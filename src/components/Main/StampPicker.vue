@@ -10,16 +10,18 @@ div.stamp-picker
         div.stamp-picker-body
           div.emoji-container(v-if="" @mouseleave="searchPlaceHolder=defaultString")
             div(v-for="(category, idx) in $store.state.stampCategolized")
-              div(v-if="idx==currentCategoryIndex || search")
+              div(v-show="idx==currentCategoryIndex || search")
                 p
                   | {{category.category}}
-                div.emoji-item(v-for="stamp in stamps(idx)" class="emoji s32" @click="" @mouseover="hoverStamp(stamp.name)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
+                div.emoji-item(v-for="stamp in stamps(idx)" class="emoji s32" @click="addStamp(stamp.id)" @mouseover="hoverStamp(stamp.name)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
         div.stamp-picker-footer
             div.stamp-category-wrap
               div.stamp-category-item(v-for="(category,idx) in $store.state.stampCategolized" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[category.stamps[0].id].fileId})`" @click="currentCategoryIndex=idx")
 </template>
 
 <script>
+import client from '@/bin/client'
+
 export default {
   name: 'StampPicker',
   props: {
@@ -37,6 +39,9 @@ export default {
   computed: {
     active () {
       return this.$store.state.stampPickerActive
+    },
+    model () {
+      return this.$store.state.stampPickerModel
     }
   },
   data () {
@@ -49,6 +54,9 @@ export default {
     }
   },
   methods: {
+    addStamp (stampId) {
+      client.stampMessage(this.model.messageId, stampId)
+    },
     closeStampPicker () {
       this.$store.commit('inactiveStampPicker')
     },
@@ -110,7 +118,7 @@ export default {
   width: 20px
   height: 20px
   background-size: contain
-  background-color: white
+  background-repeat: none
   margin: 5px
   cursor: pointer
 .stamp-picker-body

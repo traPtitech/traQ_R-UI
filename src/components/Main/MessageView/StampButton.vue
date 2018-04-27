@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  div(@click="$store.commit('activeStampPicker')")
+  div(@click="showStampPicker")
     icon(name="plus")
   //- modal(@close="active = false" :active="active")
   //-   input(v-model="search")
@@ -23,21 +23,15 @@ export default {
   },
   data () {
     return {
-      active: false
     }
   },
   methods: {
-    showModal () {
-      this.active = true
+    showStampPicker () {
+      this.$store.commit('setStampPickerModel',this.model)
+      this.$store.commit('activeStampPicker')
     },
     addStamp (stampId) {
       client.stampMessage(this.model.messageId, stampId)
-    },
-    stamps (index) {
-      if (this.search === '') {
-        return this.$store.state.stampCategolized[index].stamps
-      }
-      return this.$store.state.stampCategolized[index].stamps.filter(stamp => stamp.name.substr(0, this.search.length) === this.search)
     }
   },
   computed: {
