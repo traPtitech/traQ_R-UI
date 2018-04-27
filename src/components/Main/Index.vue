@@ -87,9 +87,18 @@ export default {
           console.log('permission granted')
           messaging.getToken()
             .then(currentToken => {
-              console.log(currentToken)
               client.registerDevice(currentToken)
             })
+
+          messaging.onMessage(payload => {
+            const notification = this.notify(payload.data.title || 'traQ', payload.data)
+            if (notification) {
+              notification.onclick = () => {
+                window.focus()
+                this.$router.push('/channels/' + payload.data.channel_path)
+              }
+            }
+          })
         })
         .catch(() => {
           console.error('permission denied')
@@ -100,6 +109,14 @@ export default {
           .then(currentToken => {
             client.registerDevice(currentToken)
           })
+      })
+    }
+
+    if ('navigator' in window && 'serviceWorker' in window.navigator) {
+      window.navigator.serviceWorker.addEventListener('message', data => {
+        if (data.data.type === 'navigate') {
+          this.$router.push('/channels/' + data.data.to)
+        }
       })
     }
 
@@ -179,44 +196,14 @@ export default {
     messageCreated (data) {
       client.getMessage(data.id)
         .then(async res => {
-          let user = this.$store.state.memberMap[res.data.userId]
           let channel = this.$store.state.channelMap[res.data.parentChannelId]
           if (!channel) {
             channel = await client.getChannelInfo(res.data.parentChannelId).data
-          }
-          let path = ''
-          let title = ''
-          if (channel.parent === this.$store.state.directMessageId) {
-            let user = this.$store.state.me.name
-            channel.member.forEach(userId => {
-              if (userId !== this.$store.state.me.userId) {
-                user = this.$store.state.memberMap[userId].name
-              }
-            })
-            title = `@${user}`
-            path = `users/${user}`
-          } else {
-            title = `#${this.$store.getters.getChannelPathById(channel.channelId)}`
-            path = `channels/${this.$store.getters.getChannelPathById(channel.channelId)}`
           }
           if (channel.channelId === this.$store.state.currentChannel.channelId) {
             this.$store.commit('addMessages', res.data)
             if (document.hasFocus()) {
               client.readMessages([res.data.messageId])
-            }
-          }
-
-          if (!document.hasFocus() || channel.channelId !== this.$store.state.currentChannel.channelId) {
-            const options = {
-              icon: client.getUserIconUrl(user.userId),
-              body: user.name + ':' + res.data.content
-            }
-            const notification = this.notify(title, options)
-            if (notification) {
-              notification.onclick = () => {
-                window.focus()
-                this.$router.push(path)
-              }
             }
           }
           this.$store.dispatch('updateUnreadMessages')

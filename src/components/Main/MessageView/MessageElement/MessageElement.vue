@@ -1,5 +1,5 @@
 <template lang="pug">
-div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effect':isClicked}" @click="$emit('close')")
+div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effect':isClicked}" @click="$emit('close')" v-if="!model.reported")
   div.ripple(ref="ripple")
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
@@ -23,6 +23,8 @@ div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned, 'ripple-effe
         div.fas.fa-paperclip
       li(v-on:click="copyMessage" v-if="!isDirectMessage")
         div.fas.fa-copy
+      li(v-on:click="reportMessage")
+        div.fas.fa-ban
   div.message-contents-wrap
     div.message-text-wrap
       component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
@@ -256,6 +258,15 @@ export default {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
+    },
+    reportMessage () {
+      const reason = window.prompt('このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください')
+      if (reason) {
+        client.reportMessage(this.model.messageId, reason)
+        .then(() => {
+          this.$store.commit('removeMessage', this.model.messageId)
+        })
+      }
     }
   },
   computed: {
@@ -270,8 +281,8 @@ export default {
       return this.pin
     },
     displayDateTime () {
-      const d = new Date(this.model.datetime)
-      if (this.model.datetime === this.model.updatedAt) {
+      const d = new Date(this.model.createdAt)
+      if (this.model.createdAt === this.model.updatedAt) {
         return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
       } else {
         const u = new Date(this.model.updatedAt)
