@@ -95,7 +95,7 @@ export default {
             if (notification) {
               notification.onclick = () => {
                 window.focus()
-                this.$router.push('/channels/' + payload.data.channel_path)
+                this.$router.push(payload.data.path)
               }
             }
           })
@@ -115,7 +115,7 @@ export default {
     if ('navigator' in window && 'serviceWorker' in window.navigator) {
       window.navigator.serviceWorker.addEventListener('message', data => {
         if (data.data.type === 'navigate') {
-          this.$router.push('/channels/' + data.data.to)
+          this.$router.push(data.data.to)
         }
       })
     }
