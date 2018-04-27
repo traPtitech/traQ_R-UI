@@ -417,11 +417,7 @@ export default new Vuex.Store({
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
-          if (state.unreadMessages[nowChannel.channelId] && Object.keys(state.unreadMessages[nowChannel.channelId]).length > 0) {
-            client.readMessages(
-              Object.keys(state.unreadMessages[nowChannel.channelId])
-            ).then(() => dispatch('updateUnreadMessages'))
-          }
+          client.readMessages(nowChannel.channelId)
           if (latest) {
             db.write('channelMessages', {channelId: nowChannel.channelId, data: messages})
           }
