@@ -1,29 +1,29 @@
 <template lang="pug">
 div
-  div(@click="showModal")
-    div.fas.fa-plus
-  modal(@close="active = false" :active="active")
-    input(v-model="search")
-    div.emoji-container
-      div(v-for="(category, idx) in $store.state.stampCategolized")
-        p
-          | {{category.category}}
-        i(v-for="stamp in stamps(idx)" class="emoji s32" v-on:click="addStamp(stamp.id)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
-          | :{{stamp.name}}:
+  div(@click="$store.commit('activeStampPicker')")
+    icon(name="plus")
+  //- modal(@close="active = false" :active="active")
+  //-   input(v-model="search")
+  //-   div.emoji-container
+  //-     div(v-for="(category, idx) in $store.state.stampCategolized")
+  //-       p
+  //-         | {{category.category}}
+  //-       i(v-for="stamp in stamps(idx)" class="emoji s32" v-on:click="addStamp(stamp.id)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
+  //-         | :{{stamp.name}}:
 </template>
+
 <script>
 import client from '@/bin/client'
 import StampPicker from '@/components/Main/StampPicker'
 
 export default {
-  name: 'StampList',
+  name: 'StampButton',
   props: {
     model: Object
   },
   data () {
     return {
-      active: false,
-      search: ''
+      active: false
     }
   },
   methods: {
@@ -47,15 +47,6 @@ export default {
   }
 }
 </script>
+
 <style lang="sass">
-.emoji.s32
-  width: 32px
-  height: 32px
-.emoji
-  display: inline-block
-  text-indent: 999%
-  white-space: nowrap
-  overflow: hidden
-  color: transparent
-  background-size: contain
 </style>

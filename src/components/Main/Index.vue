@@ -269,6 +269,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~@/styles/global.sass"
 .index
   display: grid
   position: relative
@@ -276,11 +277,11 @@ export default {
   width: 100vw
   height: 100vh
   overflow: hidden
-  @media (min-width: 680px)
+  +mq(pc)
     grid-template-rows: 60px 1fr
     grid-template-columns: 260px 1fr 40px
     grid-template-areas: "side titlebar titlebar""side content information"
-  @media (max-width: 679px)
+  +mq(sp)
     grid-template-rows: 60px 1fr
     grid-template-columns: 1fr 40px
     grid-template-areas: "titlebar titlebar""content information"
