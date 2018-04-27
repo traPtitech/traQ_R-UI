@@ -44,6 +44,8 @@ export default new Vuex.Store({
     channelData: [],
     channelMap: {},
     sidebarOpened: false,
+    stampPickerActive: false,
+    stampPickerModel: null,
     memberData: [],
     memberMap: {},
     tagData: [],
@@ -72,8 +74,20 @@ export default new Vuex.Store({
     editing: false
   },
   mutations: {
-    toggleSidebar (state) {
-      state.sidebarOpened = !state.sidebarOpened
+    setStampPickerModel (state, model) {
+      state.stampPickerModel = model
+    },
+    activeStampPicker (state) {
+      state.stampPickerActive = true
+    },
+    inactiveStampPicker (state) {
+      state.stampPickerActive = false
+    },
+    openSidebar (state) {
+      state.sidebarOpened = true
+    },
+    closeSidebar (state) {
+      state.sidebarOpened = false
     },
     setMe (state, me) {
       state.me = me

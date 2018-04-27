@@ -3,7 +3,7 @@ div.menu-header
   div.menu-title.flex-center
     | {{$store.state.menuContent}}
   div.search.flex-center
-    i.fa.fa-search(aria-hidden="true")
+    icon(name="search").search-icon
 </template>
 
 <script>
@@ -32,7 +32,6 @@ export default {
 .search
   margin: 0 15px
   height: 100%
-.fa-search
-  font-size: 1.5em
+.search-icon
   color: rgba(0, 0, 0, 0.6)
 </style>

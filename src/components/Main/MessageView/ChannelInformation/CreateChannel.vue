@@ -1,7 +1,7 @@
 <template lang="pug">
 div.create-channel
   div(@click="showModal")
-    div.fas.fa-plus
+    icon(name="plus")
   ChannelInformationModal(title="チャンネル作成" :active="active" @close="active = false")
     div.create-channel-modal
       h2 新しくチャンネルを作成する

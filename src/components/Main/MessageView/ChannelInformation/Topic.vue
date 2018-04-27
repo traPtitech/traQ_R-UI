@@ -1,7 +1,7 @@
 <template lang="pug">
 div.channel-topic
   div(@click="showModal")
-    div.fas.fa-comment
+    icon(name="comment")
   ChannelInformationModal(title="トピック設定" :active="active" @close="active = false")
     div.change-topic
       h2 トピックを変更する

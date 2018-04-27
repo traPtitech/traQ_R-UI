@@ -7,19 +7,19 @@ nav.menu-buttons
         p.flex-center
           | ログアウト
     li.menu-button.channels(@click="navClicked('channels')" :class="{'menu-active':menuContent==='channels'}")
-      i.fas.fa-hashtag(aria-hidden="true")
+      icon(name="hashtag")
       p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
         | {{channelsUnreadNum}}
     li.menu-button.members(@click="navClicked('members')" :class="{'menu-active':menuContent==='members'}")
-      i.fas.fa-user(aria-hidden="true")
+      icon(name="user")
       p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
         | {{usersUnreadNum}}
     li.menu-button.clips(@click="navClicked('clips')" :class="{'menu-active':menuContent==='clips'}")
-      i.fas.fa-paperclip(aria-hidden="true")
+      icon(name="paperclip")
     li.menu-button.links(@click="navClicked('links')" :class="{'menu-active':menuContent==='links'}")
-      i.fas.fa-th-large(aria-hidden="true")
+      icon(name="th-large")
     li.menu-button.setting(@click="$router.push('/setting')")
-      i.fas.fa-cog(aria-hidden="true")
+      icon(name="cog")
 </template>
 
 <script>
@@ -76,10 +76,11 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~@/styles/global.sass"
 .menu-buttons
   grid-area: menu
   user-select: none
-  background-color: #3a4891
+  background-color: $primary-color
   ul
     height: 100%
     display: flex

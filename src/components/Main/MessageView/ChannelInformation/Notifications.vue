@@ -1,28 +1,28 @@
 <template lang="pug">
 div.channel-members
   div(@click="showModal")
-    div.fas.fa-bell
+    icon(name="bell")
   ChannelInformationModal(title="通知設定" @close="closeModal" :active="active")
     div.notifications-item
       div.notifications-fa-wrapper
-        span.fas.fa-bell
+        icon(name="bell" scale="2")
       h2 ONにしてる人
       div.notifications-members
         div(v-if="toOnMembers.length")
           transition-group(name="slide-fade" tag="ul")
             MemberChoice.member-choice(v-for="member in toOnMembers" @input="toggleMemberOff" :model="member" :key="member.userId")
         div.notifications-empty(v-else)
-          div.fas.fa-3x.fa-moon
+          icon(name="moon" scale="3")
           div 通知がONの人はいません
     div.notifications-item
       div.notifications-fa-wrapper
-        span.fas.fa-bell-slash
+        icon(name="bell-slash" scale="2")
       h2 OFFにしてる人
       div.notifications-members
         transition-group(v-if="toOffMembers.length" name="slide-fade" tag="ul")
           MemberChoice.member-choice(v-for="member in toOffMembers" @input="toggleMemberOn" :model="member" :key="member.userId")
         div.notifications-empty(v-else)
-          div.fas.fa-3x.fa-sun
+          icon(name="sun" scale="3")
           div 通知がOFFの人はいません
 </template>
 

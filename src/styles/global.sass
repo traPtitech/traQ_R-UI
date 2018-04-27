@@ -1,0 +1,10 @@
+$primary-color: #3a4891
+
+$breakpoints: ("pc": "screen and (min-width:680px)","sp": "screen and (max-width:679px)")
+
+$base-size: 5vw
+$dia-margin: 0.4vw
+
+=mq($breakpoint: pc)
+  @media #{map-get($breakpoints,$breakpoint)}
+    @content

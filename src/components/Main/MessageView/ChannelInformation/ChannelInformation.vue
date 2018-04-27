@@ -3,7 +3,7 @@ div.information
   OnlineUsers
   Notifications(v-show="!isDirectMessage && !isNotificationForced").channel-button
   div.channel-button(v-show="isNotificationForced")
-    div.fas.fa-exclamation
+    icon(name="exclamation")
   Pinned.channel-button
   Topic(v-show="!isDirectMessage").channel-button
   CreateChannel(v-show="!isDirectMessage").channel-button

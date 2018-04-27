@@ -2,7 +2,7 @@
 div.modal-header-center-aligned
   div.modal-header-container
     div.modal-header-icon-wrapper
-      div.fas(v-if="faIconName", :class="faClassName")
+      icon(v-if="faIconName" :name="faIconName")
     div.modal-header-title {{ title }}
 </template>
 
