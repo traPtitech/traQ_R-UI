@@ -1,8 +1,7 @@
 <template lang="pug">
 div.modal-header-center-aligned
   div.modal-header-container
-    div.modal-header-icon-wrapper
-      icon(v-if="faIconName" :name="faIconName")
+    icon(v-if="faIconName" :name="faIconName" scale="1.75")
     div.modal-header-title {{ title }}
 </template>
 
@@ -14,11 +13,6 @@ export default {
     faIconName: {
       type: String,
       default: null
-    }
-  },
-  computed: {
-    faClassName () {
-      return (this.faIconName.startsWith('fa-') ? '' : 'fa-') + this.faIconName
     }
   }
 }
