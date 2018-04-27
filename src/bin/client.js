@@ -276,12 +276,12 @@ const client = {
   },
   starChannel (channelId) {
     return middleWare('starChannel', () => {
-      return axios.post(`/api/1.0/users/me/stars`, {channelId})
+      return axios.put(`/api/1.0/users/me/stars/${channelId}`)
     })
   },
   unstarChannel (channelId) {
     return middleWare('unstarChannel', () => {
-      return axios.delete(`/api/1.0/users/me/stars`, {channelId})
+      return axios.delete(`/api/1.0/users/me/stars/${channelId}`)
     })
   },
 

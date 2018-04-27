@@ -14,15 +14,14 @@ div.channel-wrap(v-if="model.visibility")
     transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
       div(ref="childrenWrap" v-show="isOpened")
         div(v-for="child in model.children")
-          ChannelElement(:model="$store.state.channelMap[child]" v-bind:curPath="curPath + (curPath!==''?'/':'') + model.name")
+          ChannelElement(:model="$store.state.channelMap[child]")
 </template>
 
 <script>
 export default {
   name: 'ChannelElement',
   props: {
-    model: Object,
-    curPath: String
+    model: Object
   },
   data () {
     return {
@@ -35,7 +34,7 @@ export default {
       this.isOpened = !this.isOpened
     },
     channelLink (name) {
-      this.$router.push(`/channels/${this.curPath}${this.curPath !== '' ? '/' : ''}${this.model.name}`)
+      this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.channelId)}`)
     },
     removeHeight () {
       this.$refs.children.style.height = ''

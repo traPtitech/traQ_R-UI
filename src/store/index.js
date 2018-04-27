@@ -58,6 +58,7 @@ export default new Vuex.Store({
     clipedMessages: {},
     unreadMessages: {},
     staredChannels: [],
+    staredChannelMap: {},
     messages: [],
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
@@ -193,6 +194,11 @@ export default new Vuex.Store({
     },
     setStaredChannelsData (state, data) {
       state.staredChannels = data
+      state.staredChannels.sort(stringSortGen('name'))
+      state.staredChannelMap = {}
+      state.staredChannels.forEach(channel => {
+        state.staredChannelMap[channel.channelId] = channel
+      })
     },
     updateHeartbeatStatus (state, data) {
       state.heartbeatStatus = data
