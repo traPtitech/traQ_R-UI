@@ -8,9 +8,9 @@ div.information
   Topic(v-show="!isDirectMessage").channel-button
   CreateChannel(v-show="!isDirectMessage").channel-button
   div.channel-button(v-show="!isDirectMessage && !isStared" @click="starChannel")
-    div.far.fa-star
+    icon(name="star")
   div.channel-button(v-show="!isDirectMessage && isStared" @click="unstarChannel")
-    div.fas.fa-star
+    icon(name="star")
 </template>
 
 <script>
