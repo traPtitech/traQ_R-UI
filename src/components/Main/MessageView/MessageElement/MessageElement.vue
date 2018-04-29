@@ -416,7 +416,7 @@ export default {
   display: block
   font-size: 0.7em
   margin-left: 5px
-  .message-item:hover &
+  .message:hover &
     display: none
 .message-contents-wrap
   grid-area: contents
@@ -441,7 +441,7 @@ export default {
   transition: all .2s ease
   display: none
   justify-content: flex-end
-  .message-item:hover &
+  .message:hover &
     display: flex
   & li
     margin: 0 5px
@@ -475,7 +475,7 @@ export default {
   opacity: 0
   transition: all .2s ease
   cursor: pointer
-  .message-item:hover &
+  .message:hover &
     opacity: 1
 .stamp-container
   display: inline-flex
