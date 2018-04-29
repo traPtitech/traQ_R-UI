@@ -107,7 +107,7 @@ export default {
     right: 0
     width: 0
     height: 100%
-    background: white
+    background: whitesmoke
     transition: width .2s ease
   &.menu-active
     &:after
