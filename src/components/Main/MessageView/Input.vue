@@ -1,16 +1,15 @@
 <template lang="pug">
 div.input-ui
-  input.upload-button(id="upload" style="display:none" type="file" v-on:change="addFiles")
-  div.upload-button.flex-center(v-if="isOpened" v-on:click="clickUploadButton")
+  input.upload-button(id="upload" style="display:none" type="file" @change="addFiles")
+  div.upload-button.flex-center(@click="clickUploadButton")
     icon(name="file")
-  div.submit-button.flex-center(v-show="isOpened" v-on:click="submit")
+  div.submit-button.flex-center(@click="submit")
     icon(name="angle-right")
-  div.input-area-wrapper(v-on:drom="dropFile" v-show="isOpened")
-    p.suggest-element(v-for="(suggest, id) in suggests" v-on:click="replaceSuggest(id)" v-on:mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
-    textarea.input-area(id="messageInput" v-on:blur="inputBlur()" v-on:focus="inputFocus()" v-model="inputText" v-on:keydown="keydown" v-on:click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
-    div(v-for="(file, index) in files" v-on:click="removeFile(index)")
+  div.input-area-wrapper(@drom="dropFile")
+    p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
+    textarea.input-area(id="messageInput" @blur="inputBlur()" @focus="inputFocus()" v-model="inputText" @keydown="keydown" @click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    div(v-for="(file, index) in files" @click="removeFile(index)")
       | {{ file.name }}
-  div.input-background.input-appeared.input-background-gradation(v-on:click="isOpened = !isOpened;focus()" v-bind:class="{'input-background-opened': isOpened}")
 </template>
 
 <script>
@@ -348,15 +347,13 @@ export default {
   right: 0
   left: 0
   bottom: 0
-  border-top: solid 1px rgba(0, 0, 0, 0.5)
-  background-color: white
 .input-area
   box-sizing: border-box
   z-index: 100
   width: 100%
   height: 60px
   margin: 0
-  background: white
+  background: none
   resize: none
   -webkit-appearance: none
   padding: 10px 60px 10px
@@ -365,6 +362,7 @@ export default {
   border: 0
   line-height: 1em
   animation: openInputArea 1s ease
+  background-color: #f9f9f9
   /*transition: all .3s ease-in-out*/
 .input-area:focus
   outline: 0

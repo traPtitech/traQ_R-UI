@@ -37,11 +37,13 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Oxygen+Mono')
 @import "highlight.js/styles/default.css"
 @import "~@/styles/global.sass"
+
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   color: #2c3e50
+  background-color: #f9f9f9
 li
   list-style: none
   margin: 0
