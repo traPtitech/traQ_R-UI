@@ -36,6 +36,7 @@ export default {
 @import url("//fonts.googleapis.com/earlyaccess/mplus1p.css")
 @import url('https://fonts.googleapis.com/css?family=Oxygen+Mono')
 @import "highlight.js/styles/default.css"
+@import "~@/styles/global.sass"
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased

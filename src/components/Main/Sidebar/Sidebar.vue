@@ -47,12 +47,12 @@ export default {
       this.isActive = false
     },
     close () {
-      this.$store.state.sidebarOpened = false
+      this.$store.commit('closeSidebar')
       this.translateX = 0
       this.isActive = false
     },
     open () {
-      this.$store.state.sidebarOpened = true
+      this.$store.commit('openSidebar')
       this.translateX = this.width
       this.isActive = false
     }
@@ -69,7 +69,9 @@ export default {
       }
     },
     mouseX () {
-      if (window.innerWidth >= 680) return
+      if (window.innerWidth >= 680) {
+        return
+      }
       if (this.isActive) {
         let offsetX = this.mouseX - this.mouseXStart
         offsetX = this.isOpened ? this.width + offsetX : offsetX
@@ -83,6 +85,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~@/styles/global.sass"
 .sidebar
   display: grid
   grid-template-rows: 60px 1fr
@@ -91,9 +94,9 @@ export default {
   height: 100vh
   background-color: white
   transition: all .1s linear
-  @media (min-width: 680px)
+  +mq(pc)
     grid-area: side
-  @media (max-width: 679px)
+  +mq(sp)
     width: 260px
     position: absolute
     z-index: 1000
@@ -101,8 +104,8 @@ export default {
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     padding-left: calc(env(safe-area-inset-left) - 7px)
     background-color: #3a4891
-@media (max-width: 679px)
-  .sidebar-overlay
+.sidebar-overlay
+  +mq(sp)
     position: fixed
     top: 0
     right: 0
@@ -113,7 +116,8 @@ export default {
     background-color: rgba(0,0,0,0.2)
     opacity: 0
     transition: opacity .5s
-  .slide-trigger
+.slide-trigger
+  +mq(sp)
     position: absolute
     top: 0
     right: 0

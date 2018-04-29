@@ -44,6 +44,8 @@ export default new Vuex.Store({
     channelData: [],
     channelMap: {},
     sidebarOpened: false,
+    stampPickerActive: false,
+    stampPickerModel: null,
     memberData: [],
     memberMap: {},
     tagData: [],
@@ -56,6 +58,7 @@ export default new Vuex.Store({
     clipedMessages: {},
     unreadMessages: {},
     staredChannels: [],
+    staredChannelMap: {},
     messages: [],
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
@@ -72,8 +75,20 @@ export default new Vuex.Store({
     editing: false
   },
   mutations: {
-    toggleSidebar (state) {
-      state.sidebarOpened = !state.sidebarOpened
+    setStampPickerModel (state, model) {
+      state.stampPickerModel = model
+    },
+    activeStampPicker (state) {
+      state.stampPickerActive = true
+    },
+    inactiveStampPicker (state) {
+      state.stampPickerActive = false
+    },
+    openSidebar (state) {
+      state.sidebarOpened = true
+    },
+    closeSidebar (state) {
+      state.sidebarOpened = false
     },
     setMe (state, me) {
       state.me = me
@@ -179,6 +194,11 @@ export default new Vuex.Store({
     },
     setStaredChannelsData (state, data) {
       state.staredChannels = data
+      state.staredChannels.sort(stringSortGen('name'))
+      state.staredChannelMap = {}
+      state.staredChannels.forEach(channel => {
+        state.staredChannelMap[channel.channelId] = channel
+      })
     },
     updateHeartbeatStatus (state, data) {
       state.heartbeatStatus = data
@@ -244,7 +264,6 @@ export default new Vuex.Store({
     },
     setCurrentUserTags (state, tags) {
       tags = tags || []
-      tags.sort(stringSortGen('tag'))
       state.currentUserTags = tags
     },
     closeUserModal (state) {
@@ -255,6 +274,9 @@ export default new Vuex.Store({
     },
     setEditing (state, isEditing) {
       state.editing = isEditing
+    },
+    removeMessage (state, messageId) {
+      state.messages = state.messages.filter(message => message.messageId !== messageId)
     }
   },
   getters: {
@@ -395,11 +417,7 @@ export default new Vuex.Store({
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
-          if (state.unreadMessages[nowChannel.channelId] && Object.keys(state.unreadMessages[nowChannel.channelId]).length > 0) {
-            client.readMessages(
-              Object.keys(state.unreadMessages[nowChannel.channelId])
-            ).then(() => dispatch('updateUnreadMessages'))
-          }
+          client.readMessages(nowChannel.channelId)
           if (latest) {
             db.write('channelMessages', {channelId: nowChannel.channelId, data: messages})
           }

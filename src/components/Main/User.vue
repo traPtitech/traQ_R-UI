@@ -7,9 +7,8 @@ div.user
         div.user-modal-gradient
         div.user-modal-profile
           div.user-modal-dm(v-on:click="openDirectMessage")
-            div.user-modal-dm-icon
-              div.user-modal-dm-indicator(v-if="hasUnreadMessages")
-              div.fas.fa-envelope
+            div.user-modal-dm-indicator(v-if="hasUnreadMessages")
+            icon.user-modal-dm-icon-envelope(name="envelope" scale="1.5")
             div.user-modal-button
               | Direct Message
           hr
@@ -22,25 +21,19 @@ div.user
         div.user-modal-detail.user-modal-tag
           div.user-modal-tag-element(v-for="(tag, index) in tags")
             div.user-modal-icon--gray.user-modal-tag-icon
-              div.fas.fa-tag
+              icon(name="tag")
             div.user-modal-tag-body(v-on:click="openTagModal(tag.tagId)")
               | {{tag.tag}}
             div.user-modal-tag-status-icon(v-if="tag.editable")
-              div.user-modal-icon--gray(v-show="hasAuth && !tag.isLocked" v-on:click="lockTag(index)")
-                i.fas.fa-lock-open
-              div.user-modal-icon--gray(v-show="!tag.isLocked" v-on:click="eraseTag(index)")
-                i.fas.fa-times
-              div.user-modal-icon--gray(v-show="hasAuth && tag.isLocked" v-on:click="unlockTag(index)")
-                i.fas.fa-lock
-              div.user-modal-icon--gray.non-clickable(v-show="!hasAuth && tag.isLocked")
-                i.fas.fa-lock
+              icon.user-modal-icon--gray(name="lock-open" v-show="hasAuth && !tag.isLocked" v-on:click="lockTag(index)")
+              icon.user-modal-icon--gray(name="times" v-show="!tag.isLocked" v-on:click="eraseTag(index)")
+              icon.user-modal-icon--gray(name="lock" v-show="hasAuth && tag.isLocked" v-on:click="unlockTag(index)")
+              icon.user-modal-icon--gray.non-clickable(name="lock" v-show="!hasAuth && tag.isLocked")
         div.user-modal-detail-input-container
           div.user-modal-detail-input
-            div.user-modal-icon--gray.user-modal-tag-icon(:style="detailInputIconStyle")
-              div.fas.fa-tag
+            icon.user-modal-icon--gray.user-modal-tag-icon(name="tag" :style="detailInputIconStyle")
             input.user-modal-tag-body(v-model="tagInput" v-on:keydown="keydown" placeholder="タグを追加……")
-            div.user-modal-icon--gray.user-modal-plus-icon(v-on:click="addTag" :style="detailInputIconStyle")
-              i.fas.fa-plus
+            icon.user-modal-icon--gray.user-modal-plus-icon(name="plus" v-on:click="addTag" :style="detailInputIconStyle")
 </template>
 
 <script>
@@ -144,6 +137,9 @@ export default {
 $modal-height: 600px
 $modal-max-height: 90vh
 
+.user .modal
+  width: 80%
+
 .user-modal
   display: grid
   height: $modal-height
@@ -195,17 +191,16 @@ $modal-max-height: 90vh
           font-size: 1.75rem
         @media (orientation: portrait)
           font-size: 1.25rem
-        .user-modal-dm-icon
-          .fa-envelope
-            margin-right: 1em
-          .user-modal-dm-indicator
-            $indicator-size: 0.4em
-            position: absolute
-            height: $indicator-size
-            width: $indicator-size
-            transform: translate(calc(-#{$indicator-size} / 2), calc(-#{$indicator-size} / 6))
-            border-radius: 50%
-            background: #EB5757
+        .user-modal-dm-icon-envelope
+          margin-right: 0.75em
+        .user-modal-dm-indicator
+          $indicator-size: 0.4em
+          position: absolute
+          height: $indicator-size
+          width: $indicator-size
+          transform: translate(calc(-#{$indicator-size} / 2), calc(-#{$indicator-size} / 6))
+          border-radius: 50%
+          background: #EB5757
       hr
         width: 100%
       .user-modal-display-name

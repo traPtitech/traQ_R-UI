@@ -7,7 +7,6 @@ div.tag
         | 「{{model.tag}}」 がつけられているユーザー
       div.tag-user-list
         MemberElement.tag-user-element(v-for="member in model.users" :model="member" :key="member.userId")
-
 </template>
 <script>
 import ModalHeaderCenterAligned from '@/components/Util/ModalHeaderCenterAligned'

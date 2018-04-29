@@ -121,6 +121,11 @@ const client = {
       return axios.delete(`/api/1.0/pin/${pinId}`)
     })
   },
+  reportMessage (messageId, reason) {
+    return middleWare('reportMessage', () => {
+      return axios.post(`/api/1.0/messages/${messageId}/report`, {reason})
+    })
+  },
 
   // Tag: notification
   getNotifications (channelId) {
@@ -271,12 +276,12 @@ const client = {
   },
   starChannel (channelId) {
     return middleWare('starChannel', () => {
-      return axios.post(`/api/1.0/users/me/stars`, {channelId})
+      return axios.put(`/api/1.0/users/me/stars/${channelId}`)
     })
   },
   unstarChannel (channelId) {
     return middleWare('unstarChannel', () => {
-      return axios.delete(`/api/1.0/users/me/stars`, {channelId})
+      return axios.delete(`/api/1.0/users/me/stars/${channelId}`)
     })
   },
 
@@ -298,11 +303,9 @@ const client = {
       return axios.get(`/api/1.0/users/me/unread`)
     })
   },
-  readMessages (messageIds) {
+  readMessages (channelId) {
     return middleWare('readMessages', () => {
-      return axios.delete(`/api/1.0/users/me/unread`, {
-        data: messageIds
-      })
+      return axios.delete(`/api/1.0/users/me/unread/${channelId}`)
     })
   },
 

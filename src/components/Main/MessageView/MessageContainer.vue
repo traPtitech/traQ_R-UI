@@ -4,8 +4,8 @@ content.content-wrap(@scroll="checkLoad")
     li.no-more-message(v-if="noMoreMessage")
       | これ以上メッセージはありません
     li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
-      time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].datetime) !== date(message.datetime)")
-        | {{date(message.datetime)}}
+      time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].createdAt) !== date(message.createdAt)")
+        | {{date(message.createdAt)}}
       MessageElement(:model="message")
 </template>
 
