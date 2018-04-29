@@ -4,7 +4,7 @@ div.stamp-picker
     modal(:active="active" @close="closeStampPicker")
       div.stamp-picker-container
         div.stamp-picker-header
-          input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder" v-focus)
+          input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
           div.stamp-picker-search-icon
             icon(name="search")
         div.stamp-picker-body
@@ -25,13 +25,6 @@ import client from '@/bin/client'
 export default {
   name: 'StampPicker',
   props: {
-  },
-  directives: {
-    focus: {
-      inserted: function (el) {
-        el.focus()
-      }
-    }
   },
   created () {
     this.searchPlaceHolder = this.defaultString
@@ -93,7 +86,6 @@ export default {
   transform: translateY(100%)
 .stamp-picker-enter-active, .stamp-picker-leave-active
 .stamp-picker-header
-  // height: 40px
   background: $primary-color
   position: relative
 .stamp-picker-search
