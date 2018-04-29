@@ -1,44 +1,44 @@
 <template lang="pug">
-div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported")
+div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported")
   div.message-user-icon-wrap
-    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" v-on:click="openUserModal(model.userId)")
+    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" @click="openUserModal(model.userId)")
   div.message-detail-wrap
-    div.message-user-name(v-on:click="openUserModal(model.userId)")
+    div.message-user-name(@click="openUserModal(model.userId)")
       | {{getUserName(model.userId)}}
-      //- p.message-user-id(v-on:click="openUserModal(model.userId)")
+      //- p.message-user-id(@click="openUserModal(model.userId)")
       //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
       | {{displayDateTime}}
     ul.message-buttons-wrap
-      li(v-if="model.userId === $store.getters.getMyId" v-on:click="editMessage")
+      li(v-if="model.userId === $store.getters.getMyId" @click="editMessage")
         icon(name="edit")
-      li(v-if="model.userId === $store.getters.getMyId" v-on:click="deleteMessage")
+      li(v-if="model.userId === $store.getters.getMyId" @click="deleteMessage")
         icon(name="trash-alt")
-      li.button-pushed(v-on:click="unpinMessage" v-if="pinned")
+      li.button-pushed(@click="unpinMessage" v-if="pinned")
         icon(name="thumbtack")
-      li(v-on:click="pinMessage" v-else)
+      li(@click="pinMessage" v-else)
         icon(name="thumbtack")
-      li(v-on:click="clipMessage")
+      li(@click="clipMessage")
         icon(name="paperclip")
-      li(v-on:click="copyMessage" v-if="!isDirectMessage")
+      li(@click="copyMessage" v-if="!isDirectMessage")
         icon(name="copy")
-      li(v-on:click="reportMessage")
+      li(@click="reportMessage")
         icon(name="ban")
   div.message-contents-wrap
     div.message-text-wrap
-      component(v-if="!isEditing" v-bind:is="renderedText" v-bind="$props")
+      component(v-if="!isEditing" :is="renderedText" v-bind="$props")
       div(v-if="isEditing")
         textarea.input-reset.edit-area(v-model="edited")
-        button.edit-button.edit-cancel(v-on:click.stop="editCancel" )
+        button.edit-button.edit-cancel(@click.stop="editCancel" )
           | Cancel
-        button.edit-button.edit-submit(v-on:click.stop="editSubmit" )
+        button.edit-button.edit-submit(@click.stop="editSubmit" )
           | Edit
     div.message-messages-wrap
       div.attached-message(v-for="m in messages")
-        img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`" v-on:click="openUserModal(m.userId)")
-        p.message-user-name(v-on:click="openUserModal(m.userId)")
+        img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`" @click="openUserModal(m.userId)")
+        p.message-user-name(@click="openUserModal(m.userId)")
           | {{getUserName(m.userId)}}
-        component(v-bind:is="mark(m.content)" v-bind="$props")
+        component(:is="mark(m.content)" v-bind="$props")
         small
           | from
           router-link(:to="parentChannel(m.parentChannelId).to")
@@ -57,14 +57,12 @@ div.message(ontouchstart="" v-bind:class="{'message-pinned':pinned}" @click="$em
           small
             | {{encodeByte(file.size)}}
     div.message-actions-wrap
-      div.message-stamps-wrap(v-bind:class="{'has-stamps':stamps.length>0}")
-        div(v-for="stamp in stamps")
-          div(v-on:click="toggleStamp(stamp.stampId)" :title="stamp.title")
-            i.emoji(:style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${stamp.fileId});`")
-              | {{stamp.name}}
-            p
-              | {{stamp.sum}}
-        StampButton.message-stamp-button(:model="{messageId: model.messageId}")
+      transition-group.message-stamps-wrap(name="slide-in" :class="{'has-stamps':stamps.length>0}")
+        div.stamp-container(:key="stamp.stampId" v-for="stamp in stamps" @click="toggleStamp(stamp.stampId)" :title="stamp.title" :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
+          div.emoji(:style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${stamp.fileId});`")
+          p.stamp-number
+            | {{stamp.sum}}
+        StampButton.message-stamp-button(key="stampbutton" :model="{messageId: model.messageId}")
 </template>
 
 <script>
@@ -187,11 +185,14 @@ export default {
       }))).filter(e => e)
     },
     toggleStamp (stampId) {
-      if (this.stamps.find(e => e.stampId === stampId).user.find(e => e.userId === this.$store.state.me.userId)) {
+      if (this.isContainSelfStamp(stampId)) {
         client.unstampMessage(this.model.messageId, stampId)
       } else {
         client.stampMessage(this.model.messageId, stampId)
       }
+    },
+    isContainSelfStamp (stampId) {
+      return this.stamps.find(e => e.stampId === stampId).user.find(e => e.userId === this.$store.state.me.userId)
     },
     encodeByte (byte) {
       const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
@@ -451,6 +452,7 @@ export default {
 .message-stamps-wrap
   display: flex
   flex-wrap: wrap
+  align-items: center
   justify-content: flex-start
 .message-user-link
   cursor: pointer
@@ -475,8 +477,30 @@ export default {
   cursor: pointer
   .message-item:hover &
     opacity: 1
-  .has-stamps &
-    opacity: 1
+.stamp-container
+  display: inline-flex
+  align-items: center
+  background: rgba(97, 97, 97, 0.1)
+  color: rgba(84, 84, 84, 0.77)
+  padding: 2px 5px
+  border-radius: 3px
+  margin: 2px
+  user-select: none
+  transition: all .2s ease
+  cursor: pointer
+  &.stamp-pressed
+    background: rgb(202, 206, 228)
+    color: #2f2f2f
+.slide-in
+  &-enter-active, &-leave-active
+    transition: all .3s ease
+  &-enter, &-leave-active
+    position: absolute
+    transfrom: translateY(10px)
+    opacity: 0
+.stamp-number
+  font-size: 13px
+  margin: 0 3px
 .emoji
   display: inline-block
   text-indent: 999%
