@@ -11,7 +11,7 @@ self.addEventListener('notificationclick', function (event) {
           return client.postMessage(data)
         })
       } else {
-        return clients.openWindow(clients.origin + event.notification.data.path)
+        return clients.openWindow(event.notification.data.path)
       }
     })
     )
