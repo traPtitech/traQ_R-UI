@@ -152,8 +152,8 @@ export default {
       sse.on('MESSAGE_READ', () => this.$store.dispatch('updateUnreadMessages'))
       sse.on('MESSAGE_STAMPED', (data) => this.$store.commit('updateMessageStamp', data))
       sse.on('MESSAGE_UNSTAMPED', (data) => this.$store.commit('deleteMessageStamp', data))
-      sse.on('MESSAGE_PINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
-      sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+      sse.on('MESSAGE_PINNED', () => this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+      sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
       sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
       sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
       sse.on('STAMP_CREATED', () => this.$store.dispatch('updateStamps'))
@@ -214,9 +214,11 @@ export default {
         .then(res => {
           this.$store.commit('updateMessage', res.data)
         })
+      this.$store.dispatch('checkPinnedMessage', data.id)
     },
     messageDeleted (data) {
       this.$store.commit('deleteMessage', data.id)
+      this.$store.dispatch('checkPinnedMessage', data.id)
     },
     userIconUpdated (data) {
       console.log(data)
