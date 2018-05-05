@@ -31,20 +31,22 @@ div.user
                   div.user-modal-online-status-detail
                     | Last: 10/10 20:20
               div.user-modal-links
-                div.user-modal-link-content
+                a.user-modal-link-content(:href="wikiUserPageUrl")
                   icon(name="book")
                   div.user-modal-link-description Wiki Page
-                div.user-modal-link-content
+                a.user-modal-link-content(:href="twitterProfileUrl" :style="twitterLinkStyle")
                   icon(name="brands/twitter")
-                  div.user-modal-link-description @twitter
+                  div.user-modal-link-description(v-if="twitterProfileUrl") @{{ model.twitterId }}
             div.user-modal-name-container(v-else)
               div.user-modal-online-indicator(:style="onlineIndicatorStyle")
               div.user-modal-name
                 | @{{model.name}}
               div.user-modal-online-status(v-if="expandProfile")
                 | Online
-              icon(name="book")
-              icon(name="brands/twitter")
+              a(:href="wikiUserPageUrl")
+                icon(name="book")
+              a(:href="twitterProfileUrl")
+                icon(name="brands/twitter" :style="twitterLinkStyle")
       div.user-modal-detail-container
         ModalHeaderCenterAligned(title="TAGS" faIconName="tags")
         div.user-modal-detail.user-modal-tag
@@ -154,6 +156,12 @@ export default {
       }
       return false
     },
+    wikiUserPageUrl () {
+      return `https://wiki.trapti.tech/user/${this.model.name}`
+    },
+    twitterProfileUrl () {
+      return this.model.twitterId !== '' ? `https://twitter.com/${this.model.twitterId}` : null
+    },
     profileContainerStyle () {
       return {
         backgroundImage: `url(${this.$store.state.baseURL}/api/1.0/users/${this.model.userId}/icon)`
@@ -168,6 +176,11 @@ export default {
         return {
           border: '1px solid lightgray'
         }
+      }
+    },
+    twitterLinkStyle () {
+      return {
+        color: this.twitterProfileUrl ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.5)'
       }
     },
     detailInputIconStyle () {
@@ -290,6 +303,9 @@ $profile-area-height: 40vh
         align-items: center
         margin-left: 0.2rem
         grid-template-columns: 1.5rem max-content 2rem 2rem
+        a
+          margin-top: 0.3rem
+          color: rgba(255, 255, 255, 1.0)
       .user-modal-name-container-expand
         .user-modal-online-status
           display: grid
@@ -311,6 +327,7 @@ $profile-area-height: 40vh
             grid-template-columns: 1rem 1fr
             grid-gap: 0.5rem
             margin-right: 1rem
+            color: rgba(255, 255, 255, 1.0)
             .user-modal-link-description
               @media (max-width: 360px)
                 display: none
