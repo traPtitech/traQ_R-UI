@@ -2,20 +2,49 @@
 div.user
   modal(@close="closeModal" :active="active")
     div.user-modal
-      div.user-modal-profile-container
+      div.user-modal-main-container
         div.user-modal-img(:style="profileContainerStyle")
-        div.user-modal-gradient
-        div.user-modal-profile
+        div.user-modal-gradient(:style="gradientStyle")
+        div.user-modal-profile-container
           div.user-modal-dm(v-on:click="openDirectMessage")
             div.user-modal-dm-indicator(v-if="hasUnreadMessages")
             icon.user-modal-dm-icon-envelope(name="envelope" scale="1.5")
             div.user-modal-button
               | Direct Message
           hr
-          div.user-modal-display-name
-            | {{model.displayName}}
-          div.user-modal-name
-            | @{{model.name}}
+          div.user-modal-profile(v-on:click="toggleExpandProfile")
+            div.user-modal-display-name
+              | {{model.displayName}}
+            div.user-modal-real-name-container
+              div.user-modal-real-name
+                | Real Name
+              div.user-modal-grade
+                | 16B
+            div.user-modal-name-container-expand(v-if="expandProfile")
+              div.user-modal-name
+                | @{{model.name}}
+              div.user-modal-online-status
+                div.user-modal-online-indicator(:style="onlineIndicatorStyle")
+                div
+                  div.user-modal-online-status-abstract
+                    | Online
+                  div.user-modal-online-status-detail
+                    | Last: 10/10 20:20
+              div.user-modal-links
+                div.user-modal-link-content
+                  icon(name="book")
+                  div.user-modal-link-description Wiki Page
+                div.user-modal-link-content
+                  icon(name="brands/twitter")
+                  div.user-modal-link-description @twitter
+            div.user-modal-name-container(v-else)
+              div.user-modal-online-indicator(:style="onlineIndicatorStyle")
+              div.user-modal-name
+                | @{{model.name}}
+              div.user-modal-online-status(v-if="expandProfile")
+                | Online
+              icon(name="book")
+              icon(name="brands/twitter")
       div.user-modal-detail-container
         ModalHeaderCenterAligned(title="TAGS" faIconName="tags")
         div.user-modal-detail.user-modal-tag
@@ -46,12 +75,14 @@ export default {
   },
   data () {
     return {
-      tagInput: ''
+      tagInput: '',
+      expandProfile: false
     }
   },
   methods: {
     closeModal () {
       this.$store.commit('closeUserModal')
+      this.expandProfile = false
     },
     openTagModal (tagId) {
       this.$store.dispatch('openTagModal', tagId)
@@ -83,6 +114,9 @@ export default {
     openDirectMessage () {
       this.$router.push(`/users/${this.model.name}`)
       this.closeModal()
+    },
+    toggleExpandProfile () {
+      this.expandProfile = !this.expandProfile
     }
   },
   computed: {
@@ -125,9 +159,25 @@ export default {
         backgroundImage: `url(${this.$store.state.baseURL}/api/1.0/users/${this.model.userId}/icon)`
       }
     },
+    onlineIndicatorStyle () {
+      if (true) {
+        return {
+          backgroundColor: '#27ae60'
+        }
+      } else {
+        return {
+          border: '1px solid lightgray'
+        }
+      }
+    },
     detailInputIconStyle () {
       return {
         color: this.tagInput.length > 0 ? 'gray' : 'lightgray'
+      }
+    },
+    gradientStyle () {
+      return {
+        background: `linear-gradient(180deg, rgba(156, 178, 203, 0.38674) 0%, #003778 100%)`
       }
     }
   }
@@ -136,6 +186,8 @@ export default {
 <style lang="sass">
 $modal-height: 600px
 $modal-max-height: 90vh
+$modal-min-height: 70vh
+$profile-area-height: 40vh
 
 .user .modal
   width: 80%
@@ -144,14 +196,15 @@ $modal-max-height: 90vh
   display: grid
   height: $modal-height
   max-height: $modal-max-height
+  min-height: $modal-min-height
   @media (orientation: landscape)
     grid-template-columns: minmax(200px, auto) 55%
     grid-template-areas: "profile detail"
   @media (orientation: portrait)
-    grid-template-rows: 40vh calc(100% - 40vh)
+    grid-template-rows: $profile-area-height calc(100% - #{$profile-area-height})
     grid-template-areas: "profile""detail"
 
-  .user-modal-profile-container
+  .user-modal-main-container
     grid-area: profile
     position: relative
     display: flex
@@ -172,10 +225,13 @@ $modal-max-height: 90vh
       width: 100%
       height: 100%
       z-index: -1
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(156, 178, 203, 0.38674) 0.01%, #003778 99.45%);
-    .user-modal-profile
+      transition: all ease 0.3s
+    .user-modal-profile-container
       display: grid
-      grid-template-rows: 1fr 1.5rem auto auto
+      @media (orientation: landscape)
+        grid-template-rows: 1fr 2rem auto
+      @media (orientation: portrait)
+        grid-template-rows: unset
       height: calc(100% - 5rem)
       width: calc(100% - 4rem)
       flex-direction: column
@@ -187,10 +243,12 @@ $modal-max-height: 90vh
         align-self: center
         height: 100%
         cursor: pointer
-        @media (orientation: landscape)
+        @media (min-width: 680px)
           font-size: 1.75rem
+        @media (max-width: 679px)
+          font-size: 1.2rem
         @media (orientation: portrait)
-          font-size: 1.25rem
+          display: none
         .user-modal-dm-icon-envelope
           margin-right: 0.75em
         .user-modal-dm-indicator
@@ -203,11 +261,69 @@ $modal-max-height: 90vh
           background: #EB5757
       hr
         width: 100%
+        @media (orientation: portrait)
+          display: none
+      .user-modal-profile
+        display: flex
+        flex-direction: column
+        justify-content: flex-end
+        margin-bottom: 0.5rem
       .user-modal-display-name
         font-size: 2rem
         margin: 0.2rem 0px
+      .user-modal-real-name-container
+        display: flex
+        align-items: center
+        margin: 0.3rem 0px 0.6rem 0.2rem
+        .user-modal-real-name
+          margin-right: 1rem
+        .user-modal-grade
+          display: flex
+          align-items: center
+          justify-content: center
+          font-size: 0.9rem
+          height: 1.3rem
+          width: 2.5rem
+          border: 1px solid white
+      .user-modal-name-container
+        display: grid
+        align-items: center
+        margin-left: 0.2rem
+        grid-template-columns: 1.5rem max-content 2rem 2rem
+      .user-modal-name-container-expand
+        .user-modal-online-status
+          display: grid
+          align-items: center
+          margin: 0.6rem 0px 0px 0.2rem
+          grid-template-columns: 1.5rem 1fr
+          .user-modal-online-status-abstract
+            display: inline-block
+            margin-right: 0.5rem
+          .user-modal-online-status-detail
+            display: inline-block
+            font-size: 0.8rem
+            color: rgba(255, 255, 255, 0.7)
+        .user-modal-links
+          margin-top: 1.2rem
+          display: flex
+          .user-modal-link-content
+            display: grid
+            grid-template-columns: 1rem 1fr
+            grid-gap: 0.5rem
+            margin-right: 1rem
+            .user-modal-link-description
+              @media (max-width: 360px)
+                display: none
+
+      // shared within user-modal-name-container and user-modal-name-container-expand
+      .user-modal-online-indicator
+        width: 0.6rem
+        height: 0.6rem
+        border-radius: 50%
       .user-modal-name
         font-size: 1.2rem
+        margin-right: 2rem
+        margin-bottom: 0.1rem
 
   .user-modal-detail-container
     $header-height: 5rem
