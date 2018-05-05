@@ -43,6 +43,8 @@ div
     input(v-model="stampName")
     button(v-if="stampFile && stampName.length > 0" v-on:click="addStamp")
       | 追加
+  button(@click="back")
+    | 戻る
 </template>
 
 <script>
@@ -168,6 +170,13 @@ export default {
         this.stampFile = null
         this.stampName = ''
       })
+    },
+    back () {
+      if (this.$store.state.currentChannel['channelId']) {
+        this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.$store.state.currentChannel.channelId)}`)
+      } else {
+        this.$router.push('/channels/random')
+      }
     }
   },
   computed: {
