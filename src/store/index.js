@@ -224,14 +224,16 @@ export default new Vuex.Store({
             message.stampList.push({
               userId: data.user_id,
               stampId: data.stamp_id,
-              count: data.count
+              count: data.count,
+              createdAt: data.created_at
             })
           }
         } else {
           message.stampList = [{
             userId: data.user_id,
             stampId: data.stamp_id,
-            count: data.count
+            count: data.count,
+            createdAt: data.created_at
           }]
         }
         Vue.set(state.messages, index, message)
