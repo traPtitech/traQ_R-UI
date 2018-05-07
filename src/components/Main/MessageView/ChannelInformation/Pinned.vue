@@ -2,7 +2,7 @@
 div.channel-pinned
   div(@click="showModal")
     icon(name="thumbtack")
-  ChannelInformationModal(title="ピン" @close="active = false" :active="active")
+  ChannelInformationModal(title="ピン" @close="closeModal" :active="isActive")
     ul(v-if="isActiveChannel")
       li(v-for="pin in $store.state.currentChannelPinnedMessages")
         MessageElement(:model="pin.message" :key="pin.pinId")
@@ -14,12 +14,14 @@ export default {
   name: 'Pinned',
   data () {
     return {
-      active: false
     }
   },
   methods: {
     showModal () {
-      this.active = true
+      this.$store.commit('setPinnedModal', true)
+    },
+    closeModal () {
+      this.$store.commit('setPinnedModal', false)
     }
   },
   components: {
@@ -29,6 +31,9 @@ export default {
   computed: {
     isActiveChannel () {
       return this.$store.state.currentChannel.channelId !== this.$store.state.directMessageId
+    },
+    isActive () {
+      return this.$store.state.isActivePinnedModal
     }
   }
 }

@@ -95,6 +95,8 @@ router.beforeEach(async (to, from, next) => {
     ])
   }
 
+  store.commit('setPinnedModal', false)
+
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)
     if (nextUser) {

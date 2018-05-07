@@ -72,7 +72,8 @@ export default new Vuex.Store({
     tagModal: null,
     currentUserTags: [],
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
-    editing: false
+    editing: false,
+    isActivePinnedModal: false
   },
   mutations: {
     setStampPickerModel (state, model) {
@@ -313,6 +314,9 @@ export default new Vuex.Store({
     },
     removeMessage (state, messageId) {
       state.messages = state.messages.filter(message => message.messageId !== messageId)
+    },
+    setPinnedModal (state, isActive) {
+      state.isActivePinnedModal = isActive
     }
   },
   getters: {
