@@ -336,13 +336,7 @@ export default {
       })
       const stamps = Object.values(map)
       stamps.sort((lhs, rhs) => {
-        if (lhs.createdAt < rhs.createdAt) {
-          return -1
-        } else if (lhs.createdAt > rhs.createdAt) {
-          return 1
-        } else {
-          return 0
-        }
+        return new Date(lhs.createdAt).getTime() - new Date(rhs.createdAt).getTime()
       })
       return stamps
     },
@@ -450,10 +444,9 @@ export default {
   & li.button-pushed
     color: #4263da
 .message-stamps-wrap
-  display: flex
-  flex-wrap: wrap
-  align-items: center
-  justify-content: flex-start
+  display: inline-block
+  // flex-wrap: wrap
+  // align-items: center
 .message-user-link
   cursor: pointer
   color: #005BAC
@@ -468,6 +461,7 @@ export default {
 .message-tag-link-highlight
   background-color: #FAFFAD
 .message-stamp-button
+  display: inline-block
   margin: 0 5px 0
   color: #797979
   width: 16px
@@ -494,10 +488,12 @@ export default {
 .slide-in
   &-enter-active, &-leave-active
     transition: all .3s ease
-  &-enter, &-leave-active
-    position: absolute
-    transfrom: translateY(10px)
+    transform: translateY(0)
+  &-enter, &-leave-to
+    transform: translateY(10px)
     opacity: 0
+  &-leave-active
+    position: absolute
 .stamp-number
   font-size: 13px
   margin: 0 3px

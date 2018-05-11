@@ -6,12 +6,12 @@ self.addEventListener('notificationclick', function (event) {
         return clientsArr[0].focus().then(function (client) {
           const data = {
             type: 'navigate',
-            to: event.notification.data.channel_path
+            to: event.notification.data.path
           }
           return client.postMessage(data)
         })
       } else {
-        return clients.openWindow(event.notification.data.click_action)
+        return clients.openWindow(event.notification.data.path)
       }
     })
     )

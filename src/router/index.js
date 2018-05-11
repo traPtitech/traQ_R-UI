@@ -95,13 +95,17 @@ router.beforeEach(async (to, from, next) => {
     ])
   }
 
+  store.commit('setPinnedModal', false)
+
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)
     if (nextUser) {
       if (nextUser.name === store.state.me.name && store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.length === 1).length > 0) {
         store.commit('changeChannel', store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.length === 1)[0])
+        store.dispatch('getCurrentChannelPinnedMessages', store.state.currentChannel.channelId)
       } else if (nextUser.name !== store.state.me.name && store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.includes(nextUser.userId)).length > 0) {
         store.commit('changeChannel', store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.includes(nextUser.userId))[0])
+        store.dispatch('getCurrentChannelPinnedMessages', store.state.currentChannel.channelId)
       } else {
         const member = [nextUser.userId]
         if (store.state.me.userId !== nextUser.userId) {
@@ -115,6 +119,7 @@ router.beforeEach(async (to, from, next) => {
           member: member,
           visibility: false
         })
+        store.commit('setCurrentChannelPinnedMessages', [])
       }
       store.dispatch('getMessages')
       .then(() => {
