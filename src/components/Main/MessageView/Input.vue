@@ -1,5 +1,5 @@
 <template lang="pug">
-div.input-ui
+div.input-ui(:class="{'input-focused':focused}")
   input.upload-button(id="upload" style="display:none" type="file" @change="addFiles")
   div.upload-button.flex-center(@click="clickUploadButton")
     icon(name="file")
@@ -7,7 +7,7 @@ div.input-ui
     icon(name="angle-right")
   div.input-area-wrapper(@drom="dropFile")
     p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
-    textarea.input-area(id="messageInput" @blur="inputBlur()" @focus="inputFocus()" v-model="inputText" @keydown="keydown" @click="clearKey" v-bind:class="{'input-area-opened': isOpened}" ref="inputArea" placeholder="進捗どうですか")
+    textarea.input-area(id="messageInput" @focus="inputFocus()" @blur="inputBlur()" v-model="inputText" @keydown="keydown" @click="clearKey" ref="inputArea" placeholder="進捗どうですか")
     div(v-for="(file, index) in files" @click="removeFile(index)")
       | {{ file.name }}
 </template>
@@ -21,7 +21,7 @@ export default {
   name: 'Input',
   data () {
     return {
-      isOpened: false,
+      focused: false,
       inputText: '',
       // postStatus: {'default', 'processing', 'successed', 'failed'}
       postStatus: 'default',
@@ -47,24 +47,12 @@ export default {
     })
   },
   methods: {
-    focus () {
-      if (!this.isOpened) {
-        return
-      }
-      this.$nextTick(() => {
-        this.$refs.inputArea.focus()
-      })
-    },
     inputFocus () {
+      this.focused = true
       this.$store.commit('setEditing', true)
     },
     inputBlur () {
-      setTimeout(_ => {
-        if (this.inputText === '' && this.files.length === 0) {
-          this.isOpened = false
-        }
-      }, 200)
-      this.$store.commit('setEditing', false)
+      this.focused = false
     },
     submit () {
       if (this.inputText === '' && this.files.length === 0) {
@@ -317,15 +305,44 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~@/styles/global.sass"
 .input-ui > *
   pointer-events: auto
 .input-ui
   grid-area: input
-  position: relative
+  position: absolute
   width: 100%
-  height: 100%
   bottom: 0
   pointer-events: none
+  &:before
+    content: ''
+    position: absolute
+    z-index: 10
+    top: 0
+    right: 0
+    left: 0
+    margin: auto
+    display: block
+    width: calc( 100% - 20px )
+    height: 1px
+    background-color: $border-color
+    transition: background-color .3s ease
+  &:after
+    content: ''
+    position: absolute
+    z-index: 10
+    top: 0
+    right: 0
+    left: 0
+    margin: auto
+    display: block
+    width: 0
+    height: 1px
+    background-color: $primary-color
+    transition: width .3s ease
+  &.input-focused:after
+    width: calc( 100% - 20px )
+    
 .upload-button, .submit-button
   position: absolute
   z-index: 200
@@ -339,35 +356,42 @@ export default {
   right: 5px
 .input-area-wrapper
   width: 100%
-  min-height: 60px
+  min-height: 50px
   max-height: 150px
   overflow-x: hidden
   overflow-y: scroll
-  position: absolute
+  position: relative
   right: 0
   left: 0
-  bottom: 0
+  // bottom: 0
+  // border-top: solid 1px $border-color
+  margin: auto
 .input-area
   box-sizing: border-box
   z-index: 100
   width: 100%
-  height: 60px
+  height: 50px
   margin: 0
   background: none
   resize: none
   -webkit-appearance: none
-  padding: 10px 60px 10px
+  padding: 15px 45px
   font-size: 1em
   cursor: text
   border: 0
   line-height: 1em
   animation: openInputArea 1s ease
   background-color: #f9f9f9
+  caret-color: $text-color
   /*transition: all .3s ease-in-out*/
-.input-area:focus
-  outline: 0
-.input-area::placeholder
-  color: rgba(0, 0, 0, 0.5)
+  &:focus
+    outline: 0
+  &::placeholder
+    color: rgba(0, 0, 0, 0.5)
+    transition: all .3s ease
+  &:focus::placeholder
+    transform: translateY(-10px)
+    opacity: 0
 .input-area-opened
 @keyframes openInputArea
   0%
@@ -394,24 +418,8 @@ export default {
   cursor: pointer
   &:hover
     box-shadow: 0 0 5px rgba(112, 112, 112, 1)
-.input-appeared
-  animation: input-background-appeared 1s ease
 .input-background-gradation
   background: linear-gradient(95deg,#00E1FF,#e22af9)
-  // animation: input-background-gradient 20s ease infinite
-  // background-size: 200% 100%
-// @keyframes input-background-gradient
-//   0%
-//     background-position: 0% 50%
-//   50%
-//     background-position: 100% 50%
-//   100%
-//     background-position: 0% 50%
-@keyframes input-background-appeared
-  0%
-    bottom: 10px
-  100%
-    bottom: 20px
 .input-background-opened
   width: 100%
   max-width: 100%

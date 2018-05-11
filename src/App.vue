@@ -32,10 +32,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~normalize.css"
-@import url("//fonts.googleapis.com/earlyaccess/mplus1p.css")
-@import url('https://fonts.googleapis.com/css?family=Oxygen+Mono')
-@import "highlight.js/styles/default.css"
 @import "~@/styles/global.sass"
 
 #app
@@ -59,7 +55,7 @@ code
   font-size: 0.9em
 ::selection
   color: white
-  background-color: #3a4891
+  background-color: $secondary-color
 // input, button, textarea, select
 .input-reset
   padding: 0

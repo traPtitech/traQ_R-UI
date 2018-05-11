@@ -267,11 +267,11 @@ export default {
   height: 100vh
   overflow: hidden
   +mq(pc)
-    grid-template-rows: 60px 1fr 60px
+    grid-template-rows: 60px 1fr 50px
     grid-template-columns: 260px 1fr 40px
     grid-template-areas: "side titlebar titlebar""side content information""side input information"
   +mq(sp)
-    grid-template-rows: 60px 1fr 60px
+    grid-template-rows: 60px 1fr 50px
     grid-template-columns: 1fr 40px
     grid-template-areas: "titlebar titlebar""content information""input information"
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
