@@ -1,15 +1,12 @@
 <template lang="pug">
-div.content-wrap(@scroll="checkLoad")
-  div.sticky-container.sticky
-    InputUI
-  content.message-wrap
-    ol.message-list
-      li.no-more-message(v-if="noMoreMessage")
-        | これ以上メッセージはありません
-      li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
-        time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].createdAt) !== date(message.createdAt)")
-          | {{date(message.createdAt)}}
-        MessageElement(:model="message")
+content.content-wrap(@scroll="checkLoad")
+  ol.message-list
+    li.no-more-message(v-if="noMoreMessage")
+      | これ以上メッセージはありません
+    li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
+      time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].createdAt) !== date(message.createdAt)")
+        | {{date(message.createdAt)}}
+      MessageElement(:model="message")
 </template>
 
 <script>
@@ -24,7 +21,6 @@ export default {
     }
   },
   components: {
-    'InputUI': window.asyncLoadComponents(import('@/components/Main/MessageView/InputUI')),
     'MessageElement': MessageElement
   },
   created () {
@@ -78,14 +74,15 @@ export default {
 <style lang="sass">
 .content-wrap
   grid-area: content
-  position: relative
+  // position: relative
   background-color: rgb(249, 249, 249)
-  overflow: scroll
+  overflow-x: hidden
+  overflow-y: scroll
+  min-width: 0
   -webkit-overflow-scrolling: touch
 .message-wrap
   width: 100%
   height: 100%
-  position: absolute
   z-index: 10
   top: 0
   left: 0
@@ -100,7 +97,6 @@ export default {
   margin: 15px 0
   text-align: center
 .message-item
-  overflow: hidden
 .date-partition
   display: inline-block
   width: 100%
@@ -121,5 +117,5 @@ export default {
   &:after
     right: 10px
 .message-list
-  padding: 0 0 60px
+  padding: 0
 </style>

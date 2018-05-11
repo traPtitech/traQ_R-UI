@@ -87,7 +87,6 @@ export default {
 <style lang="sass">
 @import "~@/styles/global.sass"
 .sidebar
-  grid-area: side
   display: grid
   grid-template-rows: 60px 1fr
   grid-template-columns: 50px 1fr
@@ -95,6 +94,8 @@ export default {
   height: 100vh
   background-color: white
   transition: all .1s linear
+  +mq(pc)
+    grid-area: side
   +mq(sp)
     width: 260px
     position: absolute
