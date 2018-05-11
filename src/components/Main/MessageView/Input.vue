@@ -7,7 +7,7 @@ div.input-ui(:class="{'input-focused':focused}")
     icon(name="angle-right")
   div.input-area-wrapper(@drom="dropFile")
     p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
-    textarea.input-area(id="messageInput" @focus="inputFocus()" @blur="inputBlur()" v-model="inputText" @keydown="keydown" @click="clearKey" ref="inputArea" placeholder="進捗どうですか")
+    textarea.input-area(id="messageInput" @focus="inputFocus()" @blur="inputBlur()" v-model="inputText" @keydown="keydown" @click="clearKey" ref="inputArea" :placeholder="`Message ${channelName}`")
     div(v-for="(file, index) in files" @click="removeFile(index)")
       | {{ file.name }}
 </template>
@@ -231,8 +231,7 @@ export default {
     replaceSuggest (index) {
       this.suggestMode = false
       this.suggestIndex = 0
-      const messageInput = document.getElementById('messageInput')
-      const startIndex = messageInput.selectionStart
+      const startIndex = this.messageInput.selectionStart
       const replaceSuffix = this.inputText.substr(startIndex)
       const prefixes = this.inputText.substr(0, startIndex).split(this.key.type)
       const lastSize = prefixes.pop().length + this.key.type.length
@@ -243,7 +242,7 @@ export default {
       const replace = this.suggests[index].start + this.suggests[index].replace + this.suggests[index].suffix
       this.inputText = replacePrefix + replace + replaceSuffix
       this.$nextTick(() => {
-        messageInput.selectionStart = messageInput.selectionEnd = startIndex - lastSize + replace.length
+        this.messageInput.selectionStart = this.messageInput.selectionEnd = startIndex - lastSize + replace.length
       })
       this.key = {
         keyword: '',
@@ -285,6 +284,11 @@ export default {
         return []
       }
       return suggest(this.key, this.limit)
+    },
+    channelName () {
+      if (this.$route.params.user) return `@${this.$route.params.user}`
+      if (!this.$route.params.channel) return ''
+      return `#${this.$store.state.currentChannel.name}`
     }
   },
   watch: {
@@ -297,8 +301,8 @@ export default {
     }
   },
   mounted () {
-    autosize(document.getElementById('messageInput'))
-    this.messageInput = document.getElementById('messageInput')
+    this.messageInput = this.$refs.inputArea
+    autosize(this.messageInput)
     this.uploadElem = document.getElementById('upload')
   }
 }
@@ -314,6 +318,7 @@ export default {
   width: 100%
   bottom: 0
   pointer-events: none
+  background-color: $background-color
   &:before
     content: ''
     position: absolute
@@ -342,7 +347,6 @@ export default {
     transition: width .3s ease
   &.input-focused:after
     width: calc( 100% - 20px )
-    
 .upload-button, .submit-button
   position: absolute
   z-index: 200
@@ -355,9 +359,7 @@ export default {
 .submit-button
   right: 5px
 .input-area-wrapper
-  width: 100%
-  min-height: 50px
-  max-height: 150px
+  width: 80%
   overflow-x: hidden
   overflow-y: scroll
   position: relative
@@ -371,19 +373,20 @@ export default {
   z-index: 100
   width: 100%
   height: 50px
+  min-height: 50px
+  max-height: 150px
   margin: 0
   background: none
   resize: none
   -webkit-appearance: none
-  padding: 15px 45px
+  padding: 15px 5px
   font-size: 1em
   cursor: text
   border: 0
   line-height: 1em
   animation: openInputArea 1s ease
-  background-color: #f9f9f9
   caret-color: $text-color
-  /*transition: all .3s ease-in-out*/
+  // transition: all .3s ease-in-out
   &:focus
     outline: 0
   &::placeholder
