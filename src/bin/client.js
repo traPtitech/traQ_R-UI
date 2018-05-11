@@ -178,6 +178,13 @@ const client = {
       })
     })
   },
+  changeTwitterId (twitterId) {
+    return middleWare('changeTwitterId', () => {
+      return axios.patch('/api/1.0/users/me', {
+        twitterId
+      })
+    })
+  },
   changeEmail (email, pass) {
     return middleWare('changeEmail', () => {
       return axios.patch('api/1.0/users/me', {

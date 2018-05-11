@@ -336,13 +336,7 @@ export default {
       })
       const stamps = Object.values(map)
       stamps.sort((lhs, rhs) => {
-        if (lhs.createdAt < rhs.createdAt) {
-          return -1
-        } else if (lhs.createdAt > rhs.createdAt) {
-          return 1
-        } else {
-          return 0
-        }
+        return new Date(lhs.createdAt).getTime() - new Date(rhs.createdAt).getTime()
       })
       return stamps
     },

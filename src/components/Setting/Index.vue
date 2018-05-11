@@ -11,6 +11,9 @@ div
       | 表示名
     input(v-model="displayName")
     p
+      | Twitter ID
+    input(v-model="twitterId")
+    p
       | メールアドレス
     input(v-model="email")
     p
@@ -40,6 +43,8 @@ div
     input(v-model="stampName")
     button(v-if="stampFile && stampName.length > 0" v-on:click="addStamp")
       | 追加
+  button(@click="back")
+    | 戻る
 </template>
 
 <script>
@@ -49,6 +54,7 @@ export default {
   data () {
     return {
       displayName: '',
+      twitterId: '',
       icon: null,
       email: '',
       newPassword: '',
@@ -86,7 +92,12 @@ export default {
           this.done += '表示名 '
         }))
       }
-      Promise.all(tasks).then(() => {
+      if (this.twitterId !== this.$store.state.me.twitterId) {
+        tasks.push(client.changeTwitterId(this.twitterId).then(() => {
+          this.done += 'Twitter ID '
+        }))
+      }
+      return Promise.all(tasks).then(() => {
         this.state = 'successed'
         this.$store.dispatch('whoAmI')
       }).catch(e => {
@@ -122,6 +133,11 @@ export default {
           this.done += '表示名 '
         }))
       }
+      if (this.twitterId !== this.$store.state.me.twitterId) {
+        tasks.push(client.changeTwitterId(this.twitterId).then(() => {
+          this.done += 'Twitter ID '
+        }))
+      }
       if (this.email !== '' && this.newPassword === '') {
         tasks.push(client.changeEmail(this.email, this.oldPassword).then(() => {
           this.done += 'メール '
@@ -135,7 +151,7 @@ export default {
           this.done += 'メール パスワード '
         }))
       }
-      Promise.all(tasks).then(() => {
+      return Promise.all(tasks).then(() => {
         this.email = ''
         this.oldPassword = ''
         this.newPassword = ''
@@ -154,6 +170,13 @@ export default {
         this.stampFile = null
         this.stampName = ''
       })
+    },
+    back () {
+      if (this.$store.state.currentChannel['channelId']) {
+        this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.$store.state.currentChannel.channelId)}`)
+      } else {
+        this.$router.push('/channels/random')
+      }
     }
   },
   computed: {
@@ -163,6 +186,7 @@ export default {
     isChanged () {
       if (this.icon) return true
       if (this.displayName !== this.$store.state.me.displayName) return true
+      if (this.twitterId !== this.$store.state.me.twitterId) return true
       if (this.email !== '') return true
       if (this.newPassword !== '') return true
       if (this.checkNewPassword !== '') return true
@@ -177,6 +201,7 @@ export default {
   },
   mounted () {
     this.displayName = this.$store.state.me.displayName
+    this.twitterId = this.$store.state.me.twitterId
   }
 }
 </script>

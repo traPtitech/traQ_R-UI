@@ -72,7 +72,8 @@ export default new Vuex.Store({
     tagModal: null,
     currentUserTags: [],
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
-    editing: false
+    editing: false,
+    isActivePinnedModal: false
   },
   mutations: {
     setStampPickerModel (state, model) {
@@ -224,6 +225,31 @@ export default new Vuex.Store({
             message.stampList.push({
               userId: data.user_id,
               stampId: data.stamp_id,
+              count: data.count,
+              createdAt: data.created_at
+            })
+          }
+        } else {
+          message.stampList = [{
+            userId: data.user_id,
+            stampId: data.stamp_id,
+            count: data.count,
+            createdAt: data.created_at
+          }]
+        }
+        Vue.set(state.messages, index, message)
+      }
+      const pinnedIndex = state.currentChannelPinnedMessages.findIndex(e => e.message.messageId === data.message_id)
+      if (pinnedIndex >= 0) {
+        const message = state.currentChannelPinnedMessages[pinnedIndex].message
+        if (message.stampList) {
+          const userData = message.stampList.find(e => e.userId === data.user_id && e.stampId === data.stamp_id)
+          if (userData) {
+            userData.count = data.count
+          } else {
+            message.stampList.push({
+              userId: data.user_id,
+              stampId: data.stamp_id,
               count: data.count
             })
           }
@@ -234,7 +260,7 @@ export default new Vuex.Store({
             count: data.count
           }]
         }
-        Vue.set(state.messages, index, message)
+        Vue.set(state.currentChannelPinnedMessages, pinnedIndex, state.currentChannelPinnedMessages[pinnedIndex])
       }
     },
     deleteMessageStamp (state, data) {
@@ -246,6 +272,17 @@ export default new Vuex.Store({
           if (userDataIndex >= 0) {
             message.stampList = message.stampList.filter((_, i) => i !== userDataIndex)
             Vue.set(state.messages, index, message)
+          }
+        }
+      }
+      const pinnedIndex = state.currentChannelPinnedMessages.findIndex(e => e.message.messageId === data.message_id)
+      if (pinnedIndex >= 0) {
+        const message = state.currentChannelPinnedMessages[pinnedIndex].message
+        if (message.stampList) {
+          const userDataIndex = message.stampList.findIndex(e => e.userId === data.user_id && e.stampId === data.stamp_id)
+          if (userDataIndex >= 0) {
+            message.stampList = message.stampList.filter((_, i) => i !== userDataIndex)
+            Vue.set(state.currentChannelPinnedMessages, pinnedIndex, state.currentChannelPinnedMessages[pinnedIndex])
           }
         }
       }
@@ -277,6 +314,9 @@ export default new Vuex.Store({
     },
     removeMessage (state, messageId) {
       state.messages = state.messages.filter(message => message.messageId !== messageId)
+    },
+    setPinnedModal (state, isActive) {
+      state.isActivePinnedModal = isActive
     }
   },
   getters: {
@@ -487,6 +527,11 @@ export default new Vuex.Store({
     openTagModal ({state, commit, dispatch}, tagId) {
       commit('setTagModal', state.tagMap[tagId])
       commit('setUserModal', null)
+    },
+    checkPinnedMessage ({state, dispatch}, messageId) {
+      if (state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)) {
+        dispatch('getCurrentChannelPinnedMessages', state.currentChannel.channelId)
+      }
     }
   }
 })

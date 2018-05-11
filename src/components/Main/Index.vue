@@ -2,6 +2,7 @@
 FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").index
   Titlebar
   Message
+  Input
   Information
   Sidebar
   User
@@ -29,6 +30,7 @@ export default {
     'Sidebar': window.asyncLoadComponents(import('@/components/Main/Sidebar/Sidebar')),
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
+    'Input': window.asyncLoadComponents(import('@/components/Main/MessageView/Input')),
     'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation')),
     'FileDroper': FileDroper,
     'User': User,
@@ -152,8 +154,8 @@ export default {
       sse.on('MESSAGE_READ', () => this.$store.dispatch('updateUnreadMessages'))
       sse.on('MESSAGE_STAMPED', (data) => this.$store.commit('updateMessageStamp', data))
       sse.on('MESSAGE_UNSTAMPED', (data) => this.$store.commit('deleteMessageStamp', data))
-      sse.on('MESSAGE_PINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
-      sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('updateCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+      sse.on('MESSAGE_PINNED', () => this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
+      sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
       sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
       sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
       sse.on('STAMP_CREATED', () => this.$store.dispatch('updateStamps'))
@@ -214,9 +216,11 @@ export default {
         .then(res => {
           this.$store.commit('updateMessage', res.data)
         })
+      this.$store.dispatch('checkPinnedMessage', data.id)
     },
     messageDeleted (data) {
       this.$store.commit('deleteMessage', data.id)
+      this.$store.dispatch('checkPinnedMessage', data.id)
     },
     userIconUpdated (data) {
       console.log(data)
@@ -265,14 +269,13 @@ export default {
   height: 100vh
   overflow: hidden
   +mq(pc)
-    grid-template-rows: 60px 1fr
+    grid-template-rows: 60px 1fr 50px
     grid-template-columns: 260px 1fr 40px
-    grid-template-areas: "side titlebar titlebar""side content information"
+    grid-template-areas: "side titlebar titlebar""side content information""side input information"
   +mq(sp)
-    grid-template-rows: 60px 1fr
+    grid-template-rows: 60px 1fr 50px
     grid-template-columns: 1fr 40px
-    grid-template-areas: "titlebar titlebar""content information"
+    grid-template-areas: "titlebar titlebar""content information""input information"
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     grid-template-columns: calc(260px + env(safe-area-inset-left) - 7px) 1fr calc(40px + env(safe-area-inset-right) - 7px)
-
 </style>
