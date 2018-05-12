@@ -46,8 +46,11 @@ export default {
   },
   methods: {
     showModal () {
-      this.toOnMembers = this.$store.getters.notificationsOnMembers.filter(user => !user.bot)
-      this.toOffMembers = this.$store.getters.notificationsOffMembers.filter(user => !user.bot)
+      this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
+      .then(() => {
+        this.toOnMembers = this.$store.getters.notificationsOnMembers.filter(user => !user.bot)
+        this.toOffMembers = this.$store.getters.notificationsOffMembers.filter(user => !user.bot)
+      })
       this.active = true
     },
     closeModal () {
@@ -56,9 +59,6 @@ export default {
         off: this.toOffMembers.map(member => member.userId)
       }
       client.changeNotifications(this.$store.state.currentChannel.channelId, state)
-      .then(res => {
-        this.$store.commit('setCurrentChannelNotifications', res.data)
-      })
       this.toOnMembers = []
       this.toOffMembers = []
       this.active = false
