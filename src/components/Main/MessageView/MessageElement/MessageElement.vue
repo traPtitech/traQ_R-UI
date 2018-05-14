@@ -3,10 +3,11 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" @click="openUserModal(model.userId)")
   div.message-detail-wrap
-    div.message-user-name(@click="openUserModal(model.userId)")
-      | {{getUserName(model.userId)}}
-      //- p.message-user-id(@click="openUserModal(model.userId)")
-      //-   | @{{$store.state.memberMap[model.userId].name}}
+    div.message-user-name-wrap(@click="openUserModal(model.userId)")
+      span.message-user-name
+        | {{getUserName(model.userId)}}
+      span.message-user-id(@click="openUserModal(model.userId)")
+        | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
       | {{displayDateTime}}
     ul.message-buttons-wrap
@@ -44,17 +45,21 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
           router-link(:to="parentChannel(m.parentChannelId).to")
             | {{parentChannel(m.parentChannelId).name}}
     div.message-files-wrap
-      div(v-for="file in files")
-        img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
+      div.message-files(v-for="file in files")
+        //- | {{file.mime}}
+        //- br
         a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
           video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
           audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-          img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
-        a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
+        div.attached-image-wrap(v-if="file.mime.split('/')[0] === 'image'")
+          img.attached-image.image-gif(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
+          img.attached-image.image-thumnail(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
+        div.file-details
+          a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
+            | download
           p
             | {{file.name}}
-          br
-          small
+          p
             | {{encodeByte(file.size)}}
     div.message-actions-wrap
       transition-group.message-stamps-wrap(name="slide-in" :class="{'has-stamps':stamps.length>0}")
@@ -356,6 +361,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~@/styles/global.sass"
 .message
   display: grid
   grid-template-areas: "user-icon detail""user-icon contents""... contents"
@@ -379,7 +385,6 @@ export default {
 .message-user-icon
   width: 40px
   height: 40px
-  background-color: #d2d2d2
   border-radius: 100%
   cursor: pointer
 .message-detail-wrap
@@ -388,23 +393,17 @@ export default {
   justify-content: space-between
   align-items: center
   min-width: 0
-.message-user-name
+.message-user-name-wrap
   margin: 0 0 0 10px
   font-weight: bold
   text-overflow: ellipsis
   white-space: nowrap
-  text-align: left
-  max-width: 50%
-  height: 100%
   overflow: hidden
   cursor: pointer
 .message-user-id
   margin-left: 5px
   font-size: 0.8em
-  max-width: 30%
-  overflow: hidden
-  white-space: nowrap
-  text-overflow: ellipsis
+  opacity: 0.8
 .message-date
   // flex: 1
   display: block
@@ -421,16 +420,18 @@ export default {
   padding: 5px 0 0
   text-align: left
   font-size: 0.9em
+  line-height: 20px
   word-break: break-all
   & pre
     white-space: pre-wrap
 .message-messages-wrap
   margin-left: 10px
 .message-files-wrap
+  margin-left: 10px
 .message-actions-wrap
   display: flex
   justify-content: space-between
-  margin: 10px 0 5px
+  margin: 10px 0 5px 10px
 .message-buttons-wrap
   transition: all .2s ease
   display: none
@@ -445,8 +446,6 @@ export default {
     color: #4263da
 .message-stamps-wrap
   display: inline-block
-  // flex-wrap: wrap
-  // align-items: center
 .message-user-link
   cursor: pointer
   color: #005BAC
@@ -475,16 +474,19 @@ export default {
   display: inline-flex
   align-items: center
   background: rgba(97, 97, 97, 0.1)
+  border: solid 1px rgb(234, 234, 234)
   color: rgba(84, 84, 84, 0.77)
-  padding: 2px 5px
+  padding: 1px 4px
   border-radius: 3px
   margin: 2px
   user-select: none
   transition: all .2s ease
   cursor: pointer
+  box-sizing: border-box
   &.stamp-pressed
     background: rgb(202, 206, 228)
     color: #2f2f2f
+    border: solid 1px $border-color
 .slide-in
   &-enter-active, &-leave-active
     transition: all .3s ease
@@ -509,9 +511,45 @@ export default {
   user-select: none
   width: 16px
   height: 16px
+.file-name
+  word-break: break-all
+.attached-image-wrap
+  display: inline-block
+  font-size: 0//for fix size
+  position: relative
+  overflow: hidden
+  border: solid 1px $border-color
+  border-radius: 3px
+  &:after
+    content: ''
+    position: absolute
+    z-index: 100
+    top: 0
+    right: 0
+    width: 100%
+    height: 100%
+    background-color: black
+    transition: all .5s ease
+    opacity: 0
+  &:hover
+    &:after
+      opacity: 0.1
+// .file-details
+//   position: absolute
+//   z-index: 150
+//   top: 0
+//   left: 0
+//   opacity: 1
+//   padding: 0 5px
+//   transform: translateY(-100%)
+//   transition: all .1s ease
+//   background-color: $background-color
+//   border: solid 1px $border-color
 .attached-image
+  width: 100%
   max-width: 360px
   max-height: 480px
+  transition: all .1s ease
 .attached-video
   max-width: 360px
   max-height: 480px
