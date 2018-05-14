@@ -221,7 +221,6 @@ $profile-area-height: 40vh
     grid-area: profile
     position: relative
     display: flex
-    align-items: center
     justify-content: center
     height: 100%
     max-height: $modal-max-height
@@ -245,10 +244,10 @@ $profile-area-height: 40vh
         grid-template-rows: 1fr 2rem auto
       @media (orientation: portrait)
         grid-template-rows: unset
-      height: calc(100% - 5rem)
       width: calc(100% - 4rem)
       flex-direction: column
       color: white
+      margin-bottom: 1.5rem
       .user-modal-dm
         display: flex
         align-items: center
