@@ -33,6 +33,11 @@ md.use(regexp(/:([a-zA-Z0-9+_-]{1,32}):/, (match, utils) => {
     const user = store.getters.getUserByName(match[1])
     return `<i class="emoji s32" title=":${match[1]}:" style="background-image: url(${store.state.baseURL}/api/1.0/users/${user.userId}/icon);">:${utils.escape(match[1])}:</i>`
   } else {
+    const colorReg = /0x([0-9a-f]{6})/
+    const cols = colorReg.exec(match[1])
+    if (cols) {
+      return `<i class="emoji s32" title=":0x${cols[1]}:" style="background-color: #${cols[1]}">:${utils.escape(match[1])}:</i>`
+    }
     return match[0]
   }
 }))
