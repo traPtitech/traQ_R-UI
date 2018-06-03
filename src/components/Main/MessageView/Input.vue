@@ -34,7 +34,8 @@ export default {
       },
       limit: 5,
       suggestMode: false,
-      suggestIndex: 0
+      suggestIndex: 0,
+      uploadProgressSum: 0
     }
   },
   created () {
@@ -269,9 +270,19 @@ export default {
     uploadFiles () {
       this.postStatus = 'processing'
       this.uploadedIds = new Array(this.files.length)
+      this.uploadProgressSum = 0
       return Promise.all(this.files.map(async (file, index) => {
         try {
-          const res = await client.uploadFile(file)
+          let progress = 0
+          const res = await client.uploadFile(file, (event) => {
+            if (event.lengthComputable) {
+              this.uploadProgressSum -= progress
+              progress = event.loaded / event.total
+              this.uploadProgressSum += progress
+            }
+          })
+          this.uploadProgressSum -= progress
+          this.uploadProgressSum += 1.0
           this.uploadedIds[index] = res.data.fileId
         } catch (e) {
           console.log(e)
@@ -285,6 +296,10 @@ export default {
         return []
       }
       return suggest(this.key, this.limit)
+    },
+    uploadProgress () {
+      if (this.uploadedIds.length === 0) return 0
+      return this.uploadProgressSum / this.uploadedIds.length
     }
   },
   watch: {
@@ -342,7 +357,7 @@ export default {
     transition: width .3s ease
   &.input-focused:after
     width: calc( 100% - 20px )
-    
+
 .upload-button, .submit-button
   position: absolute
   z-index: 200

@@ -394,12 +394,14 @@ const client = {
   },
 
   // Tag: file
-  uploadFile (file) {
+  uploadFile (file, onUploadProgress) {
     return middleWare('uploadFile', () => {
       const form = new FormData()
       form.enctype = 'multipart/form-data'
       form.append('file', file)
-      return axios.post('/api/1.0/files', form)
+      return axios.post('/api/1.0/files', form, onUploadProgress ? {
+        onUploadProgress
+      } : {})
     })
   },
   deleteFile (fileId) {
