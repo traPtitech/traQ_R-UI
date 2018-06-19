@@ -114,6 +114,13 @@ export default {
       })
     }
 
+    const userAgent = window.navigator.userAgent
+    if (userAgent.includes('traQ-Android')) {
+      const token = window.Bridge.getFCMToken()
+      console.log('register:' + token)
+      client.registerDevice(token)
+    }
+
     if ('navigator' in window && 'serviceWorker' in window.navigator) {
       window.navigator.serviceWorker.addEventListener('message', data => {
         if (data.data.type === 'navigate') {
