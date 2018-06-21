@@ -50,21 +50,25 @@ div.user
       div.user-modal-detail-container
         ModalHeaderCenterAligned(title="TAGS" faIconName="tags")
         div.user-modal-detail.user-modal-tag
-          div.user-modal-tag-element(v-for="(tag, index) in tags")
+          div.user-modal-tag-element(v-for="(tag, index) in tags" :key="tag.tagId")
             div.user-modal-icon--gray.user-modal-tag-icon
               icon(name="tag")
             div.user-modal-tag-body(v-on:click="openTagModal(tag.tagId)")
               | {{tag.tag}}
             div.user-modal-tag-status-icon(v-if="tag.editable")
-              icon.user-modal-icon--gray(name="lock-open" v-show="hasAuth && !tag.isLocked" v-on:click="lockTag(index)")
-              icon.user-modal-icon--gray(name="times" v-show="!tag.isLocked" v-on:click="eraseTag(index)")
-              icon.user-modal-icon--gray(name="lock" v-show="hasAuth && tag.isLocked" v-on:click="unlockTag(index)")
+              div(v-on:click="lockTag(index)")
+                icon.user-modal-icon--gray(name="lock-open" v-show="hasAuth && !tag.isLocked")
+              div(v-on:click="eraseTag(index)")
+                icon.user-modal-icon--gray(name="times" v-show="!tag.isLocked")
+              div(v-on:click="unlockTag(index)")
+                icon.user-modal-icon--gray(name="lock" v-show="hasAuth && tag.isLocked")
               icon.user-modal-icon--gray.non-clickable(name="lock" v-show="!hasAuth && tag.isLocked")
         div.user-modal-detail-input-container
           div.user-modal-detail-input
             icon.user-modal-icon--gray.user-modal-tag-icon(name="tag" :style="detailInputIconStyle")
             input.user-modal-tag-body(v-model="tagInput" v-on:keydown="keydown" placeholder="タグを追加……")
-            icon.user-modal-icon--gray.user-modal-plus-icon(name="plus" v-on:click="addTag" :style="detailInputIconStyle")
+            div(v-on:click="addTag")
+              icon.user-modal-icon--gray.user-modal-plus-icon(name="plus" :style="detailInputIconStyle")
 </template>
 
 <script>
@@ -102,16 +106,26 @@ export default {
       client.addUserTag(this.model.userId, this.tagInput)
       .then(() => {
         this.tagInput = ''
+        this.$store.dispatch('updateCurrentUserTags')
       })
     },
     eraseTag (id) {
       client.deleteUserTag(this.model.userId, this.tags[id].tagId)
+      .then(() => {
+        this.$store.dispatch('updateCurrentUserTags')
+      })
     },
     lockTag (id) {
       client.changeLockUserTag(this.model.userId, this.tags[id].tagId, true)
+      .then(() => {
+        this.$store.dispatch('updateCurrentUserTags')
+      })
     },
     unlockTag (id) {
       client.changeLockUserTag(this.model.userId, this.tags[id].tagId, false)
+      .then(() => {
+        this.$store.dispatch('updateCurrentUserTags')
+      })
     },
     openDirectMessage () {
       this.$router.push(`/users/${this.model.name}`)
