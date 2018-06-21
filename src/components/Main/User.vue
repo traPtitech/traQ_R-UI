@@ -19,7 +19,7 @@ div.user
               div.user-modal-real-name
                 | Real Name
               div.user-modal-grade
-                | 16B
+                | {{grade}}
             div.user-modal-name-container-expand(v-if="expandProfile")
               div.user-modal-name
                 | @{{model.name}}
@@ -29,7 +29,7 @@ div.user
                   div.user-modal-online-status-abstract
                     | Online
                   div.user-modal-online-status-detail
-                    | Last: 10/10 20:20
+                    | Last: {{lastOnline}}
               div.user-modal-links
                 a.user-modal-link-content(:href="wikiUserPageUrl")
                   icon(name="book")
@@ -74,6 +74,14 @@ div.user
 <script>
 import client from '@/bin/client'
 import ModalHeaderCenterAligned from '@/components/Util/ModalHeaderCenterAligned'
+function paddingNumber (n, k) {
+  let ret = `${n}`
+  for (let i = 0; i < k; i++) ret = '0' + ret
+  return ret.slice(-k)
+}
+function dateParse (date) {
+  return `${date.getFullYear()}/${paddingNumber(date.getMonth(), 2)}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(date.getHours(), 2)}:${paddingNumber(date.getMinutes(), 2)}`
+}
 export default {
   name: 'User',
   components: {
@@ -205,6 +213,17 @@ export default {
     gradientStyle () {
       return {
         background: `linear-gradient(180deg, rgba(156, 178, 203, 0.38674) 0%, #003778 100%)`
+      }
+    },
+    lastOnline () {
+      return dateParse(new Date(this.model.lastOnline))
+    },
+    grade () {
+      const tag = this.tags.find(tag => /^\d{2}[BMDR]$/.test(tag.tag))
+      if (tag) {
+        return tag.tag
+      } else {
+        return '___'
       }
     }
   }
