@@ -168,7 +168,7 @@ export default {
       }
     },
     onlineIndicatorStyle () {
-      if (true) {
+      if (this.model.isOnline) {
         return {
           backgroundColor: '#27ae60'
         }

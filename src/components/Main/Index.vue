@@ -149,6 +149,8 @@ export default {
       sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
       sse.on('USER_TAGS_UPDATED', (data) => this.userTagsUpdated(data))
       sse.on('USER_ICON_UPDATED', (data) => this.userIconUpdated(data))
+      sse.on('USER_ONLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: true}))
+      sse.on('USER_OFFLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: false}))
       sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
       sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
       sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))

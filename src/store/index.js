@@ -317,6 +317,11 @@ export default new Vuex.Store({
     },
     setPinnedModal (state, isActive) {
       state.isActivePinnedModal = isActive
+    },
+    setUserOnline (state, {userId, isOnline}) {
+      const user = state.memberMap[userId]
+      user.isOnline = isOnline
+      Vue.set(state.memberMap, userId, user)
     }
   },
   getters: {
@@ -531,6 +536,12 @@ export default new Vuex.Store({
     checkPinnedMessage ({state, dispatch}, messageId) {
       if (state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)) {
         dispatch('getCurrentChannelPinnedMessages', state.currentChannel.channelId)
+      }
+    },
+    updateUserOnline ({state, commit}, {userId, isOnline}) {
+      commit('setUserOnline', {userId, isOnline})
+      if (state.userModal && state.userModal.userId === userId) {
+        commit('setUserModal', state.memberMap[userId])
       }
     }
   }
