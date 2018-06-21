@@ -21,7 +21,8 @@ export default {
       gradeMap: {
         B: 'bachelor',
         M: 'master',
-        D: 'doctor'
+        D: 'doctor',
+        R: ''
       }
     }
   },
@@ -36,11 +37,12 @@ export default {
   },
   computed: {
     tags () {
-      const grades = this.$store.state.tagData.filter(tag => tag.tag !== '' && tag.tag.replace(/\d\d[B|M|D]/, '') === '')
+      const grades = this.$store.state.tagData.filter(tag => tag.tag !== '' && /^\d{2}[BMDR]$/.test(tag.tag))
       const map = {
         B: 0,
         M: 1,
-        D: 2
+        D: 2,
+        R: 3
       }
       const f = (s) => {
         return map[s[2]] * 100 + parseInt(s.substr(0, 2), 10)
@@ -55,8 +57,9 @@ export default {
       for (let i = 0; i < 100; i++) {
         ret[i] = {
           B: `hsl(${(i * 100) % 360}, 50%, 50%)`,
-          M: `hsl(${(i * 100 + 33) % 360}, 50%, 50%)`,
-          D: `hsl(${(i * 100 + 66) % 360}, 50%, 50%)`
+          M: `hsl(${(i * 100 + 25) % 360}, 50%, 50%)`,
+          D: `hsl(${(i * 100 + 50) % 360}, 50%, 50%)`,
+          R: `hsl(${(i * 100 + 75) % 360}, 50%, 50%)`
         }
       }
       return ret
