@@ -57,6 +57,7 @@ export default {
   height: 100vh
   background-color: white
   transition: all .1s linear
+  z-index: $sidebar-index
   +mq(pc)
     grid-area: side
   +mq(sp)

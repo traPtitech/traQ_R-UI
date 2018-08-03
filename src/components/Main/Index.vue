@@ -4,7 +4,7 @@ FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").inde
   Tag
   StampPicker
   Titlebar
-  // Information
+  OnlineUsersList
   // ↓grid-item
   Message
   Input
@@ -32,7 +32,7 @@ export default {
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
     'Input': window.asyncLoadComponents(import('@/components/Main/MessageView/Input')),
-    'Information': window.asyncLoadComponents(import('@/components/Main/MessageView/ChannelInformation/ChannelInformation')),
+    'OnlineUsersList': window.asyncLoadComponents(import( '@/components/Main/MessageView/OnlineUsersBox')),
     'FileDroper': FileDroper,
     'User': User,
     'Tag': Tag,

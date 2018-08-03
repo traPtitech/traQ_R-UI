@@ -1,5 +1,5 @@
 <template lang="pug">
-header.titlebar
+header.titlebar.drop-shadow
   // div.sidebar-open(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened")
   //   icon(name="bars").sidebar-open-icon
   h1.channel-name
