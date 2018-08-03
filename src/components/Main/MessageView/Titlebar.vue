@@ -1,11 +1,11 @@
 <template lang="pug">
 header.titlebar
-  div.sidebar-open(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened")
-    icon(name="bars").sidebar-open-icon
+  // div.sidebar-open(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened")
+  //   icon(name="bars").sidebar-open-icon
   h1.channel-name
     | {{title}}
-  p.channel-topic-text
-    | {{topic}}
+  // p.channel-topic-text
+  //   | {{topic}}
   div.online-member
 </template>
 
@@ -37,6 +37,23 @@ export default {
 </script>
 
 <style lang="sass">
+.titlebar
+  position: fixed
+  z-index: $titlebar-index
+  +mq(pc)
+    left: $sidebar-width
+    width: 200px
+    height: 60px
+  +mq(sp)
+    top: 10px
+    width: 200px
+    height: 50px
+  display: flex
+  align-items: center
+  justify-content: flex-start
+  background-color: $primary-color
+  color: white
+  transition: all .5s ease
 .sidebar-open
   width: 50px
   height: 50px
@@ -51,18 +68,8 @@ export default {
   width: 60%
   height: 60%
   color: gray
-.titlebar
-  // position: fixed
-  display: flex
-  align-items: center
-  justify-content: flex-start
-  grid-area: titlebar
-  background-color: #F5F5F5
-  color: #656565
-  border-bottom: 1px solid rgb(176, 176, 176)
 .channel-name
-  color: rgba(0, 0, 0, 0.6)
-  font-size: 2em
+  font-size: 25px
   font-weight: bold
   text-align: left
   margin: 0 0 0 10px
@@ -72,7 +79,6 @@ export default {
   div
     width: 50px
     height: 50px
-    // background-color: gray
     margin: 10px
 .channel-topic-text
   display: flex

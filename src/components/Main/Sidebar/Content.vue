@@ -30,7 +30,7 @@ export default {
 
 <style lang="sass">
 .menu-content
-  grid-area: content
+  height: calc( 100% - #{$navigation-height} - #{$footer-height} )
   background-color: #F5F5F5
   border-right: 1px solid rgb(176, 176, 176)
   overflow: scroll

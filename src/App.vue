@@ -32,8 +32,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~@/styles/global.sass"
-
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased

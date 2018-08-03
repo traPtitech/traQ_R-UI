@@ -1,13 +1,14 @@
 <template lang="pug">
 FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").index
-  Titlebar
-  Message
-  Input
-  Information
-  Sidebar
   User
   Tag
   StampPicker
+  Titlebar
+  // Information
+  // ↓grid-item
+  Message
+  Input
+  Sidebar
 </template>
 
 <script>
@@ -269,7 +270,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~@/styles/global.sass"
 .index
   display: grid
   position: relative
@@ -278,13 +278,13 @@ export default {
   height: 100vh
   overflow: hidden
   +mq(pc)
-    grid-template-rows: 60px 1fr 50px
-    grid-template-columns: 260px 1fr 40px
-    grid-template-areas: "side titlebar titlebar""side content information""side input information"
+    grid-template-rows: 1fr $input-height
+    grid-template-columns: $sidebar-width 1fr
+    grid-template-areas: "side content""side input"
   +mq(sp)
-    grid-template-rows: 60px 1fr 50px
-    grid-template-columns: 1fr 40px
-    grid-template-areas: "titlebar titlebar""content information""input information"
+    grid-template-rows: 1fr $input-height
+    grid-template-columns: 1fr
+    grid-template-areas: "content""input"
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     grid-template-columns: calc(260px + env(safe-area-inset-left) - 7px) 1fr calc(40px + env(safe-area-inset-right) - 7px)
 </style>

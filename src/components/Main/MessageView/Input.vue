@@ -385,7 +385,7 @@ export default {
   box-sizing: border-box
   z-index: 100
   width: 100%
-  height: 50px
+  height: $input-height
   margin: 0
   background: none
   resize: none

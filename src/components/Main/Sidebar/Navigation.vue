@@ -1,11 +1,6 @@
 <template lang="pug">
-nav.menu-buttons
+nav.navigation
   ul
-    li.user-icon-wrap
-      img.user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[$store.state.me.userId].iconFileId}`" @click="userMenuOpened=!userMenuOpened")
-      div.user-logout(v-show="userMenuOpened" @click="logout")
-        p.flex-center
-          | ログアウト
     li.menu-button.channels(@click="navClicked('channels')" :class="{'menu-active':menuContent==='channels'}")
       icon(name="hashtag")
       p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
@@ -18,8 +13,6 @@ nav.menu-buttons
       icon(name="paperclip")
     li.menu-button.links(@click="navClicked('links')" :class="{'menu-active':menuContent==='links'}")
       icon(name="th-large")
-    li.menu-button.setting(@click="$router.push('/setting')")
-      icon(name="cog")
 </template>
 
 <script>
@@ -76,15 +69,13 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~@/styles/global.sass"
-.menu-buttons
+.navigation
   grid-area: menu
   user-select: none
   background-color: $primary-color
   ul
-    height: 100%
+    height: $navigation-height
     display: flex
-    flex-flow: column
     align-items: flex-end
 .menu-button
   display: flex
@@ -159,7 +150,4 @@ export default {
     background-color: rgba(255, 255, 255, 0.3)
 .channels
   margin-top: 10px
-.setting
-  margin-top: auto
-  margin-bottom: 20px
 </style>
