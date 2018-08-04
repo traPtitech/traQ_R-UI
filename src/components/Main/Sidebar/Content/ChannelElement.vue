@@ -40,7 +40,7 @@ export default {
       this.$refs.children.style.height = ''
     },
     zeroHeight () {
-      this.$refs.children.style.height = '0px'
+      this.$refs.children.style.height = '0'
     }
   },
   computed: {

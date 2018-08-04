@@ -1,7 +1,7 @@
 <template lang="pug">
 div.footer
   span.version-text
-    | traQ alpha
+    | traQ R alpha
   ul
     li.menu-button.setting(@click="$router.push('/setting')")
       icon(name="cog")
