@@ -32,7 +32,7 @@ export default {
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
     'Input': window.asyncLoadComponents(import('@/components/Main/MessageView/Input')),
-    'OnlineUsersList': window.asyncLoadComponents(import( '@/components/Main/MessageView/OnlineUsersBox')),
+    'OnlineUsersList': window.asyncLoadComponents(import('@/components/Main/MessageView/OnlineUsersBox')),
     'FileDroper': FileDroper,
     'User': User,
     'Tag': Tag,

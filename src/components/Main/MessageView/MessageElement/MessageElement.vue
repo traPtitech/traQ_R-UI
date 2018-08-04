@@ -3,9 +3,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" @click="openUserModal(model.userId)")
   div.message-detail-wrap
-    div.message-user-name(@click="openUserModal(model.userId)")
+    div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
       | {{getUserName(model.userId)}}
-      //- p.message-user-id(@click="openUserModal(model.userId)")
+      //- p.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
       //-   | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
       | {{displayDateTime}}
@@ -391,8 +391,6 @@ export default {
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
-  text-overflow: ellipsis
-  white-space: nowrap
   text-align: left
   max-width: 50%
   height: 100%
@@ -403,8 +401,6 @@ export default {
   font-size: 0.8em
   max-width: 30%
   overflow: hidden
-  white-space: nowrap
-  text-overflow: ellipsis
 .message-date
   // flex: 1
   display: block
