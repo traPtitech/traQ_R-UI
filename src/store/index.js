@@ -55,8 +55,10 @@ export default new Vuex.Store({
     stampCategolized: {},
     stampNameMap: [],
     currentChannel: {},
+    currentChannelUpdateDate: new Date(0),
     clipedMessages: {},
     unreadMessages: {},
+    unreadEarliests: {},
     staredChannels: [],
     staredChannelMap: {},
     messages: [],
@@ -162,6 +164,7 @@ export default new Vuex.Store({
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
+      state.currentChannelUpdateDate = new Date(state.unreadEarliests[channel.channelId] || 0)
       state.messages = []
     },
     loadStart (state) {
@@ -182,16 +185,20 @@ export default new Vuex.Store({
       })
     },
     setUnreadMessagesData (state, data) {
-      const mp = {}
+      const unreads = {}
+      const earliests = {}
       data.forEach(message => {
-        if (mp[message.parentChannelId]) {
-          mp[message.parentChannelId][message.messageId] = message
+        if (unreads[message.parentChannelId]) {
+          unreads[message.parentChannelId][message.messageId] = message
+          earliests[message.parentChannelId] = Math.min(earliests[message.parentChannelId], new Date(message.createdAt).valueOf())
         } else {
-          mp[message.parentChannelId] = {}
-          mp[message.parentChannelId][message.messageId] = message
+          unreads[message.parentChannelId] = {}
+          unreads[message.parentChannelId][message.messageId] = message
+          earliests[message.parentChannelId] = new Date(message.createdAt).valueOf()
         }
       })
-      state.unreadMessages = mp
+      state.unreadMessages = unreads
+      state.unreadEarliests = earliests
     },
     setStaredChannelsData (state, data) {
       state.staredChannels = data
@@ -398,6 +405,9 @@ export default new Vuex.Store({
     },
     notificationsOffMembers (state) {
       return state.memberData.filter(member => !state.currentChannelNotifications.find(id => id === member.userId))
+    },
+    getCurrentChannelUpdateDate (state) {
+      return state.currentChannelUpdateDate
     },
     getChannelUnreadMessageNum (state) {
       return channelId => {

@@ -6,6 +6,8 @@ content.content-wrap(@scroll="checkLoad")
     li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
       time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].createdAt) !== date(message.createdAt)")
         | {{date(message.createdAt)}}
+      p(v-if="new Date(message.createdAt) - updateDate === 0")
+        | ここから新規メッセージ
       MessageElement(:model="message")
 </template>
 
@@ -66,6 +68,9 @@ export default {
   computed: {
     nowChannel () {
       return this.$store.state.currentChannel
+    },
+    updateDate () {
+      return this.$store.getters.getCurrentChannelUpdateDate
     }
   }
 }
