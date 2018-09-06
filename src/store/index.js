@@ -43,6 +43,7 @@ export default new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
+    openChannels: {},
     sidebarOpened: false,
     stampPickerActive: false,
     stampPickerModel: null,
@@ -329,6 +330,12 @@ export default new Vuex.Store({
       const user = state.memberMap[userId]
       user.isOnline = isOnline
       Vue.set(state.memberMap, userId, user)
+    },
+    setOpenChannels (state, data) {
+      state.openChannels = data
+    },
+    setOpenChannel (state, {channelId, isOpen}) {
+      Vue.set(state.openChannels, channelId, isOpen)
     }
   },
   getters: {
@@ -489,7 +496,13 @@ export default new Vuex.Store({
         })
     },
     updateChannels ({state, commit}) {
-      return loadGeneralData('Channel', client.getChannels, commit)
+      const promise = loadGeneralData('Channel', client.getChannels, commit)
+      promise.then(() => {
+        db.read('generalData', 'openChannels').then(data => {
+          commit('setOpenChannels', data || {})
+        })
+      })
+      return promise
     },
     updateMembers ({state, commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
@@ -553,6 +566,10 @@ export default new Vuex.Store({
       if (state.userModal && state.userModal.userId === userId) {
         commit('setUserModal', state.memberMap[userId])
       }
+    },
+    updateChannelOpen ({state, commit}, {channelId, isOpen}) {
+      commit('setOpenChannel', {channelId, isOpen})
+      return db.write('generalData', {type: 'openChannels', data: state.openChannels})
     }
   }
 })
