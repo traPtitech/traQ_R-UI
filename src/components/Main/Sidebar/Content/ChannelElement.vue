@@ -25,13 +25,12 @@ export default {
   },
   data () {
     return {
-      isOpened: false,
       height: '0'
     }
   },
   methods: {
     toggle () {
-      this.isOpened = !this.isOpened
+      this.$store.dispatch('updateChannelOpen', {channelId: this.model.channelId, isOpen: !this.isOpened})
     },
     channelLink (name) {
       this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.channelId)}`)
@@ -55,6 +54,9 @@ export default {
     },
     unreadSum () {
       return this.$store.getters.getChannelUnreadMessageSum(this.model.channelId)
+    },
+    isOpened () {
+      return this.$store.state.openChannels[this.model.channelId]
     }
   },
   components: {
