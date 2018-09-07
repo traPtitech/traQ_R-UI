@@ -14,9 +14,6 @@ div
       | Twitter ID
     input(v-model="twitterId")
     p
-      | メールアドレス
-    input(v-model="email")
-    p
       | 新しいパスワード
     input(v-model="newPassword" type="password")
     p
@@ -56,7 +53,6 @@ export default {
       displayName: '',
       twitterId: '',
       icon: null,
-      email: '',
       newPassword: '',
       checkNewPassword: '',
       oldPassword: '',
@@ -100,6 +96,7 @@ export default {
       return Promise.all(tasks).then(() => {
         this.state = 'successed'
         this.$store.dispatch('whoAmI')
+        this.$store.dispatch('updateMembers')
       }).catch(e => {
         this.state = 'failed'
         this.error = '失敗しました'
@@ -138,21 +135,12 @@ export default {
           this.done += 'Twitter ID '
         }))
       }
-      if (this.email !== '' && this.newPassword === '') {
-        tasks.push(client.changeEmail(this.email, this.oldPassword).then(() => {
-          this.done += 'メール '
-        }))
-      } else if (this.email === '' && this.newPassword !== '') {
+      if (this.newPassword !== '') {
         tasks.push(client.changePassword(this.newPassword, this.oldPassword).then(() => {
           this.done += 'パスワード '
         }))
-      } else {
-        tasks.push(client.changeSetting(this.newPassword, this.email, this.oldPassword).then(() => {
-          this.done += 'メール パスワード '
-        }))
       }
       return Promise.all(tasks).then(() => {
-        this.email = ''
         this.oldPassword = ''
         this.newPassword = ''
         this.checkNewPassword = ''
@@ -187,13 +175,11 @@ export default {
       if (this.icon) return true
       if (this.displayName !== this.$store.state.me.displayName) return true
       if (this.twitterId !== this.$store.state.me.twitterId) return true
-      if (this.email !== '') return true
       if (this.newPassword !== '') return true
       if (this.checkNewPassword !== '') return true
       return false
     },
     needPass () {
-      if (this.email !== '') return true
       if (this.newPassword !== '') return true
       if (this.checkNewPassword !== '') return true
       return false
