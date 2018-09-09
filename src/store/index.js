@@ -205,11 +205,11 @@ export default new Vuex.Store({
     },
     setStaredChannelsData (state, data) {
       state.staredChannels = data
-      state.staredChannels.sort(stringSortGen('name'))
-      state.staredChannelMap = {}
-      state.staredChannels.forEach(channel => {
-        state.staredChannelMap[channel.channelId] = channel
+      const map = {}
+      state.staredChannels.forEach(channelId => {
+        map[channelId] = true
       })
+      state.staredChannelMap = map
     },
     setMutedChannelsData (state, data) {
       state.mutedChannels = data
@@ -458,6 +458,11 @@ export default new Vuex.Store({
     },
     getNonBotMember (state, getters) {
       return state.memberData.filter(user => !user.bot)
+    },
+    getStaredChannels (state) {
+      const channels = state.staredChannels.map(channelId => state.channelMap[channelId])
+      channels.sort(stringSortGen('name'))
+      return channels
     }
   },
   actions: {
