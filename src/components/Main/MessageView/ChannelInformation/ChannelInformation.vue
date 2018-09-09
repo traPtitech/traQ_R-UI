@@ -8,7 +8,7 @@ div.information
   Topic(v-show="!isDirectMessage").channel-button
   CreateChannel(v-show="!isDirectMessage").channel-button
   div.channel-button(v-show="!isDirectMessage && !isStared" @click="starChannel")
-    icon(name="star")
+    icon(name="star-half")
   div.channel-button(v-show="!isDirectMessage && isStared" @click="unstarChannel")
     icon(name="star")
 </template>
