@@ -62,6 +62,8 @@ export default new Vuex.Store({
     unreadEarliests: {},
     staredChannels: [],
     staredChannelMap: {},
+    mutedChannels: [],
+    mutedChannelMap: {},
     messages: [],
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
@@ -208,6 +210,14 @@ export default new Vuex.Store({
       state.staredChannels.forEach(channel => {
         state.staredChannelMap[channel.channelId] = channel
       })
+    },
+    setMutedChannelsData (state, data) {
+      state.mutedChannels = data
+      const map = {}
+      data.forEach(channelId => {
+        map[channelId] = true
+      })
+      state.mutedChannelMap = map
     },
     updateHeartbeatStatus (state, data) {
       state.heartbeatStatus = data
@@ -521,6 +531,9 @@ export default new Vuex.Store({
     },
     updateStaredChannels ({state, commit}) {
       return loadGeneralData('StaredChannels', client.getStaredChannels, commit)
+    },
+    updateMutedChannels ({state, commit}) {
+      return loadGeneralData('MutedChannels', client.getMutedChannels, commit)
     },
     getCurrentChannelTopic ({state, commit}, channelId) {
       return client.getChannelTopic(channelId)

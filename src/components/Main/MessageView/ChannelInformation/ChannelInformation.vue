@@ -11,6 +11,10 @@ div.information
     icon(name="star")
   div.channel-button(v-show="!isDirectMessage && isStared" @click="unstarChannel")
     icon(name="star")
+  div.channel-button(v-show="!isNotificationForced && !isDirectMessage && !isMuted" @click="muteChannel")
+    icon(name="microphone")
+  div.channel-button(v-show="!isNotificationForced && !isDirectMessage && isMuted" @click="unmuteChannel")
+    icon(name="microphone-slash")
 </template>
 
 <script>
@@ -47,6 +51,18 @@ export default {
       .then(() => {
         this.$store.dispatch('updateStaredChannels')
       })
+    },
+    muteChannel () {
+      client.muteChannel(this.$store.state.currentChannel.channelId)
+        .then(() => {
+          this.$store.dispatch('updateMutedChannels')
+        })
+    },
+    unmuteChannel () {
+      client.unmuteChannel(this.$store.state.currentChannel.channelId)
+        .then(() => {
+          this.$store.dispatch('updateMutedChannels')
+        })
     }
   },
   computed: {
@@ -60,6 +76,10 @@ export default {
       if (this.isDirectMessage) return false
       if (this.$store.state.staredChannelMap[this.$store.state.currentChannel.channelId]) return true
       return false
+    },
+    isMuted () {
+      if (this.isDirectMessage) return false
+      return this.$store.state.mutedChannelMap[this.$store.state.currentChannel.channelId]
     }
   }
 }
