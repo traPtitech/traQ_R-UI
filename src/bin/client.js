@@ -280,6 +280,23 @@ const client = {
     })
   },
 
+  // Tag: mute
+  getMutedChannels () {
+    return middleWare('getMutedChannels', () => {
+      return axios.get(`/api/1.0/users/me/mute`)
+    })
+  },
+  muteChannel (channelId) {
+    return middleWare('muteChannel', () => {
+      return axios.post(`/api/1.0/users/me/mute/${channelId}`)
+    })
+  },
+  unmuteChannel (channelId) {
+    return middleWare('unmuteChannel', () => {
+      return axios.delete(`/api/1.0/users/me/mute/${channelId}`)
+    })
+  },
+
   // Tag: unread
   getUnreadMessages () {
     return middleWare('getUnreadMessages', () => {
