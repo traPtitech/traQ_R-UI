@@ -1,5 +1,5 @@
 let _db
-let generalData, channelMessages
+let generalData, channelMessages, browserSetting
 
 let request
 const read = (tableName, key) => {
@@ -7,6 +7,9 @@ const read = (tableName, key) => {
     return new Promise((resolve, reject) => {
       const request = _db.transaction(tableName).objectStore(tableName).get(key)
       request.onsuccess = event => {
+        if (!event.target.result) {
+          reject(new Error('data not found'))
+        }
         if (process.env.NODE_ENV === 'development') {
           console.log('read db', tableName, key, event.target.result.data)
         }
@@ -50,7 +53,7 @@ const DB = () => {
     return Promise.resolve(db)
   }
   return new Promise((resolve, reject) => {
-    request = window.indexedDB.open('traQ-DB')
+    request = window.indexedDB.open('traQ-DB', 1)
 
     request.onerror = event => {
       console.error('fail starting indexedDB', event)
@@ -70,6 +73,9 @@ const DB = () => {
 
       channelMessages = _db.createObjectStore('channelMessages', {keyPath: 'channelId'})
       channelMessages.createIndex('channelId', 'channelId', {unique: true})
+
+      browserSetting = _db.createObjectStore('browserSetting', {keyPath: 'type'})
+      browserSetting.createIndex('type', 'type', {unique: true})
     }
   })
 }

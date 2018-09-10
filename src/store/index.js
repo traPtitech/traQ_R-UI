@@ -78,7 +78,10 @@ export default new Vuex.Store({
     currentUserTags: [],
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
     editing: false,
-    isActivePinnedModal: false
+    isActivePinnedModal: false,
+    openMode: 'particular',
+    openChannelId: '',
+    lastChannelId: ''
   },
   mutations: {
     setStampPickerModel (state, model) {
@@ -346,6 +349,15 @@ export default new Vuex.Store({
     },
     setOpenChannel (state, {channelId, isOpen}) {
       Vue.set(state.openChannels, channelId, isOpen)
+    },
+    setOpenMode (state, mode) {
+      state.openMode = mode
+    },
+    setOpenChannelId (state, channelId) {
+      state.openChannelId = channelId
+    },
+    setLastChannelId (state, channelId) {
+      state.lastChannelId = channelId
     }
   },
   getters: {
@@ -588,6 +600,46 @@ export default new Vuex.Store({
     updateChannelOpen ({state, commit}, {channelId, isOpen}) {
       commit('setOpenChannel', {channelId, isOpen})
       return db.write('generalData', {type: 'openChannels', data: state.openChannels})
+    },
+    loadSetting ({dispatch}) {
+      return Promise.all([
+        dispatch('loadOpenMode'),
+        dispatch('loadOpenChannelId'),
+        dispatch('loadLastChannelId')
+      ])
+    },
+    loadOpenMode ({commit, dispatch}) {
+      return db.read('browserSetting', 'openMode').then(data => {
+        commit('setOpenMode', data)
+      }).catch(async () => {
+        await dispatch('updateOpenMode', 'particular')
+      })
+    },
+    loadOpenChannelId ({commit, dispatch, getters}) {
+      return db.read('browserSetting', 'openChannelId').then(data => {
+        commit('setOpenChannelId', data)
+      }).catch(async () => {
+        await dispatch('updateOpenChannelId', getters.getChannelByName('random').channelId)
+      })
+    },
+    loadLastChannelId ({commit, dispatch, getters}) {
+      return db.read('browserSetting', 'lastChannelId').then(data => {
+        commit('setLastChannelId', data)
+      }).catch(async () => {
+        await dispatch('updateLastChannelId', getters.getChannelByName('random').channelId)
+      })
+    },
+    updateOpenMode ({commit}, mode) {
+      commit('setOpenMode', mode)
+      return db.write('browserSetting', {type: 'openMode', data: mode})
+    },
+    updateOpenChannelId ({commit}, channelId) {
+      commit('setOpenChannelId', channelId)
+      return db.write('browserSetting', {type: 'openChannelId', data: channelId})
+    },
+    updateLastChannelId ({commit}, channelId) {
+      commit('setLastChannelId', channelId)
+      return db.write('browserSetting', {type: 'lastChannelId', data: channelId})
     }
   }
 })
