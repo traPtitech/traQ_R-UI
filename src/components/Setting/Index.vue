@@ -35,6 +35,25 @@ div
       | {{error}}
   div
     h2
+      | ブラウザ設定
+    p
+      | 起動時
+    div
+      input(type="radio" value="particular" v-model="openMode" checked)
+      | 特定のチャンネル
+    div
+      input(type="radio" value="lastOpen" v-model="openMode")
+      | 最後に開いたチャンネル
+    div(v-show="openMode === 'particular'")
+      p
+        | 起動時に開くチャンネル名
+      input(v-model="openChannelName")
+    p(v-if="!isChannelNameValid")
+      | 存在しないチャンネル名です
+    button(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
+      | 更新
+  div
+    h2
       | スタンプ新規登録
     input(type="file" v-on:change="addStampFile")
     input(v-model="stampName")
@@ -60,7 +79,9 @@ export default {
       state: 'default',
       error: '',
       stampName: '',
-      done: ''
+      done: '',
+      openMode: 'particular',
+      openChannelName: 'random'
     }
   },
   methods: {
@@ -165,6 +186,11 @@ export default {
       } else {
         this.$router.push('/channels/random')
       }
+    },
+    updateBrowserSetting () {
+      this.$store.dispatch('updateOpenMode', this.openMode)
+      const channel = this.$store.getters.getChannelByName(this.openChannelName)
+      this.$store.dispatch('updateOpenChannelId', channel.channelId)
     }
   },
   computed: {
@@ -183,11 +209,22 @@ export default {
       if (this.newPassword !== '') return true
       if (this.checkNewPassword !== '') return true
       return false
+    },
+    isBrowserSettingChanged () {
+      if (!this.isChannelNameValid) {
+        return false
+      }
+      return this.openMode !== this.$store.state.openMode || this.openChannelName !== this.$store.getters.getChannelPathById(this.$store.state.openChannelId)
+    },
+    isChannelNameValid () {
+      return this.$store.getters.getChannelByName(this.openChannelName)
     }
   },
   mounted () {
     this.displayName = this.$store.state.me.displayName
     this.twitterId = this.$store.state.me.twitterId
+    this.openMode = this.$store.state.openMode
+    this.openChannelName = this.$store.getters.getChannelPathById(this.$store.state.openChannelId)
   }
 }
 </script>
