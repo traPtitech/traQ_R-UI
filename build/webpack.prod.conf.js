@@ -115,7 +115,11 @@ const webpackConfig = merge(baseWebpackConfig, {
       {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
-        ignore: ['.*']
+        ignore: ['.*', 'firebase-messaging-sw.js', 'sw.js']
+      },
+      {
+        from: path.resolve(__dirname, '../static/firebase-messaging-sw.js'),
+        to: 'firebase-messaging-sw.js'
       }
     ]),
 
