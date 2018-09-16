@@ -11,12 +11,12 @@ const client = {
   // Tag: authorization
   login (name, pass) {
     return middleWare('login', () => {
-      return axios.post(`/login`, {name, pass})
+      return axios.post(`/api/1.0/login`, {name, pass})
     })
   },
   logout () {
     return middleWare('logout', () => {
-      return axios.post(`/logout`)
+      return axios.post(`/api/1.0/logout`)
     })
   },
 
