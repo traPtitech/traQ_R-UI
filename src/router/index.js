@@ -99,7 +99,7 @@ router.beforeEach(async (to, from, next) => {
     } else if (store.state.openMode === 'lastOpen') {
       next(`/channels/${store.getters.getChannelPathById(store.state.lastChannelId)}`)
     } else {
-      next('/channels/random')
+      next('/channels/general')
     }
     return
   }
