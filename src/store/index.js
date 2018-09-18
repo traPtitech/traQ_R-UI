@@ -215,7 +215,7 @@ export default new Vuex.Store({
       state.staredChannelMap = map
     },
     setMutedChannelsData (state, data) {
-      state.mutedChannels = data
+      state.mutedChannels = data || []
       const map = {}
       data.forEach(channelId => {
         map[channelId] = true
@@ -619,14 +619,14 @@ export default new Vuex.Store({
       return db.read('browserSetting', 'openChannelId').then(data => {
         commit('setOpenChannelId', data)
       }).catch(async () => {
-        await dispatch('updateOpenChannelId', getters.getChannelByName('random').channelId)
+        await dispatch('updateOpenChannelId', getters.getChannelByName('general').channelId)
       })
     },
     loadLastChannelId ({commit, dispatch, getters}) {
       return db.read('browserSetting', 'lastChannelId').then(data => {
         commit('setLastChannelId', data)
       }).catch(async () => {
-        await dispatch('updateLastChannelId', getters.getChannelByName('random').channelId)
+        await dispatch('updateLastChannelId', getters.getChannelByName('general').channelId)
       })
     },
     updateOpenMode ({commit}, mode) {
