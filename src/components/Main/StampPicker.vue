@@ -16,7 +16,7 @@ div.stamp-picker
                 div.emoji-item(v-for="stamp in stamps(idx)" class="emoji s32" @click="addStamp(stamp.id)" @mouseover="hoverStamp(stamp.name)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
         div.stamp-picker-footer
             div.stamp-category-wrap
-              div.stamp-category-item(v-for="(category,idx) in $store.state.stampCategolized" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[category.stamps[0].id].fileId})`" @click="currentCategoryIndex=idx")
+              div.stamp-category-item(v-for="(category,idx) in $store.state.stampCategolized" :style="category.stamps[0] ? `background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[category.stamps[0].id].fileId})` : ''" @click="currentCategoryIndex=idx")
 </template>
 
 <script>
