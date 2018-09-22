@@ -8,6 +8,8 @@ div#app
 <script>
 import Splash from '@/components/Splash/Splash'
 import Favicon from '@/components/Util/Favicon'
+import 'normalize.css'
+import 'highlight.js/styles/default.css'
 export default {
   name: 'app',
   metaInfo: {

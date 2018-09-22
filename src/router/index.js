@@ -72,16 +72,12 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  // ここ以下はログインしている
-  if (to.path === '/login') {
-    next('/channels/random')
-    return
-  }
-
   if (!store.state.loaded) {
     // 起動後すぐ必要なもの
     await Promise.all([
-      store.dispatch('updateChannels'),
+      store.dispatch('updateChannels').then(async () => {
+        await store.dispatch('loadSetting')
+      }),
       store.dispatch('updateMembers'),
       store.dispatch('updateStamps')
     ])
@@ -90,9 +86,22 @@ router.beforeEach(async (to, from, next) => {
     Promise.all([
       store.dispatch('updateClipedMessages'),
       store.dispatch('updateStaredChannels'),
+      store.dispatch('updateMutedChannels'),
       store.dispatch('updateUnreadMessages'),
       store.dispatch('updateTags')
     ])
+  }
+
+  // ここ以下はログインしている
+  if (to.path === '/login' || to.path === '/') {
+    if (store.state.openMode === 'particular') {
+      next(`/channels/${store.getters.getChannelPathById(store.state.openChannelId)}`)
+    } else if (store.state.openMode === 'lastOpen') {
+      next(`/channels/${store.getters.getChannelPathById(store.state.lastChannelId)}`)
+    } else {
+      next('/channels/general')
+    }
+    return
   }
 
   store.commit('setPinnedModal', false)
@@ -145,6 +154,7 @@ router.beforeEach(async (to, from, next) => {
     return
   } else {
     store.commit('changeChannel', nextChannel)
+    store.dispatch('updateLastChannelId', nextChannel.channelId)
     // メッセージの取得を優先するため
     store.dispatch('getMessages')
     .then(() => {

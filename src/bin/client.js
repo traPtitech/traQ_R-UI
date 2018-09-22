@@ -11,12 +11,12 @@ const client = {
   // Tag: authorization
   login (name, pass) {
     return middleWare('login', () => {
-      return axios.post(`/login`, {name, pass})
+      return axios.post(`/api/1.0/login`, {name, pass})
     })
   },
   logout () {
     return middleWare('logout', () => {
-      return axios.post(`/logout`)
+      return axios.post(`/api/1.0/logout`)
     })
   },
 
@@ -38,9 +38,14 @@ const client = {
       return axios.get(`/api/1.0/channels/${channelId}`)
     })
   },
-  changeChannelInfo (channelId, name, parent, visibility, force) {
+  changeChannelInfo (channelId, name, visibility, force) {
     return middleWare('changeChannelName', () => {
-      return axios.patch(`/api/1.0/channels/${channelId}`, {name, parent, visibility, force})
+      return axios.patch(`/api/1.0/channels/${channelId}`, {name, visibility, force})
+    })
+  },
+  changeChannelParent (channelId, parent) {
+    return middleWare('changeChannelParent', () => {
+      return axios.put(`/api/1.0/channels/${channelId}/parent`, {parent})
     })
   },
   deleteChannel (channelId) {
@@ -185,28 +190,11 @@ const client = {
       })
     })
   },
-  changeEmail (email, pass) {
-    return middleWare('changeEmail', () => {
-      return axios.patch('api/1.0/users/me', {
-        email: email,
-        exPassword: pass
-      })
-    })
-  },
-  changePassword (pass, exPass) {
+  changePassword (pass, newPass) {
     return middleWare('changePassword', () => {
-      return axios.patch('api/1.0/users/me', {
+      return axios.put('api/1.0/users/me/password', {
         password: pass,
-        exPassword: exPass
-      })
-    })
-  },
-  changeSetting (pass, email, exPass) {
-    return middleWare('changeSetting', () => {
-      return axios.patch('api/1.0/users/me', {
-        email: email,
-        password: pass,
-        exPassword: exPass
+        newPassword: newPass
       })
     })
   },
@@ -292,15 +280,20 @@ const client = {
     })
   },
 
-  // Tag: visibility
-  getChannelVisibility () {
-    return middleWare('getChannelVisibility', () => {
-      return axios.get(`/api/1.0/users/me/channels/visibiliy`)
+  // Tag: mute
+  getMutedChannels () {
+    return middleWare('getMutedChannels', () => {
+      return axios.get(`/api/1.0/users/me/mute`)
     })
   },
-  changeChannelVisibility (state) {
-    return middleWare('changeChannelVisibility', () => {
-      return axios.put(`/api/1.0/users/me/channels/visibiliy`, state)
+  muteChannel (channelId) {
+    return middleWare('muteChannel', () => {
+      return axios.post(`/api/1.0/users/me/mute/${channelId}`)
+    })
+  },
+  unmuteChannel (channelId) {
+    return middleWare('unmuteChannel', () => {
+      return axios.delete(`/api/1.0/users/me/mute/${channelId}`)
     })
   },
 

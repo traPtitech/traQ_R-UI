@@ -43,6 +43,7 @@ export default new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
+    openChannels: {},
     sidebarOpened: false,
     stampPickerActive: false,
     stampPickerModel: null,
@@ -55,10 +56,14 @@ export default new Vuex.Store({
     stampCategolized: {},
     stampNameMap: [],
     currentChannel: {},
+    currentChannelUpdateDate: new Date(0),
     clipedMessages: {},
     unreadMessages: {},
+    unreadEarliests: {},
     staredChannels: [],
     staredChannelMap: {},
+    mutedChannels: [],
+    mutedChannelMap: {},
     messages: [],
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
@@ -73,7 +78,10 @@ export default new Vuex.Store({
     currentUserTags: [],
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
     editing: false,
-    isActivePinnedModal: false
+    isActivePinnedModal: false,
+    openMode: 'particular',
+    openChannelId: '',
+    lastChannelId: ''
   },
   mutations: {
     setStampPickerModel (state, model) {
@@ -162,6 +170,7 @@ export default new Vuex.Store({
     },
     changeChannel (state, channel) {
       state.currentChannel = channel
+      state.currentChannelUpdateDate = new Date(state.unreadEarliests[channel.channelId] || 0)
       state.messages = []
     },
     loadStart (state) {
@@ -182,24 +191,36 @@ export default new Vuex.Store({
       })
     },
     setUnreadMessagesData (state, data) {
-      const mp = {}
+      const unreads = {}
+      const earliests = {}
       data.forEach(message => {
-        if (mp[message.parentChannelId]) {
-          mp[message.parentChannelId][message.messageId] = message
+        if (unreads[message.parentChannelId]) {
+          unreads[message.parentChannelId][message.messageId] = message
+          earliests[message.parentChannelId] = Math.min(earliests[message.parentChannelId], new Date(message.createdAt).valueOf())
         } else {
-          mp[message.parentChannelId] = {}
-          mp[message.parentChannelId][message.messageId] = message
+          unreads[message.parentChannelId] = {}
+          unreads[message.parentChannelId][message.messageId] = message
+          earliests[message.parentChannelId] = new Date(message.createdAt).valueOf()
         }
       })
-      state.unreadMessages = mp
+      state.unreadMessages = unreads
+      state.unreadEarliests = earliests
     },
     setStaredChannelsData (state, data) {
       state.staredChannels = data
-      state.staredChannels.sort(stringSortGen('name'))
-      state.staredChannelMap = {}
-      state.staredChannels.forEach(channel => {
-        state.staredChannelMap[channel.channelId] = channel
+      const map = {}
+      state.staredChannels.forEach(channelId => {
+        map[channelId] = true
       })
+      state.staredChannelMap = map
+    },
+    setMutedChannelsData (state, data) {
+      state.mutedChannels = data || []
+      const map = {}
+      data.forEach(channelId => {
+        map[channelId] = true
+      })
+      state.mutedChannelMap = map
     },
     updateHeartbeatStatus (state, data) {
       state.heartbeatStatus = data
@@ -322,6 +343,21 @@ export default new Vuex.Store({
       const user = state.memberMap[userId]
       user.isOnline = isOnline
       Vue.set(state.memberMap, userId, user)
+    },
+    setOpenChannels (state, data) {
+      state.openChannels = data
+    },
+    setOpenChannel (state, {channelId, isOpen}) {
+      Vue.set(state.openChannels, channelId, isOpen)
+    },
+    setOpenMode (state, mode) {
+      state.openMode = mode
+    },
+    setOpenChannelId (state, channelId) {
+      state.openChannelId = channelId
+    },
+    setLastChannelId (state, channelId) {
+      state.lastChannelId = channelId
     }
   },
   getters: {
@@ -399,6 +435,9 @@ export default new Vuex.Store({
     notificationsOffMembers (state) {
       return state.memberData.filter(member => !state.currentChannelNotifications.find(id => id === member.userId))
     },
+    getCurrentChannelUpdateDate (state) {
+      return state.currentChannelUpdateDate
+    },
     getChannelUnreadMessageNum (state) {
       return channelId => {
         if (!state.unreadMessages[channelId]) {
@@ -431,6 +470,11 @@ export default new Vuex.Store({
     },
     getNonBotMember (state, getters) {
       return state.memberData.filter(user => !user.bot)
+    },
+    getStaredChannels (state) {
+      const channels = state.staredChannels.map(channelId => state.channelMap[channelId])
+      channels.sort(stringSortGen('name'))
+      return channels
     }
   },
   actions: {
@@ -479,7 +523,13 @@ export default new Vuex.Store({
         })
     },
     updateChannels ({state, commit}) {
-      return loadGeneralData('Channel', client.getChannels, commit)
+      const promise = loadGeneralData('Channel', client.getChannels, commit)
+      promise.then(() => {
+        db.read('generalData', 'openChannels').then(data => {
+          commit('setOpenChannels', data || {})
+        })
+      })
+      return promise
     },
     updateMembers ({state, commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
@@ -498,6 +548,9 @@ export default new Vuex.Store({
     },
     updateStaredChannels ({state, commit}) {
       return loadGeneralData('StaredChannels', client.getStaredChannels, commit)
+    },
+    updateMutedChannels ({state, commit}) {
+      return loadGeneralData('MutedChannels', client.getMutedChannels, commit)
     },
     getCurrentChannelTopic ({state, commit}, channelId) {
       return client.getChannelTopic(channelId)
@@ -543,6 +596,50 @@ export default new Vuex.Store({
       if (state.userModal && state.userModal.userId === userId) {
         commit('setUserModal', state.memberMap[userId])
       }
+    },
+    updateChannelOpen ({state, commit}, {channelId, isOpen}) {
+      commit('setOpenChannel', {channelId, isOpen})
+      return db.write('generalData', {type: 'openChannels', data: state.openChannels})
+    },
+    loadSetting ({dispatch}) {
+      return Promise.all([
+        dispatch('loadOpenMode'),
+        dispatch('loadOpenChannelId'),
+        dispatch('loadLastChannelId')
+      ])
+    },
+    loadOpenMode ({commit, dispatch}) {
+      return db.read('browserSetting', 'openMode').then(data => {
+        commit('setOpenMode', data)
+      }).catch(async () => {
+        await dispatch('updateOpenMode', 'particular')
+      })
+    },
+    loadOpenChannelId ({commit, dispatch, getters}) {
+      return db.read('browserSetting', 'openChannelId').then(data => {
+        commit('setOpenChannelId', data)
+      }).catch(async () => {
+        await dispatch('updateOpenChannelId', getters.getChannelByName('general').channelId)
+      })
+    },
+    loadLastChannelId ({commit, dispatch, getters}) {
+      return db.read('browserSetting', 'lastChannelId').then(data => {
+        commit('setLastChannelId', data)
+      }).catch(async () => {
+        await dispatch('updateLastChannelId', getters.getChannelByName('general').channelId)
+      })
+    },
+    updateOpenMode ({commit}, mode) {
+      commit('setOpenMode', mode)
+      return db.write('browserSetting', {type: 'openMode', data: mode})
+    },
+    updateOpenChannelId ({commit}, channelId) {
+      commit('setOpenChannelId', channelId)
+      return db.write('browserSetting', {type: 'openChannelId', data: channelId})
+    },
+    updateLastChannelId ({commit}, channelId) {
+      commit('setLastChannelId', channelId)
+      return db.write('browserSetting', {type: 'lastChannelId', data: channelId})
     }
   }
 })

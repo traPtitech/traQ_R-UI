@@ -15,8 +15,11 @@ export default function (stampData) {
       stamps: {}
     }
     category.emojis.forEach(stamp => {
-      categorized[category.order].stamps[stamp.name] = categorized[0].stamps[stamp.name]
-      delete categorized[0].stamps[stamp.name]
+      const temp = categorized[0].stamps[stamp.name]
+      if (temp) {
+        categorized[category.order].stamps[stamp.name] = temp
+        delete categorized[0].stamps[stamp.name]
+      }
     })
   })
   categorized.forEach(category => {
