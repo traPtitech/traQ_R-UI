@@ -2,7 +2,7 @@
 div.footer
   span.version-text
     | traQ R alpha
-  ul
+  ul.footer-button-wrap
     li.menu-button.setting(@click="$router.push('/setting')")
       icon(name="cog")
 </template>
@@ -20,6 +20,10 @@ export default {
   display: flex
   align-items: center
   justify-content: space-between
+.footer-button-wrap
+  margin: 0 20px
+.menu-button.setting
+  color: white
 .version-text
   color: white
   font-size: 15px

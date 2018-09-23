@@ -4,10 +4,10 @@ div.member-element(v-on:click="openUserModal")
     p(v-if="unreadMessagesNum > 0")
       | {{unreadMessagesNum}}
     img.member-element-icon(:src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
-    ruby
+    p
       | {{model.displayName}}
-      rt
-        | @{{model.name}}
+    p
+      | @{{model.name}}
 </template>
 
 <script>
@@ -47,6 +47,7 @@ export default {
 <style lang="sass">
 .member-element
   cursor: pointer
+  color: $text-light-color
 .member-element-icon
   width: 40px
   height: 40px

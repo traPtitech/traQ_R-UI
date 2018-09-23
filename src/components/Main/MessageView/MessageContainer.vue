@@ -79,8 +79,7 @@ export default {
 <style lang="sass">
 .content-wrap
   grid-area: content
-  // position: relative
-  background-color: rgb(249, 249, 249)
+  background-color: $light-bg-color
   overflow-x: hidden
   overflow-y: scroll
   min-width: 0

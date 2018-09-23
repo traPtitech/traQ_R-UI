@@ -1,7 +1,11 @@
 <template lang="pug">
 div.channel-list
-  ChannelElement(v-for="model in $store.getters.getStaredChannels" :key="'star' + model.channelId" :model="model")
-  ChannelElement(v-for="model in $store.getters.childrenChannels('')" v-bind:key="model.channelId" :model="model")
+  transition(name="slide" mode="out-in")
+    keep-alive
+      div.list-channels
+        ChannelElement(v-for="model in $store.getters.childrenChannels('')" v-bind:key="model.channelId" :model="model")
+      div.stared-channels
+        ChannelElement(v-for="model in $store.getters.getStaredChannels" :key="'star' + model.channelId" :model="model")
 </template>
 
 <script>

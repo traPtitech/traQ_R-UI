@@ -185,14 +185,16 @@ $topic-height: 14px
   position: relative
   flex-flow: column
   justify-content: center
-  padding: 0 0 10px
+  padding: 60px 0 10px
   background: $primary-color
   transition: all .5s ease
   overflow: hidden
   position: relative
   transform: translateY(-100%)
+  user-select: none
   .is-expanded &
-    transform: translateY(0)
+    top: 0
+    transform: translateY(-60px)
 .titlebar-menu-button-wrap
   display: flex
   justify-content: center
@@ -203,6 +205,9 @@ $topic-height: 14px
     justify-content: center
     width: 50%
     cursor: pointer
+    transition: all .3s ease
+    &:hover
+      background: rgba(0,0,0,0.1)
 .border-left
   position: relative
   &::after
@@ -225,8 +230,11 @@ $topic-height: 14px
   color: white
   font-size: 14px
   cursor: pointer
+  transition: all .3s ease
   .menu-icon
     margin-right: 15px
+  &:hover
+      background: rgba(0,0,0,0.1)
 .traq-logo
   width: 30px
   height: 30px
