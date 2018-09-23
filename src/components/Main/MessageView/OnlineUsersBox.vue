@@ -3,7 +3,7 @@ div.online-users-box.drop-shadow(v-bind:class="{'is-opened':isOpened}")
   span.online-users-number(@click="isOpened=!isOpened")
     | {{onlineUsersNumber}}
   div.online-users-open-button
-  ul.online-users-list
+  ul.online-users-list(v-if="onlineUsers")
     li(v-for="user in onlineUsers")
       img.user-icon(:src="userIconSrc(user)")
       // p

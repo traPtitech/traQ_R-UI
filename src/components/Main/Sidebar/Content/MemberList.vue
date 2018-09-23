@@ -84,6 +84,6 @@ export default {
   width: 80%
   margin-left: 10px
 .grade-name-container > p
-  color: white
+  color: $text-light-color
   margin-left: 10px
 </style>

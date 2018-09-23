@@ -72,7 +72,7 @@ export default {
 .navigation
   grid-area: menu
   user-select: none
-  background-color: $primary-color
+  background-color: $secondary-color
   ul
     height: $navigation-height
     display: flex
@@ -81,28 +81,18 @@ export default {
   display: flex
   position: relative
   width: 100%
-  padding: 10px 0
+  height: 100%
   cursor: pointer
   align-items: center
   justify-content: center
-  color: white
+  color: rgba(255, 255, 255, 0.6)
   font-size: 1.3em
   transition: all .2s ease
   &:hover
-    color: rgba(255, 255, 255, 0.6)
-  &:after
-    position: absolute
-    display: block
-    content: ''
-    top: 0
-    right: 0
-    width: 0
-    height: 100%
-    background: white
-    transition: width .2s ease
+    color: white
   &.menu-active
-    &:after
-      width: 8%
+    background: $primary-color
+    color: white
 .user-icon-wrap
   display: flex
   justify-content: center
@@ -148,6 +138,4 @@ export default {
     transition: all .5s ease
   &:hover p
     background-color: rgba(255, 255, 255, 0.3)
-.channels
-  margin-top: 10px
 </style>

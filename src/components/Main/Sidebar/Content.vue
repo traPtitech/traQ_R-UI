@@ -31,8 +31,7 @@ export default {
 <style lang="sass">
 .menu-content
   height: calc( 100% - #{$navigation-height} - #{$footer-height} )
-  background-color: #F5F5F5
-  border-right: 1px solid rgb(176, 176, 176)
+  background-color: $primary-color
   overflow: scroll
   -webkit-overflow-scrolling: touch
 .slide-enter-active, .slide-leave-active
