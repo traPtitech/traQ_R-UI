@@ -19,13 +19,12 @@ export default {
 
 <style lang="sass">
 .modal
-  position: absolute
-  z-index: 101
+  position: relative
   background-color: #f5f5f5
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.25)
 .modal-overlay
+  z-index: $modal-index
   position: fixed
-  z-index: 100
   width: 100%
   height: 100%
   top: 0
