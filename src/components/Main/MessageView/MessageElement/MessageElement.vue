@@ -5,8 +5,8 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
   div.message-detail-wrap
     div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
       | {{getUserName(model.userId)}}
-      //- p.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
-      //-   | @{{$store.state.memberMap[model.userId].name}}
+    div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
+      | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
       | {{displayDateTime}}
     ul.message-buttons-wrap
@@ -379,7 +379,6 @@ export default {
 .message-user-icon
   width: 40px
   height: 40px
-  background-color: #d2d2d2
   border-radius: 100%
   cursor: pointer
 .message-detail-wrap

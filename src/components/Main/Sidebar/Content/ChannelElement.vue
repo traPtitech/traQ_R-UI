@@ -1,19 +1,16 @@
 <template lang="pug">
 div.channel-wrap(v-if="model.visibility")
   div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
-    div.channel-toggle.channel-before(v-if="isParent" @click.stop="toggle")
+    div.channel-toggle.channel-before(v-if="isParent" @click.stop="toggle" :class="channelBeforeClass")
       | #
-    div.channel-before(v-else)
+    div.channel-before(v-else :class="channelBeforeClass")
       | #
     p.channel-box-name
       | {{model.name}}
-    p.channel-unread-num(v-if="unreadNum > 0")
-      | {{unreadNum}}
-    p.channel-unread-sum(v-if="!isOpened && unreadSum - unreadNum > 0")
-      | {{unreadSum - unreadNum}}
-    //- div.channel-status-wrap
-    //-   div.channel-notification
-    //-   div.channel-toggle(v-if="isParent" v-on:click.stop="toggle")
+    //- p.channel-unread-num(v-if="unreadNum > 0")
+    //-   | {{unreadNum}}
+    //- p.channel-unread-sum(v-if="!isOpened && unreadSum - unreadNum > 0")
+    //-   | {{unreadSum - unreadNum}}
   div.channel-children(ref="children" v-if="model.children")
     transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
       div(ref="childrenWrap" v-show="isOpened")
@@ -61,6 +58,12 @@ export default {
     },
     isOpened () {
       return this.$store.state.openChannels[this.model.channelId]
+    },
+    channelBeforeClass () {
+      return {
+        'has-unread': this.unreadNum > 0,
+        'has-unread-child': !this.isOpened && (this.unreadSum - this.unreadNum) > 0
+      }
     }
   },
   components: {
@@ -122,7 +125,7 @@ export default {
 .channel-children
   position: relative
   padding: 0 0 0 0
-  transition: all .1s ease
+  transition: all .2s ease
   &:before
     display: block
     content: ''
@@ -143,6 +146,7 @@ export default {
 .channel-notification
   flex: 1
 .channel-before
+  position: relative
   display: flex
   justify-content: center
   align-items: center
@@ -153,18 +157,21 @@ export default {
   font-weight: bold
   .channel-watched &
     color: $primary-color
-  // .channel-box:not(.channel-opened) &:before
-  //   display: block
-  //   content: ''
-  //   position: absolute
-  //   top: 0px
-  //   left: 20px
-  //   width: 1px
-  //   height: 5px
-  //   background: $text-light-color
+  &.has-unread::after
+    content: ''
+    position: absolute
+    display: block
+    width: 7px
+    height: 7px
+    right: -3px
+    top: -3px
+    border-radius: 100%
+    background: orange
 .channel-toggle
   border: solid 1px $text-light-color
   border-radius: 5px
+  &.has-unread-child
+    border-color: orange
   .channel-opened &
     background: $text-light-color
     color: $primary-color

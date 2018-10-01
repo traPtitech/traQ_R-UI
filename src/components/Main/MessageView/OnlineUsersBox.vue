@@ -1,13 +1,15 @@
 <template lang="pug">
 div.online-users-box.drop-shadow(v-bind:class="{'is-opened':isOpened}")
-  span.online-users-number(@click="isOpened=!isOpened")
+  div.online-users-number(@click="isOpened=!isOpened")
     | {{onlineUsersNumber}}
   div.online-users-open-button
-  ul.online-users-list(v-if="onlineUsers")
-    li(v-for="user in onlineUsers")
+  ul.online-users-list(v-if="onlineUsers" @mouseleave="removeCurrentUser")
+    li(v-for="(user,i) in onlineUsers" @mouseover="setCurrentUser(i)")
       img.user-icon(:src="userIconSrc(user)")
-      // p
-      //   | {{$store.state.memberMap[user.userId].displayName}}
+  div.online-users-info(v-if="currentUserIndex!==null && isOpened" :style="{top: 50*currentUserIndex+75+'px'}")
+    span.text-ellipsis
+      | {{$store.state.memberMap[onlineUsers[currentUserIndex].userId].displayName}}
+      //- | {{$store.state.memberMap[currentUserId].displayName}}
 </template>
 
 <script>
@@ -15,7 +17,8 @@ import client from '@/bin/client'
 export default {
   data () {
     return {
-      isOpened: false
+      isOpened: false,
+      currentUserIndex: null
     }
   },
   computed: {
@@ -35,6 +38,12 @@ export default {
     },
     openUserModal (userId) {
       this.$store.dispatch('openUserModal', userId)
+    },
+    setCurrentUser (userIndex) {
+      this.currentUserIndex = userIndex
+    },
+    removeCurrentUser () {
+      this.currentUserIndex = null
     }
   }
 }
@@ -67,7 +76,7 @@ export default {
   color: white
   font-size: 20px
   transition: all .3s ease
-  background: $third-color
+  background: $tertiary-color
   &::before
     content: ''
     position: absolute
@@ -92,7 +101,7 @@ export default {
   align-items: center
   justify-content: center
   transition: all .5s ease
-  background: $third-color
+  background: $tertiary-color
   max-height: 80vh
   padding: 10px 0
   overflow: scroll
@@ -103,4 +112,19 @@ export default {
   li
     margin: 10px 0
     height: 30px
+.online-users-info
+  display: flex
+  align-items: center
+  position: absolute
+  padding: 0 0 0 10px
+  box-sizing: border-box
+  top: 60px
+  right: $online-users-box-width + 10px
+  width: 150px
+  height: 40px
+  background: $tertiary-color
+  color: $text-light-color
+  transition: all .3s ease
+  span
+    width: 100%
 </style>

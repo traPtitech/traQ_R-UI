@@ -121,5 +121,5 @@ export default {
   &:after
     right: 10px
 .message-list
-  padding: 0
+  padding: 60px 0 0 0
 </style>
