@@ -56,15 +56,16 @@ export default {
 .sidebar
   height: 100vh
   background-color: white
-  transition: all .1s linear
+  transition: all .5s ease-in-out
   z-index: $sidebar-index
   +mq(pc)
     grid-area: side
   +mq(sp)
     width: $sidebar-width
     position: absolute
-    z-index: 1000
-    left: -260px
+    z-index: $sidebar-index
+    // left: -260px
+    top: -100%
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     padding-left: calc(env(safe-area-inset-left) - 7px)
     background-color: #3a4891

@@ -2,7 +2,6 @@
 header.titlebar(ref="titlebar" :class="{'is-expanded':isExpanded}")
   div.titlebar-inner-wrap(@click="isExpanded=!isExpanded")
     // div.sidebar-open(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened")
-    //   icon(name="bars").sidebar-open-icon
     img.traq-logo(src="@/assets/img/icon/logo_white.svg")
     div.channel-info-wrap(ref="titlebarInner")
       h1.text-ellipsis.channel-name
@@ -236,7 +235,7 @@ $topic-height: 14px
   &:hover
       background: rgba(0,0,0,0.1)
 .traq-logo
-  width: 30px
-  height: 30px
+  width: 25px
+  height: 25px
   margin: 0 10px 0 15px
 </style>
