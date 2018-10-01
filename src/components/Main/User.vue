@@ -1,14 +1,14 @@
 <template lang="pug">
 div.user
   modal(@close="closeModal" :active="active")
-    div.user-modal
+    div.user-modal(:data-is-expanded="expandProfile ? 'true' : 'false'" @click="toggleExpandProfile")
       div.user-modal-main-container
         div.user-modal-img(:style="profileImgStyle")
-          div.user-modal-dm(v-on:click="openDirectMessage")
+          div.user-modal-dm(@click="openDirectMessage")
             div.user-modal-dm-indicator(v-if="!hasUnreadMessages")
             icon.user-modal-dm-icon-envelope(name="envelope" scale="1.5")
         div.user-modal-profile-container
-          div.user-modal-profile(v-on:click="toggleExpandProfile")
+          div.user-modal-profile
             div.user-modal-display-name
               | {{model.displayName}}
             div.user-modal-real-name-container
@@ -59,7 +59,7 @@ div.user
               div(v-on:click="unlockTag(index)")
                 icon.user-modal-icon--gray(name="lock" v-show="hasAuth && tag.isLocked")
               icon.user-modal-icon--gray.non-clickable(name="lock" v-show="!hasAuth && tag.isLocked")
-        div.user-modal-detail-input-container
+        .user-modal-detail-input-container
           div.user-modal-detail-input
             icon.user-modal-icon--gray.user-modal-tag-icon(name="tag" :style="detailInputIconStyle")
             input.user-modal-tag-body(v-model="tagInput" v-on:keydown="keydown" placeholder="タグを追加……")
@@ -112,28 +112,6 @@ export default {
         this.tagInput = ''
         this.$store.dispatch('updateCurrentUserTags')
       })
-    },
-    eraseTag (id) {
-      client.deleteUserTag(this.model.userId, this.tags[id].tagId)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
-    },
-    lockTag (id) {
-      client.changeLockUserTag(this.model.userId, this.tags[id].tagId, true)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
-    },
-    unlockTag (id) {
-      client.changeLockUserTag(this.model.userId, this.tags[id].tagId, false)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
-    },
-    openDirectMessage () {
-      this.$router.push(`/users/${this.model.name}`)
-      this.closeModal()
     },
     toggleExpandProfile () {
       this.expandProfile = !this.expandProfile
@@ -240,6 +218,7 @@ $profile-area-height: 30vh
   min-height: $modal-min-height
   width: 100%
   grid-template-columns: 100%
+  transition: all 1s ease
   @media (orientation: landscape)
     grid-template-columns: minmax(200px, auto) 65%
     grid-template-areas: "profile detail"
@@ -302,9 +281,9 @@ $profile-area-height: 30vh
             position: absolute
             height: $indicator-size
             width: $indicator-size
-            top: - $indicator-size / 3;
-            left: - 2 * $indicator-size / 3;
-            border: $indicator-border-width solid white;
+            top: - $indicator-size / 3
+            left: - 2 * $indicator-size / 3
+            border: $indicator-border-width solid white
             border-radius: 50%
             background: #EB5757
           @media (orientation: landscape)
@@ -394,6 +373,14 @@ $profile-area-height: 30vh
         font-size: 1.2rem
         margin-right: 2rem
         margin-bottom: 0.1rem
+
+.user-modal[data-is-expanded="true"]
+  @media (orientation: landscape)
+    grid-template-columns: minmax(200px, auto) 65%
+    grid-template-areas: "profile detail"
+  @media (orientation: portrait)
+    grid-template-rows: 100% 0
+    grid-template-areas: "profile""detail"
 
   .user-modal-detail-container
     $header-height: 5rem

@@ -56,7 +56,7 @@ const router = new Router({
 })
 
 router.beforeEach(async (to, from, next) => {
-  store.commit('closeUserModal')
+  store.dispatch('closeModal')
 
   if (!store.state.me) {
     await store.dispatch('whoAmI')
