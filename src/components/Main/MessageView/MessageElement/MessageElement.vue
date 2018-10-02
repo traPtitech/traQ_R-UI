@@ -3,10 +3,11 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" @click="openUserModal(model.userId)")
   div.message-detail-wrap
-    div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
-      | {{getUserName(model.userId)}}
-    div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
-      | @{{$store.state.memberMap[model.userId].name}}
+    div.message-user-info-wrap
+      div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
+        | {{getUserName(model.userId)}}
+      div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
+        | @{{$store.state.memberMap[model.userId].name}}
     time.message-date
       | {{displayDateTime}}
     ul.message-buttons-wrap
@@ -387,18 +388,22 @@ export default {
   justify-content: space-between
   align-items: center
   min-width: 0
+.message-user-info-wrap
+  display: flex
+  align-items: center
+  width: 80%
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
   text-align: left
-  max-width: 50%
+  max-width: 60%
   height: 100%
   overflow: hidden
   cursor: pointer
 .message-user-id
   margin-left: 5px
   font-size: 0.8em
-  max-width: 30%
+  max-width: 40%
   overflow: hidden
 .message-date
   // flex: 1

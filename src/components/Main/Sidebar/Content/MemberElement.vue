@@ -4,9 +4,9 @@ div.member-element(v-on:click="openUserModal")
     p(v-if="unreadMessagesNum > 0")
       | {{unreadMessagesNum}}
     img.member-element-icon(:src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
-    p
+    span
       | {{model.displayName}}
-    p
+    span
       | @{{model.name}}
 </template>
 
