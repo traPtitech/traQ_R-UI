@@ -1,0 +1,31 @@
+<template lang="pug">
+div.footer
+  span.version-text
+    | traQ R alpha
+  ul.footer-button-wrap
+    li.menu-button.setting(@click="$router.push('/setting')")
+      icon(name="cog")
+</template>
+
+<script>
+export default {
+}
+</script>
+
+<style lang="sass">
+.footer
+  height: $footer-height
+  width: 100%
+  background: $secondary-color
+  display: flex
+  align-items: center
+  justify-content: space-between
+.footer-button-wrap
+  margin: 0 20px
+.menu-button.setting
+  color: white
+.version-text
+  color: white
+  font-size: 15px
+  margin-left: 20px
+</style>

@@ -1,7 +1,5 @@
 <template lang="pug">
 div
-  p(style="text-align:center")
-    | Humming Soon
 </template>
 
 <script>

@@ -17,7 +17,7 @@ export default {
     this.canvas.height = 32
 
     this.img = new Image()
-    this.img.src = '/static/img/traq_icon.png'
+    this.img.src = '/static/favicon-32x32.png'
 
     this.ctx = this.canvas.getContext('2d')
 

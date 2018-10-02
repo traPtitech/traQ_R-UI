@@ -1,7 +1,5 @@
 <template lang="pug">
 div.splash
-  | {{text}}
-  
 </template>
 
 <script>
@@ -34,7 +32,6 @@ export default {
   background-color: #6cb8ff
   z-index: 1000
   animation: gradationTest 3s infinite
-
 @keyframes gradationTest 
   0% {background-color: #6cb8ff;}
   50% {background-color: #fff66c;}

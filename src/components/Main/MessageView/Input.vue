@@ -340,7 +340,7 @@ export default {
     display: block
     width: calc( 100% - 20px )
     height: 1px
-    background-color: $border-color
+    background-color: $light-bg-color
     transition: background-color .3s ease
   &:after
     content: ''
@@ -357,7 +357,6 @@ export default {
     transition: width .3s ease
   &.input-focused:after
     width: calc( 100% - 20px )
-
 .upload-button, .submit-button
   position: absolute
   z-index: 200
@@ -385,7 +384,7 @@ export default {
   box-sizing: border-box
   z-index: 100
   width: 100%
-  height: 50px
+  height: $input-height
   margin: 0
   background: none
   resize: none
@@ -396,7 +395,7 @@ export default {
   border: 0
   line-height: 1em
   animation: openInputArea 1s ease
-  background-color: #f9f9f9
+  background-color: $light-bg-color
   caret-color: $text-color
   /*transition: all .3s ease-in-out*/
   &:focus

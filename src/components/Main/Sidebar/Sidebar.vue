@@ -1,22 +1,21 @@
 <template lang="pug">
-div.sidebar(v-bind:style="{transform: `translateX(${translateX}px)`}" v-bind:class="{'sidebar-opened': $store.state.sidebarOpened}" v-on="{mousedown: mouseDown,mouseup: mouseUp, mousemove: mouseMove, touchstart: mouseDown, touchend: mouseUp, touchmove: mouseMove, mouseleave: mouseLeave}" ref="sidebar" draggable="false")
-  MenuHeader
+div.sidebar(v-bind:style="{transform: `translateX(${translateX}px)`}" v-bind:class="{'sidebar-opened': $store.state.sidebarOpened}" ref="sidebar")
   Navigation
-  MenuContent
+  Content
+  Footer
   div.sidebar-overlay(draggable="false" v-on:click="close" v-bind:style="{opacity: translateX / width}" v-if="isActive || isOpened")
-  div.slide-trigger(draggable="false" v-on="{mousedown: mouseDown,mouseup: mouseUp, mousemove: mouseMove, touchstart: mouseDown, touchend: mouseUp, touchmove: mouseMove}" v-bind:class="{'slide-active':isActive}")
 </template>
 
 <script>
 import MenuHeader from '@/components/Main/Sidebar/MenuHeader'
 import Navigation from '@/components/Main/Sidebar/Navigation'
+import Footer from '@/components/Main/Sidebar/Footer'
+
 export default {
   name: 'Sidebar',
   data () {
     return {
       isActive: false,
-      mouseX: 0,
-      mouseXStart: 0,
       translateX: 0
     }
   },
@@ -31,54 +30,22 @@ export default {
   components: {
     'MenuHeader': MenuHeader,
     'Navigation': Navigation,
-    'MenuContent': window.asyncLoadComponents(import('@/components/Main/Sidebar/MenuContent'))
+    'Content': window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
+    'Footer': Footer
   },
   methods: {
-    mouseDown () {
-      this.isActive = true
-    },
-    mouseUp () {
-      this.isActive = false
-    },
-    mouseMove (e) {
-      this.mouseX = e.x
-    },
-    mouseLeave () {
-      this.isActive = false
-    },
     close () {
       this.$store.commit('closeSidebar')
       this.translateX = 0
-      this.isActive = false
     },
     open () {
       this.$store.commit('openSidebar')
       this.translateX = this.width
-      this.isActive = false
     }
   },
   watch: {
     isOpened () {
       this.isOpened ? this.open() : this.close()
-    },
-    isActive () {
-      if (this.isActive) {
-        this.mouseXStart = this.mouseX
-      } else {
-        this.translateX > this.width / 2 ? this.open() : this.close()
-      }
-    },
-    mouseX () {
-      if (window.innerWidth >= 680) {
-        return
-      }
-      if (this.isActive) {
-        let offsetX = this.mouseX - this.mouseXStart
-        offsetX = this.isOpened ? this.width + offsetX : offsetX
-        this.translateX = offsetX
-        this.translateX = Math.min(this.width, this.translateX)
-        this.translateX = Math.max(this.translateX, 0)
-      }
     }
   }
 }
@@ -87,20 +54,18 @@ export default {
 <style lang="sass">
 @import "~@/styles/global.sass"
 .sidebar
-  display: grid
-  grid-template-rows: 60px 1fr
-  grid-template-columns: 50px 1fr
-  grid-template-areas: "menu header" "menu content"
   height: 100vh
   background-color: white
-  transition: all .1s linear
+  transition: all .5s ease-in-out
+  z-index: $sidebar-index
   +mq(pc)
     grid-area: side
   +mq(sp)
-    width: 260px
+    width: $sidebar-width
     position: absolute
-    z-index: 1000
-    left: -260px
+    z-index: $sidebar-index
+    // left: -260px
+    top: -100%
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     padding-left: calc(env(safe-area-inset-left) - 7px)
     background-color: #3a4891

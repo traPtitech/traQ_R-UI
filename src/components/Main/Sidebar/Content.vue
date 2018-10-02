@@ -30,9 +30,8 @@ export default {
 
 <style lang="sass">
 .menu-content
-  grid-area: content
-  background-color: #F5F5F5
-  border-right: 1px solid rgb(176, 176, 176)
+  height: calc( 100% - #{$navigation-height} - #{$footer-height} )
+  background-color: $primary-color
   overflow: scroll
   -webkit-overflow-scrolling: touch
 .slide-enter-active, .slide-leave-active

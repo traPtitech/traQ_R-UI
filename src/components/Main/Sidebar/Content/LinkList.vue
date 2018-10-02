@@ -54,15 +54,17 @@ export default {
 <style lang="sass">
 .links-list-wrap
   padding: 0 0 15px
-.links-list li
-  padding: 5px 10px
-  transition: all .5s ease
-  &:hover
-    background-color: #e4e4e4
-.links-list li a
-  display: flex
-  align-items: center
-  color: #2c3e50
+.links-list
+  padding-top: 15px
+  li
+    padding: 5px 10px 5px 20px
+    transition: all .5s ease
+    &:hover
+      background-color: rgba(0,0,0,0.1)
+  a
+    display: flex
+    align-items: center
+    color: $text-light-color
 .link-icon
   font-size: 1.5em
   width: 30px
