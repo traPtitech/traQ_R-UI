@@ -52,7 +52,7 @@ export default {
     },
     lastOnline () {
       return dateParse(new Date(this.data.lastOnline))
-    },
+    }
   },
   methods: {
   }
