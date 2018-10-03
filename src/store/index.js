@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
+import modal from './modal'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -38,6 +39,9 @@ const stringSortGen = (key) => (lhs, rhs) => {
 }
 
 export default new Vuex.Store({
+  modules: {
+    modal
+  },
   state: {
     loaded: false,
     loadedComponent: false,
@@ -75,7 +79,6 @@ export default new Vuex.Store({
     files: [],
     userModal: null,
     tagModal: null,
-    currentUserTags: [],
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
     editing: false,
     isActivePinnedModal: false,
@@ -313,22 +316,6 @@ export default new Vuex.Store({
     },
     clearFiles (state) {
       state.files = []
-    },
-    setUserModal (state, user) {
-      state.userModal = user
-    },
-    setTagModal (state, tag) {
-      state.tagModal = tag
-    },
-    setCurrentUserTags (state, tags) {
-      tags = tags || []
-      state.currentUserTags = tags
-    },
-    closeUserModal (state) {
-      state.userModal = null
-    },
-    closeTagModal (state) {
-      state.tagModal = null
     },
     setEditing (state, isEditing) {
       state.editing = isEditing
@@ -570,22 +557,6 @@ export default new Vuex.Store({
           commit('setCurrentChannelNotifications', res.data)
         })
     },
-    updateCurrentUserTags ({state, commit}) {
-      return client.getUserTags(state.userModal.userId)
-      .then(res => {
-        commit('setCurrentUserTags', res.data)
-      })
-    },
-    openUserModal ({state, commit, dispatch}, userId) {
-      if (/#/.test(state.memberMap[userId].name)) return
-      commit('setUserModal', state.memberMap[userId])
-      commit('setTagModal', null)
-      return dispatch('updateCurrentUserTags')
-    },
-    openTagModal ({state, commit, dispatch}, tagId) {
-      commit('setTagModal', state.tagMap[tagId])
-      commit('setUserModal', null)
-    },
     checkPinnedMessage ({state, dispatch}, messageId) {
       if (state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)) {
         dispatch('getCurrentChannelPinnedMessages', state.currentChannel.channelId)
@@ -593,8 +564,8 @@ export default new Vuex.Store({
     },
     updateUserOnline ({state, commit}, {userId, isOnline}) {
       commit('setUserOnline', {userId, isOnline})
-      if (state.userModal && state.userModal.userId === userId) {
-        commit('setUserModal', state.memberMap[userId])
+      if (state.modal.data && state.modal.data.userId === userId) {
+        commit('modal/setModalData', state.memberMap[userId])
       }
     },
     updateChannelOpen ({state, commit}, {channelId, isOpen}) {

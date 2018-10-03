@@ -1,18 +1,14 @@
 <template lang="pug">
 div.user
   modal(@close="closeModal" :active="active")
-    div.user-modal
+    div.user-modal(:data-is-expanded="expandProfile ? 'true' : 'false'" @click="toggleExpandProfile")
       div.user-modal-main-container
-        div.user-modal-img(:style="profileContainerStyle")
-        div.user-modal-gradient(:style="gradientStyle")
-        div.user-modal-profile-container
-          div.user-modal-dm(v-on:click="openDirectMessage")
-            div.user-modal-dm-indicator(v-if="hasUnreadMessages")
+        div.user-modal-img(:style="profileImgStyle")
+          div.user-modal-dm(@click="openDirectMessage")
+            div.user-modal-dm-indicator(v-if="!hasUnreadMessages")
             icon.user-modal-dm-icon-envelope(name="envelope" scale="1.5")
-            div.user-modal-button
-              | Direct Message
-          hr
-          div.user-modal-profile(v-on:click="toggleExpandProfile")
+        div.user-modal-profile-container
+          div.user-modal-profile
             div.user-modal-display-name
               | {{model.displayName}}
             div.user-modal-real-name-container
@@ -63,7 +59,7 @@ div.user
               div(v-on:click="unlockTag(index)")
                 icon.user-modal-icon--gray(name="lock" v-show="hasAuth && tag.isLocked")
               icon.user-modal-icon--gray.non-clickable(name="lock" v-show="!hasAuth && tag.isLocked")
-        div.user-modal-detail-input-container
+        .user-modal-detail-input-container
           div.user-modal-detail-input
             icon.user-modal-icon--gray.user-modal-tag-icon(name="tag" :style="detailInputIconStyle")
             input.user-modal-tag-body(v-model="tagInput" v-on:keydown="keydown" placeholder="タグを追加……")
@@ -117,28 +113,6 @@ export default {
         this.$store.dispatch('updateCurrentUserTags')
       })
     },
-    eraseTag (id) {
-      client.deleteUserTag(this.model.userId, this.tags[id].tagId)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
-    },
-    lockTag (id) {
-      client.changeLockUserTag(this.model.userId, this.tags[id].tagId, true)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
-    },
-    unlockTag (id) {
-      client.changeLockUserTag(this.model.userId, this.tags[id].tagId, false)
-      .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
-      })
-    },
-    openDirectMessage () {
-      this.$router.push(`/users/${this.model.name}`)
-      this.closeModal()
-    },
     toggleExpandProfile () {
       this.expandProfile = !this.expandProfile
     }
@@ -184,7 +158,7 @@ export default {
     twitterProfileUrl () {
       return this.model.twitterId !== '' ? `https://twitter.com/${this.model.twitterId}` : null
     },
-    profileContainerStyle () {
+    profileImgStyle () {
       return {
         backgroundImage: `url(${this.$store.state.baseURL}/api/1.0/users/${this.model.userId}/icon)`
       }
@@ -210,11 +184,6 @@ export default {
         color: this.tagInput.length > 0 ? 'gray' : 'lightgray'
       }
     },
-    gradientStyle () {
-      return {
-        background: `linear-gradient(180deg, rgba(156, 178, 203, 0.38674) 0%, #003778 100%)`
-      }
-    },
     lastOnline () {
       return dateParse(new Date(this.model.lastOnline))
     },
@@ -231,46 +200,103 @@ export default {
 </script>
 <style lang="sass">
 $modal-height: 600px
+$modal-border-radius: 10px
 $modal-max-height: 90vh
 $modal-min-height: 70vh
-$profile-area-height: 40vh
+$profile-area-height: 30vh
 
 .user .modal
-  width: 80%
+  border-radius: $modal-border-radius
+  width: 90%
+  +mq
+    width: 80%
 
 .user-modal
   display: grid
   height: $modal-height
   max-height: $modal-max-height
   min-height: $modal-min-height
+  width: 100%
+  grid-template-columns: 100%
+  transition: all 1s ease
   @media (orientation: landscape)
-    grid-template-columns: minmax(200px, auto) 55%
+    grid-template-columns: minmax(200px, auto) 65%
     grid-template-areas: "profile detail"
   @media (orientation: portrait)
     grid-template-rows: $profile-area-height calc(100% - #{$profile-area-height})
     grid-template-areas: "profile""detail"
 
   .user-modal-main-container
+    @media (orientation: landscape)
+      border-radius: $modal-border-radius 0 0 $modal-border-radius
+    @media (orientation: portrait)
+      border-radius: $modal-border-radius $modal-border-radius 0 0
     grid-area: profile
+    padding: 0 1rem
     position: relative
     display: flex
+    align-items: center
     justify-content: center
     height: 100%
     max-height: $modal-max-height
+    background: $primary-color
+    @media (orientation: landscape)
+      flex-direction: column
+    @media (orientation: portrait)
+      flex-direction: row
+
     .user-modal-img
-      position: absolute
-      height: 100%
-      width: 100%
-      z-index: -1
+      flex-shrink: 0
+      position: relative
+      @media (orientation: landscape)
+        height: 10rem
+        width: 10rem
+      @media (orientation: portrait)
+        height: 5rem
+        width: 5rem
+        margin: 0 2rem 0 0
+      border-radius: 50%
+      border: 3px solid white
       background-repeat: no-repeat
       background-position: center
       background-size: cover
-    .user-modal-gradient
-      position: absolute
-      width: 100%
-      height: 100%
-      z-index: -1
-      transition: all ease 0.3s
+      background-color: white
+
+      .user-modal-dm
+        position: absolute
+        @media (orientation: landscape)
+          bottom: 0
+          right: -0.75rem
+        @media (orientation: portrait)
+          bottom: -0.25rem
+          right: -1rem
+        height: min-content
+        display: flex
+        align-items: center
+        justify-content: center
+        cursor: pointer
+        color: white
+        .user-modal-dm-indicator
+          =user-modal-dm-indicator-style($indicator-size, $indicator-border-width)
+            position: absolute
+            height: $indicator-size
+            width: $indicator-size
+            top: - $indicator-size / 3
+            left: - 2 * $indicator-size / 3
+            border: $indicator-border-width solid white
+            border-radius: 50%
+            background: #EB5757
+          @media (orientation: landscape)
+            +user-modal-dm-indicator-style(0.75rem, 2px)
+          @media (orientation: portrait)
+            +user-modal-dm-indicator-style(0.5rem, 1px)
+        .user-modal-dm-icon-envelope
+          height: auto
+          @media (orientation: landscape)
+            width: 1.75rem
+          @media (orientation: portrait)
+            width: 1.25rem
+
     .user-modal-profile-container
       display: grid
       @media (orientation: landscape)
@@ -280,41 +306,15 @@ $profile-area-height: 40vh
       width: calc(100% - 4rem)
       flex-direction: column
       color: white
-      margin-bottom: 1.5rem
-      .user-modal-dm
-        display: flex
-        align-items: center
-        justify-content: center
-        align-self: center
-        height: 100%
-        cursor: pointer
-        @media (min-width: 680px)
-          font-size: 1.75rem
-        @media (max-width: 679px)
-          font-size: 1.2rem
-        @media (orientation: portrait)
-          display: none
-        .user-modal-dm-icon-envelope
-          margin-right: 0.75em
-        .user-modal-dm-indicator
-          $indicator-size: 0.4em
-          position: absolute
-          height: $indicator-size
-          width: $indicator-size
-          transform: translate(calc(-#{$indicator-size} / 2), calc(-#{$indicator-size} / 6))
-          border-radius: 50%
-          background: #EB5757
-      hr
-        width: 100%
-        @media (orientation: portrait)
-          display: none
+      margin-top: 1.5rem
       .user-modal-profile
         display: flex
         flex-direction: column
         justify-content: flex-end
         margin-bottom: 0.5rem
       .user-modal-display-name
-        font-size: 2rem
+        font-size: 1.5rem
+        font-weight: 600
         margin: 0.2rem 0px
       .user-modal-real-name-container
         display: flex
@@ -373,6 +373,14 @@ $profile-area-height: 40vh
         font-size: 1.2rem
         margin-right: 2rem
         margin-bottom: 0.1rem
+
+.user-modal[data-is-expanded="true"]
+  @media (orientation: landscape)
+    grid-template-columns: minmax(200px, auto) 65%
+    grid-template-areas: "profile detail"
+  @media (orientation: portrait)
+    grid-template-rows: 100% 0
+    grid-template-areas: "profile""detail"
 
   .user-modal-detail-container
     $header-height: 5rem

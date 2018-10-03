@@ -1,17 +1,23 @@
 <template lang="pug">
-FileDroper(@dropFile="dropFile" :onDragStyle="'{background-color: #fff;}'").index
-  User
-  Tag
-  StampPicker
-  Titlebar
-  OnlineUsersList
-  // ↓grid-item
-  Message
-  Input
-  Sidebar
+FileDroper(
+  @dropFile="dropFile"
+  :onDragStyle="'{background-color: #fff;}'"
+  )
+  // User
+  // Tag
+  Modal
+  .index(:data-enable-blur="name ? 'true' : 'false'")
+    StampPicker
+    Titlebar
+    OnlineUsersList
+    // ↓grid-item
+    Message
+    Input
+    Sidebar
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import sse from '@/bin/sse'
 import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
@@ -19,6 +25,7 @@ import FileDroper from '@/components/Util/FileDroper'
 import User from '@/components/Main/User'
 import Tag from '@/components/Main/Tag'
 import StampPicker from '@/components/Main/StampPicker'
+import Modal from '@/components/Main/Modal'
 
 export default {
   name: 'index',
@@ -36,7 +43,8 @@ export default {
     'FileDroper': FileDroper,
     'User': User,
     'Tag': Tag,
-    'StampPicker': StampPicker
+    'StampPicker': StampPicker,
+    'Modal': Modal
   },
   async created () {
     this.$store.subscribe(async mutation => {
@@ -265,6 +273,9 @@ export default {
           this.$store.commit('updateHeartbeatStatus', res.data)
         })
     }
+  },
+  computed: {
+    ...mapState('modal', ['name'])
   }
 }
 </script>
@@ -287,4 +298,8 @@ export default {
     grid-template-areas: "content""input"
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     grid-template-columns: calc(260px + env(safe-area-inset-left) - 7px) 1fr calc(40px + env(safe-area-inset-right) - 7px)
+
+  &[data-enable-blur="true"]
+    transition: filter .2s linear
+    filter: blur(3px)
 </style>
