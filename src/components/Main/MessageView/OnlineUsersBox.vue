@@ -1,12 +1,12 @@
 <template lang="pug">
-div.online-users-box.drop-shadow(v-bind:class="{'is-opened':isOpened}")
+div.online-users-box(v-bind:class="{'is-opened':isOpened}")
   div.online-users-number(@click="isOpened=!isOpened")
     | {{onlineUsersNumber}}
   div.online-users-open-button
   ul.online-users-list(v-if="onlineUsers" @mouseleave="removeCurrentUser")
     li(v-for="(user,i) in onlineUsers" @mouseover="setCurrentUser(i)")
       img.user-icon(:src="userIconSrc(user)")
-  div.online-users-info(v-if="currentUserIndex!==null && isOpened" :style="{top: 50*currentUserIndex+75+'px'}")
+  div.online-users-info.drop-shadow(v-if="currentUserIndex!==null && isOpened" :style="{top: 50*currentUserIndex+65+'px'}")
     span.text-ellipsis
       | {{$store.state.memberMap[onlineUsers[currentUserIndex].userId].displayName}}
       //- | {{$store.state.memberMap[currentUserId].displayName}}
@@ -65,6 +65,10 @@ export default {
     height: 50px
   cursor: pointer
   user-select: none
+  transition: all .3s
+  box-shadow: 0 0 0
+  &:not(.is-opened)
+    box-shadow: 0 2px 4px rgba(41, 41, 41, 0.5)
 .online-users-number
   display: flex
   align-items: center
@@ -103,12 +107,18 @@ export default {
   transition: all .5s ease
   background: $tertiary-color
   max-height: 80vh
-  padding: 10px 0
   overflow: scroll
   position: relative
   transform: translateY(-100%)
+  +mq(pc)
+    padding: 70px 0 10px
+    top: -60px
+  +mq(sp)
+    padding: 60px 0 10px
+    top: -50px
   .is-opened &
     transform: translateY(0)
+    box-shadow: 0 2px 4px rgba(41, 41, 41, 0.5)
   li
     margin: 10px 0
     height: 30px
