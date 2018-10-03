@@ -509,6 +509,8 @@ export default {
   user-select: none
   width: 16px
   height: 16px
+.message-emoji
+  user-select: text
 .attached-image
   max-width: 360px
   max-height: 480px
