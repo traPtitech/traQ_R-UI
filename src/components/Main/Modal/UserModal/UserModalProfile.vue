@@ -53,14 +53,6 @@ export default {
     lastOnline () {
       return dateParse(new Date(this.data.lastOnline))
     },
-    grade () {
-      const tag = this.tags.find(tag => /^\d{2}[BMDR]$/.test(tag.tag))
-      if (tag) {
-        return tag.tag
-      } else {
-        return '___'
-      }
-    }
   },
   methods: {
   }
