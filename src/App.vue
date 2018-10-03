@@ -1,5 +1,5 @@
 <template lang="pug">
-div#app
+div#app.theme-light
   Favicon
   splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
   router-view(v-else)
