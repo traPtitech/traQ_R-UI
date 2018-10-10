@@ -1,6 +1,6 @@
 <template lang="pug">
   div.list-channels
-    ChannelElement(v-for="channel in channels" v-bind:key="channel.channelId" :model="channel")
+    ChannelElement(v-for="channel in channels" :key="channel.channelId" :model="channel")
 </template>
 
 <script>
