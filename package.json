@@ -8,7 +8,8 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "gen-unicode_emojis": "node build/gen-unicode_emojis.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
