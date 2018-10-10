@@ -45,6 +45,7 @@ export default {
   z-index: $sidebar-index + 10
   border-radius: 30px
   overflow: hidden
+  animation: fade-in .5s ease
 .channel-tab-switcher-item
   display: inline-block
   width: calc( 100% / 3 )
