@@ -52,6 +52,13 @@ export default {
     },
     lastOnline () {
       return dateParse(new Date(this.data.lastOnline))
+    },
+    directMessageChannel () {
+      if (this.data.userId === this.$store.state.me.userId) {
+        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.length === 1)
+      } else {
+        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.data.userId))
+      }
     }
   },
   methods: {
@@ -82,8 +89,14 @@ export default {
   margin: 1rem
 
 .user-modal-profile[data-is-expanded]
+
+.user-modal-profile[data-is-expanded]
   @media (orientation: landscape)
     flex-direction: row
+
+    .user-modal-profile-area--info
+      margin-left: 2rem
+
   @media (orientation: portrait)
     flex-direction: column
 

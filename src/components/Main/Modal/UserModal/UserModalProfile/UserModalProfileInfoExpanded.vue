@@ -1,9 +1,10 @@
 <template lang="pug">
-.user-modal-profile-info
+.user-modal-profile-info-expanded
     .user-modal-profile-info-display-name
       | {{data.displayName}}
     .user-modal-profile-info-name
       | @{{data.name}}
+    UserModalProfileOnlineIndicator(:detailed="true")
     .user-modal-profile-info-real-name
       | Real Name
     .user-modal-profile-info-grade
@@ -12,9 +13,13 @@
 
 <script>
 import { mapState } from 'vuex'
+import UserModalProfileOnlineIndicator from '@/components/Main/Modal/UserModal/UserModalProfile/UserModalProfileOnlineIndicator'
 
 export default {
   name: 'UserModalProfileInfo',
+  components: {
+    UserModalProfileOnlineIndicator
+  },
   computed: {
     ...mapState('modal', {
       data: 'data',
@@ -33,8 +38,9 @@ export default {
 </script>
 
 <style lang="sass">
-.user-modal-profile-info
+.user-modal-profile-info-expanded
   color: white
+  min-width: 10rem
 
 .user-modal-profile-info-display-name
   @media (orientation: landscape)
