@@ -476,7 +476,7 @@ export default {
   display: inline-flex
   align-items: center
   background: rgba(97, 97, 97, 0.1)
-  color: rgba(84, 84, 84, 0.77)
+  color: rgba(#{$text-color}, 0.77)
   padding: 2px 5px
   border-radius: 3px
   margin: 2px
