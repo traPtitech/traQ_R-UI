@@ -84,7 +84,8 @@ export default new Vuex.Store({
     isActivePinnedModal: false,
     openMode: 'particular',
     openChannelId: '',
-    lastChannelId: ''
+    lastChannelId: '',
+    theme: 'light'
   },
   mutations: {
     setStampPickerModel (state, model) {
@@ -345,6 +346,9 @@ export default new Vuex.Store({
     },
     setLastChannelId (state, channelId) {
       state.lastChannelId = channelId
+    },
+    setTheme (state, themeName) {
+      state.theme = themeName
     }
   },
   getters: {
@@ -576,7 +580,8 @@ export default new Vuex.Store({
       return Promise.all([
         dispatch('loadOpenMode'),
         dispatch('loadOpenChannelId'),
-        dispatch('loadLastChannelId')
+        dispatch('loadLastChannelId'),
+        dispatch('loadTheme')
       ])
     },
     loadOpenMode ({commit, dispatch}) {
@@ -600,6 +605,13 @@ export default new Vuex.Store({
         await dispatch('updateLastChannelId', getters.getChannelByName('general').channelId)
       })
     },
+    loadTheme ({commit, dispatch, getters}) {
+      return db.read('browserSetting', 'theme').then(data => {
+        commit('setTheme', data)
+      }).catch(async () => {
+        await dispatch('updateTheme', 'light')
+      })
+    },
     updateOpenMode ({commit}, mode) {
       commit('setOpenMode', mode)
       return db.write('browserSetting', {type: 'openMode', data: mode})
@@ -611,6 +623,10 @@ export default new Vuex.Store({
     updateLastChannelId ({commit}, channelId) {
       commit('setLastChannelId', channelId)
       return db.write('browserSetting', {type: 'lastChannelId', data: channelId})
+    },
+    updateTheme ({commit}, themeName) {
+      commit('setTheme', themeName)
+      return db.write('browserSetting', {type: 'theme', data: themeName})
     }
   }
 })

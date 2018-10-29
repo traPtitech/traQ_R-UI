@@ -340,7 +340,7 @@ export default {
     display: block
     width: calc( 100% - 20px )
     height: 1px
-    background-color: $light-bg-color
+    background-color: $background-color
     transition: background-color .3s ease
   &:after
     content: ''
@@ -353,7 +353,7 @@ export default {
     display: block
     width: 0
     height: 1px
-    background-color: $primary-color
+    background-color: $primary-color-on-bg
     transition: width .3s ease
   &.input-focused:after
     width: calc( 100% - 20px )
@@ -395,17 +395,18 @@ export default {
   border: 0
   line-height: 1em
   animation: openInputArea 1s ease
-  background-color: $light-bg-color
+  background-color: $background-color
   caret-color: $text-color
   /*transition: all .3s ease-in-out*/
   &:focus
     outline: 0
   &::placeholder
-    color: rgba(0, 0, 0, 0.5)
+  color: rgba(#{$text-color}, 0.5)
     transition: all .3s ease
   &:focus::placeholder
     transform: translateY(-10px)
     opacity: 0
+
 .input-area-opened
 @keyframes openInputArea
   0%
@@ -455,4 +456,5 @@ export default {
   background-size: contain
 .suggest-element
   cursor: pointer
+
 </style>

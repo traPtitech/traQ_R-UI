@@ -1,20 +1,60 @@
+// default color
+$default-primary-color: #0D67EA
+$default-secondary-color: #0B60BF
+$default-tertiary-color: #094587
 
-.theme-light
-  --primary-color: #0D67EA
-.theme-dark
+$default-background-color: white
+$default-background-hover-color: #EFEFEF
+$default-text-color: #6d6d6d
+
+#app[data-theme="light"]
+  --primary-color: #{$default-primary-color}
+  --secondary-color: #{$default-secondary-color}
+  --tertiary-color: #{$default-tertiary-color}
+
+  --primary-color-on-bg: #{$default-primary-color}
+
+  --background-color: #{$default-background-color}
+  --background-hover-color: #{$default-background-hover-color}
+  --text-color: #{$default-text-color}
+//   --text-color: #6D6D6D
+
+#app[data-theme="dark"]
   --primary-color: #232C36
+  --secondary-color: #161C23
+  --tertiary-color: #060C13
+
+  --primary-color-on-bg: #FFFFFF
+
+  --background-color: #222222
+  --background-hover-color: #333333
+  --text-color: #FFFFFF
+
+// fallback
+$primary-color: $default-primary-color
+$secondary-color: $default-secondary-color
+$tertiary-color: $default-tertiary-color
+$primary-color-on-bg: $default-primary-color
+
+$background-color: $default-background-color
+$background-hover-color: $default-background-hover-color
+$text-color: $default-text-color
 
 // Color
 $primary-color: var(--primary-color)
-// $primary-color: #0D67EA
-$secondary-color: #0B60BF
-$tertiary-color: #094587
+$secondary-color: var(--secondary-color)
+$tertiary-color: var(--tertiary-color)
+$primary-color-on-bg: var(--primary-color-on-bg)
+
+$background-color: var(--background-color)
+$background-hover-color: var(--background-hover-color)
+$text-color: var(--text-color)
+
 $light-bg-color: white
 $border-color: rgba(255,255,255,0.5)
 
 // Text Color
 $text-light-color: white
-$text-color: #6d6d6d
 
 // Z-Index
 $information-index: 100

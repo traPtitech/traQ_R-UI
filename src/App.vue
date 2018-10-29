@@ -1,5 +1,5 @@
 <template lang="pug">
-div#app.theme-light
+div#app(:data-theme="$store.state.theme")
   Favicon
   splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
   router-view(v-else)
@@ -34,12 +34,13 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~@/styles/global.sass"
 #app
   font-family: 'Mplus 1p','Avenir', Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
-  color: #2c3e50
-  background-color: #f9f9f9
+  color: $text-color
+  background-color: $background-color
 li
   list-style: none
   margin: 0

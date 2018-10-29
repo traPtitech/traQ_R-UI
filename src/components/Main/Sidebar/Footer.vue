@@ -3,12 +3,31 @@ div.footer
   span.version-text
     | traQ R alpha
   ul.footer-button-wrap
+    li.menu-button.theme(@click="changeTheme")
+      icon(:name="themeIconName")
     li.menu-button.setting(@click="$router.push('/setting')")
       icon(name="cog")
 </template>
 
 <script>
 export default {
+  methods: {
+    changeTheme () {
+      if (this.theme === 'light') {
+        this.$store.dispatch('updateTheme', 'dark')
+      } else {
+        this.$store.dispatch('updateTheme', 'light')
+      }
+    }
+  },
+  computed: {
+    theme () {
+      return this.$store.state.theme
+    },
+    themeIconName () {
+      return this.theme === 'light' ? 'regular/moon' : 'moon'
+    }
+  }
 }
 </script>
 
@@ -22,8 +41,12 @@ export default {
   justify-content: space-between
 .footer-button-wrap
   margin: 0 20px
-.menu-button.setting
+  display: flex
+
+.menu-button
+  margin-left: 1rem
   color: white
+
 .version-text
   color: white
   font-size: 15px

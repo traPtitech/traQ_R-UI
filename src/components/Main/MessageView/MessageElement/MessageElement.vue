@@ -357,6 +357,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import "~@/styles/global.sass"
 .message
   display: grid
   grid-template-areas: "user-icon detail""user-icon contents""... contents"
@@ -370,7 +371,7 @@ export default {
   transition: background-color .2s ease
   overflow: hidden
   &:hover
-    background-color: #efefef
+    background-color: $background-hover-color
   &.message-pinned
     background-color: #dce3ff
   &.message-pinned:hover
