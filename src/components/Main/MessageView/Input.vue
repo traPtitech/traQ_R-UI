@@ -353,7 +353,7 @@ export default {
     display: block
     width: 0
     height: 1px
-    background-color: $primary-color
+    background-color: $primary-color-on-bg
     transition: width .3s ease
   &.input-focused:after
     width: calc( 100% - 20px )
@@ -401,11 +401,12 @@ export default {
   &:focus
     outline: 0
   &::placeholder
-    color: rgba(0, 0, 0, 0.5)
+  color: rgba(#{$text-color}, 0.5)
     transition: all .3s ease
   &:focus::placeholder
     transform: translateY(-10px)
     opacity: 0
+
 .input-area-opened
 @keyframes openInputArea
   0%
@@ -455,4 +456,5 @@ export default {
   background-size: contain
 .suggest-element
   cursor: pointer
+
 </style>
