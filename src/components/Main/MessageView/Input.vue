@@ -340,7 +340,7 @@ export default {
     display: block
     width: calc( 100% - 20px )
     height: 1px
-    background-color: $light-bg-color
+    background-color: $background-color
     transition: background-color .3s ease
   &:after
     content: ''
@@ -395,7 +395,7 @@ export default {
   border: 0
   line-height: 1em
   animation: openInputArea 1s ease
-  background-color: $light-bg-color
+  background-color: $background-color
   caret-color: $text-color
   /*transition: all .3s ease-in-out*/
   &:focus

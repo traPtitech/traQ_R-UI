@@ -33,7 +33,7 @@ export default {
   display: grid
   height: $modal-height
   position: relative
-  background-color: #f5f5f5
+  background-color: $background-color
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)
 .modal-overlay
   z-index: $modal-index
