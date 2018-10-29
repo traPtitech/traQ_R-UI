@@ -101,7 +101,7 @@ export default {
       height: $indicator-size
       width: $indicator-size
       top: - $indicator-size / 3
-      left: - 2 * $indicator-size / 3
+      right: - 2 * $indicator-size / 3
       border: $indicator-border-width solid white
       border-radius: 50%
       background: #EB5757
