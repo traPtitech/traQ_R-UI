@@ -10,8 +10,12 @@ header.titlebar(ref="titlebar" :class="{'is-expanded':isExpanded}")
         | {{topic}}
   div.titlebar-expand.drop-shadow
     div.titlebar-menu-button-wrap
-      div.titlebar-menu-button
+      div.titlebar-menu-button(v-show="!isDirectMessage && isNotificationForced")
+        img.menu-icon(src="@/assets/img/icon/logo.svg")
+      div.titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && !isNotified" @click="notifyChannel")
         img.menu-icon(src="@/assets/img/icon/notif.svg")
+      div.titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && isNotified" @click="unnotifyChannel")
+        img.menu-icon(src="@/assets/img/icon/notif_fill.svg")
       div.titlebar-menu-button.border-left(v-show="!isDirectMessage && !isStared" @click="starChannel")
         img.menu-icon(src="@/assets/img/icon/star.svg")
       div.titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
@@ -54,6 +58,18 @@ export default {
         this.$store.dispatch('updateStaredChannels')
       })
     },
+    notifyChannel () {
+      client.changeNotifications(this.$store.state.currentChannel.channelId, {'on': [this.$store.state.me.userId]})
+      .then(() => {
+        this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
+      })
+    },
+    unnotifyChannel () {
+      client.changeNotifications(this.$store.state.currentChannel.channelId, {'off': [this.$store.state.me.userId]})
+      .then(() => {
+        this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
+      })
+    },
     removeWidth () {
       this.$refs.titlebarInner.style.width = ''
     },
@@ -67,6 +83,9 @@ export default {
     },
     isNotificationForced () {
       return this.$store.state.currentChannel.force
+    },
+    isNotified () {
+      return this.$store.getters.notificationsOnMembers.some(userId => this.$store.state.me.userId)
     },
     isStared () {
       if (this.isDirectMessage) return false
