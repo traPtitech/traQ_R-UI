@@ -112,6 +112,7 @@ $input-height: 3rem
 .user-modal-tags-container
   min-height: 0
   overflow-y: scroll
+  flex: 1
 
 .user-modal-tag-element
   $gap: 1rem
