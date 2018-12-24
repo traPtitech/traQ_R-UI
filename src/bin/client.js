@@ -108,12 +108,12 @@ const client = {
   // Tag: pin
   getPinnedMessages (channelId) {
     return middleWare('getPinnedMessages', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/pin`)
+      return axios.get(`/api/1.0/channels/${channelId}/pins`)
     })
   },
-  pinMessage (channelId, messageId) {
+  pinMessage (messageId) {
     return middleWare('pinMessage', () => {
-      return axios.post(`/api/1.0/channels/${channelId}/pin`, {messageId})
+      return axios.post(`/api/1.0/pins`, {messageId})
     })
   },
   getPinnedMessage (pinId) {
