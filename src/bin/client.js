@@ -118,12 +118,12 @@ const client = {
   },
   getPinnedMessage (pinId) {
     return middleWare('getPinnedMessage', () => {
-      return axios.get(`/api/1.0/pin/${pinId}`)
+      return axios.get(`/api/1.0/pins/${pinId}`)
     })
   },
   unpinMessage (pinId) {
     return middleWare('unpinMessage', () => {
-      return axios.delete(`/api/1.0/pin/${pinId}`)
+      return axios.delete(`/api/1.0/pins/${pinId}`)
     })
   },
   reportMessage (messageId, reason) {
