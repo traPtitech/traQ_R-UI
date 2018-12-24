@@ -158,7 +158,7 @@ export default {
       }
     },
     async pinMessage () {
-      await client.pinMessage(this.$store.state.currentChannel.channelId, this.model.messageId)
+      await client.pinMessage(this.model.messageId)
       this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
     },
     async unpinMessage () {

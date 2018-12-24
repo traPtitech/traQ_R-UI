@@ -111,7 +111,7 @@ const client = {
       return axios.get(`/api/1.0/channels/${channelId}/pins`)
     })
   },
-  pinMessage (channelId, messageId) {
+  pinMessage (messageId) {
     return middleWare('pinMessage', () => {
       return axios.post(`/api/1.0/pins`, {messageId})
     })
