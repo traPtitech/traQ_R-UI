@@ -1,10 +1,10 @@
 <template lang="pug">
 .user-modal-online-status(:data-is-detailed="detailed")
   .user-modal-online-indicator(:data-is-online="data.isOnline")
-  template(v-if="detailed")
-    .user-modal-online-status-abstract(v-if="data.isOnline") Online
-    .user-modal-online-status-abstract(v-else) Offline
-    .user-modal-online-status-detail Last: {{lastOnline}}
+  .user-modal-online-status-detail(v-if="detailed")
+    .user-modal-online-status-onoff(v-if="data.isOnline") Online
+    .user-modal-online-status-onoff(v-else) Offline
+    .user-modal-online-status-last Last: {{lastOnline}}
 </template>
 
 <script>
@@ -33,28 +33,23 @@ export default {
 
 <style lang="sass">
 .user-modal-online-status
-  display: grid
-  grid-template-columns: 0.6rem
-  align-items: center
-  &[data-is-detailed]
-    margin: 0.6rem 0px 0px 0.2rem
-    grid-template-columns: 1.5rem 1fr
+  display: flex
+  align-items: start
 
 .user-modal-online-indicator
   width: 0.6rem
   height: 0.6rem
   border-radius: 50%
+  transform: translateY(0.15rem)
   &[data-is-online="true"]
-    background-color: #27ae60
+    background-color: #18FCFC
   &:not([data-is-online="true"])
     border: 1px solid lightgray
 
-.user-modal-online-status-abstract
-  display: inline-block
-  margin-right: 0.5rem
-
 .user-modal-online-status-detail
-  display: inline-block
+  margin-left: 0.5rem
+
+.user-modal-online-status-last
   font-size: 0.8rem
   color: rgba(255, 255, 255, 0.7)
   grid-column: 2/3
