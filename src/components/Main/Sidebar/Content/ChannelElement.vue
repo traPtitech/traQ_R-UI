@@ -72,7 +72,6 @@ export default {
     isOpened: {
       handler () {
         this.$nextTick(() => {
-          this.$refs.children.style.height = this.height + 'px'
           this.height = this.$refs.childrenWrap.clientHeight
           this.$refs.children.style.height = this.height + 'px'
         })
@@ -166,12 +165,14 @@ export default {
     right: -3px
     top: -3px
     border-radius: 100%
-    background: orange
+    background: $notification-color
 .channel-toggle
   border: solid 1px $text-light-color
   border-radius: 5px
   &.has-unread-child
-    border-color: orange
+    border:
+      color: $notification-color
+      width: $notification-color
   .channel-opened &
     background: $text-light-color
     color: $primary-color
