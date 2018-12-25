@@ -54,8 +54,8 @@ $profile-area-width: 350px
     border-radius: $modal-border-radius $modal-border-radius 0 0
   padding: $modal-profile-padding
   background: $primary-color
-  flex-grow: 1
-  flex-shrink: 0
+  flex-grow: 2
+  flex-shrink: 1
   transition: height .3s ease, width .3s ease
 
 .user-modal-area--extra
@@ -67,18 +67,24 @@ $profile-area-width: 350px
 @keyframes delayedOpaciityChange
   0%
     opacity: 1
+    width: 100%
   50%
     opacity: 0
+    width: 100%
   100%
     opacity: 0
+    width: 0
 
 @keyframes delayedOpaciityChangeReversed
   0%
     opacity: 0
+    width: 0
   50%
     opacity: 0
+    width: 100%
   100%
     opacity: 1
+    width: 100%
 
 .user-modal:not([data-is-expanded])
   .user-modal-area--profile
@@ -87,6 +93,7 @@ $profile-area-width: 350px
     @media (orientation: portrait)
       height: $profile-area-height
   .user-modal-area--extra
+    width: 100%
     opacity: 1
     animation: delayedOpaciityChangeReversed .3s ease
 
@@ -95,11 +102,10 @@ $profile-area-width: 350px
     border-radius: $modal-border-radius
     @media (orientation: landscape)
       width: $modal-profile-expanded-width
-      +mq
-        width: $modal-profile-expanded-width--wide
     @media (orientation: portrait)
       height: $modal-profile-expanded-height
   .user-modal-area--extra
+    width: 0
     opacity: 0
     animation: delayedOpaciityChange .3s ease
 
