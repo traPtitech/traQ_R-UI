@@ -48,6 +48,7 @@ export default new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
+    channelRecentMessageMap: {},
     openChannels: {},
     sidebarOpened: false,
     titlebarExpanded: false,
@@ -555,8 +556,14 @@ export default new Vuex.Store({
           return false
         })
     },
-    updateChannels ({state, commit}) {
+    updateChannels ({state, commit, dispatch}) {
       return loadGeneralData('Channel', client.getChannels, commit)
+        .then(() => {
+          state.channelData.forEach(channel => {
+            if (!channel.channelId) return
+            dispatch('updateChannelRecentMessage', channel.channelId)
+          })
+        })
     },
     updateMembers ({state, commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
@@ -671,6 +678,13 @@ export default new Vuex.Store({
     updateTheme ({commit}, themeName) {
       commit('setTheme', themeName)
       return db.write('browserSetting', {type: 'theme', data: themeName})
+    },
+    updateChannelRecentMessage ({state, commit}, channelId) {
+      return client.loadMessages(channelId, 1).then(async res => {
+        const channel = res.data[0]
+        if (!channel || channel.dm) return
+        state.channelRecentMessageMap[channelId] = res.data[0]
+      })
     }
   }
 })
