@@ -37,5 +37,4 @@ export default {
   border: 1px solid #eeeeee
   background-color: $primary-color
 .tag-user-element
-  margin: 0.5rem
 </style>

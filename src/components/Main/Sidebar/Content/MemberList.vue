@@ -1,33 +1,15 @@
 <template lang="pug">
 div.member-container
-  div.grade-container(v-for="tag in tags" v-if="tag.users.length > 0" :class="`${gradeMap[tag.tag[2]]} ${tag.tag.substr(0, 2)}`" :style="`border-color: ${color(tag.tag)};`")
-    div.grade-name-container(:style="`background-color: ${color(tag.tag)};`")
-      p
-        | {{tag.tag}}
-    MemberElement(v-for="member in tag.users" :model="member" :key="member.userId")
-  div.grade-container(v-if="bots.length > 0" :class="``" :style="`border-color: gray;`")
-    div.grade-name-container(:style="`background-color: gray;`")
-      p
-        | BOT
-    MemberElement(v-for="member in bots" :model="member" :key="member.userId")
+  MemberGroup(v-for="tag in tags" :key="tag.tag" :members="tag.users" :groupName="tag.tag")
+  MemberGroup(v-if="bots.length > 0" :members="bots" :groupName="'BOT'")
 </template>
 
 <script>
-import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
+import MemberGroup from '@/components/Main/Sidebar/Content/MemberGroup'
 export default {
   name: 'MemberList',
-  data () {
-    return {
-      gradeMap: {
-        B: 'bachelor',
-        M: 'master',
-        D: 'doctor',
-        R: ''
-      }
-    }
-  },
   components: {
-    'MemberElement': MemberElement
+    MemberGroup
   },
   methods: {
     color (grade) {
@@ -37,7 +19,13 @@ export default {
   },
   computed: {
     tags () {
-      const grades = this.$store.state.tagData.filter(tag => tag.tag !== '' && /^\d{2}[BMDR]$/.test(tag.tag))
+      const grades = this.$store.state.tagData
+        .filter(
+            tag => tag.tag !== '' && /^\d{2}[BMDR]$/.test(tag.tag)
+          )
+        .filter(
+            tag => tag.users.length > 0
+          )
       const map = {
         B: 0,
         M: 1,
@@ -65,7 +53,7 @@ export default {
       return ret
     },
     bots () {
-      return this.$store.state.memberData.filter(user => user.bot && !/#/.test(user.name))
+      return this.$store.state.memberData.filter(user => user.bot)
     }
   }
 }
@@ -75,15 +63,5 @@ export default {
 .member-container
   width: 100%
   height: 100%
-.grade-container
-  text-align: left
-  border-left: 8px solid
-.grade-container > p
-  padding: 5px 10px
-.grade-name-container
-  width: 80%
-  margin-left: 10px
-.grade-name-container > p
   color: $text-light-color
-  margin-left: 10px
 </style>
