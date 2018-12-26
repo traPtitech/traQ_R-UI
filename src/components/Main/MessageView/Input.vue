@@ -23,7 +23,7 @@ export default {
     return {
       focused: false,
       inputText: '',
-      // postStatus: {'default', 'processing', 'successed', 'failed'}
+      // postStatus: {'default', 'processing', 'succeeded', 'failed'}
       postStatus: 'default',
       files: [],
       uploadedIds: [],
@@ -85,29 +85,17 @@ export default {
       message = this.replaceUser(message)
       message = this.replaceChannel(message)
       message = this.replaceTag(message)
-      if (nowChannel.channelId !== this.$store.state.directMessageId) {
-        client.postMessage(nowChannel.channelId, message)
-        .then((res) => {
-          this.inputText = ''
-          this.postStatus = 'successed'
-        })
-        .catch(() => {
-          this.postStatus = 'failed'
-        })
-      } else {
-        client.makeChannel('private', nowChannel.member, String((new Date()).getTime()), this.$store.state.directMessageId)
-        .then(res => {
-          client.postMessage(res.data.channelId, message)
-          .then(() => {
-            this.postStatus = 'successed'
-            this.inputText = ''
-          })
-          this.$store.commit('changeChannel', res.data)
-        })
-        .catch(() => {
-          this.postStatus = 'failed'
-        })
-      }
+      const postedMessage = (!nowChannel.dm)
+        ? client.postMessage(nowChannel.channelId, message)
+        : client.postDirectMessage(this.$store.getters.getUserIdByDirectMessageChannel(nowChannel), message)
+      postedMessage
+      .then(() => {
+        this.inputText = ''
+        this.postStatus = 'succeeded'
+      })
+      .catch(() => {
+        this.postStatus = 'failed'
+      })
     },
     replaceUser (message) {
       return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {

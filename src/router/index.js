@@ -109,30 +109,34 @@ router.beforeEach(async (to, from, next) => {
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)
     if (nextUser) {
-      if (nextUser.name === store.state.me.name && store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.length === 1).length > 0) {
-        store.commit('changeChannel', store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.length === 1)[0])
-        store.dispatch('getCurrentChannelPinnedMessages', store.state.currentChannel.channelId)
-      } else if (nextUser.name !== store.state.me.name && store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.includes(nextUser.userId)).length > 0) {
-        store.commit('changeChannel', store.getters.getDirectMessageChannels.filter(channel => channel.member && channel.member.includes(nextUser.userId))[0])
-        store.dispatch('getCurrentChannelPinnedMessages', store.state.currentChannel.channelId)
-      } else {
-        const member = [nextUser.userId]
-        if (store.state.me.userId !== nextUser.userId) {
-          member.push(store.state.me.userId)
-        }
-        store.commit('changeChannel', {
-          channelId: store.state.directMessageId,
-          name: nextUser.name,
-          parent: store.state.directMessageId,
-          children: [],
-          member: member,
-          visibility: false
-        })
-        store.commit('setCurrentChannelPinnedMessages', [])
+      const member = [nextUser.userId]
+      if (store.state.me.userId !== nextUser.userId) {
+        member.push(store.state.me.userId)
       }
-      store.dispatch('getMessages')
-      .then(() => {
+      let channelId = nextUser.userId
+      if (nextUser.userId === store.state.me.userId) {
+        const channel = store.getters.getDirectMessageChannels.find(c => c.member.length === 1)
+        if (channel) {
+          channelId = channel.channelId
+        }
+      } else {
+        const channel = store.getters.getDirectMessageChannels.find(c => c.member.some(userId => userId === nextUser.userId))
+        if (channel) {
+          channelId = channel.channelId
+        }
+      }
+      store.commit('changeChannel', {
+        channelId: channelId,
+        name: nextUser.name,
+        parent: store.state.directMessageId,
+        children: [],
+        member: member,
+        visibility: true,
+        private: true,
+        dm: true
       })
+      store.commit('setCurrentChannelPinnedMessages', [])
+      store.dispatch('getMessages')
       store.commit('loadEnd')
       next(true)
       return

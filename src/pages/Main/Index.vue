@@ -218,12 +218,21 @@ export default {
         .then(async res => {
           let channel = this.$store.state.channelMap[res.data.parentChannelId]
           if (!channel) {
-            channel = await client.getChannelInfo(res.data.parentChannelId).data
+            channel = (await client.getChannelInfo(res.data.parentChannelId)).data
           }
-          if (channel.channelId === this.$store.state.currentChannel.channelId) {
-            this.$store.commit('addMessages', res.data)
-            if (document.hasFocus()) {
-              client.readMessages([res.data.messageId])
+          if (channel.dm && this.$store.state.memberMap[this.$store.state.currentChannel.channelId]) {
+            if (channel.member.some(userId => userId === this.$store.state.currentChannel.channelId)) {
+              this.$store.commit('addMessages', res.data)
+              if (document.hasFocus()) {
+                client.readMessages([res.data.messageId])
+              }
+            }
+          } else {
+            if (channel.channelId === this.$store.state.currentChannel.channelId) {
+              this.$store.commit('addMessages', res.data)
+              if (document.hasFocus()) {
+                client.readMessages([res.data.messageId])
+              }
             }
           }
           this.$store.dispatch('updateUnreadMessages')

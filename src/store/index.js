@@ -368,7 +368,7 @@ export default new Vuex.Store({
       }
     },
     getDirectMessageChannels (state, getters) {
-      return state.channelData.filter(channel => channel.parent === state.directMessageId)
+      return state.channelData.filter(channel => channel.dm)
     },
     getUserByName (state, getters) {
       return userName => {
@@ -466,6 +466,18 @@ export default new Vuex.Store({
       const channels = state.staredChannels.map(channelId => state.channelMap[channelId])
       channels.sort(stringSortGen('name'))
       return channels
+    },
+    getUserIdByDirectMessageChannel (state) {
+      return channel => {
+        if (!channel.dm) {
+          return ''
+        }
+        if (channel.member.length === 1) {
+          return channel.member[0]
+        } else {
+          return channel.member.find(userId => userId !== state.me.userId)
+        }
+      }
     }
   },
   actions: {
@@ -478,11 +490,8 @@ export default new Vuex.Store({
         commit('setMe', null)
       })
     },
-    getMessages ({state, commit, dispatch}, update) {
+    getMessages ({state, commit, dispatch, getters}, update) {
       const nowChannel = state.currentChannel
-      if (nowChannel.channelId === state.directMessageId) {
-        return
-      }
       let loaded = false
       const latest = state.messages.length === 0 || update
       if (latest) {
@@ -493,7 +502,10 @@ export default new Vuex.Store({
             }
           })
       }
-      return client.loadMessages(nowChannel.channelId, 10, latest ? 0 : state.messages.length)
+      const loadedMessages = (!nowChannel.dm)
+        ? client.loadMessages(nowChannel.channelId, 10, latest ? 0 : state.messages.length)
+        : client.loadDirectMessages(getters.getUserIdByDirectMessageChannel(nowChannel), 10, latest ? 0 : state.messages.length)
+      return loadedMessages
         .then(res => {
           loaded = true
           const messages = res.data.reverse()
