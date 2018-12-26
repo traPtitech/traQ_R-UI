@@ -2,7 +2,7 @@
 // プロフィール画像・DMへのリンク
 .user-modal-img(:style="profileImgStyle")
   .user-modal-dm(@click="openDirectMessage")
-    .user-modal-dm-indicator(v-if="!hasUnreadMessages")
+    .user-modal-dm-indicator(v-if="hasUnreadMessages")
     icon.user-modal-dm-icon-envelope(name="envelope" scale="1.5")
 </template>
 
@@ -104,7 +104,8 @@ export default {
       right: - 2 * $indicator-size / 3
       border: $indicator-border-width solid white
       border-radius: 50%
-      background: #EB5757
+      // [TODO] variable
+      background: #F2994A
     @media (orientation: landscape)
       +user-modal-dm-indicator-style(0.75rem, 2px)
     @media (orientation: portrait)

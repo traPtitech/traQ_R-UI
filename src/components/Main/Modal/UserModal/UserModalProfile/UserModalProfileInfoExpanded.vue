@@ -4,11 +4,11 @@
       | {{data.displayName}}
     .user-modal-profile-info-name
       | @{{data.name}}
-    .user-modal-profile-real-info
       .user-modal-profile-info-grade
         | {{grade}}
-      .user-modal-profile-info-real-name
-        | Real Name
+    // .user-modal-profile-real-info
+    //   .user-modal-profile-info-real-name
+    //     | Real Name
     UserModalProfileOnlineIndicator(:detailed="true")
 </template>
 
@@ -49,10 +49,17 @@ export default {
   @media (orientation: portrait)
     font-size: 1.2rem
   font-weight: 600
-  margin-bottom: .2rem
+  margin-bottom: .3rem
 
 .user-modal-profile-info-name
   margin-bottom: .5rem
+  display: flex
+
+.user-modal-profile-info-grade
+  font-size: .9rem
+  border: 1px solid rgba(255, 255, 255, 0.7)
+  padding: .1rem .4rem
+  margin-left: 1rem;
 
 .user-modal-profile-real-info
   display: flex
@@ -60,8 +67,4 @@ export default {
   margin-bottom: 1rem
   color: rgba(255, 255, 255, 0.7)
   font-size: .9rem
-  .user-modal-profile-info-grade
-    border: 1px solid rgba(255, 255, 255, 0.7)
-    padding: .1rem .4rem
-    margin-right: 1rem;
 </style>
