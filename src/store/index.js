@@ -10,19 +10,20 @@ Vue.use(Vuex)
 
 const loadGeneralData = (dataName, webLoad, commit) => {
   let loaded = false
+  const fetch = webLoad()
+    .then(res => {
+      loaded = true
+      commit(`set${dataName}Data`, res.data)
+      db.write('generalData', {type: dataName, data: res.data})
+    })
   return Promise.race([
     db.read('generalData', dataName)
       .then(data => {
         if (!loaded && data) {
           commit(`set${dataName}Data`, data)
         }
-      }),
-    webLoad()
-      .then(res => {
-        loaded = true
-        commit(`set${dataName}Data`, res.data)
-        db.write('generalData', {type: dataName, data: res.data})
-      })
+      }).catch(_ => fetch),
+    fetch
   ])
 }
 
@@ -526,13 +527,7 @@ export default new Vuex.Store({
         })
     },
     updateChannels ({state, commit}) {
-      const promise = loadGeneralData('Channel', client.getChannels, commit)
-      promise.then(() => {
-        db.read('generalData', 'openChannels').then(data => {
-          commit('setOpenChannels', data || {})
-        })
-      })
-      return promise
+      return loadGeneralData('Channel', client.getChannels, commit)
     },
     updateMembers ({state, commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
@@ -593,7 +588,8 @@ export default new Vuex.Store({
         dispatch('loadOpenMode'),
         dispatch('loadOpenChannelId'),
         dispatch('loadLastChannelId'),
-        dispatch('loadTheme')
+        dispatch('loadTheme'),
+        dispatch('loadOpenChannels')
       ])
     },
     loadOpenMode ({commit, dispatch}) {
@@ -622,6 +618,13 @@ export default new Vuex.Store({
         commit('setTheme', data)
       }).catch(async () => {
         await dispatch('updateTheme', 'light')
+      })
+    },
+    loadOpenChannels ({commit}) {
+      return db.read('generalData', 'openChannels').then(data => {
+        commit('setOpenChannels', data || {})
+      }).catch(_ => {
+        commit('setOpenChannels', {})
       })
     },
     updateOpenMode ({commit}, mode) {
