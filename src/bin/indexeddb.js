@@ -8,9 +8,9 @@ const read = (tableName, key) => {
       const request = _db.transaction(tableName).objectStore(tableName).get(key)
       request.onsuccess = event => {
         if (!event.target.result) {
-          reject(new Error('data not found'))
+          reject(new Error(`${tableName} ${key} not found`))
         }
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'development' && event.target.result && event.target.result.data) {
           console.log('read db', tableName, key, event.target.result.data)
         }
         if (event.target.result && event.target.result.data) {
