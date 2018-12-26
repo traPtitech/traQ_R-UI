@@ -22,34 +22,34 @@ const router = new Router({
     {
       path: '/login',
       name: 'Login',
-      component: asyncLoadComponents(import('@/components/Login/Login'))
+      component: asyncLoadComponents(import('@/pages/Login/Login'))
     },
     {
       path: '/setting',
       name: 'Setting',
-      component: asyncLoadComponents(import('@/components/Setting/Index'))
+      component: asyncLoadComponents(import('@/pages/Setting/Index'))
     },
     {
       path: '/',
       name: 'Index',
-      component: asyncLoadComponents(import('@/components/Main/Index'))
+      component: asyncLoadComponents(import('@/pages/Main/Index'))
     },
     {
       path: '/channels/:channel(.*)',
-      component: asyncLoadComponents(import('@/components/Main/Index'))
+      component: asyncLoadComponents(import('@/pages/Main/Index'))
     },
     {
       path: '/users/:user',
-      component: asyncLoadComponents(import('@/components/Main/Index'))
+      component: asyncLoadComponents(import('@/pages/Main/Index'))
     },
     {
       path: '/register',
-      component: asyncLoadComponents(import('@/components/Register/Register'))
+      component: asyncLoadComponents(import('@/pages/Register/Register'))
     },
     {
       path: '*',
       name: 'NotFound',
-      component: asyncLoadComponents(import('@/components/NotFound'))
+      component: asyncLoadComponents(import('@/pages/NotFound'))
     }
   ],
   mode: 'history'

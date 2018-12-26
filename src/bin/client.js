@@ -108,22 +108,22 @@ const client = {
   // Tag: pin
   getPinnedMessages (channelId) {
     return middleWare('getPinnedMessages', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/pin`)
+      return axios.get(`/api/1.0/channels/${channelId}/pins`)
     })
   },
-  pinMessage (channelId, messageId) {
+  pinMessage (messageId) {
     return middleWare('pinMessage', () => {
-      return axios.post(`/api/1.0/channels/${channelId}/pin`, {messageId})
+      return axios.post(`/api/1.0/pins`, {messageId})
     })
   },
   getPinnedMessage (pinId) {
     return middleWare('getPinnedMessage', () => {
-      return axios.get(`/api/1.0/pin/${pinId}`)
+      return axios.get(`/api/1.0/pins/${pinId}`)
     })
   },
   unpinMessage (pinId) {
     return middleWare('unpinMessage', () => {
-      return axios.delete(`/api/1.0/pin/${pinId}`)
+      return axios.delete(`/api/1.0/pins/${pinId}`)
     })
   },
   reportMessage (messageId, reason) {

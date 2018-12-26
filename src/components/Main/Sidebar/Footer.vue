@@ -47,6 +47,10 @@ export default {
   margin-left: 1rem
   color: white
 
+@supports not (--primary-color: #232C26)
+  .menu-button.theme
+    display: none
+
 .version-text
   color: white
   font-size: 15px
