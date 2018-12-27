@@ -85,7 +85,7 @@ export default {
       return this.$store.state.currentChannel.force
     },
     isNotified () {
-      return this.$store.getters.notificationsOnMembers.some(userId => this.$store.state.me.userId)
+      return this.$store.getters.notificationsOnMembers.some(user => user.userId === this.$store.state.me.userId)
     },
     isStared () {
       if (this.isDirectMessage) return false
