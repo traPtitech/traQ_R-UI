@@ -1,6 +1,8 @@
 <template lang="pug">
 div.member-container
-  MemberGroup(v-for="tag in tags" :key="tag.tag" :members="tag.users" :groupName="tag.tag")
+  div.search-input
+    input
+  MemberGroup(v-for="tag in grades" :key="tag.tag" :members="tag.users" :groupName="tag.tag")
   MemberGroup(v-if="bots.length > 0" :members="bots" :groupName="'BOT'")
 </template>
 
@@ -18,7 +20,7 @@ export default {
     }
   },
   computed: {
-    tags () {
+    grades () {
       const grades = this.$store.state.tagData
         .filter(
             tag => tag.tag !== '' && /^\d{2}[BMDR]$/.test(tag.tag)
