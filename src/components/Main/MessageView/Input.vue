@@ -82,9 +82,26 @@ export default {
         message += `!{"type": "file", "raw": "", "id": "${id}"}`
       })
       this.uploadedIds = []
-      message = this.replaceUser(message)
-      message = this.replaceChannel(message)
-      message = this.replaceTag(message)
+      let inCodeBlock = false
+      message = message.split('\n').map(line => {
+        if (/^```/.test(line)) {
+          inCodeBlock = !inCodeBlock
+        }
+        if (!inCodeBlock) {
+          let inQuote = false
+          return line.split('`').map(s => {
+            if (inQuote) {
+              inQuote = false
+              return s
+            } else {
+              inQuote = true
+              return this.replaceTag(this.replaceChannel(this.replaceUser(s)))
+            }
+          }).join('`')
+        } else {
+          return line
+        }
+      }).join('\n')
       const postedMessage = (!nowChannel.dm)
         ? client.postMessage(nowChannel.channelId, message)
         : client.postDirectMessage(this.$store.getters.getUserIdByDirectMessageChannel(nowChannel), message)
