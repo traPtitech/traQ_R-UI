@@ -9,25 +9,28 @@ div.stamp-picker
             icon(name="search")
         div.stamp-picker-body
           div.emoji-container(v-if="" @mouseleave="searchPlaceHolder=defaultString")
-            div(v-for="(category, idx) in $store.state.stampCategolized")
+            div(v-for="(category, idx) in stampCategolized")
               div(v-show="idx==currentCategoryIndex || search")
                 p
                   | {{category.category}}
                 div.emoji-item(v-for="stamp in stamps(idx)" class="emoji s32" @click="addStamp(stamp.id)" @mouseover="hoverStamp(stamp.name)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
         div.stamp-picker-footer
             div.stamp-category-wrap
-              div.stamp-category-item(v-for="(category,idx) in $store.state.stampCategolized" :style="category.stamps[0] ? `background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[category.stamps[0].id].fileId})` : ''" @click="currentCategoryIndex=idx")
+              div.stamp-category-item(v-for="(category,idx) in stampCategolized" :style="category.stamps[0] ? `background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[category.stamps[0].id].fileId})` : ''" @click="currentCategoryIndex=idx")
 </template>
 
 <script>
 import client from '@/bin/client'
-
+import Vue from 'vue'
 export default {
   name: 'StampPicker',
   props: {
   },
   created () {
     this.searchPlaceHolder = this.defaultString
+    client.getStampHistory().then(res => {
+      Vue.set(this.stampHistory, 'stamps', res.data.map(stamp => this.$store.state.stampMap[stamp.stampId]))
+    })
   },
   computed: {
     active () {
@@ -35,6 +38,14 @@ export default {
     },
     model () {
       return this.$store.state.stampPickerModel
+    },
+    stampCategolized () {
+      console.log(this.stampHistory)
+      console.log(this.$store.state.stampCategolized)
+      if (this.stampHistory.length === 0) {
+        return this.$store.state.stampCategolized
+      }
+      return [this.stampHistory].concat(this.$store.state.stampCategolized)
     }
   },
   data () {
@@ -43,7 +54,11 @@ export default {
       defaultString: 'スタンプを検索',
       searchPlaceHolder: this.defaultString,
       loaded: false,
-      currentCategoryIndex: 0
+      currentCategoryIndex: 0,
+      stampHistory: {
+        category: 'history',
+        stamps: []
+      }
     }
   },
   methods: {
@@ -55,9 +70,9 @@ export default {
     },
     stamps (index) {
       if (this.search === '') {
-        return this.$store.state.stampCategolized[index].stamps
+        return this.stampCategolized[index].stamps
       }
-      return this.$store.state.stampCategolized[index].stamps.filter(stamp => stamp.name.includes(this.search))
+      return this.stampCategolized[index].stamps.filter(stamp => stamp.name.includes(this.search))
     },
     hoverStamp (name) {
       this.searchPlaceHolder = name
@@ -75,7 +90,7 @@ export default {
   .modal-overlay
     background: none
   .modal
-    max-width: 300px
+    max-width: 330px
     width: 100%
     right: 0
     +mq(pc)

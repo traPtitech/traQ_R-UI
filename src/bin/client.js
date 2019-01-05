@@ -385,6 +385,11 @@ const client = {
       return axios.delete(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
     })
   },
+  getStampHistory () {
+    return middleWare('getStampHistory', () => {
+      return axios.get('/api/1.0/users/me/stamp-history')
+    })
+  },
 
   // Tag: file
   uploadFile (file, onUploadProgress) {
