@@ -36,53 +36,9 @@ export default {
 <style lang="sass">
 @import "~@/styles/global.sass"
 #app
-  font-family: 'Mplus 1p','Avenir', Arial, sans-serif
+  font-family: 'Mplus 1p','メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   color: $text-color
   background-color: $background-color
-li
-  list-style: none
-  margin: 0
-ul
-  margin: 0
-  padding: 0
-p
-  margin: 0
-a
-  text-decoration: none
-code
-  font-family: 'Oxygen Mono', monospace
-  font-size: 0.9em
-::selection
-  color: white
-  background-color: $secondary-color
-// input, button, textarea, select
-.input-reset
-  padding: 0
-  background: none
-  border: none
-  border-radius: 0
-  outline: none
-  -webkit-appearance: none
-  -moz-appearance: none
-  appearance: none
-.flex-center
-  display: flex
-  justify-content: center
-  align-items: center
-.sticky
-  position: -webkit-sticky
-  position: sticky
-.sticky.sticky-fixed.is-sticky
-  position: fixed
-  -webkit-backface-visibility: hidden
-  -moz-backface-visibility: hidden
-  backface-visibility: hidden
-.sticky.sticky-fixed.is-sticky:not([style*="margin-top"])
-  margin-top: 0 !important
-.sticky.sticky-fixed.is-sticky:not([style*="margin-bottom"])
-  margin-bottom: 0 !important
-.sticky.sticky-fixed.is-absolute
-  position: absolute
 </style>

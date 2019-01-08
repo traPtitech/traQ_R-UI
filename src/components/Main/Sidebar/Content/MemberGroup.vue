@@ -6,7 +6,7 @@
     div.member-group-list(ref="list")
       transition(name="simple" @after-enter="removeHeight" @after-leave="zeroHeight")
         div(ref="listWrap" v-show="isOpen")
-          MemberElement(v-for="member in members" :model="member" :key="member.userId")
+          MemberElement(v-for="member in filteredMembers" :model="member" :key="member.userId")
 </template>
 
 <script>
@@ -21,7 +21,11 @@ export default {
   },
   props: {
     groupName: String,
-    members: Array
+    members: Array,
+    filterText: {
+      type: String,
+      default: ''
+    }
   },
   components: {
     MemberElement
@@ -31,6 +35,12 @@ export default {
       return {
         'is-open': this.isOpen
       }
+    },
+    filteredMembers () {
+      return this.filterMembers()
+    },
+    caseIgnoreFilterText () {
+      return new RegExp(this.filterText, 'i')
     }
   },
   methods: {
@@ -39,6 +49,12 @@ export default {
     },
     zeroHeight () {
       this.$refs.list.style.height = '0'
+    },
+    filterMembers () {
+      return this.members
+        .filter(m => {
+          return this.caseIgnoreFilterText.test(m.displayName) || this.caseIgnoreFilterText.test(m.name)
+        })
     }
   },
   watch: {
