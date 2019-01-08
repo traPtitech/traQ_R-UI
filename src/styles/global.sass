@@ -8,6 +8,51 @@
 @import "_mixins"
 @import "_keyframes"
 
+li
+  list-style: none
+  margin: 0
+ul
+  margin: 0
+  padding: 0
+p
+  margin: 0
+a
+  text-decoration: none
+code
+  font-family: 'Oxygen Mono', monospace
+  font-size: 0.9em
+::selection
+  color: white
+  background-color: $secondary-color
+
+// input, button, textarea, select
+.input-reset
+  padding: 0
+  border: none
+  border-radius: 0
+  outline: none
+  -webkit-appearance: none
+  -moz-appearance: none
+  appearance: none
+.flex-center
+  display: flex
+  justify-content: center
+  align-items: center
+.sticky
+  position: -webkit-sticky
+  position: sticky
+.sticky.sticky-fixed.is-sticky
+  position: fixed
+  -webkit-backface-visibility: hidden
+  -moz-backface-visibility: hidden
+  backface-visibility: hidden
+.sticky.sticky-fixed.is-sticky:not([style*="margin-top"])
+  margin-top: 0 !important
+.sticky.sticky-fixed.is-sticky:not([style*="margin-bottom"])
+  margin-bottom: 0 !important
+.sticky.sticky-fixed.is-absolute
+  position: absolute
+
 .drop-shadow
   box-shadow: 0 2px 4px rgba(41, 41, 41,0.5)
 .text-ellipsis
