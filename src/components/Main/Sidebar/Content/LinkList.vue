@@ -16,7 +16,7 @@ div.links-list-wrap
     li
       a(href="https://blog.trapti.tech" target="_blank")
         div.link-icon
-          icon(name="snapchat-ghost")
+          icon(name="brands/snapchat-ghost")
         p.link-title
           | Blog
     li

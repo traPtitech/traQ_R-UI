@@ -22,10 +22,6 @@ export default {
     FilterInput
   },
   methods: {
-    color (grade) {
-      const num = parseInt(grade.substr(0, 2), 10)
-      return this.colors[num][grade[2]]
-    }
   },
   computed: {
     sortedGrades () {
@@ -63,8 +59,9 @@ export default {
 <style lang="sass">
 .member-container
   width: 100%
-  height: 100%
   color: $text-light-color
+  padding:
+    bottom: 20px
 .member-filter-input-wrapper
   width: 80%
   margin: auto

@@ -7,15 +7,11 @@ div.channel-wrap(v-if="model.visibility")
       | #
     p.channel-box-name
       | {{model.name}}
-    //- p.channel-unread-num(v-if="unreadNum > 0")
-    //-   | {{unreadNum}}
-    //- p.channel-unread-sum(v-if="!isOpened && unreadSum - unreadNum > 0")
-    //-   | {{unreadSum - unreadNum}}
   div.channel-children(ref="children" v-if="model.children")
     transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
       div(ref="childrenWrap" v-show="isOpened")
-        div(v-for="child in model.children")
-          ChannelElement(:model="$store.state.channelMap[child]")
+        div(v-for="child in children")
+          ChannelElement(:model="child")
 </template>
 
 <script>
@@ -41,6 +37,9 @@ export default {
     },
     zeroHeight () {
       this.$refs.children.style.height = '0'
+    },
+    getChannelById (id) {
+      return this.$store.state.channelMap[id]
     }
   },
   computed: {
@@ -64,6 +63,13 @@ export default {
         'has-unread': this.unreadNum > 0,
         'has-unread-child': !this.isOpened && (this.unreadSum - this.unreadNum) > 0
       }
+    },
+    children () {
+      if (!this.model.children) return []
+      return this.model.children
+        .map(c => {
+          return this.getChannelById(c)
+        })
     }
   },
   components: {
