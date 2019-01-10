@@ -21,21 +21,16 @@ export default {
       return this.$store.getters.childrenChannels('')
     },
     filteredChannels () {
-      return this.filterChannel(this.allChannels)
+      return this.allChannels
+        .filter(c => {
+          return this.caseIgnoreFilterText.test(c.name)
+        })
     },
     caseIgnoreFilterText () {
       return new RegExp(this.filterText, 'i')
     },
     allChannels () {
       return this.$store.getters.allChannels
-    }
-  },
-  methods: {
-    filterChannel (channel) {
-      return channel
-        .filter(c => {
-          return this.caseIgnoreFilterText.test(c.name)
-        })
     }
   },
   components: {

@@ -5,8 +5,8 @@ div.channel-list
   transition(name="slide" mode="out-in")
     keep-alive
       ChannelTreeView(v-if="channelView === 'tree'" :filterText="filterText")
-      ChannelStared(v-if="channelView === 'stared'")
-      ChannelActivity(v-if="channelView === 'activity'")
+      ChannelStared(v-if="channelView === 'stared'" :filterText="filterText")
+      ChannelActivity(v-if="channelView === 'activity'" :filterText="filterText")
   div.channel-tab-switcher-wrap.drop-shadow
     div.channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
     div.channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
