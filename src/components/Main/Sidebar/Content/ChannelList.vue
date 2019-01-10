@@ -1,8 +1,10 @@
 <template lang="pug">
 div.channel-list
+  div.channel-list-filter-input-wrapper
+    FilterInput(@inputFilter="filterText = $event")
   transition(name="slide" mode="out-in")
     keep-alive
-      ChannelTreeView(v-if="channelView === 'tree'")
+      ChannelTreeView(v-if="channelView === 'tree'" :filterText="filterText")
       ChannelStared(v-if="channelView === 'stared'")
       ChannelActivity(v-if="channelView === 'activity'")
   div.channel-tab-switcher-wrap.drop-shadow
@@ -15,17 +17,21 @@ div.channel-list
 import ChannelTreeView from '@/components/Main/Sidebar/Content/ChannelTreeView'
 import ChannelStared from '@/components/Main/Sidebar/Content/ChannelStared'
 import ChannelActivity from '@/components/Main/Sidebar/Content/ChannelActivity'
+import FilterInput from '@/components/Util/FilterInput'
+
 export default {
   name: 'ChannelList',
   data () {
     return {
-      channelView: 'tree'
+      channelView: 'tree',
+      filterText: ''
     }
   },
   components: {
     ChannelTreeView,
     ChannelStared,
-    ChannelActivity
+    ChannelActivity,
+    FilterInput
   }
 }
 </script>
@@ -33,6 +39,8 @@ export default {
 <style lang="sass">
 .channel-list
   user-select: none
+  padding:
+    bottom: 40px
 .channel-tab-switcher-wrap
   position: absolute
   bottom: 60px
@@ -55,4 +63,9 @@ export default {
   transition: all .3s ease
   &.selected
     background: $tertiary-color
+.channel-list-filter-input-wrapper
+  width: 80%
+  margin: auto
+    top: 20px
+    bottom: 20px
 </style>

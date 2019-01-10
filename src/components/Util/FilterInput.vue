@@ -30,11 +30,11 @@ export default {
 input.filter-input
   max-width: 100%
   padding:
-    top: 2px
+    top: 4px
     right: 20px
     left: 10px
-    bottom: 2px
-  border-radius: 3px
+    bottom: 4px
+  border-radius: 4px
   background: rgba(255,255,255,0.2)
   color: $text-light-color
   box-sizing: border-box
@@ -43,6 +43,7 @@ input.filter-input
     opacity: 0.8
 
 .filter-input-reset
+  color: white
   cursor: pointer
   position: absolute
   width: 12px
