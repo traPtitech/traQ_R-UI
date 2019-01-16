@@ -1,10 +1,10 @@
 <template lang="pug">
-div.sidebar(:class="{'is-sidebar-opened': isOpened}" ref="sidebar")
+div.sidebar(:class="sidebarClass" ref="sidebar")
   Navigation
   div.menu-content-wrapper
     Content
   Footer
-  div.sidebar-overlay(draggable="false" @click="close" v-if="isOpened")
+  div.sidebar-overlay(draggable="false" @click="close" v-if="isSidebarOpened")
 </template>
 
 <script>
@@ -21,12 +21,16 @@ export default {
     }
   },
   computed: {
+    sidebarClass () {
+      return {
+        'is-sidebar-opened': this.isSidebarOpened,
+        'drop-shadow': this.deviceType === 'sp'
+      }
+    },
     ...mapGetters([
-      'deviceType'
-    ]),
-    ...mapGetters({
-      isOpened: 'isSidebarOpened'
-    })
+      'deviceType',
+      'isSidebarOpened'
+    ])
   },
   components: {
     'MenuHeader': MenuHeader,
