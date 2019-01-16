@@ -65,7 +65,8 @@ export default {
     background: $tertiary-color
 .channel-list-filter-input-wrapper
   width: 80%
-  margin: auto
+  padding:
     top: 20px
+  margin: auto
     bottom: 20px
 </style>

@@ -1,7 +1,6 @@
 <template lang="pug">
-header.titlebar(ref="titlebar" :class="{'is-expanded':isExpanded}")
-  div.titlebar-inner-wrap(@click="isExpanded=!isExpanded")
-    // div.sidebar-open(v-on:click="$store.state.sidebarOpened=!$store.state.sidebarOpened")
+header.titlebar(ref="titlebar" :class="titlebarClass")
+  div.titlebar-inner-wrap(@click="handleTitlebarClick()")
     img.traq-logo(src="@/assets/img/icon/logo_white.svg")
     div.channel-info-wrap(ref="titlebarInner")
       h1.text-ellipsis.channel-name
@@ -36,12 +35,12 @@ header.titlebar(ref="titlebar" :class="{'is-expanded':isExpanded}")
 
 <script>
 import client from '@/bin/client'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Titlebar',
   data () {
     return {
-      isSidebarOpened: false,
-      isExpanded: false,
       width: 0
     }
   },
@@ -75,6 +74,24 @@ export default {
     },
     zeroWidth () {
       this.$refs.titlebarInner.style.width = '0px'
+    },
+    handleTitlebarClick () {
+      if (this.deviceType === 'pc') {
+        this.toggleTitlebarExpansion()
+      } else if (this.deviceType === 'sp') {
+        if (this.isSidebarOpened) {
+          this.toggleTitlebarExpansion()
+        } else {
+          this.$store.commit('openSidebar')
+        }
+      }
+    },
+    toggleTitlebarExpansion () {
+      if (this.isTitlebarExpanded) {
+        this.$store.commit('contractTitlebar')
+      } else {
+        this.$store.commit('expandTitlebar')
+      }
     }
   },
   computed: {
@@ -105,9 +122,18 @@ export default {
     topic () {
       if (this.$route.params.user) return ''
       return this.$store.state.currentChannelTopic.text
+    },
+    ...mapGetters([
+      'deviceType',
+      'isSidebarOpened',
+      'isTitlebarExpanded'
+    ]),
+    titlebarClass () {
+      return {
+        'is-expanded': this.isTitlebarExpanded,
+        'is-sidebar-opened': this.isSidebarOpened
+      }
     }
-  },
-  watch: {
   }
 }
 </script>
@@ -130,6 +156,9 @@ $topic-height: 14px
     min-width: 200px
     max-width: calc( 100vw - #{$online-users-box-width} - 5px )
     height: 50px
+    &.is-sidebar-opened
+      min-width: $sidebar-width
+      max-width: $sidebar-width
 .titlebar-inner-wrap
   +mq(pc)
     height: 60px
@@ -163,7 +192,8 @@ $topic-height: 14px
   color: gray
 .channel-info-wrap
   padding-right: 10px
-  max-width: calc( 100% - 60px )
+  max-width: calc(100% - 60px)
+  box-sizing: content-box
 .channel-name
   max-width: 100%
   font-size: 25px
@@ -171,6 +201,7 @@ $topic-height: 14px
   font-weight: bold
   text-align: left
   margin: 0
+  display: block
 .buttons
   display: flex
   flex-flow: row
@@ -223,7 +254,6 @@ $topic-height: 14px
     justify-content: center
     width: 50%
     cursor: pointer
-    transition: all .3s ease
     &:hover
       background: rgba(0,0,0,0.1)
 .border-left
@@ -245,10 +275,10 @@ $topic-height: 14px
   width: 100%
   height: 20px
   padding: 10px 0 10px 30px
+  box-sizing: content-box
   color: white
   font-size: 14px
   cursor: pointer
-  transition: all .3s ease
   .menu-icon
     margin-right: 15px
   &:hover

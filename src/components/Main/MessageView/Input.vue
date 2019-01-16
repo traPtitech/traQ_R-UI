@@ -329,8 +329,11 @@ export default {
 .input-ui > *
   pointer-events: auto
 .input-ui
-  grid-area: input
-  position: absolute
+  +mq(pc)
+    grid-area: input
+    position: relative
+  +mq(sp)
+    position: fixed
   width: 100%
   bottom: 0
   pointer-events: none

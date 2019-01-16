@@ -106,7 +106,11 @@ export default {
   color: $text-light-color
   font-weight: bold
   flex: 1
-  padding: 8px 10px 8px 10px
+  margin:
+    top: 8px
+    right: 10px
+    bottom: 8px
+    left: 10px
   text-align: left
   cursor: pointer
   overflow: hidden

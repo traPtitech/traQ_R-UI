@@ -107,7 +107,9 @@ export default {
   transition: all .5s ease
   background: $tertiary-color
   max-height: 80vh
-  overflow: scroll
+  overflow:
+    x: hidden
+    y: auto
   position: relative
   transform: translateY(-100%)
   +mq(pc)

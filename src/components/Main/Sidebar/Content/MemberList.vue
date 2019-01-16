@@ -64,6 +64,7 @@ export default {
     bottom: 20px
 .member-filter-input-wrapper
   width: 80%
-  margin: auto
+  padding:
     top: 20px
+  margin: auto
 </style>
