@@ -30,6 +30,8 @@ export default {
       this.$store.dispatch('updateChannelOpen', {channelId: this.model.channelId, isOpen: !this.isOpened})
     },
     channelLink (name) {
+      this.$store.commit('closeSidebar')
+      this.$store.commit('contractTitlebar')
       this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.channelId)}`)
     },
     removeHeight () {
