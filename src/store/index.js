@@ -50,6 +50,7 @@ export default new Vuex.Store({
     channelMap: {},
     openChannels: {},
     sidebarOpened: false,
+    titlebarExpanded: false,
     stampPickerActive: false,
     stampPickerModel: null,
     memberData: [],
@@ -86,7 +87,9 @@ export default new Vuex.Store({
     openMode: 'particular',
     openChannelId: '',
     lastChannelId: '',
-    theme: 'light'
+    theme: 'light',
+    windowWidth: 0,
+    windowHeight: 0
   },
   mutations: {
     setStampPickerModel (state, model) {
@@ -103,6 +106,12 @@ export default new Vuex.Store({
     },
     closeSidebar (state) {
       state.sidebarOpened = false
+    },
+    expandTitlebar (state) {
+      state.titlebarExpanded = true
+    },
+    contractTitlebar (state) {
+      state.titlebarExpanded = false
     },
     setMe (state, me) {
       state.me = me
@@ -350,6 +359,10 @@ export default new Vuex.Store({
     },
     setTheme (state, themeName) {
       state.theme = themeName
+    },
+    setWindowSize (state, {windowWidth, windowHeight}) {
+      state.windowWidth = windowWidth
+      state.windowHeight = windowHeight
     }
   },
   getters: {
@@ -486,6 +499,15 @@ export default new Vuex.Store({
           return channel.member.find(userId => userId !== state.me.userId)
         }
       }
+    },
+    deviceType (state) {
+      return state.windowWidth < 680 ? 'sp' : 'pc'
+    },
+    isSidebarOpened (state) {
+      return state.sidebarOpened
+    },
+    isTitlebarExpanded (state) {
+      return state.titlebarExpanded
     }
   },
   actions: {

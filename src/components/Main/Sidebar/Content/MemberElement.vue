@@ -60,6 +60,7 @@ export default {
 .member-element-icon-container
   position: relative
 .member-element-icon
+  min-width: 40px
   width: 40px
   height: 40px
   border:

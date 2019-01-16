@@ -78,7 +78,8 @@ export default {
 
 <style lang="sass">
 .content-wrap
-  grid-area: content
+  +mq(pc)
+    grid-area: content
   background-color: $background-color
   overflow-x: hidden
   overflow-y: scroll

@@ -10,7 +10,7 @@ FileDroper(
     StampPicker
     Titlebar
     OnlineUsersList
-    // ↓grid-item
+    // ↓grid-item on pc
     Message
     Input
     Sidebar
@@ -291,20 +291,18 @@ export default {
 
 <style lang="sass">
 .index
-  display: grid
   position: relative
   grid-gap: 0
   width: 100vw
   height: 100vh
-  overflow: hidden
   +mq(pc)
+    display: grid
+    overflow: hidden
     grid-template-rows: 1fr $input-height
     grid-template-columns: $sidebar-width 1fr
     grid-template-areas: "side content""side input"
   +mq(sp)
-    grid-template-rows: 1fr $input-height
-    grid-template-columns: 1fr
-    grid-template-areas: "content""input"
+    overflow: scroll
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     grid-template-columns: calc(260px + env(safe-area-inset-left) - 7px) 1fr calc(40px + env(safe-area-inset-right) - 7px)
 

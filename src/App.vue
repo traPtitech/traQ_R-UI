@@ -1,8 +1,8 @@
 <template lang="pug">
 div#app(:data-theme="$store.state.theme")
   Favicon
-  splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
-  router-view(v-else)
+  //- Splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
+  router-view()
 </template>
 
 <script>
@@ -10,6 +10,8 @@ import Splash from '@/components/Splash/Splash'
 import Favicon from '@/components/Util/Favicon'
 import 'normalize.css'
 import 'highlight.js/styles/default.css'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'app',
   metaInfo: {
@@ -29,6 +31,20 @@ export default {
           regisration.update()
         })
     }
+  },
+  methods: {
+    handleResizeWindow () {
+      this.$store.commit('setWindowSize', {
+        windowWidth: window.innerWidth,
+        windowHeight: window.innerHeight})
+    }
+  },
+  computed: {
+    ...mapGetters([])
+  },
+  mounted () {
+    this.handleResizeWindow()
+    window.addEventListener('resize', this.handleResizeWindow)
   }
 }
 </script>
