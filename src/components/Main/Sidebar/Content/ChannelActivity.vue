@@ -11,13 +11,15 @@ export default {
   components: {
     ChannelActivityElement
   },
+  props: {
+    showNotificationEnabled: {
+      type: Boolean,
+      default: true
+    }
+  },
   computed: {
     messages () {
-      return Object.values(this.$store.state.channelRecentMessageMap).sort((a, b) => {
-        if (a.createdAt > b.createdAt) return -1
-        if (a.createdAt < b.createdAt) return 1
-        else return 0
-      })
+      return this.$store.getters.recentMessagesArray
     }
   }
 }
