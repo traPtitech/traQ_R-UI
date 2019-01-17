@@ -509,6 +509,13 @@ export default new Vuex.Store({
     },
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
+    },
+    recentMessagesArray (state) {
+      return Object.values(state.channelRecentMessageMap).sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1
+        if (a.createdAt < b.createdAt) return 1
+        else return 0
+      })
     }
   },
   actions: {
@@ -556,12 +563,12 @@ export default new Vuex.Store({
           return false
         })
     },
-    updateChannels ({state, commit, dispatch}) {
+    async updateChannels ({state, commit, dispatch}) {
       return loadGeneralData('Channel', client.getChannels, commit)
         .then(() => {
-          state.channelData.forEach(channel => {
+          state.channelData.forEach(async channel => {
             if (!channel.channelId) return
-            dispatch('updateChannelRecentMessage', channel.channelId)
+            await dispatch('updateChannelRecentMessage', channel.channelId)
           })
         })
     },
@@ -679,12 +686,11 @@ export default new Vuex.Store({
       commit('setTheme', themeName)
       return db.write('browserSetting', {type: 'theme', data: themeName})
     },
-    updateChannelRecentMessage ({state, commit}, channelId) {
-      return client.loadMessages(channelId, 1).then(async res => {
-        const channel = res.data[0]
-        if (!channel || channel.dm) return
-        state.channelRecentMessageMap[channelId] = res.data[0]
-      })
+    async updateChannelRecentMessage ({state, commit}, channelId) {
+      const res = await client.loadMessages(channelId, 1)
+      const data = res.data[0]
+      if (!data || data.dm) return
+      Vue.set(state.channelRecentMessageMap, channelId, data)
     }
   }
 })

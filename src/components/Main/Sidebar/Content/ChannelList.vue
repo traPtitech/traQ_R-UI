@@ -1,12 +1,15 @@
 <template lang="pug">
 div.channel-list
-  div.channel-list-filter-input-wrapper
-    FilterInput(@inputFilter="filterText = $event")
+  div.channel-list-action-area-wrapper
+    transition(name="slide" mode="out-in")
+      keep-alive
+        FilterInput(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
+        ChannelActivityControlls(v-else @refreshClick="refresh" @notificationToggleClick="showNotificationEnabled = !showNotificationEnabled")
   transition(name="slide" mode="out-in")
     keep-alive
       ChannelTreeView(v-if="channelView === 'tree'" :filterText="filterText")
       ChannelStared(v-if="channelView === 'stared'" :filterText="filterText")
-      ChannelActivity(v-if="channelView === 'activity'" :filterText="filterText")
+      ChannelActivity(v-if="channelView === 'activity'" :showNotificationEnabled="showNotificationEnabled")
   div.channel-tab-switcher-wrap.drop-shadow
     div.channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
     div.channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
@@ -17,6 +20,7 @@ div.channel-list
 import ChannelTreeView from '@/components/Main/Sidebar/Content/ChannelTreeView'
 import ChannelStared from '@/components/Main/Sidebar/Content/ChannelStared'
 import ChannelActivity from '@/components/Main/Sidebar/Content/ChannelActivity'
+import ChannelActivityControlls from '@/components/Main/Sidebar/Content/ChannelActivityControlls'
 import FilterInput from '@/components/Util/FilterInput'
 
 export default {
@@ -24,14 +28,24 @@ export default {
   data () {
     return {
       channelView: 'tree',
-      filterText: ''
+      filterText: '',
+      showNotificationEnabled: true
     }
   },
   components: {
     ChannelTreeView,
     ChannelStared,
     ChannelActivity,
+    ChannelActivityControlls,
     FilterInput
+  },
+  methods: {
+    async refresh () {
+      this.$store.state.channelData.forEach(async channel => {
+        if (!channel.channelId) return
+        await this.$store.dispatch('updateChannelRecentMessage', channel.channelId)
+      })
+    }
   }
 }
 </script>
@@ -63,7 +77,7 @@ export default {
   transition: all .3s ease
   &.selected
     background: $tertiary-color
-.channel-list-filter-input-wrapper
+.channel-list-action-area-wrapper
   width: 80%
   padding:
     top: 20px
