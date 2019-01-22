@@ -49,15 +49,6 @@ export default {
       const message = []
       for (let token of tokens) {
         if (token.type === 'traq_extends_link_open') {
-          if (token.meta.type === 'user') {
-            message.push(' user: ')
-          }
-          if (token.meta.type === 'channel') {
-            message.push(' channel: ')
-          }
-          if (token.meta.type === 'tag') {
-            message.push(' tag: ')
-          }
           if (token.meta.type === 'file') {
             message.push(` [file: ${token.attrs[1][1]}]`)
           }

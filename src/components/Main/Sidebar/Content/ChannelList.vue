@@ -4,7 +4,7 @@ div.channel-list
     transition(name="slide" mode="out-in")
       keep-alive
         FilterInput(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
-        ChannelActivityControlls(v-else @refreshClick="refresh" @notificationToggleClick="showNotificationEnabled = !showNotificationEnabled")
+        ChannelActivityControlls(v-else :isLoading="isLoading" @refreshClick="refresh" @notificationToggleClick="showNotificationEnabled = !showNotificationEnabled")
   transition(name="slide" mode="out-in")
     keep-alive
       ChannelTreeView(v-if="channelView === 'tree'" :filterText="filterText")
@@ -29,7 +29,8 @@ export default {
     return {
       channelView: 'tree',
       filterText: '',
-      showNotificationEnabled: true
+      showNotificationEnabled: true,
+      isLoading: false
     }
   },
   components: {
@@ -41,10 +42,14 @@ export default {
   },
   methods: {
     async refresh () {
-      this.$store.state.channelData.forEach(async channel => {
+      if (this.isLoading) return
+      this.isLoading = true
+      await this.$nextTick()
+      await Promise.all(this.$store.state.channelData.map(async channel => {
         if (!channel.channelId) return
         await this.$store.dispatch('updateChannelRecentMessage', channel.channelId)
-      })
+      }))
+      this.isLoading = false
     }
   }
 }

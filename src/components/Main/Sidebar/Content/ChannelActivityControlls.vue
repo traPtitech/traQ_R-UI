@@ -1,7 +1,8 @@
 <template lang="pug">
 div.channel-activity-controls-container
   div.channel-activity-button.channel-activity-refresh(@click="refresh")
-    icon(name="redo-alt" scale="0.8")
+    icon(v-if="isLoading" name="redo-alt" scale="0.8" spin)
+    icon(v-else name="redo-alt" scale="0.8")
   div.channel-activity-button.channel-activity-notification-toggle(@click="toggleNotification")
     icon(name="bell" scale="0.8")
 </template>
@@ -9,6 +10,12 @@ div.channel-activity-controls-container
 <script>
 export default {
   name: 'ChannelActivityControlls',
+  props: {
+    isLoading: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     refresh () {
       this.$emit('refreshClick')
