@@ -22,9 +22,6 @@ import sse from '@/bin/sse'
 import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
 import FileDroper from '@/components/Util/FileDroper'
-import User from '@/components/Main/User'
-import Tag from '@/components/Main/Tag'
-import StampPicker from '@/components/Main/StampPicker'
 import Modal from '@/components/Main/Modal'
 
 export default {
@@ -39,11 +36,11 @@ export default {
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
     'Input': window.asyncLoadComponents(import('@/components/Main/MessageView/Input')),
-    'OnlineUsersList': window.asyncLoadComponents(import('@/components/Main/MessageView/OnlineUsersBox')),
+    'ChannelInformation': window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
     'FileDroper': FileDroper,
-    'User': User,
-    'Tag': Tag,
-    'StampPicker': StampPicker,
+    'User': window.asyncLoadComponents(import('@/components/Main/User')),
+    'Tag': window.asyncLoadComponents(import('@/components/Main/Tag')),
+    'StampPicker': window.asyncLoadComponents(import('@/components/Main/StampPicker')),
     'Modal': Modal
   },
   async created () {
