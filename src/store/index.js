@@ -365,6 +365,9 @@ export default new Vuex.Store({
     setWindowSize (state, {windowWidth, windowHeight}) {
       state.windowWidth = windowWidth
       state.windowHeight = windowHeight
+    },
+    setMyNotifiedChannels (state, channels) {
+      state.myNotifiedChannels = channels
     }
   },
   getters: {
@@ -693,11 +696,12 @@ export default new Vuex.Store({
       if (!data || data.dm) return
       Vue.set(state.channelRecentMessageMap, channelId, data)
     },
-    async fetchMyNotiedChannels ({state, commit, getters}, channelId) {
-      const res = await client.loadMessages(channelId, 1)
-      const data = res.data[0]
-      if (!data || data.dm) return
-      state.myNotifiedChannels = data
+    async updateMyNotifiedChannels ({state, commit, getters}) {
+      const res = await client.getNotifiedChannels(getters.getMyId)
+      const data = res.data
+      console.log(data)
+      if (!data) return
+      commit('setMyNotifiedChannels', data)
     }
   }
 })
