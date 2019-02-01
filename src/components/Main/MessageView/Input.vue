@@ -54,6 +54,7 @@ export default {
     },
     inputBlur () {
       this.focused = false
+      this.$store.commit('setEditing', false)
     },
     submit () {
       if (this.inputText === '' && this.files.length === 0) {

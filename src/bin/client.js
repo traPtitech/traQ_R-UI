@@ -20,6 +20,23 @@ const client = {
     })
   },
 
+  // Tag: Session
+  getSessions () {
+    return middleWare('getSessions', () => {
+      return axios.get('/api/1.0/users/me/sessions')
+    })
+  },
+  deleteSessions () {
+    return middleWare('deleteSessions', () => {
+      return axios.delete('/api/1.0/users/me/sessions')
+    })
+  },
+  deleteSession (sessionId) {
+    return middleWare('deleteSession', () => {
+      return axios.delete(`/api/1.0/users/me/sessions/${sessionId}`)
+    })
+  },
+
   // Tag: channel
   makeChannel (type, member, name, parent) {
     return middleWare('makeChannel', () => {
@@ -104,6 +121,20 @@ const client = {
       return axios.delete(`/api/1.0/messages/${messageId}`)
     })
   },
+  reportMessage (messageId, reason) {
+    return middleWare('reportMessage', () => {
+      return axios.post(`/api/1.0/messages/${messageId}/report`, {reason})
+    })
+  },
+  getReports (page) {
+    return middleWare('getReports', () => {
+      return axios.get('/api/1.0/reports', {
+        params: {
+          p: page
+        }
+      })
+    })
+  },
 
   // Tag: pin
   getPinnedMessages (channelId) {
@@ -126,11 +157,6 @@ const client = {
       return axios.delete(`/api/1.0/pins/${pinId}`)
     })
   },
-  reportMessage (messageId, reason) {
-    return middleWare('reportMessage', () => {
-      return axios.post(`/api/1.0/messages/${messageId}/report`, {reason})
-    })
-  },
 
   // Tag: notification
   getNotifications (channelId) {
@@ -141,6 +167,11 @@ const client = {
   changeNotifications (channelId, state) {
     return middleWare('changeNotifications', () => {
       return axios.put(`/api/1.0/channels/${channelId}/notification`, state)
+    })
+  },
+  getNotifiedChannels (userId) {
+    return middleWare('getNotifiedChannels', () => {
+      return axios.get(`/api/1.0/users/${userId}/notification`)
     })
   },
   registerDevice (token) {
@@ -280,6 +311,18 @@ const client = {
     })
   },
 
+  // Tag: unread
+  getUnreadMessages () {
+    return middleWare('getUnreadMessages', () => {
+      return axios.get(`/api/1.0/users/me/unread`)
+    })
+  },
+  readMessages (channelId) {
+    return middleWare('readMessages', () => {
+      return axios.delete(`/api/1.0/users/me/unread/${channelId}`)
+    })
+  },
+
   // Tag: mute
   getMutedChannels () {
     return middleWare('getMutedChannels', () => {
@@ -297,46 +340,12 @@ const client = {
     })
   },
 
-  // Tag: unread
-  getUnreadMessages () {
-    return middleWare('getUnreadMessages', () => {
-      return axios.get(`/api/1.0/users/me/unread`)
-    })
-  },
-  readMessages (channelId) {
-    return middleWare('readMessages', () => {
-      return axios.delete(`/api/1.0/users/me/unread/${channelId}`)
-    })
-  },
-
-  // Tag: userTag
-  getUserTags (userId) {
-    return middleWare('getUserTag', () => {
-      return axios.get(`/api/1.0/users/${userId}/tags`)
-    })
-  },
-  addUserTag (userId, tag) {
-    return middleWare('addUserTag', () => {
-      return axios.post(`/api/1.0/users/${userId}/tags`, {tag})
-    })
-  },
-  changeLockUserTag (userId, tagId, isLocked) {
-    return middleWare('changeLockUserTag', () => {
-      return axios.patch(`/api/1.0/users/${userId}/tags/${tagId}`, {isLocked})
-    })
-  },
-  deleteUserTag (userId, tagId) {
-    return middleWare('deleteUserTag', () => {
-      return axios.delete(`/api/1.0/users/${userId}/tags/${tagId}`)
-    })
-  },
-  getAllTags () {
-    return middleWare('getAllTags', () => {
-      return axios.get(`/api/1.0/tags`)
-    })
-  },
-
   // Tag: stamp
+  getStampHistory () {
+    return middleWare('getStampHistory', () => {
+      return axios.get('/api/1.0/users/me/stamp-history')
+    })
+  },
   getStamps () {
     return middleWare('getStamps', () => {
       return axios.get(`/api/1.0/stamps`)
@@ -385,9 +394,36 @@ const client = {
       return axios.delete(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
     })
   },
-  getStampHistory () {
-    return middleWare('getStampHistory', () => {
-      return axios.get('/api/1.0/users/me/stamp-history')
+
+  // Tag: userTag
+  getUserTags (userId) {
+    return middleWare('getUserTag', () => {
+      return axios.get(`/api/1.0/users/${userId}/tags`)
+    })
+  },
+  addUserTag (userId, tag) {
+    return middleWare('addUserTag', () => {
+      return axios.post(`/api/1.0/users/${userId}/tags`, {tag})
+    })
+  },
+  changeLockUserTag (userId, tagId, isLocked) {
+    return middleWare('changeLockUserTag', () => {
+      return axios.patch(`/api/1.0/users/${userId}/tags/${tagId}`, {isLocked})
+    })
+  },
+  deleteUserTag (userId, tagId) {
+    return middleWare('deleteUserTag', () => {
+      return axios.delete(`/api/1.0/users/${userId}/tags/${tagId}`)
+    })
+  },
+  getAllTags () {
+    return middleWare('getAllTags', () => {
+      return axios.get(`/api/1.0/tags`)
+    })
+  },
+  getTag (tagId) {
+    return middleWare('getTag', () => {
+      return axios.get(`/api/1.0/tags/${tagId}`)
     })
   },
 
