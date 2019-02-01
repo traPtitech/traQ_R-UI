@@ -169,6 +169,11 @@ const client = {
       return axios.put(`/api/1.0/channels/${channelId}/notification`, state)
     })
   },
+  getNotifiedChannels (userId) {
+    return middleWare('getNotifiedChannels', () => {
+      return axios.get(`/api/1.0/users/${userId}/notification`)
+    })
+  },
   registerDevice (token) {
     return middleWare('registerDevice', () => {
       return axios.post(`/api/1.0/notification/device`, {token})
