@@ -5,11 +5,11 @@ div.channel-activity-wrap
       div.channel-activity-before(:class="channelBeforeClass")
         | #
       div.channel-activity-name
-      | {{ channel.name }}
+        | {{ channel.name }}
     hr.channel-activity-separator
     p.channel-recent-message
       span.channel-recent-message-author
-        | @{{ author.name }}
+        | {{ author.name }}
       span.channel-recent-message-content
         | {{ sanitizedMessage }}
 </template>
@@ -89,7 +89,6 @@ export default {
   flex: 1
   text-align: left
   cursor: pointer
-  overflow: hidden
   white-space: nowrap
   z-index: 1
   user-select: none
@@ -97,6 +96,7 @@ export default {
 .channel-activity-before
   position: relative
   display: flex
+  flex: 0 0 20px
   justify-content: center
   align-items: center
   width: 20px
@@ -118,6 +118,9 @@ export default {
     top: -3px
     border-radius: 100%
     background: $notification-color
+.channel-activity-name
+  width: 100%
+  overflow: hidden
 .channel-activity-separator
   border-color: rgba(255, 255, 255, 0.5)
   margin-left: 1.5rem
