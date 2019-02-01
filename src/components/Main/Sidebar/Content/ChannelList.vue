@@ -6,14 +6,14 @@ div.channel-list
         FilterInput(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
         ChannelActivityControlls(v-else
                                  :isLoading="isLoading"
-                                 :filterChannels="filterChannels"
+                                 :filterNotified="filterNotified"
                                  @refreshClick="refresh"
                                  @filterToggle="toggleNotification")
   transition(name="slide" mode="out-in")
     keep-alive
       ChannelTreeView(v-if="channelView === 'tree'" :filterText="filterText")
       ChannelStared(v-if="channelView === 'stared'" :filterText="filterText")
-      ChannelActivity(v-if="channelView === 'activity'" :filterChannels="filterChannels")
+      ChannelActivity(v-if="channelView === 'activity'" :filterNotified="filterNotified")
   div.channel-tab-switcher-wrap.drop-shadow
     div.channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
     div.channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
@@ -33,7 +33,7 @@ export default {
     return {
       channelView: 'tree',
       filterText: '',
-      filterChannels: true,
+      filterNotified: true,
       isLoading: false
     }
   },
@@ -56,7 +56,7 @@ export default {
       this.isLoading = false
     },
     toggleNotification () {
-      this.filterChannels = !this.filterChannels
+      this.filterNotified = !this.filterNotified
     }
   }
 }

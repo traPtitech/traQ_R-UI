@@ -15,14 +15,14 @@ export default {
       type: Boolean,
       default: false
     },
-    filterChannels: {
+    filterNotified: {
       type: Boolean,
       default: false
     }
   },
   computed: {
     notificationToggleClass () {
-      return this.filterChannels ? 'filter-enabled' : ''
+      return this.filterNotified ? 'filter-enabled' : ''
     }
   },
   methods: {

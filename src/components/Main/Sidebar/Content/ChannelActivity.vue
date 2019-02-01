@@ -12,14 +12,21 @@ export default {
     ChannelActivityElement
   },
   props: {
-    filterChannels: {
+    filterNotified: {
       type: Boolean,
       default: true
     }
   },
   computed: {
     messages () {
+      return this.filterNotified ? this.filteredMessages : this.allMessages
+    },
+    allMessages () {
       return this.$store.getters.recentMessagesArray
+    },
+    filteredMessages () {
+      const notifiedChannelIds = this.$store.state.myNotifiedChannels.map(c => c.channelId)
+      return this.allMessages.filter(m => notifiedChannelIds.indexOf(m.parentChannelId) > -1)
     }
   }
 }
