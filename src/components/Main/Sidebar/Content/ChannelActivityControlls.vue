@@ -3,7 +3,7 @@ div.channel-activity-controls-container
   div.channel-activity-button.channel-activity-refresh(@click="refresh")
     icon(v-if="isLoading" name="redo-alt" scale="0.8" spin)
     icon(v-else name="redo-alt" scale="0.8")
-  div.channel-activity-button.channel-activity-notification-toggle(@click="toggleNotification")
+  div.channel-activity-button.channel-activity-notification-toggle(@click="toggleNotification" :class="notificationToggleClass")
     icon(name="bell" scale="0.8")
 </template>
 
@@ -14,6 +14,15 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    filterChannels: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    notificationToggleClass () {
+      return this.filterChannels ? 'filter-enabled' : ''
     }
   },
   methods: {
@@ -21,7 +30,7 @@ export default {
       this.$emit('refreshClick')
     },
     toggleNotification () {
-      this.$emit('toggleNotificationClick')
+      this.$emit('filterToggle')
     }
   }
 }
@@ -47,5 +56,9 @@ export default {
   background: rgba(255,255,255,0.2)
   color: #FFFFFF
   box-sizing: border-box
+.channel-activity-notification-toggle.filter-enabled
+  background: rgba(255,255,255, 1)
+  .fa-icon
+    color: $primary-color
 </style>
 

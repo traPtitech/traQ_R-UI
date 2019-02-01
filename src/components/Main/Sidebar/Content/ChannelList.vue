@@ -4,12 +4,16 @@ div.channel-list
     transition(name="slide" mode="out-in")
       keep-alive
         FilterInput(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
-        ChannelActivityControlls(v-else :isLoading="isLoading" @refreshClick="refresh" @notificationToggleClick="showNotificationEnabled = !showNotificationEnabled")
+        ChannelActivityControlls(v-else
+                                 :isLoading="isLoading"
+                                 :filterChannels="filterChannels"
+                                 @refreshClick="refresh"
+                                 @filterToggle="toggleNotification")
   transition(name="slide" mode="out-in")
     keep-alive
       ChannelTreeView(v-if="channelView === 'tree'" :filterText="filterText")
       ChannelStared(v-if="channelView === 'stared'" :filterText="filterText")
-      ChannelActivity(v-if="channelView === 'activity'" :showNotificationEnabled="showNotificationEnabled")
+      ChannelActivity(v-if="channelView === 'activity'" :filterChannels="filterChannels")
   div.channel-tab-switcher-wrap.drop-shadow
     div.channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
     div.channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
@@ -29,7 +33,7 @@ export default {
     return {
       channelView: 'tree',
       filterText: '',
-      showNotificationEnabled: true,
+      filterChannels: true,
       isLoading: false
     }
   },
@@ -50,6 +54,9 @@ export default {
         await this.$store.dispatch('updateChannelRecentMessage', channel.channelId)
       }))
       this.isLoading = false
+    },
+    toggleNotification () {
+      this.filterChannels = !this.filterChannels
     }
   }
 }
