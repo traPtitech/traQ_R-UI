@@ -48,6 +48,7 @@ export default new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
+    channelRecentMessageMap: {},
     openChannels: {},
     sidebarOpened: false,
     titlebarExpanded: false,
@@ -74,6 +75,7 @@ export default new Vuex.Store({
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
     currentChannelNotifications: [],
+    myNotifiedChannels: [],
     me: null,
     menuContent: 'Channels',
     heartbeatStatus: {userStatuses: []},
@@ -363,6 +365,9 @@ export default new Vuex.Store({
     setWindowSize (state, {windowWidth, windowHeight}) {
       state.windowWidth = windowWidth
       state.windowHeight = windowHeight
+    },
+    setMyNotifiedChannels (state, channels) {
+      state.myNotifiedChannels = channels
     }
   },
   getters: {
@@ -508,6 +513,13 @@ export default new Vuex.Store({
     },
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
+    },
+    recentMessagesArray (state) {
+      return Object.values(state.channelRecentMessageMap).sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1
+        if (a.createdAt < b.createdAt) return 1
+        else return 0
+      })
     }
   },
   actions: {
@@ -555,8 +567,14 @@ export default new Vuex.Store({
           return false
         })
     },
-    updateChannels ({state, commit}) {
+    async updateChannels ({state, commit, dispatch}) {
       return loadGeneralData('Channel', client.getChannels, commit)
+        .then(() => {
+          state.channelData.forEach(async channel => {
+            if (!channel.channelId) return
+            await dispatch('updateChannelRecentMessage', channel.channelId)
+          })
+        })
     },
     updateMembers ({state, commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
@@ -671,6 +689,19 @@ export default new Vuex.Store({
     updateTheme ({commit}, themeName) {
       commit('setTheme', themeName)
       return db.write('browserSetting', {type: 'theme', data: themeName})
+    },
+    async updateChannelRecentMessage ({state, commit}, channelId) {
+      const res = await client.loadMessages(channelId, 1)
+      const data = res.data[0]
+      if (!data || data.dm) return
+      Vue.set(state.channelRecentMessageMap, channelId, data)
+    },
+    async updateMyNotifiedChannels ({state, commit, getters}) {
+      const res = await client.getNotifiedChannels(getters.getMyId)
+      const data = res.data
+      console.log(data)
+      if (!data) return
+      commit('setMyNotifiedChannels', data)
     }
   }
 })

@@ -61,12 +61,14 @@ export default {
       client.changeNotifications(this.$store.state.currentChannel.channelId, {'on': [this.$store.state.me.userId]})
       .then(() => {
         this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
+        this.$store.dispatch('updateMyNotifiedChannels')
       })
     },
     unnotifyChannel () {
       client.changeNotifications(this.$store.state.currentChannel.channelId, {'off': [this.$store.state.me.userId]})
       .then(() => {
         this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
+        this.$store.dispatch('updateMyNotifiedChannels')
       })
     },
     removeWidth () {
