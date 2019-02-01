@@ -75,6 +75,7 @@ export default new Vuex.Store({
     currentChannelTopic: {},
     currentChannelPinnedMessages: [],
     currentChannelNotifications: [],
+    myNotifiedChannels: [],
     me: null,
     menuContent: 'Channels',
     heartbeatStatus: {userStatuses: []},
@@ -691,6 +692,12 @@ export default new Vuex.Store({
       const data = res.data[0]
       if (!data || data.dm) return
       Vue.set(state.channelRecentMessageMap, channelId, data)
+    },
+    async fetchMyNotiedChannels ({state, commit, getters}, channelId) {
+      const res = await client.loadMessages(channelId, 1)
+      const data = res.data[0]
+      if (!data || data.dm) return
+      state.myNotifiedChannels = data
     }
   }
 })

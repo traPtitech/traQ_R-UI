@@ -12,7 +12,7 @@ export default {
     ChannelActivityElement
   },
   props: {
-    showNotificationEnabled: {
+    filterChannels: {
       type: Boolean,
       default: true
     }

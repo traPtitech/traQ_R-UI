@@ -73,7 +73,7 @@ const jsonParse = (text) => {
     } else {
       attributes.push(['class', 'message-tag-link'])
     }
-    meta.data = data['raw']
+    meta.data = data['id']
     return [
       newTag('traq_extends_link_open', 'a', '', attributes, 1, meta),
       newTag('text', '', data['raw'], null, 0),
