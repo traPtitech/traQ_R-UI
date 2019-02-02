@@ -53,9 +53,15 @@ export default {
 </script>
 
 <style lang="sass">
-.slim-message-element:nth-child(n+1)
-  margin:
-    top: 12px
+.slim-message-element
+  &:first-child
+    margin:
+      top: 6px
+
+  &:nth-child(n+2)
+    margin:
+      top: 12px
+  
   border:
     width: 1px
     style: solid
