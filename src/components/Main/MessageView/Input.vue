@@ -326,7 +326,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~@/styles/global.sass"
 .input-ui > *
   pointer-events: auto
 .input-ui
