@@ -35,5 +35,5 @@ export default {
   opacity: 1
 .slide-enter, .slide-leave-to
   opacity: 0
-  transform: translate(-5px)
+  transform: translateX(-5px)
 </style>

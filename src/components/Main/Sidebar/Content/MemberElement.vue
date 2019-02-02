@@ -1,6 +1,6 @@
 <template lang="pug">
-div.member-element(v-on:click="openUserModal")
-  div.member-element-icon-container
+div.member-element
+  div.member-element-icon-container(v-on:click="openUserModal")
     img.member-element-icon(:style="iconClass" :src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
     div.member-element-online-indicator(v-if="!model.bot && model.isOnline")
   div.member-name-container

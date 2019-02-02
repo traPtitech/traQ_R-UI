@@ -108,19 +108,20 @@ export default {
   color: $text-light-color
   font-weight: bold
   flex: 1
-  margin:
+  padding:
     top: 8px
     right: 10px
     bottom: 8px
     left: 10px
   text-align: left
   cursor: pointer
-  overflow: hidden
+  overflow:
+    x: hidden
   white-space: nowrap
   text-overflow: ellipsis
   z-index: 1
   user-select: none
-  height: 18px
+  height: 34px
   .channel-watched &
     color: $primary-color
   &:after
