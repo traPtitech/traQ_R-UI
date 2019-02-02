@@ -330,6 +330,7 @@ export default {
 .input-ui > *
   pointer-events: auto
 .input-ui
+  overflow: hidden
   +mq(pc)
     grid-area: input
     position: relative
@@ -338,37 +339,9 @@ export default {
   width: 100%
   bottom: 0
   pointer-events: none
-  &:before
-    content: ''
-    position: absolute
-    z-index: 10
-    top: 0
-    right: 0
-    left: 0
-    margin: auto
-    display: block
-    width: calc( 100% - 20px )
-    height: 1px
-    background-color: $background-color
-    transition: background-color .3s ease
-  &:after
-    content: ''
-    position: absolute
-    z-index: 10
-    top: 0
-    right: 0
-    left: 0
-    margin: auto
-    display: block
-    width: 0
-    height: 1px
-    background-color: $primary-color-on-bg
-    transition: width .3s ease
-  &.input-focused:after
-    width: calc( 100% - 20px )
 .upload-button, .submit-button
   position: absolute
-  z-index: 200
+  z-index: 100
   width: 40px
   height: 40px
   bottom: 10px
