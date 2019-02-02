@@ -30,7 +30,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
             span
               | ピン留め
           div.information-sidebar-content-body
-            div(v-for="p in pinnedMessages")
+            template(v-for="p in pinnedMessages")
               SlimMessageElement(:message="p.message")
         div.information-sidebar-content-item
           div(v-for="user in onlineUsers")

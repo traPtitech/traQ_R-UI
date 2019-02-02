@@ -1,9 +1,10 @@
 <template lang="pug">
 div.member-element
   div.member-element-icon-container(v-on:click="openUserModal")
-    img.member-element-icon(:style="iconClass" :src="`${$store.state.baseURL}/api/1.0/users/${model.userId}/icon`")
+    div.member-element-icon(:style="iconImg")
+      //- img.member-element-icon(:style="iconClass" :src="userIconSrc")
     div.member-element-online-indicator(v-if="!model.bot && model.isOnline")
-  div.member-name-container
+  div.member-name-container(@click="openDMChannel")
     p.member-display-name.text-ellipsis
       | {{model.displayName}}
     p.member-name.text-ellipsis
@@ -21,8 +22,10 @@ export default {
     openUserModal () {
       this.$store.dispatch('openUserModal', this.model.userId)
     },
-    userIconSrc () {
-      return client.getUserIconUrl(this.model.userId)
+    openDMChannel () {
+      this.$store.commit('closeSidebar')
+      this.$store.commit('contractTitlebar')
+      this.$router.push(`/users/${this.model.name}`)
     }
   },
   computed: {
@@ -32,6 +35,12 @@ export default {
       } else {
         return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.model.userId))
       }
+    },
+    hoge () {
+      return this.$store.getters.getDirectMessageChannels
+    },
+    userIconSrc () {
+      return client.getUserIconUrl(this.model.userId)
     },
     unreadMessagesNum () {
       if (this.directMessageChannel) {
@@ -43,6 +52,11 @@ export default {
     iconClass () {
       return {
         '.member-element-dm-indicator': this.unreadMessagesNum > 0
+      }
+    },
+    iconImg () {
+      return {
+        backgroundImage: `url(${this.userIconSrc})`
       }
     }
   }
@@ -65,6 +79,22 @@ export default {
   height: 40px
   border:
     radius: 100%
+  overflow: hidden
+  background:
+    size: cover
+    repeat: no-repeat
+    position: center center
+  .member-element-icon-container:hover &::before
+    content: ''
+    display: block
+    position: absolute
+    width: 100%
+    height: 100%
+    top: 0
+    left: 0
+    background: rgba(0,0,0,0.3)
+    border:
+      radius: 100%
 .member-element-dm-indicator
   box-sizing: border-box
   border:
@@ -74,10 +104,10 @@ export default {
   box-shadow: 0 0 0 3px $notification-color
 .member-element-online-indicator
   position: absolute
-  width: 9px
-  height: 9px
+  width: 12px
+  height: 12px
   right: 0px
-  bottom: 3px
+  bottom: 1px
   border:
     radius: 100%
     color: $primary-color
@@ -92,6 +122,7 @@ export default {
 .member-name-container
   margin: 0 0 0 10px
   min-width: 0
+  width: 100%
 .member-element > p
   padding-left: 10px
   white-space: nowrap

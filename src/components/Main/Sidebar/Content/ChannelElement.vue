@@ -1,6 +1,6 @@
 <template lang="pug">
 div.channel-wrap(v-if="model.visibility")
-  div.channel-box(@click="channelLink(model.name)" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
+  div.channel-box(@click="channelLink" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
     div.channel-toggle.channel-before(v-if="isParent" @click.stop="toggle" :class="channelBeforeClass")
       | #
     div.channel-before(v-else :class="channelBeforeClass")
@@ -29,7 +29,7 @@ export default {
     toggle () {
       this.$store.dispatch('updateChannelOpen', {channelId: this.model.channelId, isOpen: !this.isOpened})
     },
-    channelLink (name) {
+    channelLink () {
       this.$store.commit('closeSidebar')
       this.$store.commit('contractTitlebar')
       this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.channelId)}`)
@@ -73,8 +73,6 @@ export default {
           return this.getChannelById(c)
         })
     }
-  },
-  components: {
   },
   watch: {
     isOpened: {
