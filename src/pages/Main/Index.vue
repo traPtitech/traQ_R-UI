@@ -9,7 +9,7 @@ FileDroper(
   .index(:data-enable-blur="name ? 'true' : 'false'")
     StampPicker
     Titlebar
-    OnlineUsersList
+    ChannelInformation
     // ↓grid-item on pc
     Message
     Input
@@ -294,7 +294,6 @@ export default {
   height: 100vh
   +mq(pc)
     display: grid
-    overflow: hidden
     grid-template-rows: 1fr $input-height
     grid-template-columns: $sidebar-width 1fr
     grid-template-areas: "side content""side input"

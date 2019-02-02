@@ -1,7 +1,7 @@
 <template lang="pug">
 div.sidebar(:class="sidebarClass" ref="sidebar")
   Navigation
-  div.menu-content-wrapper
+  div.menu-content-wrapper.is-scroll
     Content
   Footer
   div.sidebar-overlay(draggable="false" @click="close" v-if="isSidebarOpened")

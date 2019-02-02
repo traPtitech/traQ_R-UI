@@ -70,7 +70,6 @@ export default {
 
 <style lang="sass">
 .navigation
-  grid-area: menu
   user-select: none
   background-color: $secondary-color
   ul

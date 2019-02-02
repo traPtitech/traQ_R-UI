@@ -1,5 +1,5 @@
 <template lang="pug">
-content.content-wrap(@scroll="checkLoad")
+content.content-wrap.is-scroll(@scroll="checkLoad")
   ol.message-list
     li.no-more-message(v-if="noMoreMessage")
       | これ以上メッセージはありません
@@ -9,6 +9,7 @@ content.content-wrap(@scroll="checkLoad")
       p(v-if="new Date(message.createdAt) - updateDate === 0")
         | ここから新規メッセージ
       MessageElement(:model="message")
+  div
 </template>
 
 <script>
