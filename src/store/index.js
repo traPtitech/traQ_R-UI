@@ -48,7 +48,7 @@ export default new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
-    channelRecentMessageMap: {},
+    channelRecentMessages: {},
     openChannels: {},
     sidebarOpened: false,
     titlebarExpanded: false,
@@ -91,7 +91,8 @@ export default new Vuex.Store({
     lastChannelId: '',
     theme: 'light',
     windowWidth: 0,
-    windowHeight: 0
+    windowHeight: 0,
+    filterSubscribedActivity: true
   },
   mutations: {
     setStampPickerModel (state, model) {
@@ -368,6 +369,12 @@ export default new Vuex.Store({
     },
     setMyNotifiedChannels (state, channels) {
       state.myNotifiedChannels = channels
+    },
+    setChannelRecentMessages (state, data) {
+      state.channelRecentMessages = data
+    },
+    setFilterSubscribedActivity (state, data) {
+      state.filterSubscribedActivity = data
     }
   },
   getters: {
@@ -514,8 +521,8 @@ export default new Vuex.Store({
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
     },
-    recentMessagesArray (state) {
-      return Object.values(state.channelRecentMessageMap).sort((a, b) => {
+    recentMessagesSorted (state) {
+      return Object.values(state.channelRecentMessages).sort((a, b) => {
         if (a.createdAt > b.createdAt) return -1
         if (a.createdAt < b.createdAt) return 1
         else return 0
@@ -569,12 +576,6 @@ export default new Vuex.Store({
     },
     async updateChannels ({state, commit, dispatch}) {
       return loadGeneralData('Channel', client.getChannels, commit)
-        .then(() => {
-          state.channelData.forEach(async channel => {
-            if (!channel.channelId) return
-            await dispatch('updateChannelRecentMessage', channel.channelId)
-          })
-        })
     },
     updateMembers ({state, commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
@@ -636,7 +637,8 @@ export default new Vuex.Store({
         dispatch('loadOpenChannelId'),
         dispatch('loadLastChannelId'),
         dispatch('loadTheme'),
-        dispatch('loadOpenChannels')
+        dispatch('loadOpenChannels'),
+        dispatch('loadFilterSubscribedActivity')
       ])
     },
     loadOpenMode ({commit, dispatch}) {
@@ -690,11 +692,10 @@ export default new Vuex.Store({
       commit('setTheme', themeName)
       return db.write('browserSetting', {type: 'theme', data: themeName})
     },
-    async updateChannelRecentMessage ({state, commit}, channelId) {
-      const res = await client.loadMessages(channelId, 1)
-      const data = res.data[0]
-      if (!data || data.dm) return
-      Vue.set(state.channelRecentMessageMap, channelId, data)
+    async updateChannelActivity ({state, commit}, subscribe) {
+      subscribe = subscribe || false
+      const res = await client.getLatestMessages(50, subscribe)
+      commit('setChannelRecentMessages', res.data)
     },
     async updateMyNotifiedChannels ({state, commit, getters}) {
       const res = await client.getNotifiedChannels(getters.getMyId)
@@ -702,6 +703,17 @@ export default new Vuex.Store({
       console.log(data)
       if (!data) return
       commit('setMyNotifiedChannels', data)
+    },
+    updateFilterSubscribedActivity ({commit}, filter) {
+      commit('setFilterSubscribedActivity', filter)
+      return db.write('browserSetting', {type: 'filterSubscribedActivity', data: filter})
+    },
+    loadFilterSubscribedActivity ({commit, dispatch, getters}) {
+      return db.read('browserSetting', 'filterSubscribedActivity').then(data => {
+        commit('setFilterSubscribedActivity', data)
+      }).catch(async () => {
+        await dispatch('updateFilterSubscribedActivity', true)
+      })
     }
   }
 })
