@@ -1,6 +1,7 @@
 <template lang="pug">
 div.channel-activity-wrap
-  div.channel-activity-box(@click="channelLink(channel.name)")
+  div.channel-activity-box(@click="channelLink(channel.name)"
+                           :class="{'activity-watched': isWatched}")
     div.channel-activity-channel
       div.channel-activity-before(:class="channelBeforeClass")
         | #
@@ -35,6 +36,9 @@ export default {
     },
     unreadNum () {
       return this.$store.getters.getChannelUnreadMessageNum(this.channel.channelId)
+    },
+    isWatched () {
+      return this.$store.state.currentChannel.channelId === this.model.parentChannelId
     },
     channelBeforeClass () {
       return { 'has-unread': this.unreadNum > 0 }
@@ -78,6 +82,10 @@ export default {
   padding: 16px
   word-break: break-all;
   border-bottom: 1px solid rgba(0,0,0,0.1)
+  color: white
+  &.activity-watched:not(:hover)
+    background: white
+    color: $primary-color
   &:hover
     background: rgba(0,0,0,0.1)
 .channel-activity-channel
@@ -106,7 +114,7 @@ export default {
   font:
     weight: bold
     size: 1.5rem;
-  .channel-watched &
+  .activity-watched:not(:hover) &
     color: $primary-color
   &.has-unread::after
     content: ''
@@ -121,6 +129,8 @@ export default {
 .channel-activity-name
   width: 100%
   overflow: hidden
+  .activity-watched:not(:hover) &
+    color: $primary-color
 .channel-activity-separator
   border-color: rgba(255, 255, 255, 0.5)
   margin-left: 1.5rem
