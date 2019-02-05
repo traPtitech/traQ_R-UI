@@ -20,7 +20,7 @@ const read = (tableName, key) => {
         }
       }
       request.onerror = event => {
-        resolve(event)
+        reject(event)
       }
     })
   })
@@ -37,7 +37,7 @@ const write = (tableName, data) => {
         resolve(event.target.result.data)
       }
       request.onerror = event => {
-        resolve(event)
+        reject(event)
       }
     })
   })
