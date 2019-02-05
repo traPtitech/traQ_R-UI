@@ -23,7 +23,7 @@ const loadGeneralData = (dataName, webLoad, commit) => {
             commit(`set${dataName}Data`, data)
           }
         })
-        .catch(async e => {
+        .catch(async () => {
           await fetch
         }),
     fetch
