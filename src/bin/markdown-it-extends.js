@@ -45,7 +45,7 @@ const jsonParse = (text) => {
   const attributes = []
   const meta = {type: data['type'], data: ''}
   if (data['type'] === 'user' && store.state.memberMap[data['id']]) {
-    attributes.push(['v-on:click', `$store.dispatch('openUserModal', '${data['id']}')`])
+    attributes.push(['href', `javascript:openUserModal('${data['id']}')`])
     meta.data = data['id']
     if (data['id'] === store.state.me.userId) {
       attributes.push(['class', 'message-user-link-highlight message-user-link'])
@@ -58,16 +58,16 @@ const jsonParse = (text) => {
       newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
   } else if (data['type'] === 'channel' && store.state.channelMap[data['id']]) {
-    attributes.push(['to', `/channels/${store.getters.getChannelPathById(store.state.channelMap[data['id']].channelId)}`])
+    attributes.push(['href', `javascript:changeChannel('${store.getters.getChannelPathById(store.state.channelMap[data['id']].channelId)}')`])
     attributes.push(['class', 'message-channel-link'])
     meta.data = data['raw']
     return [
-      newTag('traq_extends_link_open', 'router-link', '', attributes, 1, meta),
+      newTag('traq_extends_link_open', 'a', '', attributes, 1),
       newTag('text', '', data['raw'], null, 0),
-      newTag('traq_extends_link_close', 'router-link', '', null, -1)
+      newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
   } else if (data['type'] === 'tag' && store.state.tagMap[data['id']]) {
-    attributes.push(['v-on:click', `$store.dispatch('openTagModal', '${data['id']}')`])
+    attributes.push(['href', `javascript:openTagModal('${data['id']}')`])
     if (store.state.tagMap[data['id']].users.filter(user => user.userId === store.state.me.userId).length > 0) {
       attributes.push(['class', 'message-tag-link-highlight message-tag-link'])
     } else {

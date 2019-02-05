@@ -170,4 +170,8 @@ router.beforeEach(async (to, from, next) => {
   store.commit('loadEnd')
 })
 
+window.changeChannel = (channelPath) => {
+  router.push(`/channels/${channelPath}`)
+}
+
 export default router

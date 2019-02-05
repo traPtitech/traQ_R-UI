@@ -39,7 +39,7 @@ const stringSortGen = (key) => (lhs, rhs) => {
   }
 }
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   modules: {
     modal
   },
@@ -705,3 +705,13 @@ export default new Vuex.Store({
     }
   }
 })
+
+window.openUserModal = (userId) => {
+  store.dispatch('openUserModal', userId)
+}
+
+window.openTagModal = (tagId) => {
+  store.dispatch('openTagModal', tagId)
+}
+
+export default store
