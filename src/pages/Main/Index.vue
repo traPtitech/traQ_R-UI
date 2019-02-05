@@ -127,7 +127,7 @@ export default {
         console.log('register:' + token)
         client.registerDevice(token)
       }
-    } else if(userAgent.includes('traQ-iOS')) {
+    } else if (userAgent.includes('traQ-iOS')) {
       const token = window.iOSToken
       if (token) {
         console.log('register:' + token)
