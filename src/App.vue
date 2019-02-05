@@ -8,8 +8,6 @@ div#app(:data-theme="$store.state.theme")
 <script>
 import Splash from '@/components/Splash/Splash'
 import Favicon from '@/components/Util/Favicon'
-import 'normalize.css'
-import 'highlight.js/styles/default.css'
 import { mapGetters } from 'vuex'
 
 export default {

@@ -1,7 +1,7 @@
 <template lang="pug">
 div.sidebar(:class="sidebarClass" ref="sidebar")
   Navigation
-  div.menu-content-wrapper.is-scroll
+  div.menu-content-wrapper
     Content
   Footer
   div.sidebar-overlay(draggable="false" @click="close" v-if="isSidebarOpened")
@@ -85,7 +85,6 @@ export default {
     transition: opacity .5s
 .menu-content-wrapper
   height: calc( 100% - #{$navigation-height} - #{$footer-height} )
-  overflow: scroll
-  -webkit-overflow-scrolling: touch
   background-color: $primary-color
+  position: relative
 </style>

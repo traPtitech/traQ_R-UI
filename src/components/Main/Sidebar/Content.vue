@@ -1,11 +1,11 @@
 <template lang="pug">
-div.menu-content
+div.sidebar-content
   transition(name="slide" mode="out-in")
     keep-alive
-      ChannelList(v-if="$store.state.menuContent=='Channels'")
-      MemberList(v-if="$store.state.menuContent=='Members'")
-      ClipList(v-if="$store.state.menuContent=='Clips'")
-      LinkList(v-if="$store.state.menuContent=='Links'")
+      ChannelList(v-if="menuContent==='Channels'")
+      MemberList(v-if="menuContent==='Members'")
+      ClipList(v-if="menuContent==='Clips'")
+      LinkList(v-if="menuContent==='Links'")
 </template>
 
 <script>
@@ -19,6 +19,11 @@ export default {
     return {
     }
   },
+  computed: {
+    menuContent () {
+      return this.$store.state.menuContent
+    }
+  },
   components: {
     'ChannelList': ChannelList,
     'MemberList': MemberList,
@@ -29,7 +34,10 @@ export default {
 </script>
 
 <style lang="sass">
-.menu-content
+.sidebar-content
+  height: 100%
+  overflow:
+    y: scroll
 .slide-enter-active, .slide-leave-active
   transition: all .1s
   opacity: 1
