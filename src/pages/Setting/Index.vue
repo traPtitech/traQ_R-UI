@@ -35,6 +35,11 @@ div
       | {{error}}
   div
     h2
+      | 全セッション破棄
+    button(@click="deleteSessions")
+      | 破棄
+  div
+    h2
       | ブラウザ設定
     p
       | 起動時
@@ -191,6 +196,14 @@ export default {
       this.$store.dispatch('updateOpenMode', this.openMode)
       const channel = this.$store.getters.getChannelByName(this.openChannelName)
       this.$store.dispatch('updateOpenChannelId', channel.channelId)
+    },
+    deleteSessions () {
+      if (window.confirm('ログイン中のセッションを全て破棄します。（実行するとログアウトされます）')) {
+        client.deleteSessions().then(() => {
+          this.$store.commit('setMe', null)
+          this.$router.push('/login')
+        })
+      }
     }
   },
   computed: {

@@ -23,10 +23,10 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       img.menu-icon(src="@/assets/img/icon/notif_fill.svg")
       span
         | チャンネル通知設定
-    div.titlebar-menu-item(v-show="!isDirectMessage")
-      img.menu-icon(src="@/assets/img/icon/edit.svg")
-      span
-        | トピック変更
+    //- div.titlebar-menu-item(v-show="!isDirectMessage")
+    //-   img.menu-icon(src="@/assets/img/icon/edit.svg")
+    //-   span
+    //-     | トピック変更
     div.titlebar-menu-item(v-show="!isDirectMessage")
       img.menu-icon(src="@/assets/img/icon/plus.svg")
       span
@@ -61,12 +61,14 @@ export default {
       client.changeNotifications(this.$store.state.currentChannel.channelId, {'on': [this.$store.state.me.userId]})
       .then(() => {
         this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
+        this.$store.dispatch('updateMyNotifiedChannels')
       })
     },
     unnotifyChannel () {
       client.changeNotifications(this.$store.state.currentChannel.channelId, {'off': [this.$store.state.me.userId]})
       .then(() => {
         this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
+        this.$store.dispatch('updateMyNotifiedChannels')
       })
     },
     removeWidth () {
@@ -149,12 +151,12 @@ $topic-height: 14px
   +mq(pc)
     left: $sidebar-width
     min-width: 230px
-    max-width: calc( 100vw - #{$sidebar-width} - #{$online-users-box-width} - 5px )
+    max-width: calc( 100vw - #{$sidebar-width} - #{$information-sidebar-button-width} - 5px )
     height: 60px
   +mq(sp)
     // top: 10px
     min-width: 200px
-    max-width: calc( 100vw - #{$online-users-box-width} - 5px )
+    max-width: calc( 100vw - #{$information-sidebar-button-width} - 5px )
     height: 50px
     &.is-sidebar-opened
       min-width: $sidebar-width

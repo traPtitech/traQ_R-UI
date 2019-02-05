@@ -86,7 +86,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~@/styles/global.sass"
 .information
   grid-area: information
   display: flex

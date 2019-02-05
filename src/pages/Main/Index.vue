@@ -9,7 +9,7 @@ FileDroper(
   .index(:data-enable-blur="name ? 'true' : 'false'")
     StampPicker
     Titlebar
-    OnlineUsersList
+    ChannelInformation
     // ↓grid-item on pc
     Message
     Input
@@ -22,9 +22,6 @@ import sse from '@/bin/sse'
 import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
 import FileDroper from '@/components/Util/FileDroper'
-import User from '@/components/Main/User'
-import Tag from '@/components/Main/Tag'
-import StampPicker from '@/components/Main/StampPicker'
 import Modal from '@/components/Main/Modal'
 
 export default {
@@ -39,11 +36,11 @@ export default {
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'Message': Message,
     'Input': window.asyncLoadComponents(import('@/components/Main/MessageView/Input')),
-    'OnlineUsersList': window.asyncLoadComponents(import('@/components/Main/MessageView/OnlineUsersBox')),
+    'ChannelInformation': window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
     'FileDroper': FileDroper,
-    'User': User,
-    'Tag': Tag,
-    'StampPicker': StampPicker,
+    'User': window.asyncLoadComponents(import('@/components/Main/User')),
+    'Tag': window.asyncLoadComponents(import('@/components/Main/Tag')),
+    'StampPicker': window.asyncLoadComponents(import('@/components/Main/StampPicker')),
     'Modal': Modal
   },
   async created () {
@@ -126,8 +123,16 @@ export default {
     const userAgent = window.navigator.userAgent
     if (userAgent.includes('traQ-Android')) {
       const token = window.Bridge.getFCMToken()
-      console.log('register:' + token)
-      client.registerDevice(token)
+      if (token) {
+        console.log('register:' + token)
+        client.registerDevice(token)
+      }
+    } else if(userAgent.includes('traQ-iOS')) {
+      const token = window.iOSToken
+      if (token) {
+        console.log('register:' + token)
+        client.registerDevice(token)
+      }
     }
 
     if ('navigator' in window && 'serviceWorker' in window.navigator) {
@@ -297,7 +302,6 @@ export default {
   height: 100vh
   +mq(pc)
     display: grid
-    overflow: hidden
     grid-template-rows: 1fr $input-height
     grid-template-columns: $sidebar-width 1fr
     grid-template-areas: "side content""side input"

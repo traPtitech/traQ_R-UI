@@ -271,10 +271,7 @@ export default {
   },
   computed: {
     renderedText () {
-      return {
-        template: `<div class="message-content" v-pre>${md.render(this.model.content)}</div>`,
-        props: this.$options.props
-      }
+      return this.mark(this.model.content)
     },
     pinned () {
       this.pin = this.$store.getters.isPinned(this.model.messageId)
@@ -357,7 +354,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~@/styles/global.sass"
 .message
   display: grid
   grid-template-areas: "user-icon detail""user-icon contents""... contents"

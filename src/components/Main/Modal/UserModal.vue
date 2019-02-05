@@ -35,7 +35,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import "~@/styles/global.sass"
 $profile-area-height: 20vh
 $profile-area-width: 350px
 

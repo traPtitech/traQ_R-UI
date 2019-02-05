@@ -1,6 +1,6 @@
 import store from '@/store/index'
 
-const newTag = (type, tag, content, attr, nesting) => {
+const newTag = (type, tag, content, attr, nesting, meta) => {
   return {
     attrs: attr,
     block: false,
@@ -11,7 +11,7 @@ const newTag = (type, tag, content, attr, nesting) => {
     level: 0,
     map: null,
     markup: '',
-    meta: null,
+    meta: meta || null,
     nesting: nesting,
     tag: tag,
     type: type
@@ -43,21 +43,24 @@ const jsonParse = (text) => {
 //  console.log('json parse: ' + text)
   const data = JSON.parse(text)
   const attributes = []
+  const meta = {type: data['type'], data: ''}
   if (data['type'] === 'user' && store.state.memberMap[data['id']]) {
     attributes.push(['href', `javascript:openUserModal('${data['id']}')`])
+    meta.data = data['id']
     if (data['id'] === store.state.me.userId) {
       attributes.push(['class', 'message-user-link-highlight message-user-link'])
     } else {
       attributes.push(['class', 'message-user-link'])
     }
     return [
-      newTag('traq_extends_link_open', 'a', '', attributes, 1),
+      newTag('traq_extends_link_open', 'a', '', attributes, 1, meta),
       newTag('text', '', data['raw'], null, 0),
       newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
   } else if (data['type'] === 'channel' && store.state.channelMap[data['id']]) {
     attributes.push(['href', `javascript:changeChannel('${store.getters.getChannelPathById(store.state.channelMap[data['id']].channelId)}')`])
     attributes.push(['class', 'message-channel-link'])
+    meta.data = data['raw']
     return [
       newTag('traq_extends_link_open', 'a', '', attributes, 1),
       newTag('text', '', data['raw'], null, 0),
@@ -70,14 +73,16 @@ const jsonParse = (text) => {
     } else {
       attributes.push(['class', 'message-tag-link'])
     }
+    meta.data = data['id']
     return [
-      newTag('traq_extends_link_open', 'a', '', attributes, 1),
+      newTag('traq_extends_link_open', 'a', '', attributes, 1, meta),
       newTag('text', '', data['raw'], null, 0),
       newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
   } else if (data['type'] === 'file') {
+    meta.data = data['id']
     return [
-      newTag('traq_extends_link_open', 'a', '', [['href', `${store.state.baseURL}/api/1.0/files/${data['id']}`], ['download', data['id']]], 1),
+      newTag('traq_extends_link_open', 'a', '', [['href', `${store.state.baseURL}/api/1.0/files/${data['id']}`], ['download', data['id']]], 1, meta),
       newTag('text', '', data['raw'], null, 0),
       newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
