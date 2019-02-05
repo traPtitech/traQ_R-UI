@@ -18,11 +18,14 @@ const loadGeneralData = (dataName, webLoad, commit) => {
     })
   return Promise.race([
     db.read('generalData', dataName)
-      .then(data => {
-        if (!loaded && data) {
-          commit(`set${dataName}Data`, data)
-        }
-      }).catch(_ => fetch),
+        .then(data => {
+          if (!loaded && data) {
+            commit(`set${dataName}Data`, data)
+          }
+        })
+        .catch(async () => {
+          await fetch
+        }),
     fetch
   ])
 }
@@ -543,6 +546,7 @@ const store = new Vuex.Store({
               commit('setMessages', data)
             }
           })
+          .catch(() => {})
       }
       const loadedMessages = (!nowChannel.dm)
         ? client.loadMessages(nowChannel.channelId, 10, latest ? 0 : state.messages.length)

@@ -40,8 +40,6 @@ export default {
       return this.$store.state.stampPickerModel
     },
     stampCategolized () {
-      console.log(this.stampHistory)
-      console.log(this.$store.state.stampCategolized)
       if (this.stampHistory.length === 0) {
         return this.$store.state.stampCategolized
       }
