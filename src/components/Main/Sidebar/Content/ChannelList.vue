@@ -1,5 +1,5 @@
 <template lang="pug">
-div.channel-list
+div.channel-list.is-scroll
   div.channel-list-action-area-wrapper
     transition(name="slide" mode="out-in")
       keep-alive
@@ -69,7 +69,7 @@ export default {
     bottom: 40px
 .channel-tab-switcher-wrap
   position: absolute
-  bottom: 60px
+  bottom: 10px
   width: 120px
   height: 30px
   right: 0
