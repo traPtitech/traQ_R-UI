@@ -46,17 +46,25 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
             | {{parentChannel(m.parentChannelId).name}}
     div.message-files-wrap
       div(v-for="file in files")
-        img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
-        a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
-          video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-          audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-          img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
-        a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
-          p
-            | {{file.name}}
-          br
-          small
-            | {{encodeByte(file.size)}}
+        div(v-if="file.fileId !== ''")
+          img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
+          a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
+            video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+            audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
+            img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
+          a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
+            p
+              | {{file.name}}
+            br
+            small
+              | {{encodeByte(file.size)}}
+        div(v-else)
+          a
+            p
+              | Not Found
+            br
+            small
+              | {{encodeByte(0)}}
     div.message-actions-wrap
       transition-group.message-stamps-wrap(name="slide-in" :class="{'has-stamps':stamps.length>0}")
         div.stamp-container(:key="stamp.stampId" v-for="stamp in stamps" @click="toggleStamp(stamp.stampId)" :title="stamp.title" :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
@@ -175,10 +183,21 @@ export default {
     async getAttachments () {
       const data = detectFiles(this.model.content)
       this.files = (await Promise.all(data.filter(e => e.type === 'file').map(async e => {
-        return this.$store.getters.getFileDataById(e.id)
+        return client.getFileMeta(e.id)
         .then(res => res.data)
-        .catch(e => null)
-      }))).filter(e => e)
+        .catch(e => {
+          return {
+            fileId: '',
+            name: 'not found',
+            mime: 'none',
+            size: 0,
+            dateTime: '2019-02-05T05:43:00.452Z',
+            hasThumb: true,
+            thumbWidth: 0,
+            thumbHeight: 0
+          }
+        })
+      })))
       this.messages = (await Promise.all(data.filter(e => e.type === 'message').map(async e => {
         return client.getMessage(e.id)
           .then(res => res.data)
