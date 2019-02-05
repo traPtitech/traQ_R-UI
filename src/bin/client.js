@@ -5,7 +5,7 @@ const middleWare = (process.env.NODE_ENV === 'development' || window.debug)
     return fn().then(res => { console.info(name, res); return Promise.resolve(res) }).catch(err => { console.error(name, err); return Promise.reject(err) })
   }
   : (name, fn) => {
-    return fn().catch(err => { console.error(name, err); return Promise.resolve(err) })
+    return fn().catch(err => { console.error(name, err); return Promise.reject(err) })
   }
 const client = {
   // Tag: authorization
