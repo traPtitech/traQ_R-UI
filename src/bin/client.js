@@ -471,7 +471,7 @@ const client = {
 
   // Tag: activity
   getLatestMessages (limit, subscribe) {
-    return axios.get(`api/1.0/activity/latest-messages?limit=${limit}&subscribe=${subscribe}`)
+    return axios.get(`/api/1.0/activity/latest-messages?limit=${limit}&subscribe=${subscribe}`)
   }
 }
 
