@@ -241,6 +241,7 @@ export default {
             }
           }
           this.$store.dispatch('updateUnreadMessages')
+          this.$store.dispatch('updateChannelActivity')
         })
     },
     messageUpdated (data) {

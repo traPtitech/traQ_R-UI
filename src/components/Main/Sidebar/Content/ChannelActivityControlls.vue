@@ -14,15 +14,11 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
-    },
-    filterNotified: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
     notificationToggleClass () {
-      return this.filterNotified ? 'filter-enabled' : ''
+      return this.$store.state.filterSubscribedActivity ? 'filter-enabled' : ''
     }
   },
   methods: {
