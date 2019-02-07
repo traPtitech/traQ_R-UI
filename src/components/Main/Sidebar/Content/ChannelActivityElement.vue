@@ -1,6 +1,6 @@
 <template lang="pug">
 div.channel-activity-wrap
-  div.channel-activity-box(@click="channelLink(channel.name)"
+  div.channel-activity-box(@click="channelLink()"
                            :class="{'activity-watched': isWatched}")
     div.channel-activity-channel
       div.channel-activity-before(:class="channelBeforeClass")
@@ -23,8 +23,8 @@ export default {
     model: Object
   },
   methods: {
-    channelLink (name) {
-      this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.channel.channelId)}`)
+    channelLink () {
+      this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.parentChannelId)}`)
     }
   },
   computed: {
