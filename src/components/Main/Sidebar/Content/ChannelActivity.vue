@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     messages () {
-      return this.$store.getters.recentMessagesSorted
+      return this.$store.state.channelRecentMessages
         .filter(message => !!this.$store.state.channelMap[message.parentChannelId] &&
                            !this.$store.state.channelMap[message.parentChannelId].dm)
     }
