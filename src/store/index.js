@@ -692,9 +692,9 @@ export default new Vuex.Store({
       commit('setTheme', themeName)
       return db.write('browserSetting', {type: 'theme', data: themeName})
     },
-    async updateChannelActivity ({state, commit}, subscribe) {
-      subscribe = subscribe || false
-      const res = await client.getLatestMessages(50, subscribe)
+    async updateChannelActivity ({state, commit}) {
+      const filter = state.filterSubscribedActivity || false
+      const res = await client.getLatestMessages(50, filter)
       commit('setChannelRecentMessages', res.data)
     },
     async updateMyNotifiedChannels ({state, commit, getters}) {

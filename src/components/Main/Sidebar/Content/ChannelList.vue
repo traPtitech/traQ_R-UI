@@ -48,7 +48,7 @@ export default {
       if (this.isLoading) return
       this.isLoading = true
       await this.$nextTick()
-      await this.$store.dispatch('updateChannelActivity', this.$store.filterSubscribedActivity)
+      await this.$store.dispatch('updateChannelActivity')
       this.isLoading = false
     },
     toggleNotification () {

@@ -127,7 +127,7 @@ export default {
         console.log('register:' + token)
         client.registerDevice(token)
       }
-    } else if(userAgent.includes('traQ-iOS')) {
+    } else if (userAgent.includes('traQ-iOS')) {
       const token = window.iOSToken
       if (token) {
         console.log('register:' + token)
@@ -241,6 +241,7 @@ export default {
             }
           }
           this.$store.dispatch('updateUnreadMessages')
+          this.$store.dispatch('updateChannelActivity')
         })
     },
     messageUpdated (data) {
