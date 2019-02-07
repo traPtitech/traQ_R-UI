@@ -51,7 +51,7 @@ const store = new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
-    channelRecentMessages: {},
+    channelRecentMessages: [],
     openChannels: {},
     sidebarOpened: false,
     titlebarExpanded: false,
@@ -525,7 +525,7 @@ const store = new Vuex.Store({
       return state.titlebarExpanded
     },
     recentMessagesSorted (state) {
-      return Object.values(state.channelRecentMessages).sort((a, b) => {
+      return state.channelRecentMessages.sort((a, b) => {
         if (a.createdAt > b.createdAt) return -1
         if (a.createdAt < b.createdAt) return 1
         else return 0
