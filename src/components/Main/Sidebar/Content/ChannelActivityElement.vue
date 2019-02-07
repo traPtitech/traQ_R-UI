@@ -35,7 +35,7 @@ export default {
       return this.$store.state.memberMap[this.model.userId]
     },
     unreadNum () {
-      return this.$store.getters.getChannelUnreadMessageNum(this.channel.channelId)
+      return this.$store.getters.getChannelUnreadMessageNum(this.model.parentChannelId)
     },
     isWatched () {
       return this.$store.state.currentChannel.channelId === this.model.parentChannelId
