@@ -15,14 +15,8 @@ export default {
   },
   computed: {
     messages () {
-      return this.$store.state.filterSubscribedActivity ? this.filteredMessages : this.allMessages
-    },
-    allMessages () {
       return this.$store.getters.recentMessagesSorted
-    },
-    filteredMessages () {
-      const notifiedChannelIds = this.$store.state.myNotifiedChannels.map(c => c.channelId)
-      return this.allMessages.filter(m => notifiedChannelIds.indexOf(m.parentChannelId) > -1)
+        .filter(message => !this.$store.state.channelMap[message.parentChannelId].dm)
     }
   }
 }
