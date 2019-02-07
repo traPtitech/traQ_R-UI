@@ -35,7 +35,7 @@ export default {
       return this.$store.state.memberMap[this.model.userId]
     },
     unreadNum () {
-      return this.$store.getters.getChannelUnreadMessageNum(this.channel.channelId)
+      return this.$store.getters.getChannelUnreadMessageNum(this.model.parentChannelId)
     },
     isWatched () {
       return this.$store.state.currentChannel.channelId === this.model.parentChannelId
@@ -52,7 +52,7 @@ export default {
       const tokens = parsed[0].children
       const message = []
       for (let token of tokens) {
-        if (token.type === 'traq_extends_link_open') {
+        if (token.type === 'traq_extends_link_open' && token.meta) {
           if (token.meta.type === 'file') {
             message.push(` [file: ${token.attrs[1][1]}]`)
           }
