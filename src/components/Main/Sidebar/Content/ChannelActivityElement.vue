@@ -6,11 +6,11 @@ div.channel-activity-wrap
       div.channel-activity-before(:class="channelBeforeClass")
         | #
       div.channel-activity-name
-        | {{ channel.name }}
+        | {{ channelName }}
     hr.channel-activity-separator
     p.channel-recent-message
       span.channel-recent-message-author
-        | {{ author.name }}
+        | {{ authorName }}
       span.channel-recent-message-content
         | {{ sanitizedMessage }}
 </template>
@@ -28,11 +28,11 @@ export default {
     }
   },
   computed: {
-    channel () {
-      return this.$store.state.channelMap[this.model.parentChannelId]
+    channelName () {
+      return this.$store.state.channelMap[this.model.parentChannelId].name
     },
-    author () {
-      return this.$store.state.memberMap[this.model.userId]
+    authorName () {
+      return this.$store.state.memberMap[this.model.userId].name
     },
     unreadNum () {
       return this.$store.getters.getChannelUnreadMessageNum(this.model.parentChannelId)
