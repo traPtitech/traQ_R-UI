@@ -523,13 +523,6 @@ const store = new Vuex.Store({
     },
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
-    },
-    recentMessagesSorted (state) {
-      return state.channelRecentMessages.sort((a, b) => {
-        if (a.createdAt > b.createdAt) return -1
-        if (a.createdAt < b.createdAt) return 1
-        else return 0
-      })
     }
   },
   actions: {
