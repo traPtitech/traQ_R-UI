@@ -64,7 +64,7 @@ export default {
       return Math.min(this.swipeEvent.x - this.swipeEvent.startX, this.sidebarWidth)
     },
     closeSwipedX () {
-      return Math.max(this.swipeEvent.startX - this.swipeEvent.x, 0)
+      return Math.max(this.swipeEvent.startX - this.swipeEvent.x, 10)
     },
     ...mapGetters([
       'deviceType',
