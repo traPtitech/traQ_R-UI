@@ -46,7 +46,7 @@ export default {
           'transition': 'none'
         }
       } else if (this.isCloseSwipeActive && this.isSidebarOpened) {
-        const translateX = this.closeSwipedX * -1 < 20 ? this.closeSwipedX * -1 : 0
+        const translateX = this.closeSwipedX < 10 ? 0 : this.closeSwipedX * -1
         return {
           'transform': `translateX(${translateX}px)`,
           'transition': 'none'
