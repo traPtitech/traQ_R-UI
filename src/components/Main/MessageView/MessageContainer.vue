@@ -47,8 +47,8 @@ export default {
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
     },
     checkLoad (event) {
-      if (!this.lastEvent) {
-        this.lastEvent = {timeStamp: event.timeStamp, scrollTop: event.target.scrollTop}
+      if (!this.lastEvent || this.lastEvent.channelId !== this.$store.state.currentChannel.channelId) {
+        this.lastEvent = {timeStamp: event.timeStamp, scrollTop: event.target.scrollTop, channelId: this.$store.state.currentChannel.channelId}
         return
       }
       const diff = event.target.scrollTop - this.lastEvent.scrollTop
@@ -58,7 +58,7 @@ export default {
         this.messageLoading = true
         this.loadMessages()
       }
-      this.lastEvent = {timeStamp: event.timeStamp, scrollTop: event.target.scrollTop}
+      this.lastEvent = {timeStamp: event.timeStamp, scrollTop: event.target.scrollTop, channelId: this.$store.state.currentChannel.channelId}
     }
   },
   watch: {
