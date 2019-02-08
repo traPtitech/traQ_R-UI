@@ -407,7 +407,7 @@ export default {
 .message-user-info-wrap
   display: flex
   align-items: center
-  width: 80%
+  width: calc(100% - 110px)
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold

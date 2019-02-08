@@ -1,5 +1,5 @@
 <template lang="pug">
-div.member-container
+div.member-container.is-scroll
   div.member-filter-input-wrapper
     FilterInput(@inputFilter="filterText = $event")
   MemberGroup(v-for="grade in sortedGrades" :key="grade.tag" :members="grade.users" :groupName="grade.tag" :filterText="filterText")

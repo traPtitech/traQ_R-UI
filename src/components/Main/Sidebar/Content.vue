@@ -2,10 +2,7 @@
 div.sidebar-content
   transition(name="slide" mode="out-in")
     keep-alive
-      ChannelList(v-if="menuContent==='Channels'")
-      MemberList(v-if="menuContent==='Members'")
-      ClipList(v-if="menuContent==='Clips'")
-      LinkList(v-if="menuContent==='Links'")
+      component(:is="currentTabComponentName")
 </template>
 
 <script>
@@ -13,22 +10,33 @@ import ChannelList from '@/components/Main/Sidebar/Content/ChannelList'
 import MemberList from '@/components/Main/Sidebar/Content/MemberList'
 import ClipList from '@/components/Main/Sidebar/Content/ClipList'
 import LinkList from '@/components/Main/Sidebar/Content/LinkList'
+
 export default {
   name: 'MenuContent',
-  data () {
-    return {
-    }
-  },
   computed: {
     menuContent () {
       return this.$store.state.menuContent
+    },
+    currentTabComponentName () {
+      switch (this.menuContent) {
+        case 'Channels':
+          return 'ChannelList'
+        case 'Members':
+          return 'MemberList'
+        case 'Clips':
+          return 'ClipList'
+        case 'Links':
+          return 'LinkList'
+        default:
+          return undefined
+      }
     }
   },
   components: {
-    'ChannelList': ChannelList,
-    'MemberList': MemberList,
-    'ClipList': ClipList,
-    'LinkList': LinkList
+    ChannelList,
+    MemberList,
+    ClipList,
+    LinkList
   }
 }
 </script>

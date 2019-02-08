@@ -1,19 +1,18 @@
 <template lang="pug">
-FileDroper(
+FileDropDetector(
   @dropFile="dropFile"
   :onDragStyle="'{background-color: #fff;}'"
   )
-  // User
-  // Tag
   Modal
-  .index(:data-enable-blur="name ? 'true' : 'false'")
-    StampPicker
-    Titlebar
-    ChannelInformation
-    // ↓grid-item on pc
-    Message
-    Input
-    Sidebar
+  SwipeDetector(@swipeStart="swipeStart" @swipeMoving="swipeMoving" @swipeEnd="swipeEnd")
+    div.index(:data-enable-blur="name ? 'true' : 'false'")
+      StampPicker
+      Titlebar
+      ChannelInformation
+      // ↓grid-item on pc
+      Message
+      Input
+      Sidebar(:swipeEvent="swipeEvent")
 </template>
 
 <script>
@@ -21,27 +20,36 @@ import { mapState } from 'vuex'
 import sse from '@/bin/sse'
 import client from '@/bin/client'
 import Message from '@/components/Main/MessageView/MessageContainer'
-import FileDroper from '@/components/Util/FileDroper'
+import FileDropDetector from '@/components/Util/FileDropDetector'
 import Modal from '@/components/Main/Modal'
+import SwipeDetector from '@/components/Util/SwipeDetector'
 
 export default {
-  name: 'index',
+  name: 'Main',
   data () {
     return {
-      heartbeat: null
+      heartbeat: null,
+      swipeEvent: {
+        isActive: false,
+        startX: Number,
+        startY: Number,
+        x: Number,
+        y: Number
+      }
     }
   },
   components: {
     'Sidebar': window.asyncLoadComponents(import('@/components/Main/Sidebar/Sidebar')),
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
-    'Message': Message,
     'Input': window.asyncLoadComponents(import('@/components/Main/MessageView/Input')),
     'ChannelInformation': window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
-    'FileDroper': FileDroper,
     'User': window.asyncLoadComponents(import('@/components/Main/User')),
     'Tag': window.asyncLoadComponents(import('@/components/Main/Tag')),
     'StampPicker': window.asyncLoadComponents(import('@/components/Main/StampPicker')),
-    'Modal': Modal
+    Message,
+    Modal,
+    FileDropDetector,
+    SwipeDetector
   },
   async created () {
     this.$store.subscribe(async mutation => {
@@ -279,6 +287,18 @@ export default {
     },
     dropFile (files) {
       this.$store.commit('setFiles', files)
+    },
+    swipeStart (event) {
+      this.swipeEvent.startX = event.touches.item(0).clientX
+      this.swipeEvent.startY = event.touches.item(0).clientY
+    },
+    swipeMoving (event) {
+      this.swipeEvent.isActive = true
+      this.swipeEvent.x = event.touches.item(0).clientX
+      this.swipeEvent.y = event.touches.item(0).clientY
+    },
+    swipeEnd (event) {
+      this.swipeEvent.isActive = false
     }
   },
   watch: {
@@ -308,6 +328,8 @@ export default {
     grid-template-areas: "side content""side input"
   +mq(sp)
     overflow: scroll
+    overscroll-behavior: contain
+    -webkit-overflow-scrolling: touch
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     grid-template-columns: calc(260px + env(safe-area-inset-left) - 7px) 1fr calc(40px + env(safe-area-inset-right) - 7px)
 

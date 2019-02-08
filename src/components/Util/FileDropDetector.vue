@@ -5,7 +5,7 @@ div(@dragenter="style=onDragStyle" @dragend="style=''" @dragleave="style=''" @dr
 
 <script>
 export default {
-  name: 'FileDroper',
+  name: 'FileDropDetector',
   props: ['onDragStyle'],
   data () {
     return {

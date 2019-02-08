@@ -6,12 +6,10 @@ import store from './store'
 import router from './router'
 import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons'
-import VueAnime from 'vue-animejs'
 
 Vue.config.productionTip = false
 
 Vue.component('icon', Icon)
-Vue.use(VueAnime)
 
 window.asyncLoadComponents = component => {
   return () => {

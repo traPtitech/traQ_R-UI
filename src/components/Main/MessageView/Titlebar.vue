@@ -1,12 +1,16 @@
 <template lang="pug">
 header.titlebar(ref="titlebar" :class="titlebarClass")
-  div.titlebar-inner-wrap(@click="handleTitlebarClick()")
-    img.traq-logo(src="@/assets/img/icon/logo_white.svg")
-    div.channel-info-wrap(ref="titlebarInner")
-      h1.text-ellipsis.channel-name
-        | {{title}}
-      p.channel-topic-text(:key="title" v-bind:class="{'has-topic': topic}")
-        | {{topic}}
+  div.titlebar-inner-wrap
+    div.titlebar-channel-name(@click="toggleSidebarOpens")
+      img.traq-logo(src="@/assets/img/icon/logo_white.svg")
+      div.channel-info-wrap(ref="titlebarInner")
+        h1.text-ellipsis.channel-name
+          | {{title}}
+        p.channel-topic-text(:key="title" v-bind:class="{'has-topic': topic}")
+          | {{topic}}
+    div.titlebar-expand-button(@click="toggleTitlebarExpansion")
+      div(:style="titlebarExpandButtonStyle")
+        IconDownDirection(:size="32")
   div.titlebar-expand.drop-shadow
     div.titlebar-menu-button-wrap
       div.titlebar-menu-button(v-show="!isDirectMessage && isNotificationForced")
@@ -23,10 +27,6 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       img.menu-icon(src="@/assets/img/icon/notif_fill.svg")
       span
         | チャンネル通知設定
-    //- div.titlebar-menu-item(v-show="!isDirectMessage")
-    //-   img.menu-icon(src="@/assets/img/icon/edit.svg")
-    //-   span
-    //-     | トピック変更
     div.titlebar-menu-item(v-show="!isDirectMessage")
       img.menu-icon(src="@/assets/img/icon/plus.svg")
       span
@@ -36,9 +36,11 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
 <script>
 import client from '@/bin/client'
 import { mapGetters } from 'vuex'
+import IconDownDirection from '@/components/Icon/IconDownDirection'
 
 export default {
   name: 'Titlebar',
+  components: {IconDownDirection},
   data () {
     return {
       width: 0
@@ -77,15 +79,11 @@ export default {
     zeroWidth () {
       this.$refs.titlebarInner.style.width = '0px'
     },
-    handleTitlebarClick () {
-      if (this.deviceType === 'pc') {
-        this.toggleTitlebarExpansion()
-      } else if (this.deviceType === 'sp') {
-        if (this.isSidebarOpened) {
-          this.toggleTitlebarExpansion()
-        } else {
-          this.$store.commit('openSidebar')
-        }
+    toggleSidebarOpens () {
+      if (this.isSidebarOpened) {
+        this.$store.commit('closeSidebar')
+      } else {
+        this.$store.commit('openSidebar')
       }
     },
     toggleTitlebarExpansion () {
@@ -97,6 +95,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'deviceType',
+      'isSidebarOpened',
+      'isTitlebarExpanded'
+    ]),
     isDirectMessage () {
       return this.$store.state.currentChannel.parent === this.$store.state.directMessageId
     },
@@ -125,15 +128,15 @@ export default {
       if (this.$route.params.user) return ''
       return this.$store.state.currentChannelTopic.text
     },
-    ...mapGetters([
-      'deviceType',
-      'isSidebarOpened',
-      'isTitlebarExpanded'
-    ]),
     titlebarClass () {
       return {
         'is-expanded': this.isTitlebarExpanded,
         'is-sidebar-opened': this.isSidebarOpened
+      }
+    },
+    titlebarExpandButtonStyle () {
+      return {
+        transform: `rotate(${this.isTitlebarExpanded ? 180 : 0}deg)`
       }
     }
   }
@@ -161,6 +164,7 @@ $topic-height: 14px
     &.is-sidebar-opened
       min-width: $sidebar-width
       max-width: $sidebar-width
+
 .titlebar-inner-wrap
   +mq(pc)
     height: 60px
@@ -188,14 +192,27 @@ $topic-height: 14px
     transition: width .5s ease
     .is-expanded &
       width: calc( 100% - 20px )
+
+.titlebar-channel-name
+  display: flex
+  flex-grow: 1
+  justify-content: start
+  align-items: center
+  height: 100%
+
+  &:hover
+    background: rgba(0,0,0,0.1)
+
 .sidebar-open-icon
   width: 60%
   height: 60%
   color: gray
+
 .channel-info-wrap
   padding-right: 10px
   max-width: calc(100% - 60px)
   box-sizing: content-box
+
 .channel-name
   max-width: 100%
   font-size: 25px
@@ -204,6 +221,7 @@ $topic-height: 14px
   text-align: left
   margin: 0
   display: block
+
 .buttons
   display: flex
   flex-flow: row
@@ -211,6 +229,7 @@ $topic-height: 14px
     width: 50px
     height: 50px
     margin: 10px
+
 .channel-topic-text
   font-size: 13px
   height: 0
@@ -230,6 +249,7 @@ $topic-height: 14px
     height: 100%
     background: white
     z-index: $titlebar-index
+
 .titlebar-expand
   display: flex
   z-index: -1
@@ -246,11 +266,11 @@ $topic-height: 14px
   .is-expanded &
     top: 0
     transform: translateY(-60px)
+
 .titlebar-menu-button-wrap
   display: flex
   justify-content: center
   height: 50px
-  max-width: 230px
   .titlebar-menu-button
     display: flex
     justify-content: center
@@ -258,6 +278,7 @@ $topic-height: 14px
     cursor: pointer
     &:hover
       background: rgba(0,0,0,0.1)
+
 .border-left
   position: relative
   &::after
@@ -271,12 +292,12 @@ $topic-height: 14px
     left: 0
     margin: auto
     background: $border-color
+
 .titlebar-menu-item
   display: flex
   align-items: center
-  width: 100%
   height: 20px
-  padding: 10px 0 10px 30px
+  padding: 10px 0 10px 10%
   box-sizing: content-box
   color: white
   font-size: 14px
@@ -285,8 +306,26 @@ $topic-height: 14px
     margin-right: 15px
   &:hover
       background: rgba(0,0,0,0.1)
+
 .traq-logo
   width: 25px
   height: 25px
   margin: 0 10px 0 15px
+
+.titlebar-expand-button
+  margin:
+    left: auto
+  padding:
+    left: 6px
+    right: 6px
+  height: 100%
+
+  div
+    height: 100%
+    display: flex
+    align-items: center
+    transition: transform .5s ease
+
+  &:hover
+    background: rgba(0,0,0,0.1)
 </style>

@@ -16,9 +16,9 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
         div.information-sidebar-content-item.separator-line(v-if="isChannel")
           div.information-sidebar-content-header
-            IconTopic
+            IconTopic(:size="24")
             span
-              | トピック
+              | TOPIC
           div.information-sidebar-content-body
             span(v-if="topic !== ''")
               | {{topic}}
@@ -26,9 +26,9 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
               | 設定されていません
         div.information-sidebar-content-item.separator-line(v-if="hasPinnedMessage")
           div.information-sidebar-content-header
-            IconPin
+            IconPin(:size="24")
             span
-              | ピン留め
+              | PINNED
           div.information-sidebar-content-body
             template(v-for="p in pinnedMessages")
               SlimMessageElement(:message="p.message")
