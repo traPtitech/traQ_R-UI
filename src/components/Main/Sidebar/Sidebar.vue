@@ -46,8 +46,9 @@ export default {
           'transition': 'none'
         }
       } else if (this.isCloseSwipeActive && this.isSidebarOpened) {
+        const translateX = this.closeSwipedX * -1 < 20 ? this.closeSwipedX * -1 : 0
         return {
-          'transform': `translateX(${this.closeSwipedX * -1}px)`,
+          'transform': `translateX(${translateX}px)`,
           'transition': 'none'
         }
       } else {
@@ -64,7 +65,7 @@ export default {
       return Math.min(this.swipeEvent.x - this.swipeEvent.startX, this.sidebarWidth)
     },
     closeSwipedX () {
-      return Math.max(this.swipeEvent.startX - this.swipeEvent.x, 10)
+      return Math.max(this.swipeEvent.startX - this.swipeEvent.x, 0)
     },
     ...mapGetters([
       'deviceType',
