@@ -711,6 +711,11 @@ const store = new Vuex.Store({
       }).catch(async () => {
         await dispatch('updateFilterSubscribedActivity', true)
       })
+    },
+    readMessages ({dispatch}, channelId) {
+      return client.readMessages(channelId).then(() => {
+        dispatch('updateUnreadMessages')
+      })
     }
   }
 })

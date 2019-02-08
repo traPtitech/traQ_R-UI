@@ -35,7 +35,8 @@ export default {
         startY: Number,
         x: Number,
         y: Number
-      }
+      },
+      nowStatus: 'none'
     }
   },
   components: {
@@ -219,12 +220,13 @@ export default {
   methods: {
     getStatus () {
       if (this.$store.state.editing) {
-        return 'editing'
+        this.nowStatus = 'editing'
       } else if (document.hasFocus()) {
-        return 'monitoring'
+        this.nowStatus = 'monitoring'
       } else {
-        return 'none'
+        this.nowStatus = 'none'
       }
+      return this.nowStatus
     },
     messageCreated (data) {
       client.getMessage(data.id)
@@ -307,6 +309,14 @@ export default {
         .then(res => {
           this.$store.commit('updateHeartbeatStatus', res.data)
         })
+    },
+    nowStatus (newStatus) {
+      if (newStatus === 'none') {
+        return
+      }
+      if (this.$store.getters.getChannelUnreadMessageNum(this.$store.state.currentChannel.channelId) > 0) {
+        this.$store.dispatch('readMessages', this.$store.state.currentChannel.channelId)
+      }
     }
   },
   computed: {
