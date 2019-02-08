@@ -1,5 +1,5 @@
 <template lang="pug">
-div.sidebar(:class="sidebarClass" ref="sidebar")
+div.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
   Navigation
   div.menu-content-wrapper
     Content
@@ -15,28 +15,61 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Sidebar',
+  props: {
+    swipeEvent: Object
+  },
+  components: {
+    MenuHeader,
+    Navigation,
+    'Content': window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
+    Footer
+  },
   data () {
     return {
-      isActive: false
+      isActive: false,
+      swipeThresholdX: 50,
+      sidebarWidth: 260
     }
   },
   computed: {
     sidebarClass () {
       return {
         'is-sidebar-opened': this.isSidebarOpened,
-        'drop-shadow': this.deviceType === 'sp'
+        'drop-shadow': this.isSidebarOpened && this.deviceType === 'sp',
+        'is-swipe-active': this.isSwipeActive
       }
+    },
+    sidebarStyle () {
+      if (this.isOpenSwipeActive && !this.isSidebarOpened) {
+        return {
+          'transform': `translateX(${this.openSwipedX - this.sidebarWidth}px)`,
+          'transition': 'none'
+        }
+      } else if (this.isCloseSwipeActive && this.isSidebarOpened) {
+        return {
+          'transform': `translateX(${this.closeSwipedX * -1}px)`,
+          'transition': 'none'
+        }
+      } else {
+        return {}
+      }
+    },
+    isOpenSwipeActive () {
+      return this.swipeEvent.isActive && this.swipeEvent.startX < this.swipeThresholdX
+    },
+    isCloseSwipeActive () {
+      return this.swipeEvent.isActive && this.swipeEvent.startX < this.sidebarWidth
+    },
+    openSwipedX () {
+      return Math.min(this.swipeEvent.x - this.swipeEvent.startX, this.sidebarWidth)
+    },
+    closeSwipedX () {
+      return Math.max(this.swipeEvent.startX - this.swipeEvent.x, 0)
     },
     ...mapGetters([
       'deviceType',
       'isSidebarOpened'
     ])
-  },
-  components: {
-    'MenuHeader': MenuHeader,
-    'Navigation': Navigation,
-    'Content': window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
-    'Footer': Footer
   },
   methods: {
     close () {
@@ -46,6 +79,18 @@ export default {
     open () {
       this.$store.commit('openSidebar')
     }
+  },
+  watch: {
+    isOpenSwipeActive (newVar, oldVar) {
+      if (!newVar && oldVar && this.openSwipedX > this.sidebarWidth / 4) {
+        this.open()
+      }
+    },
+    isCloseSwipeActive (newVar, oldVar) {
+      if (!newVar && oldVar && this.closeSwipedX > this.sidebarWidth / 4) {
+        this.close()
+      }
+    }
   }
 }
 </script>
@@ -53,24 +98,32 @@ export default {
 <style lang="sass">
 .sidebar
   background-color: white
-  transition: all .3s ease-in-out
   z-index: $sidebar-index
   +mq(pc)
     height: 100vh
     position: relative
     grid-area: side
+    will-change: none
   +mq(sp)
     height: calc(100vh - 50px)
     width: $sidebar-width
     position: fixed
     z-index: $sidebar-index
-    left: -100%
+    transform: translateX(-$sidebar-width)
+    left: 0
     bottom: 0
+    will-change: none
+    transition: transform .3s ease
     &.is-sidebar-opened
-      left: 0
+      will-change: transform
+      transition: transform .3s ease-in-out
+      transform: translateY(0)
+    &.is-swipe-active
+      will-change: transform
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     padding-left: calc(env(safe-area-inset-left) - 7px)
     background-color: #3a4891
+
 .sidebar-overlay
   +mq(sp)
     position: fixed
@@ -83,6 +136,7 @@ export default {
     background-color: rgba(0,0,0,0.2)
     opacity: 0
     transition: opacity .5s
+
 .menu-content-wrapper
   height: calc( 100% - #{$navigation-height} - #{$footer-height} )
   background-color: $primary-color

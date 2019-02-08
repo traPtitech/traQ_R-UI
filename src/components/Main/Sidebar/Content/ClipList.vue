@@ -4,7 +4,7 @@ div
 
 <script>
 export default {
-  name: 'LinkList'
+  name: 'ClipList'
 }
 </script>
 

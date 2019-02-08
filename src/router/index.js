@@ -32,15 +32,15 @@ const router = new Router({
     {
       path: '/',
       name: 'Index',
-      component: asyncLoadComponents(import('@/pages/Main/Index'))
+      component: asyncLoadComponents(import('@/pages/Main/Main'))
     },
     {
       path: '/channels/:channel(.*)',
-      component: asyncLoadComponents(import('@/pages/Main/Index'))
+      component: asyncLoadComponents(import('@/pages/Main/Main'))
     },
     {
       path: '/users/:user',
-      component: asyncLoadComponents(import('@/pages/Main/Index'))
+      component: asyncLoadComponents(import('@/pages/Main/Main'))
     },
     {
       path: '/register',
