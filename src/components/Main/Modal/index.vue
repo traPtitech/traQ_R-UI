@@ -7,12 +7,14 @@ div.modal-overlay(v-if="isActive" @click.self="close")
 import { mapState, mapGetters, mapActions } from 'vuex'
 import UserModal from './UserModal'
 import TagModal from './TagModal'
+import PinnedModal from './PinnedModal'
 
 export default {
   name: 'Modal',
   components: {
     UserModal,
-    TagModal
+    TagModal,
+    PinnedModal
   },
   computed: {
     ...mapState('modal', ['name']),

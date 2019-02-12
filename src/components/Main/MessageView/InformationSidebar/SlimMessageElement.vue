@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.slim-message-element(:class="{'is-overflow': isOverflow}" ref="root")
+  div.slim-message-element(:class="{'is-overflow': isOverflow}" ref="root" @click="openModal")
     div
       | {{userName}}
     component(:is="renderedContent")
@@ -44,6 +44,9 @@ export default {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
+    },
+    openModal () {
+      this.$store.dispatch('openPinnedModal', this.message)
     }
   },
   mounted () {
