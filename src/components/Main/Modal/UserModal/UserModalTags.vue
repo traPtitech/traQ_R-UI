@@ -48,8 +48,8 @@ export default {
       tags: 'currentUserTagsSorted'
     }),
     hasAuth () {
-      if (this.$store.state.userModal) {
-        return this.$store.state.userModal.name === this.$store.state.me.name
+      if (this.data) {
+        return this.data.name === this.$store.state.me.name
       }
       return false
     },
@@ -88,13 +88,13 @@ export default {
     lockTag (id) {
       client.changeLockUserTag(this.data.userId, this.tags[id].tagId, true)
       .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
+        this.$store.dispatch('modal/updateCurrentUserTags')
       })
     },
     unlockTag (id) {
       client.changeLockUserTag(this.data.userId, this.tags[id].tagId, false)
       .then(() => {
-        this.$store.dispatch('updateCurrentUserTags')
+        this.$store.dispatch('modal/updateCurrentUserTags')
       })
     }
   }
