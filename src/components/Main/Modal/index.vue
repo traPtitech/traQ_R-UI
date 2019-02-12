@@ -1,5 +1,5 @@
 <template lang="pug">
-div.modal-overlay(v-if="isActive" @click="close")
+div.modal-overlay(v-if="isActive" @click.self="close")
   component.modal(:is="name")
 </template>
 
@@ -7,12 +7,14 @@ div.modal-overlay(v-if="isActive" @click="close")
 import { mapState, mapGetters, mapActions } from 'vuex'
 import UserModal from './UserModal'
 import TagModal from './TagModal'
+import PinnedModal from './PinnedModal'
 
 export default {
   name: 'Modal',
   components: {
     UserModal,
-    TagModal
+    TagModal,
+    PinnedModal
   },
   computed: {
     ...mapState('modal', ['name']),

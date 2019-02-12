@@ -59,6 +59,24 @@ export default {
         })
       }
     },
+    openTopicModal: {
+      root: true,
+      handler ({state, rootState, commit, dispatch}, tagId) {
+        dispatch('open', {
+          name: 'TopicModal',
+          data: rootState.tagMap[tagId]
+        })
+      }
+    },
+    openPinnedModal: {
+      root: true,
+      handler ({state, rootState, commit, dispatch}, message) {
+        dispatch('open', {
+          name: 'PinnedModal',
+          data: message
+        })
+      }
+    },
     open ({commit}, {name, data}) {
       commit('setModalName', name)
       commit('setModalData', data)
