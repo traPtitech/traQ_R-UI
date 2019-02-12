@@ -39,18 +39,23 @@ export default {
     width: 90vw
     max-width: 40rem
     height: min-content
+    padding: 1rem 0
 .common-modal-header-wrap
     display: flex
     align-items: center
     justify-content: space-between
-    padding: 1rem
+    padding: 0 1.5rem
+    margin-bottom: 2rem
 .common-modal-header
     display: flex
     align-items: center
 .common-modal-content
-    padding: 1rem 0
     .message
-      padding: 0.5rem 1rem
+      padding: 0.5rem 1.5rem
+    .message-pinned
+      background: none
+    .message-pinned:hover
+      background: $background-hover-color
 .common-modal-header-title
     color: $primary-color-on-bg
     margin: 0 1rem
