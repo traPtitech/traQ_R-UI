@@ -24,11 +24,11 @@
       @keydown="onInputChange"
       placeholder="タグを追加……"
     )
-    icon.user-modal-tags-icon(
-      name="plus"
-      :style="detailInputIconStyle"
-      @click="addTag"
-    )
+    div(@click="addTag")
+      icon.user-modal-tags-icon(
+        name="plus"
+       :style="detailInputIconStyle"
+     )
 </template>
 
 <script>
@@ -70,6 +70,7 @@ export default {
       }
     },
     addTag () {
+      console.log(this.tagInput)
       if (this.tagInput === '') {
         return
       }
