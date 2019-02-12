@@ -1,5 +1,5 @@
 <template lang="pug">
-div.modal-overlay(v-if="isActive" @click="close")
+div.modal-overlay(v-if="isActive" @click.self="close")
   component.modal(:is="name")
 </template>
 
