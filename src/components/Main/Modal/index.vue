@@ -8,13 +8,17 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import UserModal from './UserModal'
 import TagModal from './TagModal'
 import PinnedModal from './PinnedModal'
+import ChannelCreateModal from './ChannelCreateModal'
+import ChannelNotificationModal from './ChannelNotificationModal'
 
 export default {
   name: 'Modal',
   components: {
     UserModal,
     TagModal,
-    PinnedModal
+    PinnedModal,
+    ChannelCreateModal,
+    ChannelNotificationModal
   },
   computed: {
     ...mapState('modal', ['name']),

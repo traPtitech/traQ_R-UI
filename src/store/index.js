@@ -701,6 +701,14 @@ const store = new Vuex.Store({
       if (!data) return
       commit('setMyNotifiedChannels', data)
     },
+    async updateCurrentChannelNotifications ({state, commit, dispatch}, {on, off}) {
+      console.log(state.currentChannel)
+      await client.changeNotifications(state.currentChannel.channelId, {
+        on: on || [],
+        off: off || []
+      })
+      await dispatch('getCurrentChannelNotifications', state.currentChannel.channelId)
+    },
     updateFilterSubscribedActivity ({commit}, filter) {
       commit('setFilterSubscribedActivity', filter)
       return db.write('browserSetting', {type: 'filterSubscribedActivity', data: filter})

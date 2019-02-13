@@ -1,11 +1,11 @@
 <template lang="pug">
-.common-modal
+.common-modal(:data-is-small="small")
   .common-modal-header-wrap
     .common-modal-header
       slot(name="header-icon")
       h1.common-modal-header-title {{ title }}
     .common-modal-close(@click="close")
-      IconClose
+      IconClose(color="var(--primary-color-on-bg)")
   .common-modal-content
     slot
 </template>
@@ -21,6 +21,10 @@ export default {
     title: {
       type: String,
       default: 'MODAL'
+    },
+    small: {
+      type: Boolean,
+      defualt: null
     }
   },
   computed: {
@@ -36,15 +40,17 @@ export default {
 .common-modal
     background: $background-color
     border-radius: $modal-border-radius
+    max-width: 60rem
     width: 90vw
-    max-width: 40rem
     height: min-content
-    padding: 1rem 0
+    padding: 1rem
+.common-modal[data-is-small="true"]
+    max-width: 40rem
 .common-modal-header-wrap
     display: flex
     align-items: center
     justify-content: space-between
-    padding: 0 1.5rem
+    padding: 0 0.5rem
     margin-bottom: 2rem
 .common-modal-header
     display: flex

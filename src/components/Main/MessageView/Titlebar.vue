@@ -23,11 +23,11 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         img.menu-icon(src="@/assets/img/icon/star.svg")
       div.titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         img.menu-icon(src="@/assets/img/icon/star_fill.svg")
-    div.titlebar-menu-item(v-show="!isDirectMessage")
+    div.titlebar-menu-item(v-show="!isDirectMessage" @click="$store.dispatch('openChannelNotificationModal')")
       img.menu-icon(src="@/assets/img/icon/notif_fill.svg")
       span
         | チャンネル通知設定
-    div.titlebar-menu-item(v-show="!isDirectMessage")
+    div.titlebar-menu-item(v-show="!isDirectMessage" @click="$store.dispatch('openChannelCreateModal')")
       img.menu-icon(src="@/assets/img/icon/plus.svg")
       span
         | チャンネル作成
