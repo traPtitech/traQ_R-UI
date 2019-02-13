@@ -1,5 +1,5 @@
 <template lang="pug">
-div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported")
+div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported" v-show="rendered")
   div.message-user-icon-wrap
     img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" @click="openUserModal(model.userId)")
   div.message-detail-wrap
@@ -140,7 +140,8 @@ export default {
       edited: '',
       pin: null,
       files: [],
-      messages: []
+      messages: [],
+      rendered: false
     }
   },
   methods: {
@@ -203,6 +204,7 @@ export default {
           .then(res => res.data)
           .catch(e => null)
       }))).filter(e => e)
+      this.rendered = true
     },
     toggleStamp (stampId) {
       if (this.isContainSelfStamp(stampId)) {
