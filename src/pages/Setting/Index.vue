@@ -31,6 +31,10 @@
             ProfileSetting(v-if="active === 0")
             BrowserSetting(v-if="active === 1")
             StampSetting(v-if="active === 2")
+      .setting-page-all-container
+          ProfileSetting
+          BrowserSetting
+          StampSetting
 </template>
 
 <script>
@@ -69,6 +73,7 @@ export default {
 }
 </script>
 
+
 <style lang="sass">
 $header-height: 3rem
 .setting-page
@@ -84,6 +89,7 @@ $header-height: 3rem
   background-color: $primary-color
   color: white
   padding: 1rem
+  user-select: none
 
 .back-to-traq
   display: flex
@@ -101,15 +107,36 @@ $header-height: 3rem
 .setting-container
   height: 85%
   width: 90%
+  @media (max-width: 750px)
+    height: 95%
+    width: 95%
+  max-width: 75rem
   display: flex
   background-color: $background-color
   border-radius: $modal-border-radius
+
 .setting-page-container
   padding: 2rem
   overflow: scroll
   flex: 1
+  display: block
+  @media (max-width: 750px)
+    display: none
+
+.setting-page-all-container
+  padding: 2rem
+  flex: 1
+  overflow: scroll
+  display: none
+  @media (max-width: 750px)
+    display: block
+  > *:not(:last-child)
+    margin-bottom: 2rem
+
 
 .setting-menu
+  @media (max-width: 750px)
+    display: none
   height: calc(100% + 2rem)
   width: 17rem
   top: -1rem
@@ -119,6 +146,7 @@ $header-height: 3rem
   color: white
   border-radius: 5px
   padding: 3rem 1rem
+  user-select: none
 
 .setting-title-container
   display: flex
