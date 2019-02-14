@@ -163,4 +163,9 @@ export default {
 </script>
 
 <style lang="sass">
+.setting-user-icon
+  width: 100px
+  height: 100px
+  background-color: white
+  border-radius: 100%
 </style>
