@@ -13,22 +13,24 @@
             IconLogo(color="white" :size="22")
           | SETTINGS
         ul.setting-page-list
-          li.setting-page-list-item
+          li.setting-page-list-item(:class="{active: active === 0}" @click="active = 0")
             .setting-page-list-item-icon
               IconPin(color="white" :size="22")
             | プロフィール設定
-          li.setting-page-list-item
+          li.setting-page-list-item(:class="{active: active === 1}" @click="active = 1")
             .setting-page-list-item-icon
               IconTag(color="white" :size="22")
             | ブラウザ設定
-          li.setting-page-list-item
+          li.setting-page-list-item(:class="{active: active === 2}" @click="active = 2")
             .setting-page-list-item-icon
               IconTopic(color="white" :size="22")
             | スタンプ設定
       .setting-page-container
-        ProfileSetting
-        BrowserSetting
-        StampSetting
+        transition(name="fade" mode="out-in")
+          keep-alive
+            ProfileSetting(v-if="active === 0")
+            BrowserSetting(v-if="active === 1")
+            StampSetting(v-if="active === 2")
 </template>
 
 <script>
@@ -51,6 +53,9 @@ export default {
     IconPin,
     IconTag,
     IconTopic
+  },
+  data () {
+    return { active: 0 }
   },
   methods: {
     back () {
@@ -94,7 +99,7 @@ $header-height: 3rem
   align-items: center
   justify-content: center
 .setting-container
-  height: 90%
+  height: 85%
   width: 90%
   display: flex
   background-color: $background-color
@@ -102,6 +107,7 @@ $header-height: 3rem
 .setting-page-container
   padding: 2rem
   overflow: scroll
+  flex: 1
 
 .setting-menu
   height: calc(100% + 2rem)
@@ -119,10 +125,10 @@ $header-height: 3rem
   align-items: center
   justify-content: center
   margin: 1rem 0
-  font-size: 1.2rem
-  letter-spacing: 0.1rem
+  font-size: 1.3rem
+  letter-spacing: 0.2rem
   .setting-traq-logo
-    margin-right: 1.5rem
+    margin-right: 1.25rem
 
 .setting-page-list
   margin-top: 5rem
@@ -134,12 +140,18 @@ $header-height: 3rem
   display: flex
   flex-direction: row
   align-items: center
-  width: 85%
+  width: 70%
   margin: 1.75rem 0
   cursor: pointer
   opacity: 0.5
-.setting-page-list-item:hover
+.setting-page-list-item:hover,
+.setting-page-list-item.active
   opacity: 1
 .setting-page-list-item-icon
-  margin-right: 2rem
+  margin-right: 1rem
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity .1s
+.fade-enter, .fade-leave-to 
+  opacity: 0
 </style>
