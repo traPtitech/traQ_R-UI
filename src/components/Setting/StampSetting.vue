@@ -2,21 +2,26 @@
 .stamp-setting
   SettingTitle
     | スタンプ設定
-  h2
-    | スタンプ新規登録
-  input(type="file" @change="addStampFile")
-  input(v-model="stampName")
-  button(v-if="stampFile && stampName.length > 0" v-on:click="addStamp")
-    | 追加
+  SettingItem
+    SettingItemTitle
+      | スタンプ新規登録
+    input(type="file" @change="addStampFile")
+    input(v-model="stampName")
+    button(v-if="stampFile && stampName.length > 0" @click="addStamp")
+      | 追加
 </template>
 
 <script>
 import client from '@/bin/client'
 import SettingTitle from '@/components/Setting/SettingTitle'
+import SettingItem from '@/components/Setting/SettingItem'
+import SettingItemTitle from '@/components/Setting/SettingItemTitle'
 export default {
   name: 'ProfileSetting',
   components: {
-    SettingTitle
+    SettingTitle,
+    SettingItem,
+    SettingItemTitle
   },
   data () {
     return {

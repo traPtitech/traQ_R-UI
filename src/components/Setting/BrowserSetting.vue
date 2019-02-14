@@ -2,13 +2,13 @@
 .browser-setting
   SettingTitle
     | ブラウザ設定
-  div
-    h2
+  SettingItem
+    SettingItemTitle
       | 全セッション破棄
     button(@click="deleteSessions")
       | 破棄
-  div
-    h2
+  SettingItem
+    SettingItemTitle
       | ブラウザ設定
     p
       | 起動時
@@ -31,10 +31,14 @@
 <script>
 import client from '@/bin/client'
 import SettingTitle from '@/components/Setting/SettingTitle'
+import SettingItem from '@/components/Setting/SettingItem'
+import SettingItemTitle from '@/components/Setting/SettingItemTitle'
 export default {
   name: 'ProfileSetting',
   components: {
-    SettingTitle
+    SettingTitle,
+    SettingItem,
+    SettingItemTitle
   },
   data () {
     return {

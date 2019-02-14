@@ -1,7 +1,7 @@
 <template functional>
-  <h2 class="setting-title">
+  <h3 class="setting-item-title">
     <slot></slot>
-  </h2>
+  </h3>
 </template>
 
 <script>
@@ -11,8 +11,8 @@ export default {
 </script>
 
 <style lang="sass">
-.setting-title
-  font-size: 1.5rem
-  margin: 1rem 0
+.setting-item-title
+  font-size: 1.2rem
+  margin: 0.75rem 0
   color: $primary-color-on-bg
 </style>

@@ -1,5 +1,5 @@
 <template lang="pug">
-.setting
+.setting-page
   .setting-header.drop-shadow
     .back-to-traq(@click="back")
       .back-to-traq-icon-wrap
@@ -7,9 +7,28 @@
       .back-to-traq-text-wrap traQへ戻る
   .setting-container-wrap
     .setting-container.drop-shadow
-      ProfileSetting
-      BrowserSetting
-      StampSetting
+      .setting-menu.drop-shadow
+        .setting-title-container
+          .setting-traq-logo
+            IconLogo(color="white" :size="22")
+          | SETTINGS
+        ul.setting-page-list
+          li.setting-page-list-item
+            .setting-page-list-item-icon
+              IconPin(color="white" :size="22")
+            | プロフィール設定
+          li.setting-page-list-item
+            .setting-page-list-item-icon
+              IconTag(color="white" :size="22")
+            | ブラウザ設定
+          li.setting-page-list-item
+            .setting-page-list-item-icon
+              IconTopic(color="white" :size="22")
+            | スタンプ設定
+      .setting-page-container
+        ProfileSetting
+        BrowserSetting
+        StampSetting
 </template>
 
 <script>
@@ -17,13 +36,21 @@ import ProfileSetting from '@/components/Setting/ProfileSetting'
 import BrowserSetting from '@/components/Setting/BrowserSetting'
 import StampSetting from '@/components/Setting/StampSetting'
 import IconBack from '@/components/Icon/IconBack'
+import IconLogo from '@/components/Icon/IconLogo'
+import IconPin from '@/components/Icon/IconPin'
+import IconTag from '@/components/Icon/IconTag'
+import IconTopic from '@/components/Icon/IconTopic'
 export default {
   name: 'Setting',
   components: {
     ProfileSetting,
     BrowserSetting,
     StampSetting,
-    IconBack
+    IconBack,
+    IconLogo,
+    IconPin,
+    IconTag,
+    IconTopic
   },
   methods: {
     back () {
@@ -39,8 +66,8 @@ export default {
 
 <style lang="sass">
 $header-height: 3rem
-.setting
-  background-color: ($primary-color)
+.setting-page
+  background-color: $setting-background-color
   height: 100vh
   color: $text-color
 .setting-header
@@ -69,8 +96,50 @@ $header-height: 3rem
 .setting-container
   height: 90%
   width: 90%
-  padding: 2rem
-  overflow: scroll
+  display: flex
   background-color: $background-color
   border-radius: $modal-border-radius
+.setting-page-container
+  padding: 2rem
+  overflow: scroll
+
+.setting-menu
+  height: calc(100% + 2rem)
+  width: 17rem
+  top: -1rem
+  left: -1rem
+  position: relative
+  background-color: $primary-color
+  color: white
+  border-radius: 5px
+  padding: 3rem 1rem
+
+.setting-title-container
+  display: flex
+  align-items: center
+  justify-content: center
+  margin: 1rem 0
+  font-size: 1.2rem
+  letter-spacing: 0.1rem
+  .setting-traq-logo
+    margin-right: 1.5rem
+
+.setting-page-list
+  margin-top: 5rem
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+.setting-page-list-item
+  display: flex
+  flex-direction: row
+  align-items: center
+  width: 85%
+  margin: 1.75rem 0
+  cursor: pointer
+  opacity: 0.5
+.setting-page-list-item:hover
+  opacity: 1
+.setting-page-list-item-icon
+  margin-right: 2rem
 </style>
