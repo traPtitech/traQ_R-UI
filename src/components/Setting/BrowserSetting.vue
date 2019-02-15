@@ -5,26 +5,22 @@
   SettingItem
     SettingItemTitle
       | 全セッション破棄
-    button(@click="deleteSessions")
+    SettingButton(@click="deleteSessions")
       | 破棄
   SettingItem
     SettingItemTitle
-      | ブラウザ設定
-    p
-      | 起動時
-    div
-      input(type="radio" value="particular" v-model="openMode" checked)
-      | 特定のチャンネル
-    div
+      | 起動時チャンネル設定
+    .open-mode-selector
       input(type="radio" value="lastOpen" v-model="openMode")
       | 最後に開いたチャンネル
-    div(v-show="openMode === 'particular'")
-      p
-        | 起動時に開くチャンネル名
-      input(v-model="openChannelName")
+    .open-mode-selector.open-patiular-channel
+      input(type="radio" value="particular" v-model="openMode" checked)
+      | 特定のチャンネル
+    .open-channel-selector(v-show="openMode === 'particular'")
+      SettingInput(v-model="openChannelName")
     p(v-if="!isChannelNameValid")
       | 存在しないチャンネル名です
-    button(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
+    SettingButton(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
       | 更新
 </template>
 
@@ -33,12 +29,16 @@ import client from '@/bin/client'
 import SettingTitle from '@/components/Setting/SettingTitle'
 import SettingItem from '@/components/Setting/SettingItem'
 import SettingItemTitle from '@/components/Setting/SettingItemTitle'
+import SettingInput from '@/components/Setting/SettingInput'
+import SettingButton from '@/components/Setting/SettingButton'
 export default {
   name: 'ProfileSetting',
   components: {
     SettingTitle,
     SettingItem,
-    SettingItemTitle
+    SettingItemTitle,
+    SettingInput,
+    SettingButton
   },
   data () {
     return {
@@ -82,4 +82,8 @@ export default {
 </script>
 
 <style lang="sass">
+.open-mode-selector
+  margin: 1rem 0
+.open-channel-selector
+  margin-top: -1rem
 </style>

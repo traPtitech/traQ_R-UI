@@ -11,6 +11,8 @@ export default {
 </script>
 
 <style lang="sass">
-.setting-item-title
-  margin-bottom: 1rem
+.setting-item
+  margin:
+    top: 1rem
+    bottom: 2rem
 </style>

@@ -13,6 +13,6 @@ export default {
 <style lang="sass">
 .setting-item-title
   font-size: 1.2rem
-  margin: 0.75rem 0
+  margin: 1.5rem 0
   color: $primary-color-on-bg
 </style>

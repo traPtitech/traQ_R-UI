@@ -3,42 +3,38 @@
   SettingTitle
     | プロフィール設定
   img.setting-user-icon(:src="iconFileId")
-  input(type="file" @change="addFile")
-  p
-    | 表示名
-  input(v-model="displayName")
-  p
-    | Twitter ID
-  input(v-model="twitterId")
-  p
-    | 新しいパスワード
-  input(v-model="newPassword" type="password")
-  p
-    | 新しいパスワード(確認)
-  input(v-model="checkNewPassword" type="password")
+  SettingFileInput.setting-icon-input(v-model="icon" label="アイコンを変更" name="icon")
+  SettingInput(v-model="displayName" label="表示名")
+  SettingInput(v-model="twitterId" label="Twitter ID")
+  SettingInput(v-model="newPassword" type="password" label="新しいパスワード")
+  SettingInput(v-model="checkNewPassword" type="password" label="新しいパスワード(確認)")
   br
-  button(v-if="isChanged && !needPass" @click="submit")
+  SettingButton(v-if="isChanged && !needPass" @click="submit")
     | 更新
   div(v-if="isChanged && needPass")
-    p
-      | 現在のパスワード
-    input(v-model="oldPassword" type="password")
+    SettingInput(v-model="oldPassword" type="password" label="現在のパスワード")
     br
-    button(@:click="submitWithCertification")
+    SettingButton(@click="submitWithCertification")
       | 更新
-  p(v-if="done !== ''")
+  p.update-info(v-if="done !== ''")
     | {{done}}が更新されました
-  p(v-if="state === 'failed'")
+  p.update-info(v-if="state === 'failed'")
     | {{error}}
 </template>
 
 <script>
 import client from '@/bin/client'
 import SettingTitle from '@/components/Setting/SettingTitle'
+import SettingInput from '@/components/Setting/SettingInput'
+import SettingFileInput from '@/components/Setting/SettingFileInput'
+import SettingButton from '@/components/Setting/SettingButton'
 export default {
   name: 'ProfileSetting',
   components: {
-    SettingTitle
+    SettingTitle,
+    SettingInput,
+    SettingFileInput,
+    SettingButton
   },
   data () {
     return {
@@ -48,7 +44,8 @@ export default {
       twitterId: '',
       newPassword: '',
       checkNewPassword: '',
-      oldPassword: ''
+      oldPassword: '',
+      icon: null
     }
   },
   computed: {
@@ -168,4 +165,12 @@ export default {
   height: 100px
   background-color: white
   border-radius: 100%
+
+.setting-icon-input
+  margin:
+    top: 1rem
+    bottom: 2rem
+
+.update-info
+  margin-top: 0.75rem
 </style>

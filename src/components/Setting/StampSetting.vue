@@ -5,9 +5,9 @@
   SettingItem
     SettingItemTitle
       | スタンプ新規登録
-    input(type="file" @change="addStampFile")
-    input(v-model="stampName")
-    button(v-if="stampFile && stampName.length > 0" @click="addStamp")
+    SettingFileInput.stamp-file-input(v-model="stampFile" name="stamp" label="ファイルを選択")
+    SettingInput(v-model="stampName" label="スタンプ名")
+    SettingButton(v-if="stampFile && stampName.length > 0" @click="addStamp")
       | 追加
 </template>
 
@@ -16,12 +16,18 @@ import client from '@/bin/client'
 import SettingTitle from '@/components/Setting/SettingTitle'
 import SettingItem from '@/components/Setting/SettingItem'
 import SettingItemTitle from '@/components/Setting/SettingItemTitle'
+import SettingInput from '@/components/Setting/SettingInput'
+import SettingFileInput from '@/components/Setting/SettingFileInput'
+import SettingButton from '@/components/Setting/SettingButton'
 export default {
   name: 'ProfileSetting',
   components: {
     SettingTitle,
     SettingItem,
-    SettingItemTitle
+    SettingItemTitle,
+    SettingInput,
+    SettingFileInput,
+    SettingButton
   },
   data () {
     return {
@@ -41,9 +47,6 @@ export default {
     }
   },
   methods: {
-    addStampFile (event) {
-      this.stampFile = event.target.files[0]
-    },
     addStamp () {
       client.addStamp(this.stampName, this.stampFile)
       .then(() => {
@@ -61,4 +64,8 @@ export default {
 </script>
 
 <style lang="sass">
+.stamp-file-input
+  margin:
+    top: 1rem
+    bottom: 2rem
 </style>
