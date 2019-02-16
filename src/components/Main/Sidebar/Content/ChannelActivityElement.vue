@@ -83,11 +83,11 @@ export default {
   word-break: break-all;
   border-bottom: 1px solid rgba(0,0,0,0.1)
   color: white
-  &.activity-watched:not(:hover)
-    background: white
-    color: $primary-color
   &:hover
     background: rgba(0,0,0,0.1)
+  &.activity-watched
+    background: white
+    color: $primary-color
 .channel-activity-channel
   display: flex
   position: relative
@@ -114,7 +114,7 @@ export default {
   font:
     weight: bold
     size: 1.5rem;
-  .activity-watched:not(:hover) &
+  .activity-watched &
     color: $primary-color
   &.has-unread::after
     content: ''
@@ -129,7 +129,7 @@ export default {
 .channel-activity-name
   width: 100%
   overflow: hidden
-  .activity-watched:not(:hover) &
+  .activity-watched &
     color: $primary-color
 .channel-activity-separator
   border-color: rgba(255, 255, 255, 0.5)
