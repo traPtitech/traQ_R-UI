@@ -84,7 +84,6 @@ export default {
   height: 100%
   cursor: pointer
   background: none
-  transition: all .3s ease
   &.selected
     background: $tertiary-color
 .channel-list-action-area-wrapper

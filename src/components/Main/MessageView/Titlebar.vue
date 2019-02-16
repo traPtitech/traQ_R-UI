@@ -150,7 +150,7 @@ $topic-height: 14px
   position: fixed
   display: inline-block
   z-index: $titlebar-index
-  transition: all .3s ease
+  transition: width .3s ease
   +mq(pc)
     left: $sidebar-width
     min-width: 230px
@@ -175,7 +175,6 @@ $topic-height: 14px
   justify-content: flex-start
   color: white
   cursor: pointer
-  transition: all .5s ease
   background: $primary-color
   position: relative
   &::before
@@ -189,6 +188,7 @@ $topic-height: 14px
     width: 0
     height: 1px
     background: $border-color
+    will-change: width
     transition: width .5s ease
     .is-expanded &
       width: calc( 100% - 20px )
@@ -211,7 +211,7 @@ $topic-height: 14px
 
 .channel-info-wrap
   padding-right: 10px
-  max-width: calc(100% - 60px)
+  max-width: calc(100% - 50px)
   box-sizing: content-box
 
 .channel-name
@@ -259,9 +259,10 @@ $topic-height: 14px
   justify-content: center
   padding: 60px 0 10px
   background: $primary-color
-  transition: all .5s ease
+  transition: transform .5s ease
   overflow: hidden
   position: relative
+  will-change: transform
   transform: translateY(-100%)
   user-select: none
   .is-expanded &

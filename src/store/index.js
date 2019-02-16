@@ -4,6 +4,7 @@ import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import modal from './modal'
+import theme from './theme'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -44,7 +45,8 @@ const stringSortGen = (key) => (lhs, rhs) => {
 
 const store = new Vuex.Store({
   modules: {
-    modal
+    modal,
+    theme
   },
   state: {
     loaded: false,
@@ -523,6 +525,9 @@ const store = new Vuex.Store({
     },
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
+    },
+    fileUrl: state => fileId => {
+      return `${state.baseURL}/api/1.0/files/${fileId}`
     }
   },
   actions: {

@@ -40,14 +40,13 @@ export default {
         })
     },
     grades () {
-      const grades = this.$store.state.tagData
+      return this.$store.state.tagData
         .filter(
-            tag => tag.tag !== '' && /^\d{2}[BMDR]$/.test(tag.tag)
+            tag => tag.type === 'grade'
           )
         .filter(
             tag => tag.users.length > 0
           )
-      return grades
     },
     bots () {
       return this.$store.state.memberData.filter(user => user.bot)

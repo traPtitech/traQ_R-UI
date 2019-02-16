@@ -1,8 +1,7 @@
 <template lang="pug">
 div.member-element
   div.member-element-icon-container(v-on:click="openUserModal")
-    div.member-element-icon(:style="iconImg")
-      //- img.member-element-icon(:style="iconClass" :src="userIconSrc")
+    div.member-element-icon(:style="iconImg" :class="iconClass")
     div.member-element-online-indicator(v-if="!model.bot && model.isOnline")
   div.member-name-container(@click="openDMChannel")
     p.member-display-name.text-ellipsis
@@ -13,6 +12,7 @@ div.member-element
 
 <script>
 import client from '@/bin/client'
+
 export default {
   name: 'MemberElement',
   props: {
@@ -36,9 +36,6 @@ export default {
         return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.model.userId))
       }
     },
-    hoge () {
-      return this.$store.getters.getDirectMessageChannels
-    },
     userIconSrc () {
       return client.getUserIconUrl(this.model.userId)
     },
@@ -51,7 +48,7 @@ export default {
     },
     iconClass () {
       return {
-        '.member-element-dm-indicator': this.unreadMessagesNum > 0
+        'member-element-dm-indicator': this.unreadMessagesNum > 0
       }
     },
     iconImg () {
@@ -107,7 +104,7 @@ export default {
   width: 12px
   height: 12px
   right: 0px
-  bottom: 1px
+  bottom: -3px
   border:
     radius: 100%
     color: $primary-color

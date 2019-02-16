@@ -1,16 +1,18 @@
 <template lang="pug">
 div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported")
   div.message-user-icon-wrap
-    img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[model.userId].iconFileId}`" @click="openUserModal(model.userId)")
+    img.message-user-icon(:src="userIconSrc(model.userId)" @click="openUserModal(model.userId)")
   div.message-detail-wrap
     div.message-user-info-wrap
       div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
-        | {{getUserName(model.userId)}}
+        | {{getUserDisplayName(model.userId)}}
       div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
-        | @{{$store.state.memberMap[model.userId].name}}
+        | @{{userName}}
     time.message-date
       | {{displayDateTime}}
     ul.message-buttons-wrap
+      li(@click="showStampPicker")
+        icon(name="plus")
       li(v-if="model.userId === $store.getters.getMyId" @click="editMessage")
         icon(name="edit")
       li(v-if="model.userId === $store.getters.getMyId" @click="deleteMessage")
@@ -36,9 +38,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
           | Edit
     div.message-messages-wrap
       div.attached-message(v-for="m in messages")
-        img.message-user-icon(:src="`${$store.state.baseURL}/api/1.0/files/${$store.state.memberMap[m.userId].iconFileId}`" @click="openUserModal(m.userId)")
+        img.message-user-icon(:src="userIconSrc(m.userId)" @click="openUserModal(m.userId)")
         p.message-user-name(@click="openUserModal(m.userId)")
-          | {{getUserName(m.userId)}}
+          | {{getUserDisplayName(m.userId)}}
         component(:is="mark(m.content)" v-bind="$props")
         small
           | from
@@ -47,7 +49,7 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
     div.message-files-wrap
       div(v-for="file in files")
         div(v-if="file.fileId !== ''")
-          img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
+          img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${fileUrl(file.fileId)}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
           a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
             video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
             audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
@@ -65,18 +67,15 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
             br
             small
               | {{encodeByte(0)}}
-    div.message-actions-wrap
-      transition-group.message-stamps-wrap(name="slide-in" :class="{'has-stamps':stamps.length>0}")
-        div.stamp-container(:key="stamp.stampId" v-for="stamp in stamps" @click="toggleStamp(stamp.stampId)" :title="stamp.title" :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
-          div.emoji(:style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${stamp.fileId});`")
-          p.stamp-number
-            | {{stamp.sum}}
-        StampButton.message-stamp-button(key="stampbutton" :model="{messageId: model.messageId}")
+    message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
+import MessageStampsList from './MessageStampsList'
+
 function isFile (text) {
   try {
     const data = JSON.parse(text)
@@ -144,6 +143,13 @@ export default {
     }
   },
   methods: {
+    showStampPicker () {
+      this.$store.commit('setStampPickerModel', {messageId: this.model.messageId})
+      this.$store.commit('activeStampPicker')
+    },
+    userIconSrc (userId) {
+      return client.getUserIconUrl(userId)
+    },
     editMessage () {
       this.isEditing = true
       this.edited = this.model.content
@@ -204,16 +210,6 @@ export default {
           .catch(e => null)
       }))).filter(e => e)
     },
-    toggleStamp (stampId) {
-      if (this.isContainSelfStamp(stampId)) {
-        client.unstampMessage(this.model.messageId, stampId)
-      } else {
-        client.stampMessage(this.model.messageId, stampId)
-      }
-    },
-    isContainSelfStamp (stampId) {
-      return this.stamps.find(e => e.stampId === stampId).user.find(e => e.userId === this.$store.state.me.userId)
-    },
     encodeByte (byte) {
       const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
       let rank = 0
@@ -273,7 +269,7 @@ export default {
         }
       }
     },
-    getUserName (userId) {
+    getUserDisplayName (userId) {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
@@ -289,6 +285,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'fileUrl'
+    ]),
+    userName () {
+      return this.$store.state.memberMap[this.model.userId].name
+    },
     renderedText () {
       return this.mark(this.model.content)
     },
@@ -312,51 +314,6 @@ export default {
         return result
       }
     },
-    stamps () {
-      const map = {}
-      if (!this.model.stampList) {
-        return []
-      }
-      this.model.stampList.forEach(stamp => {
-        if (map[stamp.stampId]) {
-          map[stamp.stampId].user.push({
-            userId: stamp.userId,
-            count: stamp.count
-          })
-          map[stamp.stampId].sum += stamp.count
-          if (stamp.createdAt < map[stamp.stampId].createdAt) {
-            map[stamp.stampId].createdAt = stamp.createdAt
-          }
-        } else {
-          map[stamp.stampId] = {
-            fileId: '',
-            stampId: stamp.stampId,
-            name: '',
-            user: [{
-              userId: stamp.userId,
-              count: stamp.count
-            }],
-            sum: stamp.count,
-            createdAt: stamp.createdAt
-          }
-          if (this.$store.state.stampMap[stamp.stampId]) {
-            map[stamp.stampId].fileId = this.$store.state.stampMap[stamp.stampId].fileId
-            map[stamp.stampId].name = this.$store.state.stampMap[stamp.stampId].name
-          }
-        }
-      })
-      Object.keys(map).forEach(key => {
-        map[key].title = `:${map[key].name}: from`
-        map[key].user.forEach(user => {
-          map[key].title += ` ${this.$store.state.memberMap[user.userId].name}(${user.count})`
-        })
-      })
-      const stamps = Object.values(map)
-      stamps.sort((lhs, rhs) => {
-        return new Date(lhs.createdAt).getTime() - new Date(rhs.createdAt).getTime()
-      })
-      return stamps
-    },
     isDirectMessage () {
       if (this.$store.state.currentChannel.channelId === this.$store.state.directMessageId) return true
       if (this.$store.state.currentChannel.member) return true
@@ -367,7 +324,7 @@ export default {
     this.getAttachments()
   },
   components: {
-    'StampButton': window.asyncLoadComponents(import('@/components/Main/MessageView/StampButton'))
+    MessageStampsList
   }
 }
 </script>
@@ -375,15 +332,13 @@ export default {
 <style lang="sass">
 .message
   display: grid
-  grid-template-areas: "user-icon detail""user-icon contents""... contents"
+  grid-template-areas: "user-icon detail" "user-icon contents" "... contents"
   grid-template-rows: 20px 1fr
   grid-template-columns: 40px 1fr
   position: relative
-  // border-top: solid 1px rgba(0, 0, 0, 0.1)
   padding: 10px 10px
   width: 100%
   box-sizing: border-box
-  transition: background-color .2s ease
   overflow: hidden
   &:hover
     background-color: $background-hover-color
@@ -391,23 +346,28 @@ export default {
     background-color: #dce3ff
   &.message-pinned:hover
     background-color: #cadaff
+
 .message-user-icon-wrap
   grid-area: user-icon
+
 .message-user-icon
   width: 40px
   height: 40px
   border-radius: 100%
   cursor: pointer
+
 .message-detail-wrap
   grid-area: detail
   display: flex
   justify-content: space-between
   align-items: center
   min-width: 0
+
 .message-user-info-wrap
   display: flex
   align-items: center
   width: calc(100% - 110px)
+
 .message-user-name
   margin: 0 0 0 10px
   font-weight: bold
@@ -416,22 +376,26 @@ export default {
   height: 100%
   overflow: hidden
   cursor: pointer
+
 .message-user-id
   margin-left: 5px
   font-size: 0.8em
   max-width: 40%
   overflow: hidden
+  cursor: pointer
+
 .message-date
-  // flex: 1
   display: block
   font-size: 0.7em
   margin-left: 5px
   .message-item:hover &
     display: none
+
 .message-contents-wrap
   grid-area: contents
   display: flex
   flex-flow: column
+
 .message-text-wrap
   margin: 0 0 0 10px
   padding: 5px 0 0
@@ -440,13 +404,17 @@ export default {
   word-break: break-all
   & pre
     white-space: pre-wrap
+
 .message-messages-wrap
   margin-left: 10px
+
 .message-files-wrap
+
 .message-actions-wrap
   display: flex
   justify-content: space-between
   margin: 10px 0 5px
+
 .message-buttons-wrap
   transition: all .2s ease
   display: none
@@ -459,98 +427,56 @@ export default {
     color: #797979
   & li.button-pushed
     color: #4263da
-.message-stamps-wrap
-  display: inline-block
-  // flex-wrap: wrap
-  // align-items: center
+
 .message-user-link
   cursor: pointer
   color: #005BAC
   font-weight: bold
+
 .message-user-link-highlight
   background-color: #FAFFAD
+
 .message-channel-link
+
 .message-tag-link
   cursor: pointer
   color: #005BAC
   font-weight: bold
+
 .message-tag-link-highlight
   background-color: #FAFFAD
-.message-stamp-button
-  display: inline-block
-  margin: 0 5px 0
-  color: #797979
-  width: 16px
-  height: 16px
-  opacity: 0
-  transition: all .2s ease
-  cursor: pointer
-  .message-item:hover &
-    opacity: 1
-.stamp-container
-  display: inline-flex
-  align-items: center
-  background: rgba(97, 97, 97, 0.1)
-  color: rgba(#{$text-color}, 0.77)
-  padding: 2px 5px
-  border-radius: 3px
-  margin: 2px
-  user-select: none
-  transition: all .2s ease
-  cursor: pointer
-  &.stamp-pressed
-    background: rgb(202, 206, 228)
-    color: #2f2f2f
-.slide-in
-  &-enter-active, &-leave-active
-    transition: all .3s ease
-    transform: translateY(0)
-  &-enter, &-leave-to
-    transform: translateY(10px)
-    opacity: 0
-  &-leave-active
-    position: absolute
-.stamp-number
-  font-size: 13px
-  margin: 0 3px
-.emoji
-  display: inline-block
-  text-indent: 999%
-  white-space: nowrap
-  overflow: hidden
-  color: transparent
-  background-size: contain
-  background-repeat: no-repeat
-  background-position: center
-  user-select: none
-  width: 16px
-  height: 16px
-.message-emoji
-  user-select: text
+
 .attached-image
   max-width: 360px
   max-height: 480px
+
 .attached-video
   max-width: 360px
   max-height: 480px
   background-color: #000000
+
 .attached-message
   padding: 5px 10px
   border-left: 5px solid
+
 .edit-area
   width: 100%
   resize: none
   background-color: #d0d0d0
   padding: 10px
   box-sizing: border-box
+
 .edit-button
   border: none
   color: white
   padding: 3px 10px
   cursor: pointer
   margin: 2px 5px 0 0
+
 .edit-cancel
   background-color: #888888
+
 .edit-submit
   background-color: #4e72d6
+
 </style>

@@ -63,7 +63,7 @@ $profile-area-width: 350px
   min-height: 0
   display: flex
 
-@keyframes delayedOpaciityChange
+@keyframes delayedOpacityChange
   0%
     opacity: 1
     width: 100%
@@ -74,7 +74,7 @@ $profile-area-width: 350px
     opacity: 0
     width: 0
 
-@keyframes delayedOpaciityChangeReversed
+@keyframes delayedOpacityChangeReversed
   0%
     opacity: 0
     width: 0
@@ -94,7 +94,7 @@ $profile-area-width: 350px
   .user-modal-area--extra
     width: 100%
     opacity: 1
-    animation: delayedOpaciityChangeReversed .3s ease
+    animation: delayedOpacityChangeReversed .3s ease
 
 .user-modal[data-is-expanded]
   .user-modal-area--profile
@@ -106,7 +106,7 @@ $profile-area-width: 350px
   .user-modal-area--extra
     width: 0
     opacity: 0
-    animation: delayedOpaciityChange .3s ease
+    animation: delayedOpacityChange .3s ease
 
 </style>
 
