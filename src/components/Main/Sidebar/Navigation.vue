@@ -86,7 +86,6 @@ export default {
   justify-content: center
   color: rgba(255, 255, 255, 0.6)
   font-size: 1.3em
-  transition: all .2s ease
   &:hover
     color: white
   &.menu-active
@@ -134,7 +133,6 @@ export default {
   & p
     width: 100%
     height: 100%
-    transition: all .5s ease
   &:hover p
     background-color: rgba(255, 255, 255, 0.3)
 </style>

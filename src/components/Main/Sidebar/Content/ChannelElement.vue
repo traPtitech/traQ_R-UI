@@ -1,10 +1,12 @@
 <template lang="pug">
 div.channel-wrap(v-if="model.visibility")
   div.channel-box(@click="channelLink" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
-    div.channel-toggle.channel-before(v-if="isParent" @click.stop="toggle" :class="channelBeforeClass")
-      | #
-    div.channel-before(v-else :class="channelBeforeClass")
-      | #
+    div.channel-before-wrap(v-if="isParent" @click.stop="toggle")
+      div.channel-toggle.channel-before(:class="channelBeforeClass")
+        | #
+    div.channel-before-wrap(v-else)
+      div.channel-before(:class="channelBeforeClass")
+        | #
     p.channel-box-name
       | {{model.name}}
   div.channel-children(ref="children" v-if="model.children")
@@ -110,7 +112,7 @@ export default {
     top: 8px
     right: 10px
     bottom: 8px
-    left: 10px
+    left: 2px
   text-align: left
   cursor: pointer
   overflow:
@@ -136,6 +138,7 @@ export default {
   position: relative
   padding: 0 0 0 0
   transition: all .2s ease
+  will-change: height padding
   &:before
     display: block
     content: ''
@@ -146,7 +149,6 @@ export default {
     background: $text-light-color
     transition: height .2s ease
   .channel-opened + &
-    // border-left: solid 1px $text-light-color
     padding-left: 20px
   .channel-opened + &:before
     height: calc( 100% - 5px )
@@ -155,6 +157,12 @@ export default {
   display: flex
 .channel-notification
   flex: 1
+.channel-before-wrap
+  height: 34px
+  display: flex
+  align-items: center
+  padding:
+    right: 8px
 .channel-before
   position: relative
   display: flex
@@ -162,6 +170,7 @@ export default {
   align-items: center
   width: 20px
   height: 20px
+  line-height: 1px //for safari
   color: $text-light-color
   margin: 0 0 0 10px
   font-weight: bold

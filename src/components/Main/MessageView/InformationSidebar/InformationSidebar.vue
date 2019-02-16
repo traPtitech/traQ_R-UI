@@ -121,7 +121,6 @@ export default {
   width: $information-sidebar-button-width
   height: 60px
   cursor: pointer
-  transition: all .3s
   background: $tertiary-color
   overflow: hidden
   color: $text-light-color
