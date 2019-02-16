@@ -196,6 +196,7 @@ $topic-height: 14px
 .titlebar-channel-name
   display: flex
   flex-grow: 1
+  min-width: 0
   justify-content: start
   align-items: center
   height: 100%

@@ -35,7 +35,7 @@ export default {
     sidebarClass () {
       return {
         'is-sidebar-opened': this.isSidebarOpened,
-        'drop-shadow': this.isSidebarOpened && this.deviceType === 'sp',
+        'drop-shadow': this.deviceType === 'pc' || (this.isSidebarOpened && this.deviceType === 'sp'),
         'is-swipe-active': this.isSwipeActive
       }
     },
@@ -55,11 +55,14 @@ export default {
         return {}
       }
     },
+    isSwipeActive () {
+      return this.swipeEvent.isActive && this.deviceType === 'sp'
+    },
     isOpenSwipeActive () {
-      return this.swipeEvent.isActive && this.swipeEvent.startX < this.swipeThresholdX
+      return this.isSwipeActive && this.swipeEvent.startX < this.swipeThresholdX
     },
     isCloseSwipeActive () {
-      return this.swipeEvent.isActive && this.swipeEvent.startX < this.sidebarWidth
+      return this.isSwipeActive && this.swipeEvent.startX < this.sidebarWidth
     },
     openSwipedX () {
       return Math.min(this.swipeEvent.x - this.swipeEvent.startX, this.sidebarWidth)
