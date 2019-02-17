@@ -84,6 +84,8 @@ export default {
 <style lang="sass">
 .open-mode-selector
   margin: 1rem 0
+  input
+    margin-right: 0.5rem
 .open-channel-selector
   margin-top: -1rem
 </style>
