@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'IconAttach',
+  name: 'IconStampPlus',
   props: {
     size: {
       type: Number,

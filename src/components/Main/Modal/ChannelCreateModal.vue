@@ -1,6 +1,6 @@
 <template lang="pug">
 BaseCommonModal(title="CREATE" small)
-  IconAdd(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+  icon-plus(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
   .channel-create-modal
     h2.channel-create-description 子チャンネルを作成する
     .channel-create-input-wrap
@@ -19,14 +19,14 @@ import { mapState } from 'vuex'
 import client from '@/bin/client'
 import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
-import IconAdd from '@/components/Icon/IconAdd'
+import IconPlus from '@/components/Icon/IconPlus'
 
 export default {
   name: 'PinnedModal',
   components: {
     MessageElement,
     BaseCommonModal,
-    IconAdd
+    IconPlus
   },
   data () {
     return {
