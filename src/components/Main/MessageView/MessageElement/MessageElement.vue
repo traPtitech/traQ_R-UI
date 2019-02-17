@@ -390,6 +390,7 @@ export default {
   height: 100%
   overflow: hidden
   cursor: pointer
+  flex-shrink: 0
 
 .message-user-status-badge
   border:
