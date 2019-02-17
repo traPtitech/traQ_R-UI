@@ -103,11 +103,13 @@ export default {
   z-index: $sidebar-index
   +mq(pc)
     height: 100vh
+    height: vh(100)
     position: relative
     grid-area: side
     will-change: none
   +mq(sp)
     height: calc(100vh - 50px)
+    height: calc( #{vh(100)} - 50px)
     width: $sidebar-width
     position: fixed
     z-index: $sidebar-index
@@ -134,6 +136,7 @@ export default {
     left: 0
     width: 200vw
     height: 100vh
+    height: vh(100)
     z-index: -100
     background-color: rgba(0,0,0,0.2)
     opacity: 0

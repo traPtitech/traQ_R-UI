@@ -349,6 +349,9 @@ export default {
   padding: 10px 10px
   width: 100%
   box-sizing: border-box
+  overflow:
+      x: hidden
+      y: normal
   &:hover
     background-color: var(--background-hover-color)
   &.message-pinned
@@ -431,9 +434,12 @@ export default {
     white-space: pre-wrap
 
 .message-messages-wrap
-  margin-left: 10px
+  margin:
+    left: 10px
 
 .message-files-wrap
+  margin:
+    left: 10px
 
 .message-actions-wrap
   display: flex
@@ -479,7 +485,7 @@ export default {
   background-color: #FAFFAD
 
 .attached-image
-  max-width: 360px
+  max-width: 250px
   max-height: 480px
 
 .attached-video

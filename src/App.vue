@@ -1,5 +1,5 @@
 <template lang="pug">
-div#app(:data-theme="$store.state.theme")
+div#app(:data-theme="$store.state.theme" :style="globalStyle")
   Favicon
   //- Splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
   router-view()
@@ -14,6 +14,11 @@ export default {
   metaInfo: {
     title: 'Welcome',
     titleTemplate: '%s | traQ'
+  },
+  data () {
+    return {
+      vh: Number
+    }
   },
   components: {
     Splash,
@@ -34,6 +39,15 @@ export default {
       this.$store.commit('setWindowSize', {
         windowWidth: window.innerWidth,
         windowHeight: window.innerHeight})
+
+      this.vh = window.innerHeight * 0.01
+    }
+  },
+  computed: {
+    globalStyle () {
+      return {
+        '--vh': `${this.vh}px`
+      }
     }
   },
   mounted () {
