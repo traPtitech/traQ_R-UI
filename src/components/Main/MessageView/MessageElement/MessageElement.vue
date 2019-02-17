@@ -14,21 +14,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
       | {{displayDateTime}}
     ul.message-buttons-wrap
       li(@click="showStampPicker")
-        icon(name="plus")
-      li(v-if="model.userId === getMyId" @click="editMessage")
-        icon(name="edit")
-      li(v-if="model.userId === getMyId" @click="deleteMessage")
-        icon(name="trash-alt")
-      li.button-pushed(@click="unpinMessage" v-if="pinned")
-        icon(name="thumbtack")
-      li(@click="pinMessage" v-else)
-        icon(name="thumbtack")
-      li(@click="clipMessage")
-        icon(name="paperclip")
-      li(@click="copyMessage" v-if="!isDirectMessage")
-        icon(name="copy")
-      li(@click="reportMessage")
-        icon(name="ban")
+        icon-stamp-plus(:size="20" color="gray")
+      li(@click.stop="isContextMenuActive = true")
+        icon-dots(:size="18" color="gray")
   div.message-contents-wrap
     div.message-text-wrap
       component(v-if="!isEditing" :is="renderedText" v-bind="$props")
@@ -70,6 +58,17 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
             small
               | {{encodeByte(0)}}
     message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
+  div.message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
+    message-context-drop-menu(:userId="model.userId" 
+      :messageId="model.messageId" 
+      @deactive="isContextMenuActive = false" 
+      @pin="pinMessage" 
+      @unpin="unpinMessage" 
+      @edit="editMessage" 
+      @copy="copyMessage" 
+      @delete="deleteMessage" 
+      @report="reportMessage"
+      )
 </template>
 
 <script>
@@ -77,6 +76,9 @@ import { mapGetters } from 'vuex'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 import MessageStampsList from './MessageStampsList'
+import MessageContextDropMenu from './MessageContextDropMenu'
+import IconDots from '@/components/Icon/IconDots'
+import IconStampPlus from '@/components/Icon/IconStampPlus'
 
 function isFile (text) {
   try {
@@ -139,9 +141,9 @@ export default {
     return {
       isEditing: false,
       edited: '',
-      pin: null,
       files: [],
-      messages: []
+      messages: [],
+      isContextMenuActive: false
     }
   },
   methods: {
@@ -178,7 +180,7 @@ export default {
       this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
     },
     async unpinMessage () {
-      await client.unpinMessage(this.pin.pinId)
+      await client.unpinMessage(this.pinned.pinId)
       this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
     },
     clipMessage () {
@@ -309,8 +311,7 @@ export default {
       return this.mark(this.model.content)
     },
     pinned () {
-      this.pin = this.$store.getters.isPinned(this.model.messageId)
-      return this.pin
+      return this.$store.getters.isPinned(this.model.messageId)
     },
     displayDateTime () {
       const d = new Date(this.model.createdAt)
@@ -327,18 +328,13 @@ export default {
         }
         return result
       }
-    },
-    isDirectMessage () {
-      if (this.$store.state.currentChannel.channelId === this.$store.state.directMessageId) return true
-      if (this.$store.state.currentChannel.member) return true
-      return false
     }
   },
   mounted () {
     this.getAttachments()
   },
   components: {
-    MessageStampsList
+    MessageStampsList, MessageContextDropMenu, IconDots, IconStampPlus
   }
 }
 </script>
@@ -353,7 +349,6 @@ export default {
   padding: 10px 10px
   width: 100%
   box-sizing: border-box
-  overflow: hidden
   &:hover
     background-color: var(--background-hover-color)
   &.message-pinned
@@ -449,14 +444,21 @@ export default {
   transition: all .2s ease
   display: none
   justify-content: flex-end
+
   .message-item:hover &
     display: flex
+    align-items: center
+
   & li
     margin: 0 5px
     cursor: pointer
-    color: #797979
-  & li.button-pushed
-    color: #4263da
+    display: flex
+    height: 20px
+    align-items: center
+    opacity: 0.6
+
+  & li:hover
+    opacity: 1
 
 .message-user-link
   cursor: pointer

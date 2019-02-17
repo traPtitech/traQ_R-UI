@@ -153,8 +153,13 @@ export default {
   margin:
     right: 4px
     bottom: 4px
+  .stamps-info-stamps-wrap &
+    margin:
+      bottom: 0
+
   user-select: none
   cursor: pointer
+
   &.stamp-pressed
     background: $stamp-active-color
     color: $stamp-pressed-number-color
@@ -210,17 +215,20 @@ export default {
 
 .button-open-stamps-list, .button-close-stamps-list
   cursor: pointer
+  position: absolute
+  left: -30px
   width: 24px
   height: 24px
 
 .button-close-stamps-list
-  position: absolute
-  left: -30px
   top: -1px
   transform: rotate(180deg)
 
 .stamps-info-wrap
   display: flex
+  align-items: center
+  margin:
+    bottom: 4px
 
 .stamps-info-stamps-wrap
 
