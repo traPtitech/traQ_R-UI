@@ -331,6 +331,7 @@ export default {
   grid-gap: 0
   width: 100vw
   height: 100vh
+  height: vh(100)
   +mq(pc)
     display: grid
     grid-template-rows: 1fr $input-height

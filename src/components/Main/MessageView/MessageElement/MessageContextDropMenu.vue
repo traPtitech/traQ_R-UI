@@ -90,6 +90,10 @@ export default {
     margin:
       bottom: 2px
     padding: 4px 15px 4px
+  
+  li:last-child
+    margin:
+      bottom: 0
 
     &:hover
       background: var(--background-hover-color)
