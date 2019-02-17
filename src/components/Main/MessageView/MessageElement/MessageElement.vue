@@ -349,9 +349,6 @@ export default {
   padding: 10px 10px
   width: 100%
   box-sizing: border-box
-  overflow:
-      x: hidden
-      y: normal
   &:hover
     background-color: var(--background-hover-color)
   &.message-pinned
