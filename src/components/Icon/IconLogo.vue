@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'IconAdd',
+  name: 'IconLogo',
   props: {
     size: {
       type: Number,

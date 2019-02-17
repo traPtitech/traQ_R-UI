@@ -1,9 +1,9 @@
 <template lang="pug">
 div.member-container.is-scroll
   div.member-filter-input-wrapper
-    FilterInput(@inputFilter="filterText = $event")
-  MemberGroup(v-for="grade in sortedGrades" :key="grade.tag" :members="grade.users" :groupName="grade.tag" :filterText="filterText")
-  MemberGroup(v-if="bots.length > 0" :members="bots" :groupName="'BOT'" :filterText="filterText")
+    filter-input(@inputFilter="filterText = $event")
+  member-group(v-for="grade in sortedGrades" :key="grade.tag" :members="grade.users" :groupName="grade.tag" :filterText="filterText")
+  member-group(v-if="bots.length > 0" :members="bots" :groupName="'BOT'" :filterText="filterText")
 </template>
 
 <script>

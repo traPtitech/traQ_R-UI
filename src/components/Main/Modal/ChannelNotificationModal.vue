@@ -1,12 +1,12 @@
 <template lang="pug">
-BaseCommonModal(title="NOTIFICATIONS" small)
-  IconNotification(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+base-common-modal(title="NOTIFICATIONS" small)
+  icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
   .channel-notification-modal
     .notifications-item
       h2 ONにしてる人
       .notifications-members(v-if="onMembers.length")
           transition-group(name="slide-fade" tag="ul")
-            MemberChoice(v-for="member in onMembers"
+            member-choice(v-for="member in onMembers"
                          @memberSelected="toggleMemberOff(member.userId)"
                          :member="member"
                          :key="member.userId")
@@ -17,7 +17,7 @@ BaseCommonModal(title="NOTIFICATIONS" small)
       h2 OFFにしてる人
       .notifications-members(v-if="offMembers.length")
         transition-group(name="slide-fade" tag="ul")
-            MemberChoice(v-for="member in offMembers"
+            member-choice(v-for="member in offMembers"
                          @memberSelected="toggleMemberOn(member.userId)"
                          :member="member"
                          :key="member.userId")
@@ -31,7 +31,7 @@ import { mapState } from 'vuex'
 import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 import MemberChoice from '@/components/Main/Modal/Util/MemberChoice'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
-import IconNotification from '@/components/Icon/IconNotification'
+import IconNotificationFill from '@/components/Icon/IconNotificationFill'
 
 export default {
   name: 'ChannelNotificationModal',
@@ -39,7 +39,7 @@ export default {
     MessageElement,
     MemberChoice,
     BaseCommonModal,
-    IconNotification
+    IconNotificationFill
   },
   data () {
     return {

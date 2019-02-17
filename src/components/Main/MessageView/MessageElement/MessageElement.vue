@@ -402,6 +402,8 @@ export default {
   text-align: left
   font-size: 0.9em
   word-break: break-all
+  word-wrap: break-word
+  line-break: loose
   & pre
     white-space: pre-wrap
 

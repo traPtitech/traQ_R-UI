@@ -1,20 +1,40 @@
 <template lang="pug">
-transition-group.message-stamps-wrap(v-if="hasStamp" name="slide-in")
-  div.stamp-container(
-    v-for="stamp in stamps" 
-    :key="stamp.stampId" 
-    @click="toggleStamp(stamp.stampId)" 
-    :title="stamp.title" 
-    :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
-    div.stamp(:style="`background-image: url(${fileUrl(stamp.fileId)});`")
-    p.stamp-number
-      | {{stamp.sum}}
+div(v-if="hasStamp").message-stamps-list
+  template(v-if="!isExpanded")
+    transition-group.message-stamps-wrap(name="slide-in" tag="div")
+      div.stamp-container(
+        v-for="stamp in stamps" 
+        :key="stamp.stampId" 
+        @click="toggleStamp(stamp.stampId)" 
+        :title="stamp.title" 
+        :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
+        div.stamp(:style="`background-image: url(${fileUrl(stamp.fileId)});`")
+        p.stamp-number
+          | {{stamp.sum}}
+    div.button-open-stamps-list(@click="toggleExpand")
+      icon-down-direction(:size="24" color="gray")
+  template(v-else)
+    div.button-close-stamps-list(@click="toggleExpand")
+      icon-down-direction(:size="24" color="gray")
+    div
+      div.stamps-info-wrap(v-for="stamp in stamps")
+        div.stamps-info-stamps-wrap
+          div.stamp-container( 
+            :key="stamp.stampId" 
+            @click="toggleStamp(stamp.stampId)" 
+            :title="stamp.title" 
+            :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
+            div.stamp(:style="`background-image: url(${fileUrl(stamp.fileId)});`")
+            p.stamp-number
+              | {{stamp.sum}}
+        span
+          | {{stamp.title}}
 </template>
 
 <script>
 import client from '@/bin/client'
 import { mapGetters } from 'vuex'
-import IconStampPlus from '@/components/Icon/IconStampPlus'
+import IconDownDirection from '@/components/Icon/IconDownDirection'
 
 export default {
   name: 'MessageStampsList',
@@ -28,7 +48,12 @@ export default {
       required: true
     }
   },
-  components: {IconStampPlus},
+  data () {
+    return {
+      isExpanded: false
+    }
+  },
+  components: {IconDownDirection},
   computed: {
     ...mapGetters([
       'fileUrl'
@@ -94,17 +119,24 @@ export default {
       return this.stamps
         .find(e => e.stampId === stampId).user
           .find(e => e.userId === this.$store.state.me.userId)
+    },
+    toggleExpand () {
+      this.isExpanded = !this.isExpanded
     }
   }
 }
 </script>
 
 <style lang="sass">
-.message-stamps-wrap
-  display: inline-block
+.message-stamps-list
+  display: inline-flex
+  position: relative
   margin:
     left: 10px
     top: 10px
+
+.message-stamps-wrap
+  display: inline-block
   transition: height .3s ease
 
 .stamp-container
@@ -175,6 +207,23 @@ export default {
   cursor: pointer
   .message-item:hover &
     opacity: 1
+
+.button-open-stamps-list, .button-close-stamps-list
+  cursor: pointer
+  width: 24px
+  height: 24px
+
+.button-close-stamps-list
+  position: absolute
+  left: -30px
+  top: -1px
+  transform: rotate(180deg)
+
+.stamps-info-wrap
+  display: flex
+
+.stamps-info-stamps-wrap
+
 </style>
 
 
