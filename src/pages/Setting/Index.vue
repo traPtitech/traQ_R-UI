@@ -128,6 +128,7 @@ $header-height: 3rem
   flex: 1
   overflow: scroll
   display: none
+  -webkit-overflow-scrolling: touch
   @media (max-width: 750px)
     display: block
   > *:not(:last-child)
