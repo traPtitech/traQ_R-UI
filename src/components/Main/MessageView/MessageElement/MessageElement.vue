@@ -6,6 +6,8 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
     div.message-user-info-wrap
       div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
         | {{getUserDisplayName(model.userId)}}
+      div.message-user-status-badge(v-if="statusBadge(model.userId) !== undefined")
+        | {{statusBadge(model.userId)}}
       div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
         | @{{userName}}
     time.message-date
@@ -13,9 +15,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
     ul.message-buttons-wrap
       li(@click="showStampPicker")
         icon(name="plus")
-      li(v-if="model.userId === $store.getters.getMyId" @click="editMessage")
+      li(v-if="model.userId === getMyId" @click="editMessage")
         icon(name="edit")
-      li(v-if="model.userId === $store.getters.getMyId" @click="deleteMessage")
+      li(v-if="model.userId === getMyId" @click="deleteMessage")
         icon(name="trash-alt")
       li.button-pushed(@click="unpinMessage" v-if="pinned")
         icon(name="thumbtack")
@@ -270,9 +272,7 @@ export default {
       }
     },
     getUserDisplayName (userId) {
-      const user = this.$store.state.memberMap[userId]
-      if (user.bot) return user.displayName + '#bot'
-      else return user.displayName
+      return this.$store.state.memberMap[userId].displayName
     },
     reportMessage () {
       const reason = window.prompt('このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください')
@@ -282,11 +282,25 @@ export default {
           this.$store.commit('removeMessage', this.model.messageId)
         })
       }
+    },
+    isBot (userId) {
+      return this.$store.state.memberMap[userId].bot
+    },
+    grade (userId) {
+      return this.$store.getters.gradeByUserMap[this.model.userId]
+    },
+    statusBadge (userId) {
+      // grade or bot or undefined
+      if (this.isBot(userId)) {
+        return 'bot'
+      } else {
+        return this.grade(userId)
+      }
     }
   },
   computed: {
     ...mapGetters([
-      'fileUrl'
+      'fileUrl', 'getMyId'
     ]),
     userName () {
       return this.$store.state.memberMap[this.model.userId].name
@@ -341,7 +355,7 @@ export default {
   box-sizing: border-box
   overflow: hidden
   &:hover
-    background-color: $background-hover-color
+    background-color: var(--background-hover-color)
   &.message-pinned
     background-color: #dce3ff
   &.message-pinned:hover
@@ -376,6 +390,19 @@ export default {
   height: 100%
   overflow: hidden
   cursor: pointer
+
+.message-user-status-badge
+  border:
+    style: solid
+    width: 1px
+    radius: 3px
+  font:
+    weight: bold
+    size: 12px
+  padding: 1px 2px 1px
+  margin:
+    left: 5px
+  opacity: 0.8
 
 .message-user-id
   margin-left: 5px

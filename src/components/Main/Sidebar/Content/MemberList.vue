@@ -7,6 +7,7 @@ div.member-container.is-scroll
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import MemberGroup from '@/components/Main/Sidebar/Content/MemberGroup'
 import FilterInput from '@/components/Util/FilterInput'
 
@@ -24,32 +25,11 @@ export default {
   methods: {
   },
   computed: {
-    sortedGrades () {
-      const map = {
-        B: 0,
-        M: 1,
-        D: 2,
-        R: 3
-      }
-      const f = (s) => {
-        return map[s[2]] * 100 + parseInt(s.substr(0, 2), 10)
-      }
-      return this.grades
-        .sort((lhs, rhs) => {
-          return f(lhs.tag) - f(rhs.tag)
-        })
-    },
-    grades () {
-      return this.$store.state.tagData
-        .filter(
-            tag => tag.type === 'grade'
-          )
-        .filter(
-            tag => tag.users.length > 0
-          )
-    },
+    ...mapGetters([
+      'sortedGrades', 'memberData'
+    ]),
     bots () {
-      return this.$store.state.memberData.filter(user => user.bot)
+      return this.memberData.filter(user => user.bot)
     }
   }
 }

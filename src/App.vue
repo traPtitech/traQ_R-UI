@@ -8,7 +8,6 @@ div#app(:data-theme="$store.state.theme")
 <script>
 import Splash from '@/components/Splash/Splash'
 import Favicon from '@/components/Util/Favicon'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'app',
@@ -36,9 +35,6 @@ export default {
         windowWidth: window.innerWidth,
         windowHeight: window.innerHeight})
     }
-  },
-  computed: {
-    ...mapGetters([])
   },
   mounted () {
     this.handleResizeWindow()

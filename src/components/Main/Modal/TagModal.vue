@@ -1,13 +1,13 @@
 <template lang="pug">
-BaseCommonModal(:title="`TAG: ${data.tag}`" small)
+base-common-modal(:title="`TAG: ${data.tag}`" small)
   .tag-modal-go-back(v-if="$store.state.modal.lastUser"
                      slot="header-icon"
                      @click="backToUserModal")
-    IconBack(color="var(--primary-color-on-bg)" :size="16")
-  IconTag(v-else color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+    icon-back(color="var(--primary-color-on-bg)" :size="16")
+  icon-tag(v-else color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
   .tag-modal
     .tag-user-list
-      MemberElement.tag-user-element(v-for="member in data.users" :model="member" :key="member.userId")
+      member-element.tag-user-element(v-for="member in data.users" :model="member" :key="member.userId" backgroundColor="var(--background-color)")
 </template>
 
 <script>
@@ -16,7 +16,9 @@ import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconTag from '@/components/Icon/IconTag'
 import IconBack from '@/components/Icon/IconBack'
+
 export default {
+  name: 'TagModal',
   components: {
     BaseCommonModal,
     MemberElement,
