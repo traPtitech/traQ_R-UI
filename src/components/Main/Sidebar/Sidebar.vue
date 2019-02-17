@@ -101,7 +101,6 @@ export default {
 .sidebar
   background-color: white
   z-index: $sidebar-index
-  padding-top: env(safe-area-inset-top)
   +mq(pc)
     height: 100vh
     position: relative
