@@ -4,13 +4,13 @@ BaseCommonModal(title="CREATE" small)
   .channel-create-modal
     h2.channel-create-description 子チャンネルを作成する
     .channel-create-input-wrap
-      input.channel-create-input(type="textarea" v-model="channelName")
+      SettingInput(type="textarea" v-model="channelName")
     p.channel-create-status(v-if="state === 'failed'")
       | 失敗しました
     p.channel-create-status(v-if="state === 'successed'")
       | 作成されました
     .channel-create-button-wrap
-      button.channel-create-button(@click="createChannel")
+      SettingButton(@click="createChannel")
         | 作成
 </template>
 
@@ -19,6 +19,8 @@ import { mapState } from 'vuex'
 import client from '@/bin/client'
 import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
+import SettingButton from '@/components/Setting/SettingButton'
+import SettingInput from '@/components/Setting/SettingInput'
 import IconPlus from '@/components/Icon/IconPlus'
 
 export default {
@@ -26,6 +28,8 @@ export default {
   components: {
     MessageElement,
     BaseCommonModal,
+    SettingButton,
+    SettingInput,
     IconPlus
   },
   data () {
@@ -67,22 +71,4 @@ export default {
   width: 100%
   display: flex
   justify-content: flex-end
-.channel-create-button
-  border: 1px solid $primary-color-on-bg
-  margin-left: auto
-
-.channel-create-input
-  max-width: 100%
-  padding:
-    top: 4px
-    right: 20px
-    left: 10px
-    bottom: 4px
-  border-radius: 4px
-  background: rgba(255,255,255,0.2)
-  color: $text-light-color
-  box-sizing: border-box
-  &::placeholder
-    color: $text-light-color
-    opacity: 0.8
 </style>
