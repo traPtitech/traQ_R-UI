@@ -1,18 +1,18 @@
 <template lang="pug">
   ul(@click.passive="$emit('deactive')")
-    li(@click.stop="$emit('unpin')" v-if="pinned")
+    li(@click="$emit('unpin')" v-if="pinned")
       | ピン留めを外す
-    li(@click.stop="$emit('pin')" v-else)
+    li(@click="$emit('pin')" v-else)
       | ピン留め
-    li(v-if="userId === getMyId" @click.stop="$emit('edit')")
+    li(v-if="userId === getMyId" @click="$emit('edit')")
       | 編集
-    li(v-if="!isDirectMessage" @click.stop="$emit('copy')")
+    li(v-if="!isDirectMessage" @click="$emit('copy')")
       | 引用
     //- li(@click="clipMessae")
     //-   | クリップ
-    li(v-if="userId === getMyId" @click.stop="$emit('delete')")
+    li(v-if="userId === getMyId" @click="$emit('delete')")
       | 削除
-    li(@click.stop="$emit('report')")
+    li(@click="$emit('report')")
       | 報告
 </template>
 
