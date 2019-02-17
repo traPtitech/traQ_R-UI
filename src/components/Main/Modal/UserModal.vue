@@ -4,7 +4,7 @@
   .user-modal-area--profile(@click="toggleExpandProfile")
     .user-modal-close-wrap
       .user-modal-close(@click="close")
-        IconClose(color="white" :sizse=12)
+        IconClose(color="white" :size=12)
     UserModalProfile(:expanded="expandProfile")
   // タグなど
   .user-modal-area--extra
