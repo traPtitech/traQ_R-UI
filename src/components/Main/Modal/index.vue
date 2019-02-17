@@ -36,7 +36,6 @@ export default {
   width: $modal-width
   +mq
     width: $modal-width--wide
-  display: grid
   height: $modal-height
   position: relative
   background-color: $background-color

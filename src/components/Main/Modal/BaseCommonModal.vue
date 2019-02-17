@@ -5,7 +5,7 @@
       slot(name="header-icon")
       h1.common-modal-header-title {{ title }}
     .common-modal-close(@click="close")
-      IconClose(color="var(--primary-color-on-bg)")
+      IconClose(color="var(--primary-color-on-bg)" :size="12")
   .common-modal-content
     slot
 </template>
