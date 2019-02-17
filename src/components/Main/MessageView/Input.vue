@@ -280,7 +280,7 @@ export default {
       return Promise.all(this.files.map(async (file, index) => {
         try {
           let progress = 0
-          const res = await client.uploadFile(file, (event) => {
+          const res = await client.uploadFile(file, this.$store.state.currentChannel.member || [], (event) => {
             if (event.lengthComputable) {
               this.uploadProgressSum -= progress
               progress = event.loaded / event.total
