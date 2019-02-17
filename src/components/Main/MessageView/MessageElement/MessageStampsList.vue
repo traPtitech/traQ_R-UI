@@ -27,7 +27,7 @@ div(v-if="hasStamp").message-stamps-list
             div.stamp(:style="`background-image: url(${fileUrl(stamp.fileId)});`")
             p.stamp-number
               | {{stamp.sum}}
-        span
+        span.stamps-info-users
           | {{stamp.title}}
 </template>
 
@@ -223,6 +223,10 @@ export default {
   display: flex
 
 .stamps-info-stamps-wrap
+
+.stamps-info-users
+  display: inline-flex
+  align-items: center
 
 </style>
 

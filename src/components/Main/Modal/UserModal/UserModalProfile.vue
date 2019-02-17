@@ -6,7 +6,6 @@ transition(name="fade" mode="out-in")
   content.user-modal-profile(v-else key="brief")
     UserModalProfileImage
     UserModalProfileInfo.user-modal-profile-area--info
-
 </template>
 
 <script>

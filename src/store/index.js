@@ -497,9 +497,6 @@ const store = new Vuex.Store({
         return pre + getters.getChannelUnreadMessageNum(channel.channelId)
       }, 0)
     },
-    getNonBotMember (state, getters) {
-      return state.memberData.filter(user => !user.bot)
-    },
     getStaredChannels (state) {
       const channels = state.staredChannels.map(channelId => state.channelMap[channelId])
       channels.sort(stringSortGen('name'))
@@ -528,6 +525,48 @@ const store = new Vuex.Store({
     },
     fileUrl: state => fileId => {
       return `${state.baseURL}/api/1.0/files/${fileId}`
+    },
+    tagData: state => {
+      return state.tagData
+    },
+    grades: (state, getters) => {
+      return getters.tagData
+        .filter(
+            tag => tag.type === 'grade'
+          )
+        .filter(
+            tag => tag.users.length > 0
+          )
+    },
+    sortedGrades: (state, getters) => {
+      const map = {
+        B: 0,
+        M: 1,
+        D: 2,
+        R: 3
+      }
+      const f = (s) => {
+        return map[s[2]] * 100 + parseInt(s.substr(0, 2), 10)
+      }
+      return getters.grades
+        .sort((lhs, rhs) => {
+          return f(lhs.tag) - f(rhs.tag)
+        })
+    },
+    memberData: state => {
+      return state.memberData
+    },
+    nonBotUsers: state => {
+      return state.memberData.filter(user => !user.bot)
+    },
+    gradeByUserMap: (state, getters) => {
+      const map = {}
+      getters.nonBotUsers.forEach(u => {
+        let gradeObj = getters.grades
+          .find(g => g.users.some(gu => gu.userId === u.userId))
+        map[u.userId] = gradeObj ? gradeObj.tag : undefined
+      })
+      return map
     }
   },
   actions: {
