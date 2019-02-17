@@ -99,7 +99,6 @@ $header-height: 3rem
 
 .setting-container-wrap
   height: 100vh
-  height: calc(100vh - env(safe-area-inset-top))
   width: 100vw
   padding-top: $header-height
   display: flex
