@@ -15,15 +15,15 @@
         ul.setting-page-list
           li.setting-page-list-item(:class="{active: active === 0}" @click="active = 0")
             .setting-page-list-item-icon
-              IconPin(color="white" :size="22")
+              IconProfile(color="white" :size="22")
             | プロフィール設定
           li.setting-page-list-item(:class="{active: active === 1}" @click="active = 1")
             .setting-page-list-item-icon
-              IconTag(color="white" :size="22")
+              IconWrench(color="white" :size="22")
             | ブラウザ設定
           li.setting-page-list-item(:class="{active: active === 2}" @click="active = 2")
             .setting-page-list-item-icon
-              IconTopic(color="white" :size="22")
+              IconStamp(color="white" :size="22")
             | スタンプ設定
       .setting-page-container
         transition(name="fade" mode="out-in")
@@ -43,9 +43,9 @@ import BrowserSetting from '@/components/Setting/BrowserSetting'
 import StampSetting from '@/components/Setting/StampSetting'
 import IconBack from '@/components/Icon/IconBack'
 import IconLogo from '@/components/Icon/IconLogo'
-import IconPin from '@/components/Icon/IconPin'
-import IconTag from '@/components/Icon/IconTag'
-import IconTopic from '@/components/Icon/IconTopic'
+import IconProfile from '@/components/Icon/IconProfile'
+import IconWrench from '@/components/Icon/IconWrench'
+import IconStamp from '@/components/Icon/IconStamp'
 export default {
   name: 'Setting',
   components: {
@@ -54,9 +54,9 @@ export default {
     StampSetting,
     IconBack,
     IconLogo,
-    IconPin,
-    IconTag,
-    IconTopic
+    IconProfile,
+    IconWrench,
+    IconStamp
   },
   data () {
     return { active: 0 }
