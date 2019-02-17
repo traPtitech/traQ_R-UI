@@ -83,6 +83,7 @@ export default {
   .notifications-members
     height: 25vh
     overflow-y: scroll
+    -webkit-overflow-scrolling: touch
     border: 1px solid #eeeeee
     background-color: $background-color
 
