@@ -8,7 +8,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
           | {{title}}
         p.channel-topic-text(:key="title" v-bind:class="{'has-topic': topic}")
           | {{topic}}
-    .titlebar-expand-button(@click="toggleTitlebarExpansion")
+    .titlebar-expand-button(v-if="!isDirectMessage" @click="toggleTitlebarExpansion")
       div(:style="titlebarExpandButtonStyle")
         icon-down-direction(:size="32")
   .titlebar-expand.drop-shadow
