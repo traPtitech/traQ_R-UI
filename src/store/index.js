@@ -593,8 +593,8 @@ const store = new Vuex.Store({
           .catch(() => {})
       }
       const loadedMessages = (!nowChannel.dm)
-        ? client.loadMessages(nowChannel.channelId, 10, latest ? 0 : state.messages.length)
-        : client.loadDirectMessages(getters.getUserIdByDirectMessageChannel(nowChannel), 10, latest ? 0 : state.messages.length)
+        ? client.loadMessages(nowChannel.channelId, 50, latest ? 0 : state.messages.length)
+        : client.loadDirectMessages(getters.getUserIdByDirectMessageChannel(nowChannel), 50, latest ? 0 : state.messages.length)
       return loadedMessages
         .then(res => {
           loaded = true
