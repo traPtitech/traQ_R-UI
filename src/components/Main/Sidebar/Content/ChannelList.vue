@@ -3,16 +3,16 @@ div.channel-list.is-scroll
   div.channel-list-action-area-wrapper
     transition(name="slide" mode="out-in")
       keep-alive
-        FilterInput(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
-        ChannelActivityControlls(v-else
+        filter-input(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
+        channel-activity-controlls(v-else
                                  :isLoading="isLoading"
                                  @refreshClick="refresh"
                                  @filterToggle="toggleNotification")
   transition(name="slide" mode="out-in")
     keep-alive
-      ChannelTreeView(v-if="channelView === 'tree'" :filterText="filterText")
-      ChannelStared(v-if="channelView === 'stared'" :filterText="filterText")
-      ChannelActivity(v-if="channelView === 'activity'")
+      channel-treeView(v-if="channelView === 'tree'" :filterText="filterText")
+      channel-stared(v-if="channelView === 'stared'" :filterText="filterText")
+      channel-activity(v-if="channelView === 'activity'")
   div.channel-tab-switcher-wrap.drop-shadow
     div.channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
     div.channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
@@ -84,7 +84,6 @@ export default {
   height: 100%
   cursor: pointer
   background: none
-  transition: all .3s ease
   &.selected
     background: $tertiary-color
 .channel-list-action-area-wrapper

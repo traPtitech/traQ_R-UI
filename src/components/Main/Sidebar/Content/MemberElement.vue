@@ -1,9 +1,8 @@
 <template lang="pug">
 div.member-element
   div.member-element-icon-container(v-on:click="openUserModal")
-    div.member-element-icon(:style="iconImg")
-      //- img.member-element-icon(:style="iconClass" :src="userIconSrc")
-    div.member-element-online-indicator(v-if="!model.bot && model.isOnline")
+    div.member-element-icon(:style="iconImg" :class="iconClass")
+    div.member-element-online-indicator(v-if="!model.bot && model.isOnline" :style="borderStyle")
   div.member-name-container(@click="openDMChannel")
     p.member-display-name.text-ellipsis
       | {{model.displayName}}
@@ -13,10 +12,15 @@ div.member-element
 
 <script>
 import client from '@/bin/client'
+
 export default {
   name: 'MemberElement',
   props: {
-    model: Object
+    model: Object,
+    backgroundColor: {
+      tyle: String,
+      default: 'var(--primary-color)'
+    }
   },
   methods: {
     openUserModal () {
@@ -36,9 +40,6 @@ export default {
         return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.model.userId))
       }
     },
-    hoge () {
-      return this.$store.getters.getDirectMessageChannels
-    },
     userIconSrc () {
       return client.getUserIconUrl(this.model.userId)
     },
@@ -51,12 +52,18 @@ export default {
     },
     iconClass () {
       return {
-        '.member-element-dm-indicator': this.unreadMessagesNum > 0
+        'member-element-dm-indicator': this.unreadMessagesNum > 0
       }
     },
     iconImg () {
       return {
-        backgroundImage: `url(${this.userIconSrc})`
+        backgroundImage: `url(${this.userIconSrc})`,
+        borderColor: this.backgroundColor
+      }
+    },
+    borderStyle () {
+      return {
+        borderColor: this.backgroundColor
       }
     }
   }
@@ -71,8 +78,10 @@ export default {
   padding: 5px 10px
   &:hover
     background: rgba(0,0,0,0.1)
+
 .member-element-icon-container
   position: relative
+
 .member-element-icon
   min-width: 40px
   width: 40px
@@ -95,35 +104,43 @@ export default {
     background: rgba(0,0,0,0.3)
     border:
       radius: 100%
+      style: none
+
 .member-element-dm-indicator
   box-sizing: border-box
   border:
     width: 2px
     style: solid
-    color: $primary-color
+    // color: var(--primary-color)
   box-shadow: 0 0 0 3px $notification-color
+
 .member-element-online-indicator
   position: absolute
   width: 12px
   height: 12px
   right: 0px
-  bottom: 1px
+  bottom: -3px
   border:
     radius: 100%
-    color: $primary-color
+    // color: var(--primary-color)
     style: solid
     width: 2px
   background: $online-color
+
 .member-display-name
+
 .member-name
   font:
     size: 0.9em
   opacity: 0.6
+
 .member-name-container
   margin: 0 0 0 10px
   min-width: 0
   width: 100%
+
 .member-element > p
   padding-left: 10px
   white-space: nowrap
+
 </style>

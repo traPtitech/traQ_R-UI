@@ -1,7 +1,7 @@
 <template lang="pug">
   div.activity-channels
     div.activity-channel(v-for="message in messages" :key="message.messageId")
-      ChannelActivityElement(:model="message")
+      channel-activity-element(:model="message")
 </template>
 
 <script>

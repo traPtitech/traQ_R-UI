@@ -1,34 +1,36 @@
 <template lang="pug">
 header.titlebar(ref="titlebar" :class="titlebarClass")
-  div.titlebar-inner-wrap
-    div.titlebar-channel-name(@click="toggleSidebarOpens")
+  .titlebar-inner-wrap
+    .titlebar-channel-name(@click="toggleSidebarOpens")
       img.traq-logo(src="@/assets/img/icon/logo_white.svg")
-      div.channel-info-wrap(ref="titlebarInner")
+      .channel-info-wrap(ref="titlebarInner")
         h1.text-ellipsis.channel-name
           | {{title}}
         p.channel-topic-text(:key="title" v-bind:class="{'has-topic': topic}")
           | {{topic}}
-    div.titlebar-expand-button(@click="toggleTitlebarExpansion")
+    .titlebar-expand-button(@click="toggleTitlebarExpansion")
       div(:style="titlebarExpandButtonStyle")
-        IconDownDirection(:size="32")
-  div.titlebar-expand.drop-shadow
-    div.titlebar-menu-button-wrap
-      div.titlebar-menu-button(v-show="!isDirectMessage && isNotificationForced")
-        img.menu-icon(src="@/assets/img/icon/logo.svg")
-      div.titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && !isNotified" @click="notifyChannel")
-        img.menu-icon(src="@/assets/img/icon/notif.svg")
-      div.titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && isNotified" @click="unnotifyChannel")
-        img.menu-icon(src="@/assets/img/icon/notif_fill.svg")
-      div.titlebar-menu-button.border-left(v-show="!isDirectMessage && !isStared" @click="starChannel")
-        img.menu-icon(src="@/assets/img/icon/star.svg")
-      div.titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
-        img.menu-icon(src="@/assets/img/icon/star_fill.svg")
-    div.titlebar-menu-item(v-show="!isDirectMessage")
-      img.menu-icon(src="@/assets/img/icon/notif_fill.svg")
+        icon-down-direction(:size="32")
+  .titlebar-expand.drop-shadow
+    .titlebar-menu-button-wrap
+      .titlebar-menu-button(v-show="!isDirectMessage && isNotificationForced")
+        icon-notification-fill(:size="24" color="rgba(255,255,255,0.5)")
+      .titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && !isNotified" @click="notifyChannel")
+        icon-notification(:size="24")
+      .titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && isNotified" @click="unnotifyChannel")
+        icon-notification-fill(:size="24")
+      .titlebar-menu-button.border-left(v-show="!isDirectMessage && !isStared" @click="starChannel")
+        icon-star(:size="24")
+      .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
+        icon-star-fill(:size="24")
+    .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
+      .menu-icon
+        icon-notification-fill(:size="24")
       span
         | チャンネル通知設定
-    div.titlebar-menu-item(v-show="!isDirectMessage")
-      img.menu-icon(src="@/assets/img/icon/plus.svg")
+    .titlebar-menu-item(v-show="!isDirectMessage" @click="$store.dispatch('openChannelCreateModal')")
+      .menu-icon
+        icon-plus(:size="24")
       span
         | チャンネル作成
 </template>
@@ -37,10 +39,15 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
 import client from '@/bin/client'
 import { mapGetters } from 'vuex'
 import IconDownDirection from '@/components/Icon/IconDownDirection'
+import IconNotificationFill from '@/components/Icon/IconNotificationFill'
+import IconNotification from '@/components/Icon/IconNotification'
+import IconStar from '@/components/Icon/IconStar'
+import IconStarFill from '@/components/Icon/IconStarFill'
+import IconPlus from '@/components/Icon/IconPlus'
 
 export default {
   name: 'Titlebar',
-  components: {IconDownDirection},
+  components: {IconDownDirection, IconNotificationFill, IconNotification, IconStar, IconStarFill, IconPlus},
   data () {
     return {
       width: 0
@@ -150,7 +157,8 @@ $topic-height: 14px
   position: fixed
   display: inline-block
   z-index: $titlebar-index
-  transition: all .3s ease
+  transition: max-width .3s ease, min-width .3s ease
+  will-change: max-width, min-width
   +mq(pc)
     left: $sidebar-width
     min-width: 230px
@@ -175,7 +183,6 @@ $topic-height: 14px
   justify-content: flex-start
   color: white
   cursor: pointer
-  transition: all .5s ease
   background: $primary-color
   position: relative
   &::before
@@ -189,6 +196,7 @@ $topic-height: 14px
     width: 0
     height: 1px
     background: $border-color
+    will-change: width
     transition: width .5s ease
     .is-expanded &
       width: calc( 100% - 20px )
@@ -196,6 +204,7 @@ $topic-height: 14px
 .titlebar-channel-name
   display: flex
   flex-grow: 1
+  min-width: 0
   justify-content: start
   align-items: center
   height: 100%
@@ -210,7 +219,7 @@ $topic-height: 14px
 
 .channel-info-wrap
   padding-right: 10px
-  max-width: calc(100% - 60px)
+  max-width: calc(100% - 50px)
   box-sizing: content-box
 
 .channel-name
@@ -258,9 +267,10 @@ $topic-height: 14px
   justify-content: center
   padding: 60px 0 10px
   background: $primary-color
-  transition: all .5s ease
+  transition: transform .5s ease
   overflow: hidden
   position: relative
+  will-change: transform
   transform: translateY(-100%)
   user-select: none
   .is-expanded &
@@ -274,6 +284,7 @@ $topic-height: 14px
   .titlebar-menu-button
     display: flex
     justify-content: center
+    align-items: center
     width: 50%
     cursor: pointer
     &:hover

@@ -1,6 +1,6 @@
 <template lang="pug">
 div.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
-  Navigation
+  navigation
   div.menu-content-wrapper
     Content
   Footer
@@ -8,7 +8,6 @@ div.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
 </template>
 
 <script>
-import MenuHeader from '@/components/Main/Sidebar/MenuHeader'
 import Navigation from '@/components/Main/Sidebar/Navigation'
 import Footer from '@/components/Main/Sidebar/Footer'
 import { mapGetters } from 'vuex'
@@ -19,9 +18,8 @@ export default {
     swipeEvent: Object
   },
   components: {
-    MenuHeader,
     Navigation,
-    'Content': window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
+    Content: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
     Footer
   },
   data () {
@@ -35,7 +33,7 @@ export default {
     sidebarClass () {
       return {
         'is-sidebar-opened': this.isSidebarOpened,
-        'drop-shadow': this.isSidebarOpened && this.deviceType === 'sp',
+        'drop-shadow': this.deviceType === 'pc' || (this.isSidebarOpened && this.deviceType === 'sp'),
         'is-swipe-active': this.isSwipeActive
       }
     },
@@ -55,11 +53,14 @@ export default {
         return {}
       }
     },
+    isSwipeActive () {
+      return this.swipeEvent.isActive && this.deviceType === 'sp'
+    },
     isOpenSwipeActive () {
-      return this.swipeEvent.isActive && this.swipeEvent.startX < this.swipeThresholdX
+      return this.isSwipeActive && this.swipeEvent.startX < this.swipeThresholdX
     },
     isCloseSwipeActive () {
-      return this.swipeEvent.isActive && this.swipeEvent.startX < this.sidebarWidth
+      return this.isSwipeActive && this.swipeEvent.startX < this.sidebarWidth
     },
     openSwipedX () {
       return Math.min(this.swipeEvent.x - this.swipeEvent.startX, this.sidebarWidth)
@@ -102,11 +103,13 @@ export default {
   z-index: $sidebar-index
   +mq(pc)
     height: 100vh
+    height: vh(100)
     position: relative
     grid-area: side
     will-change: none
   +mq(sp)
     height: calc(100vh - 50px)
+    height: calc( #{vh(100)} - 50px)
     width: $sidebar-width
     position: fixed
     z-index: $sidebar-index
@@ -133,6 +136,7 @@ export default {
     left: 0
     width: 200vw
     height: 100vh
+    height: vh(100)
     z-index: -100
     background-color: rgba(0,0,0,0.2)
     opacity: 0

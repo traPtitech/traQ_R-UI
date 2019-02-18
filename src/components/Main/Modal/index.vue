@@ -1,5 +1,5 @@
 <template lang="pug">
-div.modal-overlay(v-if="isActive" @click="close")
+div.modal-overlay(v-if="isActive" @click.self="close")
   component.modal(:is="name")
 </template>
 
@@ -7,12 +7,18 @@ div.modal-overlay(v-if="isActive" @click="close")
 import { mapState, mapGetters, mapActions } from 'vuex'
 import UserModal from './UserModal'
 import TagModal from './TagModal'
+import PinnedModal from './PinnedModal'
+import ChannelCreateModal from './ChannelCreateModal'
+import ChannelNotificationModal from './ChannelNotificationModal'
 
 export default {
   name: 'Modal',
   components: {
     UserModal,
-    TagModal
+    TagModal,
+    PinnedModal,
+    ChannelCreateModal,
+    ChannelNotificationModal
   },
   computed: {
     ...mapState('modal', ['name']),
@@ -30,7 +36,6 @@ export default {
   width: $modal-width
   +mq
     width: $modal-width--wide
-  display: grid
   height: $modal-height
   position: relative
   background-color: $background-color

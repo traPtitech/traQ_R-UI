@@ -12,11 +12,11 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
           span.online-users-number-text
             | ONLINE
         div.icon-close-wrap
-          IconClose
+          icon-close
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
         div.information-sidebar-content-item.separator-line(v-if="isChannel")
           div.information-sidebar-content-header
-            IconTopic(:size="24")
+            icon-topic(:size="24")
             span
               | TOPIC
           div.information-sidebar-content-body
@@ -26,15 +26,15 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
               | 設定されていません
         div.information-sidebar-content-item.separator-line(v-if="hasPinnedMessage")
           div.information-sidebar-content-header
-            IconPin(:size="24")
+            icon-pin(:size="24")
             span
               | PINNED
           div.information-sidebar-content-body
             template(v-for="p in pinnedMessages")
-              SlimMessageElement(:message="p.message")
+              slim-message-element(:message="p.message")
         div.information-sidebar-content-item
           div(v-for="user in onlineUsers")
-            SlimMemberElement(:member="user")
+            slim-member-element(:member="user")
 </template>
 
 <script>
@@ -121,7 +121,6 @@ export default {
   width: $information-sidebar-button-width
   height: 60px
   cursor: pointer
-  transition: all .3s
   background: $tertiary-color
   overflow: hidden
   color: $text-light-color

@@ -4,6 +4,7 @@ import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import modal from './modal'
+import theme from './theme'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -44,7 +45,8 @@ const stringSortGen = (key) => (lhs, rhs) => {
 
 const store = new Vuex.Store({
   modules: {
-    modal
+    modal,
+    theme
   },
   state: {
     loaded: false,
@@ -495,9 +497,6 @@ const store = new Vuex.Store({
         return pre + getters.getChannelUnreadMessageNum(channel.channelId)
       }, 0)
     },
-    getNonBotMember (state, getters) {
-      return state.memberData.filter(user => !user.bot)
-    },
     getStaredChannels (state) {
       const channels = state.staredChannels.map(channelId => state.channelMap[channelId])
       channels.sort(stringSortGen('name'))
@@ -523,6 +522,51 @@ const store = new Vuex.Store({
     },
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
+    },
+    fileUrl: state => fileId => {
+      return `${state.baseURL}/api/1.0/files/${fileId}`
+    },
+    tagData: state => {
+      return state.tagData
+    },
+    grades: (state, getters) => {
+      return getters.tagData
+        .filter(
+            tag => tag.type === 'grade'
+          )
+        .filter(
+            tag => tag.users.length > 0
+          )
+    },
+    sortedGrades: (state, getters) => {
+      const map = {
+        B: 0,
+        M: 1,
+        D: 2,
+        R: 3
+      }
+      const f = (s) => {
+        return map[s[2]] * 100 + parseInt(s.substr(0, 2), 10)
+      }
+      return getters.grades
+        .sort((lhs, rhs) => {
+          return f(lhs.tag) - f(rhs.tag)
+        })
+    },
+    memberData: state => {
+      return state.memberData
+    },
+    nonBotUsers: state => {
+      return state.memberData.filter(user => !user.bot)
+    },
+    gradeByUserMap: (state, getters) => {
+      const map = {}
+      getters.nonBotUsers.forEach(u => {
+        let gradeObj = getters.grades
+          .find(g => g.users.some(gu => gu.userId === u.userId))
+        map[u.userId] = gradeObj ? gradeObj.tag : undefined
+      })
+      return map
     }
   },
   actions: {
@@ -700,6 +744,14 @@ const store = new Vuex.Store({
       console.log(data)
       if (!data) return
       commit('setMyNotifiedChannels', data)
+    },
+    async updateCurrentChannelNotifications ({state, commit, dispatch}, {on, off}) {
+      console.log(state.currentChannel)
+      await client.changeNotifications(state.currentChannel.channelId, {
+        on: on || [],
+        off: off || []
+      })
+      await dispatch('getCurrentChannelNotifications', state.currentChannel.channelId)
     },
     updateFilterSubscribedActivity ({commit}, filter) {
       commit('setFilterSubscribedActivity', filter)

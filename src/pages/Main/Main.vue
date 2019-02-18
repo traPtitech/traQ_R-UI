@@ -1,14 +1,14 @@
 <template lang="pug">
-FileDropDetector(
+file-drop-detector(
   @dropFile="dropFile"
   :onDragStyle="'{background-color: #fff;}'"
   )
-  Modal
-  SwipeDetector(@swipeStart="swipeStart" @swipeMoving="swipeMoving" @swipeEnd="swipeEnd")
+  modal
+  swipe-detector(@swipeStart="swipeStart" @swipeMoving="swipeMoving" @swipeEnd="swipeEnd")
     div.index(:data-enable-blur="name ? 'true' : 'false'")
-      StampPicker
+      stamp-picker
       Titlebar
-      ChannelInformation
+      channel-information
       // ↓grid-item on pc
       Message
       Input
@@ -331,6 +331,7 @@ export default {
   grid-gap: 0
   width: 100vw
   height: 100vh
+  height: vh(100)
   +mq(pc)
     display: grid
     grid-template-rows: 1fr $input-height

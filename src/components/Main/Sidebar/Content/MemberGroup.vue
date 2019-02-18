@@ -6,7 +6,7 @@
     div.member-group-list(ref="list")
       transition(name="simple" @after-enter="removeHeight" @after-leave="zeroHeight")
         div(ref="listWrap" v-show="isOpen")
-          MemberElement(v-for="member in filteredMembers" :model="member" :key="member.userId")
+          member-element(v-for="member in filteredMembers" :model="member" :key="member.userId")
 </template>
 
 <script>

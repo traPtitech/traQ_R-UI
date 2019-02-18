@@ -102,11 +102,15 @@ export default {
 .no-more-message
   margin: 15px 0
   text-align: center
+
 .message-item
+
 .date-partition
   display: inline-block
   width: 100%
-  font-weight: bold
+  font:
+    weight: normal
+    size: 0.9em
   position: relative
   margin: 5px 0 10px
   text-align: center
@@ -114,14 +118,16 @@ export default {
     content: ''
     display: block
     height: 1px
-    width: calc( 50% - 60px )
+    width: calc( 50% - 70px )
     top: 50%
+    opacity: 0.6
     background-color: #cacaca
     position: absolute
   &:before
     left: 10px
   &:after
     right: 10px
+
 .message-list
   padding:
     top: 60px

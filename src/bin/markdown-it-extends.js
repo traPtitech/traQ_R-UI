@@ -97,38 +97,23 @@ const jsonParse = (text) => {
 
 const replacer = (token) => {
   const text = token.content
-  let replaced = []
-  let isInside = false
-  let startIndex = -1
-  let isString = false
+  const jsonreg = /!({(?:[ \t\n]*"(?:[^\\"]|\\.)*"[ \t\n]*:[ \t\n]*"(?:[^\\"]|\\.)*",)*(?:[ \t\n]*"(?:[^\\"]|\\.)*"[ \t\n]*:[ \t\n]*"(?:[^\\"]|\\.)*")})/mg
   let parsed = 0
-  for (let i = 0; i < text.length; i++) {
-    if (isInside) {
-      if (text[i] === '"') {
-        isString ^= true
-      } else if (!isString && text[i] === '}') {
-        isInside = false
-        if (isJson(text.substr(startIndex + 1, i - startIndex))) {
-          if (parsed !== startIndex) {
-            replaced.push(newTag('text', '', text.substr(parsed, startIndex - parsed), null, 0))
-          }
-          replaced = replaced.concat(jsonParse(text.substr(startIndex + 1, i - startIndex)))
-          parsed = i + 1
-        } else {
-          i = startIndex + 1
-        }
+  const replaced = []
+  for (let match = jsonreg.exec(text); match; match = jsonreg.exec(text)) {
+    const matchStr = match['1']
+    if (isJson(matchStr)) {
+      if (parsed !== match.index) {
+        replaced.push(newTag('text', '', text.substr(parsed, match.index - parsed), null, 0))
       }
-    } else {
-      if (i < text.length - 1 && text[i] === '!' && text[i + 1] === '{') {
-        startIndex = i
-        i++
-        isInside = true
-        isString = false
-      }
+      jsonParse(matchStr).forEach(e => {
+        replaced.push(e)
+      })
+      parsed = match.index + matchStr.length + 1
     }
   }
-  if (parsed < text.length) {
-    replaced.push(newTag('text', '', text.substr(parsed), [], 0))
+  if (parsed !== text.length) {
+    replaced.push(newTag('text', '', text.substr(parsed), null, 0))
   }
   return replaced
 }

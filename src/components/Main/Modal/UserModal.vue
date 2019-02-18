@@ -2,6 +2,9 @@
 .user-modal(:data-is-expanded="expandProfile" @click.stop="")
   // ユーザー情報本体
   .user-modal-area--profile(@click="toggleExpandProfile")
+    .user-modal-close-wrap
+      .user-modal-close(@click="close")
+        IconClose(color="white" :size=12)
     UserModalProfile(:expanded="expandProfile")
   // タグなど
   .user-modal-area--extra
@@ -9,14 +12,17 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import UserModalProfile from '@/components/Main/Modal/UserModal/UserModalProfile'
 import UserModalTags from '@/components/Main/Modal/UserModal/UserModalTags'
+import IconClose from '@/components/Icon/IconClose'
 
 export default {
   name: 'UserModal',
   components: {
     UserModalProfile,
-    UserModalTags
+    UserModalTags,
+    IconClose
   },
   data () {
     return {
@@ -27,7 +33,8 @@ export default {
   methods: {
     toggleExpandProfile () {
       this.expandProfile = !this.expandProfile
-    }
+    },
+    ...mapActions('modal', ['close'])
   },
   computed: {
   }
@@ -46,6 +53,17 @@ $profile-area-width: 350px
   @media (orientation: portrait)
     flex-direction: column
 
+.user-modal-close-wrap
+  width: 100%
+  display: flex
+  justify-content: end
+.user-modal-close
+  opacity: 0.3
+  margin-left: auto
+  cursor: pointer
+  &:hover
+    opacity: 1
+
 .user-modal-area--profile
   @media (orientation: landscape)
     border-radius: $modal-border-radius 0 0 $modal-border-radius
@@ -63,7 +81,7 @@ $profile-area-width: 350px
   min-height: 0
   display: flex
 
-@keyframes delayedOpaciityChange
+@keyframes delayedOpacityChange
   0%
     opacity: 1
     width: 100%
@@ -74,7 +92,7 @@ $profile-area-width: 350px
     opacity: 0
     width: 0
 
-@keyframes delayedOpaciityChangeReversed
+@keyframes delayedOpacityChangeReversed
   0%
     opacity: 0
     width: 0
@@ -94,7 +112,7 @@ $profile-area-width: 350px
   .user-modal-area--extra
     width: 100%
     opacity: 1
-    animation: delayedOpaciityChangeReversed .3s ease
+    animation: delayedOpacityChangeReversed .3s ease
 
 .user-modal[data-is-expanded]
   .user-modal-area--profile
@@ -106,7 +124,7 @@ $profile-area-width: 350px
   .user-modal-area--extra
     width: 0
     opacity: 0
-    animation: delayedOpaciityChange .3s ease
+    animation: delayedOpacityChange .3s ease
 
 </style>
 

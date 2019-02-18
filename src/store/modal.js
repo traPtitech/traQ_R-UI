@@ -5,7 +5,8 @@ export default {
   state: {
     name: null,
     data: null,
-    currentUserTags: []
+    currentUserTags: [],
+    lastUser: null
   },
   getters: {
     isActive: state => !!state.name,
@@ -15,17 +16,14 @@ export default {
     }
   },
   mutations: {
-    setUserModal (state, user) {
-      state.data = user
-    },
-    setTagModal (state, tag) {
-      state.data = tag
-    },
     setModalName (state, name) {
       state.name = name
     },
     setModalData (state, data) {
       state.data = data
+    },
+    setLastUser (state, user) {
+      state.lastUser = user
     },
     setCurrentUserTags (state, tags) {
       tags = tags || []
@@ -59,12 +57,38 @@ export default {
         })
       }
     },
-    open ({commit}, {name, data}) {
+    openChannelCreateModal: {
+      root: true,
+      handler ({state, rootState, commit, dispatch}) {
+        dispatch('open', { name: 'ChannelCreateModal' })
+      }
+    },
+    openChannelNotificationModal: {
+      root: true,
+      handler ({state, rootState, commit, dispatch}) {
+        dispatch('open', { name: 'ChannelNotificationModal' })
+      }
+    },
+    openPinnedModal: {
+      root: true,
+      handler ({state, rootState, commit, dispatch}, message) {
+        dispatch('open', {
+          name: 'PinnedModal',
+          data: message
+        })
+      }
+    },
+    open ({state, commit}, {name, data}) {
+      if (state.name === 'UserModal' && name === 'TagModal') {
+        // Transition from user modal to tag modal
+        commit('setLastUser', state.data)
+      }
       commit('setModalName', name)
       commit('setModalData', data)
     },
     close ({commit}) {
       commit('setModalName', null)
+      commit('setLastUser', null)
       commit('setModalData', null)
     }
   }

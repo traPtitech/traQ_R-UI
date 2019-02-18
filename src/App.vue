@@ -1,5 +1,5 @@
 <template lang="pug">
-div#app(:data-theme="$store.state.theme")
+div#app(:data-theme="$store.state.theme" :style="globalStyle")
   Favicon
   //- Splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
   router-view()
@@ -8,13 +8,17 @@ div#app(:data-theme="$store.state.theme")
 <script>
 import Splash from '@/components/Splash/Splash'
 import Favicon from '@/components/Util/Favicon'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'app',
   metaInfo: {
     title: 'Welcome',
     titleTemplate: '%s | traQ'
+  },
+  data () {
+    return {
+      vh: Number
+    }
   },
   components: {
     Splash,
@@ -35,10 +39,16 @@ export default {
       this.$store.commit('setWindowSize', {
         windowWidth: window.innerWidth,
         windowHeight: window.innerHeight})
+
+      this.vh = window.innerHeight * 0.01
     }
   },
   computed: {
-    ...mapGetters([])
+    globalStyle () {
+      return {
+        '--vh': `${this.vh}px`
+      }
+    }
   },
   mounted () {
     this.handleResizeWindow()
