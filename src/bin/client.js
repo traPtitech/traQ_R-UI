@@ -428,11 +428,12 @@ const client = {
   },
 
   // Tag: file
-  uploadFile (file, onUploadProgress) {
+  uploadFile (file, readableUsers, onUploadProgress) {
     return middleWare('uploadFile', () => {
       const form = new FormData()
       form.enctype = 'multipart/form-data'
       form.append('file', file)
+      form.append('acl_readable', readableUsers.join(','))
       return axios.post('/api/1.0/files', form, onUploadProgress ? {
         onUploadProgress
       } : {})
