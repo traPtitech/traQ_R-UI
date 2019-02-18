@@ -108,7 +108,7 @@ $profile-area-width: 350px
     @media (orientation: landscape)
       width: $profile-area-width
     @media (orientation: portrait)
-      height: $profile-area-height
+      height: calc($profile-area-height + 18px)
   .user-modal-area--extra
     width: 100%
     opacity: 1
