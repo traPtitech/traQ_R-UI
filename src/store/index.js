@@ -554,6 +554,9 @@ const store = new Vuex.Store({
     },
     getGroupByContent (state) {
       return groupName => state.groupData.find(group => group.name === groupName)
+    },
+    userDisplayName (state) {
+      return userId => state.memberMap[userId].displayName
     }
   },
   actions: {

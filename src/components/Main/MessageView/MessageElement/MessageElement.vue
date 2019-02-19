@@ -5,7 +5,7 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
   div.message-detail-wrap
     div.message-user-info-wrap
       div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
-        | {{getUserDisplayName(model.userId)}}
+        | {{userDisplayName(model.userId)}}
       div.message-user-status-badge(v-if="statusBadge(model.userId) !== undefined")
         | {{statusBadge(model.userId)}}
       div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
@@ -26,16 +26,7 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
           | Cancel
         button.edit-button.edit-submit(@click.stop="editSubmit" )
           | Edit
-    div.message-messages-wrap(v-if="hasAttachedMessage")
-      div.attached-message(v-for="m in messages")
-        img.message-user-icon(:src="userIconSrc(m.userId)" @click="openUserModal(m.userId)")
-        p.message-user-name(@click="openUserModal(m.userId)")
-          | {{getUserDisplayName(m.userId)}}
-        component(:is="mark(m.content)" v-bind="$props")
-        small
-          | from
-          router-link(:to="parentChannel(m.parentChannelId).to")
-            | {{parentChannel(m.parentChannelId).name}}
+    message-attached-messages(v-if="hasAttachedMessage" :messages="messages")
     message-attached-files(v-if="hasAttachedFile" :files="files")
     message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
   div.message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
@@ -52,10 +43,11 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { detectFiles, displayDateTime } from '@/bin/utils'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
+import MessageAttachedMessages from './MessageAttachedMessages'
 import MessageAttachedFiles from './MessageAttachedFiles'
 import MessageStampsList from './MessageStampsList'
 import MessageContextDropMenu from './MessageContextDropMenu'
@@ -68,7 +60,7 @@ export default {
     model: Object
   },
   components: {
-    MessageAttachedFiles, MessageStampsList, MessageContextDropMenu, IconDots, IconStampPlus
+    MessageAttachedMessages, MessageAttachedFiles, MessageStampsList, MessageContextDropMenu, IconDots, IconStampPlus
   },
   data () {
     return {
@@ -80,6 +72,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['openUserModal']),
     detectFiles,
     userIconSrc: client.getUserIconUrl,
     showStampPicker () {
@@ -158,38 +151,6 @@ export default {
       document.execCommand('copy')
       body.removeChild(textarea)
     },
-    openUserModal (userId) {
-      this.$store.dispatch('openUserModal', userId)
-    },
-    parentChannel (parentChannelId) {
-      const channel = this.$store.state.channelMap[parentChannelId]
-      if (!channel) {
-        return {
-          to: '#',
-          name: '???'
-        }
-      }
-      if (channel.parent === this.$store.state.directMessageId) {
-        let userName = this.$store.state.me.name
-        channel.member.forEach(userId => {
-          if (userId !== this.$store.state.me.userId) {
-            userName = this.$store.state.memberMap[userId].name
-          }
-        })
-        return {
-          to: `/users/${userName}`,
-          name: `@${userName}`
-        }
-      } else {
-        return {
-          to: `/channels/${this.$store.getters.getChannelPathById(parentChannelId)}`,
-          name: `#${this.$store.getters.getChannelPathById(parentChannelId)}`
-        }
-      }
-    },
-    getUserDisplayName (userId) {
-      return this.$store.state.memberMap[userId].displayName
-    },
     reportMessage () {
       const reason = window.prompt('このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください')
       if (reason) {
@@ -216,7 +177,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'fileUrl', 'getMyId'
+      'fileUrl', 'getMyId', 'userDisplayName'
     ]),
     userName () {
       return this.$store.state.memberMap[this.model.userId].name
@@ -259,9 +220,7 @@ export default {
   &:hover
     background-color: var(--background-hover-color)
   &.message-pinned
-    background-color: #dce3ff
-  &.message-pinned:hover
-    background-color: #cadaff
+    background-color: var(--pinned-message-color)
 
 .message-user-icon-wrap
   grid-area: user-icon
@@ -339,11 +298,6 @@ export default {
   & pre
     white-space: pre-wrap
 
-.message-messages-wrap
-  margin:
-    top: 10px
-    left: 10px
-
 .message-actions-wrap
   display: flex
   justify-content: space-between
@@ -386,10 +340,6 @@ export default {
 
 .message-group-link-highlight
   background-color: #FAFFAD
-
-.attached-message
-  padding: 5px 10px
-  border-left: 5px solid
 
 .edit-area
   width: 100%
