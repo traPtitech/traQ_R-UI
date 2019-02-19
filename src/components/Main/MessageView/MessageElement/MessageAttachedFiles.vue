@@ -57,9 +57,7 @@ export default {
   },
   components: {IconAttach},
   computed: {
-    ...mapGetters([
-      'fileUrl'
-    ])
+    ...mapGetters(['fileUrl'])
   },
   methods: {
     encodeByte,
@@ -82,10 +80,10 @@ export default {
     top: 16px
 
 .attached-image
+  cursor: pointer
   max-width: 250px
   max-height: 480px
   width: 100%
-  display: block
   border:
     color: var(--tertiary-color-on-bg)
     style: solid
