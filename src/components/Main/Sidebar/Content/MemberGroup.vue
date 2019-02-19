@@ -51,7 +51,7 @@ export default {
       this.$refs.list.style.height = '0'
     },
     filterMembers () {
-      return this.members
+      return this.members.map(userId => this.$store.state.memberMap[userId])
         .filter(m => {
           return this.caseIgnoreFilterText.test(m.displayName) || this.caseIgnoreFilterText.test(m.name)
         })

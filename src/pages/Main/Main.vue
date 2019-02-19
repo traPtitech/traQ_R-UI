@@ -69,9 +69,9 @@ export default {
         while (!this.$el) {
           await this.$nextTick()
         }
-        const container = this.$el.querySelector('.content-wrap')
+        // const container = this.$el.querySelector('.content-wrap')
         await this.$nextTick()
-        container.scrollTop = container.scrollHeight
+        // container.scrollTop = container.scrollHeight
       }
 
       if (mutation.type === 'unshiftMessagesss') {
@@ -171,6 +171,7 @@ export default {
       sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
       sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
       sse.on('USER_TAGS_UPDATED', (data) => this.userTagsUpdated(data))
+      sse.on('USER_GROUP_UPDATED', (data) => this.userGroupUpdated(data))
       sse.on('USER_ICON_UPDATED', (data) => this.userIconUpdated(data))
       sse.on('USER_ONLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: true}))
       sse.on('USER_OFFLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: false}))
@@ -276,7 +277,9 @@ export default {
       if (this.$store.state.userModal && data.id === this.$store.state.userModal.userId) {
         this.$store.dispatch('updateCurrentUserTags')
       }
-      this.$store.dispatch('updateTags')
+    },
+    userGroupUpdated (data) {
+      this.$store.dispatch('updateGroups')
     },
     notify (title, options, channelName) {
       if (window.Notification) {
