@@ -382,7 +382,8 @@ export default {
   font-weight: bold
   text-align: left
   max-width: 60%
-  height: 100%
+  height: 20px
+  line-height: 20px
   overflow: hidden
   cursor: pointer
   flex-shrink: 0
