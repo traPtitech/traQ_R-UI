@@ -26,7 +26,7 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
           | Cancel
         button.edit-button.edit-submit(@click.stop="editSubmit" )
           | Edit
-    div.message-messages-wrap
+    div.message-messages-wrap(v-if="hasAttachedMessage")
       div.attached-message(v-for="m in messages")
         img.message-user-icon(:src="userIconSrc(m.userId)" @click="openUserModal(m.userId)")
         p.message-user-name(@click="openUserModal(m.userId)")
@@ -36,7 +36,7 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
           | from
           router-link(:to="parentChannel(m.parentChannelId).to")
             | {{parentChannel(m.parentChannelId).name}}
-    message-attached-files(:files="files")
+    message-attached-files(v-if="hasAttachedFile" :files="files")
     message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
   div.message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
     message-context-drop-menu(:userId="model.userId" 
@@ -232,6 +232,12 @@ export default {
     },
     displayDateTime () {
       return displayDateTime(this.model.createdAt, this.model.updatedAt)
+    },
+    hasAttachedMessage () {
+      return this.messages.length > 0
+    },
+    hasAttachedFile () {
+      return this.files.length > 0
     }
   },
   mounted () {
