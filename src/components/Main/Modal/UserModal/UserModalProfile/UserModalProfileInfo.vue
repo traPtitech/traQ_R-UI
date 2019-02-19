@@ -33,9 +33,9 @@ export default {
   margin-right: 0.5rem 
 
 .user-modal-profile-info-display-name
-  @media (orientation: landscape)
+  +mq(pc)
     font-size: 1.5rem
-  @media (orientation: portrait)
+  +mq(sp)
     font-size: 1.2rem
   font-weight: 600
   margin: 0.2rem 0

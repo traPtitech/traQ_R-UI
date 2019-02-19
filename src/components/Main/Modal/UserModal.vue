@@ -48,9 +48,9 @@ $profile-area-width: 350px
 .user-modal
   grid-template-columns: 100%
   display: flex
-  @media (orientation: landscape)
+  +mq(pc)
     flex-direction: row
-  @media (orientation: portrait)
+  +mq(sp)
     flex-direction: column
 
 .user-modal-close-wrap
@@ -65,9 +65,9 @@ $profile-area-width: 350px
     opacity: 1
 
 .user-modal-area--profile
-  @media (orientation: landscape)
+  +mq(pc)
     border-radius: $modal-border-radius 0 0 $modal-border-radius
-  @media (orientation: portrait)
+  +mq(sp)
     border-radius: $modal-border-radius $modal-border-radius 0 0
   padding: $modal-profile-padding
   background: $primary-color
@@ -105,10 +105,10 @@ $profile-area-width: 350px
 
 .user-modal:not([data-is-expanded])
   .user-modal-area--profile
-    @media (orientation: landscape)
+    +mq(pc)
       width: $profile-area-width
-    @media (orientation: portrait)
-      height: $profile-area-height
+    +mq(sp)
+      height: calc($profile-area-height + 18px)
   .user-modal-area--extra
     width: 100%
     opacity: 1
@@ -117,9 +117,9 @@ $profile-area-width: 350px
 .user-modal[data-is-expanded]
   .user-modal-area--profile
     border-radius: $modal-border-radius
-    @media (orientation: landscape)
+    +mq(pc)
       width: $modal-profile-expanded-width
-    @media (orientation: portrait)
+    +mq(sp)
       height: $modal-profile-expanded-height
   .user-modal-area--extra
     width: 0

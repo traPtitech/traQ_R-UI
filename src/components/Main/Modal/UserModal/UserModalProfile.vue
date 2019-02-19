@@ -74,14 +74,15 @@ export default {
 
 .user-modal-profile
   height: 100%
+  padding-bottom: 18px
   display: flex
   align-items: center
   justify-content: center
 
 .user-modal-profile:not([data-is-expanded])
-  @media (orientation: landscape)
+  +mq(pc)
     flex-direction: column
-  @media (orientation: portrait)
+  +mq(sp)
     flex-direction: row
 
 .user-modal-profile-area--info
@@ -90,13 +91,13 @@ export default {
 .user-modal-profile[data-is-expanded]
 
 .user-modal-profile[data-is-expanded]
-  @media (orientation: landscape)
+  +mq(pc)
     flex-direction: row
 
     .user-modal-profile-area--info
       margin-left: 2rem
 
-  @media (orientation: portrait)
+  +mq(sp)
     flex-direction: column
 
 
