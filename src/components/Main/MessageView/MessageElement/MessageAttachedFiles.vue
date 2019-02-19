@@ -5,7 +5,7 @@
         div(v-if="isGif(file.mime)")
           img.attached-image(
             :src="`${fileUrl(file.fileId)}/thumbnail`" 
-            @click="playGif(file, $event)" 
+            :onClick="`this.src = '${fileUrl(file.fileId)}'`" 
             :alt="file.name")
         a(
           v-else-if="isImage(file.mime)" 
@@ -66,10 +66,7 @@ export default {
     isImage,
     isGif,
     isVideo,
-    isAudio,
-    playGif (file, e) {
-      console.log(e)
-    }
+    isAudio
   }
 }
 </script>
