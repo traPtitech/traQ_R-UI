@@ -513,14 +513,16 @@ const store = new Vuex.Store({
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
     },
-    fileUrl: state => fileId => {
-      return `${state.baseURL}/api/1.0/files/${fileId}`
+    fileUrl (state) {
+      return fileId => {
+        return `${state.baseURL}/api/1.0/files/${fileId}`
+      }
     },
-    grades: (state) => {
+    grades (state) {
       const gradeReg = /^\d\d[BMDR]$/
       return state.groupData.filter(group => gradeReg.test(group.name) && group.members.length > 0)
     },
-    sortedGrades: (state, getters) => {
+    sortedGrades (state, getters) {
       const map = {
         B: 0,
         M: 1,
@@ -535,13 +537,13 @@ const store = new Vuex.Store({
           return f(lhs.name) - f(rhs.name)
         })
     },
-    memberData: state => {
+    memberData (state) {
       return state.memberData
     },
-    nonBotUsers: state => {
+    nonBotUsers (state) {
       return state.memberData.filter(user => !user.bot)
     },
-    gradeByUserMap: (state, getters) => {
+    gradeByUserMap (state, getters) {
       const map = {}
       getters.nonBotUsers.forEach(u => {
         let gradeObj = getters.grades
@@ -549,6 +551,9 @@ const store = new Vuex.Store({
         map[u.userId] = gradeObj ? gradeObj.name : undefined
       })
       return map
+    },
+    getGroupByContent (state) {
+      return groupName => state.groupData.find(group => group.name === groupName)
     }
   },
   actions: {
