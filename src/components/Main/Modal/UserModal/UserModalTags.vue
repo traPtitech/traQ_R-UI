@@ -120,9 +120,9 @@ $input-height: 3rem
   display: grid
   grid-template-columns: 2rem calc(100% - 6rem - 1rem * 2) 4rem
   grid-gap: $gap
-  @media (orientation: landscape)
+  +mq(pc)
     margin: 1.3rem 2.5rem
-  @media (orientation: portrait)
+  +mq(sp)
     margin: 1rem 2rem
 
   .user-modal-tag-icon

@@ -67,10 +67,10 @@ export default {
 .user-modal-img
   flex-shrink: 0
   position: relative
-  @media (orientation: landscape)
+  +mq(pc)
     height: 10rem
     width: 10rem
-  @media (orientation: portrait)
+  +mq(sp)
     height: 5rem
     width: 5rem
     margin: 0 2rem 0 0
@@ -82,10 +82,10 @@ export default {
 
 .user-modal-dm
   position: absolute
-  @media (orientation: landscape)
+  +mq(pc)
     bottom: 0
     right: -0.75rem
-  @media (orientation: portrait)
+  +mq(sp)
     bottom: -0.25rem
     right: -1rem
   height: min-content
@@ -106,15 +106,15 @@ export default {
       border-radius: 50%
       // [TODO] variable
       background: #F2994A
-    @media (orientation: landscape)
+    +mq(pc)
       +user-modal-dm-indicator-style(0.75rem, 2px)
-    @media (orientation: portrait)
+    +mq(sp)
       +user-modal-dm-indicator-style(0.5rem, 1px)
 
   .user-modal-dm-icon-envelope
     height: auto
-    @media (orientation: landscape)
+    +mq(pc)
       width: 1.75rem
-    @media (orientation: portrait)
+    +mq(sp)
       width: 1.25rem
 </style>
