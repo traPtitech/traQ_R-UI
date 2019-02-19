@@ -7,7 +7,7 @@
     li(v-if="userId === getMyId" @click="$emit('edit')")
       | 編集
     li(v-if="!isDirectMessage" @click="$emit('copy')")
-      | 引用
+      | リンクをコピー
     //- li(@click="clipMessae")
     //-   | クリップ
     li(v-if="userId === getMyId" @click="$emit('delete')")
