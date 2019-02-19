@@ -38,8 +38,9 @@
             p.attached-file-size
               | {{encodeByte(file.size)}}
       div(v-else)
-        p
-          | Not Found
+        div.attached-file-not-found
+          p
+            | File Not Found
 </template>
 
 <script>
@@ -75,7 +76,7 @@ export default {
     top: 12px
     left: 10px
 
-.message-file-wrap
+.message-file-wrap:not(.message-file-wrap:first-child)
   margin:
     top: 16px
 
@@ -124,5 +125,16 @@ export default {
   font:
     size: 0.8em
   opacity: 0.8
+
+.attached-file-not-found
+  display: inline-flex
+  color: var(--warning-color)
+  border:
+    color: var(--warning-color)
+    style: solid
+    width: 1px
+    radius: 6px
+  padding: 8px 12px 8px
+  background-color: var(--background-color)
 
 </style>
