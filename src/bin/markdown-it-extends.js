@@ -28,7 +28,7 @@ const isJson = (text) => {
       return true
     } else if (data['type'] === 'channel' && store.state.channelMap[data['id']]) {
       return true
-    } else if (data['type'] === 'tag' && store.state.tagMap[data['id']]) {
+    } else if (data['type'] === 'group' && store.state.groupMap[data['id']]) {
       return true
     } else if (data['type'] === 'file' || data['type'] === 'message') {
       return true
@@ -66,18 +66,18 @@ const jsonParse = (text) => {
       newTag('text', '', data['raw'], null, 0),
       newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
-  } else if (data['type'] === 'tag' && store.state.tagMap[data['id']]) {
-    attributes.push(['href', `javascript:openTagModal('${data['id']}')`])
-    if (store.state.tagMap[data['id']].users.filter(user => user.userId === store.state.me.userId).length > 0) {
-      attributes.push(['class', 'message-tag-link-highlight message-tag-link'])
+  } else if (data['type'] === 'group' && store.state.groupMap[data['id']]) {
+    // attributes.push(['href', `javascript:openTagModal('${data['id']}')`])
+    if (store.state.groupMap[data['id']].members.filter(userId => userId === store.state.me.userId).length > 0) {
+      attributes.push(['class', 'message-group-link-highlight message-group-link'])
     } else {
-      attributes.push(['class', 'message-tag-link'])
+      attributes.push(['class', 'message-group-link'])
     }
     meta.data = data['id']
     return [
-      newTag('traq_extends_link_open', 'a', '', attributes, 1, meta),
+      newTag('traq_extends_group_open', 'a', '', attributes, 1, meta),
       newTag('text', '', data['raw'], null, 0),
-      newTag('traq_extends_link_close', 'a', '', null, -1)
+      newTag('traq_extends_group_close', 'a', '', null, -1)
     ]
   } else if (data['type'] === 'file') {
     meta.data = data['id']

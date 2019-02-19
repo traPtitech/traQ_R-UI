@@ -4,7 +4,7 @@
     .user-modal-tag-element(v-for="(tag, index) in tags" :key="tag.tagId")
       .user-modal-icon--gray.user-modal-tag-icon
         icon(name="tag")
-      .user-modal-tag-body(@click="openTagModal(tag.tagId)")
+      .user-modal-tag-body(@click="openTagModal(tag)")
         | {{tag.tag}}
       .user-modal-tag-status-icon(v-if="tag.editable")
         div(@click="lockTag(index)")
@@ -60,8 +60,8 @@ export default {
     }
   },
   methods: {
-    openTagModal (tagId) {
-      this.$store.dispatch('openTagModal', tagId)
+    openTagModal (tag) {
+      this.$store.dispatch('openTagModal', tag)
     },
     onInputChange (event) {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
