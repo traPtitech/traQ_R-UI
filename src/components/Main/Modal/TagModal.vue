@@ -7,11 +7,11 @@ base-common-modal(:title="`TAG: ${data.tag}`" small)
   icon-tag(v-else color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
   .tag-modal
     .tag-user-list
-      member-element.tag-user-element(v-for="member in data.users" :model="member" :key="member.userId" backgroundColor="var(--background-color)")
+      member-element.tag-user-element(v-for="member in users" :model="member" :key="member.userId" backgroundColor="var(--background-color)")
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconTag from '@/components/Icon/IconTag'
@@ -34,7 +34,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('modal', ['data'])
+    ...mapState('modal', ['data']),
+    ...mapGetters('modal', {
+      users: 'currentTagUsersSorted'
+    })
   }
 }
 </script>

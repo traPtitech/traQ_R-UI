@@ -475,12 +475,12 @@ export default {
 
 .message-channel-link
 
-.message-tag-link
+.message-group-link
   cursor: pointer
   color: #005BAC
   font-weight: bold
 
-.message-tag-link-highlight
+.message-group-link-highlight
   background-color: #FAFFAD
 
 .attached-image

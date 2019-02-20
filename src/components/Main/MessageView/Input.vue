@@ -96,7 +96,7 @@ export default {
               return s
             } else {
               inQuote = true
-              return this.replaceTag(this.replaceChannel(this.replaceUser(s)))
+              return this.replaceGroup(this.replaceChannel(this.replaceUser(s)))
             }
           }).join('`')
         } else {
@@ -135,12 +135,12 @@ export default {
         }
       })
     },
-    replaceTag (message) {
+    replaceGroup (message) {
       return message.replace(/^"@([\S]+)|(?:@([\S]+))/g, (match, userId, content) => {
         if (userId) return match
-        const tag = this.$store.getters.getTagByContent(content)
-        if (tag) {
-          return `!{"type": "tag", "raw": "${match}", "id": "${tag.tagId}"}`
+        const group = this.$store.getters.getGroupByContent(content)
+        if (group) {
+          return `!{"type": "group", "raw": "${match}", "id": "${group.groupId}"}`
         } else {
           return match
         }
@@ -264,6 +264,7 @@ export default {
     },
     dropFile (files) {
       for (let i = 0; i < files.length; i++) {
+        this.files.push(files[i])
         this.files.push(files[i])
       }
     },

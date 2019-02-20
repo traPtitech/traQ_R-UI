@@ -416,11 +416,6 @@ const client = {
       return axios.delete(`/api/1.0/users/${userId}/tags/${tagId}`)
     })
   },
-  getAllTags () {
-    return middleWare('getAllTags', () => {
-      return axios.get(`/api/1.0/tags`)
-    })
-  },
   getTag (tagId) {
     return middleWare('getTag', () => {
       return axios.get(`/api/1.0/tags/${tagId}`)
@@ -473,6 +468,38 @@ const client = {
   // Tag: activity
   getLatestMessages (limit, subscribe) {
     return axios.get(`/api/1.0/activity/latest-messages?limit=${limit}&subscribe=${subscribe}`)
+  },
+
+  // Tag: group
+  getAllGroups () {
+    return axios.get('/api/1.0/groups')
+  },
+  postGroup (name, description) {
+    return axios.post('/api/1.0/groups', {name, description})
+  },
+  getGroup (groupId) {
+    return axios.get(`/api/1.0/groups/${groupId}`)
+  },
+  changeGroup (groupId, name, description, adminUserId) {
+    return axios.patch(`/api/1.0/groups/${groupId}`, {name, description, adminUserId})
+  },
+  deleteGroup (groupId) {
+    return axios.delete(`/api/1.0/groups/${groupId}`)
+  },
+  getGroupMember (groupId) {
+    return axios.get(`/api/1.0/groups/${groupId}/members`)
+  },
+  addGroupMember (groupId, userId) {
+    return axios.post(`/api/1.0/groups/${groupId}/members`, {userId})
+  },
+  deleteGroupMember (groupId, userId) {
+    return axios.delete(`/api/1.0/groups/${groupId}/members/${userId}`)
+  },
+  getMyGroups () {
+    return axios.get('/api/1.0/users/me/groups')
+  },
+  getUserGroups (userId) {
+    return axios.get(`/api/1.0/users/${userId}/groups`)
   }
 }
 

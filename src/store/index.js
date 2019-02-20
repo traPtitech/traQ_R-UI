@@ -61,8 +61,8 @@ const store = new Vuex.Store({
     stampPickerModel: null,
     memberData: [],
     memberMap: {},
-    tagData: [],
-    tagMap: {},
+    groupData: [],
+    groupMap: {},
     stampData: [],
     stampMap: {},
     stampCategolized: {},
@@ -142,13 +142,13 @@ const store = new Vuex.Store({
         state.memberMap[member.userId] = member
       })
     },
-    setTagData (state, newTagData) {
-      state.tagData = newTagData
-      state.tagData.forEach(tag => {
-        tag.users = tag.users || []
-        tag.users.sort(stringSortGen('name'))
-        state.tagMap[tag.tagId] = tag
+    setGroupData (state, newGroupData) {
+      state.groupData = newGroupData
+      const map = {}
+      state.groupData.forEach(group => {
+        map[group.groupId] = group
       })
+      state.groupMap = map
     },
     setStampData (state, newStampData) {
       state.stampData = newStampData
@@ -432,16 +432,6 @@ const store = new Vuex.Store({
         }
       }
     },
-    getTagByContent (state) {
-      return tagContent => {
-        const tag = state.tagData.find(tag => tag.tag === tagContent)
-        if (tag) {
-          return tag
-        } else {
-          return null
-        }
-      }
-    },
     getFileDataById (state) {
       return fileId => {
         return client.getFileMeta(fileId)
@@ -523,22 +513,16 @@ const store = new Vuex.Store({
     isTitlebarExpanded (state) {
       return state.titlebarExpanded
     },
-    fileUrl: state => fileId => {
-      return `${state.baseURL}/api/1.0/files/${fileId}`
+    fileUrl (state) {
+      return fileId => {
+        return `${state.baseURL}/api/1.0/files/${fileId}`
+      }
     },
-    tagData: state => {
-      return state.tagData
+    grades (state) {
+      const gradeReg = /^\d\d[BMDR]$/
+      return state.groupData.filter(group => gradeReg.test(group.name) && group.members.length > 0)
     },
-    grades: (state, getters) => {
-      return getters.tagData
-        .filter(
-            tag => tag.type === 'grade'
-          )
-        .filter(
-            tag => tag.users.length > 0
-          )
-    },
-    sortedGrades: (state, getters) => {
+    sortedGrades (state, getters) {
       const map = {
         B: 0,
         M: 1,
@@ -550,23 +534,26 @@ const store = new Vuex.Store({
       }
       return getters.grades
         .sort((lhs, rhs) => {
-          return f(lhs.tag) - f(rhs.tag)
+          return f(lhs.name) - f(rhs.name)
         })
     },
-    memberData: state => {
+    memberData (state) {
       return state.memberData
     },
-    nonBotUsers: state => {
+    nonBotUsers (state) {
       return state.memberData.filter(user => !user.bot)
     },
-    gradeByUserMap: (state, getters) => {
+    gradeByUserMap (state, getters) {
       const map = {}
       getters.nonBotUsers.forEach(u => {
         let gradeObj = getters.grades
-          .find(g => g.users.some(gu => gu.userId === u.userId))
-        map[u.userId] = gradeObj ? gradeObj.tag : undefined
+          .find(g => g.members.some(userId => userId === u.userId))
+        map[u.userId] = gradeObj ? gradeObj.name : undefined
       })
       return map
+    },
+    getGroupByContent (state) {
+      return groupName => state.groupData.find(group => group.name === groupName)
     }
   },
   actions: {
@@ -621,8 +608,8 @@ const store = new Vuex.Store({
     updateMembers ({state, commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
     },
-    updateTags ({state, commit}) {
-      return loadGeneralData('Tag', client.getAllTags, commit)
+    updateGroups ({state, commit}) {
+      return loadGeneralData('Group', client.getAllGroups, commit)
     },
     updateStamps ({state, commit}) {
       return loadGeneralData('Stamp', client.getStamps, commit)
