@@ -1,5 +1,5 @@
 <template lang="pug">
-div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported")
+div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported" v-show="rendered")
   div.message-user-icon-wrap
     img.message-user-icon(:src="userIconSrc(model.userId)" @click="openUserModal(model.userId)")
   div.message-detail-wrap
@@ -68,6 +68,7 @@ export default {
       edited: '',
       files: [],
       messages: [],
+      rendered: false,
       isContextMenuActive: false
     }
   },
@@ -134,6 +135,13 @@ export default {
           .then(res => res.data)
           .catch(e => null)
       }))).filter(e => e)
+      this.rendered = true
+
+      await this.$nextTick()
+      while (!this.$el) {
+        await this.$nextTick()
+      }
+      this.$el.parentElement.parentElement.parentElement.scrollTop += this.$el.scrollHeight
     },
     mark (text) {
       return {
