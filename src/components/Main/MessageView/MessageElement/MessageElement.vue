@@ -215,6 +215,12 @@ export default {
           .catch(e => null)
       }))).filter(e => e)
       this.rendered = true
+
+      await this.$nextTick()
+      while (!this.$el) {
+        await this.$nextTick()
+      }
+      this.$el.parentElement.parentElement.parentElement.scrollTop += this.$el.scrollHeight
     },
     encodeByte (byte) {
       const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']

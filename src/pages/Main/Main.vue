@@ -53,40 +53,9 @@ export default {
     SwipeDetector
   },
   async created () {
-    this.$store.subscribe(async mutation => {
-      if (mutation.type === 'addMessages') {
-        if (!this.$el) {
-          await this.$nextTick()
-        }
-        const container = this.$el.querySelector('.content-wrap')
-        await this.$nextTick()
-        if (container.scrollHeight - container.scrollTop < 1000) {
-          container.scrollTop = container.scrollHeight
-        }
-      }
-
-      if (mutation.type === 'setMessages') {
-        while (!this.$el) {
-          await this.$nextTick()
-        }
-        // const container = this.$el.querySelector('.content-wrap')
-        await this.$nextTick()
-        // container.scrollTop = container.scrollHeight
-      }
-
-      if (mutation.type === 'unshiftMessagesss') {
-        const container = this.$el.querySelector('.content-wrap')
-        const top = container.scrollTop
-        const beforeHeight = container.scrollHeight
-        setTimeout(() => {
-          container.scrollTop = container.scrollHeight - beforeHeight + top
-        }, 5)
-      }
-    })
-
     if (!this.$route.params.channel) {
       if (!this.$route.params.user) {
-        this.$router.push('/channels/random')
+        this.$router.push('/channels/general')
       }
     }
 
