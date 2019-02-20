@@ -76,7 +76,7 @@ export default {
     top: 12px
     left: 10px
 
-.message-file-wrap:not(.message-file-wrap:first-child)
+.message-file-wrap:not(:first-child)
   margin:
     top: 16px
 
