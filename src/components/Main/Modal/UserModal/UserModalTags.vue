@@ -3,40 +3,48 @@
   .user-modal-tags-container
     .user-modal-tag-element(v-for="(tag, index) in tags" :key="tag.tagId")
       .user-modal-icon--gray.user-modal-tag-icon
-        icon(name="tag")
+        IconTag(:size="16" color="gray")
       .user-modal-tag-body(@click="openTagModal(tag)")
         | {{tag.tag}}
       .user-modal-tag-status-icon(v-if="tag.editable")
-        div(@click="lockTag(index)")
-          icon.user-modal-icon--gray(name="lock-open" v-show="hasAuth && !tag.isLocked")
-        div(@click="eraseTag(index)")
-          icon.user-modal-icon--gray(name="times" v-show="!tag.isLocked")
-        div(@click="unlockTag(index)")
-          icon.user-modal-icon--gray(name="lock" v-show="hasAuth && tag.isLocked")
-        icon.user-modal-icon--gray.non-clickable(name="lock" v-show="!hasAuth && tag.isLocked")
+        .user-moda-icon-wrap(@click="lockTag(index)" v-show="hasAuth && !tag.isLocked")
+          IconUnlocked(:size="16" color="gray")
+        .user-moda-icon-wrap(@click="eraseTag(index)" v-show="!tag.isLocked")
+          IconClose(:size="16" color="gray")
+        .user-moda-icon-wrap(@click="unlockTag(index)" v-show="hasAuth && tag.isLocked")
+          IconLocked(:size="16" color="gray")
+        .user-moda-icon-wrap(v-show="!hasAuth && tag.isLocked")
+          IconLocked.non-clickable(:size="16" color="gray")
   .user-modal-tags-input-container
-    icon.user-modal-tags-icon(
-      name="tag"
-      :style="detailInputIconStyle"
-    )
+    .user-modal-tags-icon
+      IconTag(:size="16" color="gray" :style="detailInputIconStyle")
     input.user-modal-tags-input(
       v-model="tagInput"
       @keydown="onInputChange"
       placeholder="タグを追加……"
     )
-    div(@click="addTag")
-      icon.user-modal-tags-icon(
-        name="plus"
-       :style="detailInputIconStyle"
-     )
+    .user-modal-tags-icon(@click="addTag")
+      IconPlus(:size="16" color="gray" :style="detailInputIconStyle")
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 import client from '@/bin/client'
+import IconTag from '@/components/Icon/IconTag'
+import IconPlus from '@/components/Icon/IconPlus'
+import IconClose from '@/components/Icon/IconClose'
+import IconLocked from '@/components/Icon/IconLocked'
+import IconUnlocked from '@/components/Icon/IconUnlocked'
 
 export default {
   name: 'UserModalTags',
+  components: {
+    IconTag,
+    IconPlus,
+    IconClose,
+    IconLocked,
+    IconUnlocked
+  },
   data () {
     return {
       tagInput: ''
@@ -181,4 +189,7 @@ $input-height: 3rem
 
 .non-clickable
   cursor: default !important
+
+.user-moda-icon-wrap
+  margin: 0 0.25rem
 </style>
