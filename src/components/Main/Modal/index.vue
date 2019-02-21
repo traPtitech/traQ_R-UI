@@ -6,6 +6,7 @@ div.modal-overlay(v-if="isActive" @click.self="close")
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import UserModal from './UserModal'
+import GroupModal from './GroupModal'
 import TagModal from './TagModal'
 import PinnedModal from './PinnedModal'
 import ChannelCreateModal from './ChannelCreateModal'
@@ -15,6 +16,7 @@ export default {
   name: 'Modal',
   components: {
     UserModal,
+    GroupModal,
     TagModal,
     PinnedModal,
     ChannelCreateModal,
