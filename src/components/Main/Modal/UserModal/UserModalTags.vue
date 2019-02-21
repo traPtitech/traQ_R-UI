@@ -164,8 +164,10 @@ $input-height: 3rem
     width: calc(100% - 3rem)
     display: flex
     align-items: center
-    background: white
-    border: 1px solid lightgray
+    padding-left: 1rem
+    border-radius: 4px
+    background-color: $setting-background-color
+    color: $text-color
 
   .user-modal-tags-icon
     transition: color .2s
