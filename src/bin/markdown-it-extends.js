@@ -67,7 +67,7 @@ const jsonParse = (text) => {
       newTag('traq_extends_link_close', 'a', '', null, -1)
     ]
   } else if (data['type'] === 'group' && store.state.groupMap[data['id']]) {
-    // attributes.push(['href', `javascript:openTagModal('${data['id']}')`])
+    attributes.push(['href', `javascript:openGroupModal('${data['id']}')`])
     if (store.state.groupMap[data['id']].members.filter(userId => userId === store.state.me.userId).length > 0) {
       attributes.push(['class', 'message-group-link-highlight message-group-link'])
     } else {

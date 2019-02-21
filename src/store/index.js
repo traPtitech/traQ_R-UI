@@ -768,8 +768,8 @@ window.openUserModal = (userId) => {
   store.dispatch('openUserModal', userId)
 }
 
-window.openTagModal = (tagId) => {
-  store.dispatch('openTagModal', tagId)
+window.openGroupModal = (groupId) => {
+  store.dispatch('openGroupModal', groupId)
 }
 
 export default store

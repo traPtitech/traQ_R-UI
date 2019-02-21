@@ -61,6 +61,15 @@ export default {
         return dispatch('updateCurrentUserTags')
       }
     },
+    openGroupModal: {
+      root: true,
+      handler ({state, rootState, commit, dispatch}, groupId) {
+        dispatch('open', {
+          name: 'GroupModal',
+          data: rootState.groupMap[groupId]
+        })
+      }
+    },
     openTagModal: {
       root: true,
       handler ({state, rootState, commit, dispatch}, tag) {
