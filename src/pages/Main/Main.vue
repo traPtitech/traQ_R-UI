@@ -3,10 +3,10 @@ file-drop-detector(
   @dropFile="dropFile"
   :onDragStyle="'{background-color: #fff;}'"
   )
+  stamp-picker
   modal
   swipe-detector(@swipeStart="swipeStart" @swipeMoving="swipeMoving" @swipeEnd="swipeEnd")
     div.index(:data-enable-blur="name ? 'true' : 'false'")
-      stamp-picker
       Titlebar
       channel-information
       // ↓grid-item on pc
@@ -318,5 +318,5 @@ export default {
 
   &[data-enable-blur="true"]
     transition: filter .2s linear
-    filter: blur(3px)
+    filter: blur(2px)
 </style>

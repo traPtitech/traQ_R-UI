@@ -23,7 +23,6 @@ window.asyncLoadComponents = component => {
       })
   }
 }
-Vue.component('modal', window.asyncLoadComponents(import('@/components/Util/Modal')))
 
 /* eslint-disable no-new */
 new Vue({

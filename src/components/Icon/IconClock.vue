@@ -1,0 +1,28 @@
+<template functional>
+<svg :width="props.size" :height="props.size" version="1.1" id="emoji" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 72 72" enable-background="new 0 0 72 72" xml:space="preserve">
+<g id="_xD83D__xDD52__xFE0F__1_">
+		<circle fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" cx="36" cy="36" r="23"/>
+	
+		<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="36" y1="19" x2="36" y2="36"/>
+	
+		<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="47.6" y1="36" x2="36.1" y2="36"/>
+</g>
+</svg>
+</template>
+
+<script>
+export default {
+  name: 'IconClock',
+  props: {
+    size: {
+      type: Number,
+      default: 16
+    },
+    color: {
+      type: String,
+      default: 'white'
+    }
+  }
+}
+</script>

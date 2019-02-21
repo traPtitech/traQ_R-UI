@@ -8,11 +8,11 @@
         | {{grade}}
     UserModalProfileOnlineIndicator(:detailed="true")
     .user-modal-misc-profiles
-      a.user-modal-misc-profile(:class="{inactive: !data.twitterId}" :href="twitterUrl" @click.stop="onTwitterLinkClicked")
+      a.user-modal-misc-profile(:class="{inactive: !data.twitterId}" :href="twitterUrl" target="_blank" @click.stop="onTwitterLinkClicked")
         .user-modal-misc-profile-icon
           IconTwitter
         | {{ twitterId }}
-      a.user-modal-misc-profile(:href="`https://wiki.trapti.tech/user/${data.name}`" @click.stop="")
+      a.user-modal-misc-profile(:href="`https://wiki.trapti.tech/user/${data.name}`" target="_blank" @click.stop="")
         .user-modal-misc-profile-icon
           IconBook
         | user/{{ data.name }}

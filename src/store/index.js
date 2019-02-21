@@ -67,6 +67,7 @@ const store = new Vuex.Store({
     stampMap: {},
     stampCategolized: {},
     stampNameMap: [],
+    stampHistory: [],
     currentChannel: {},
     currentChannelUpdateDate: new Date(0),
     clipedMessages: {},
@@ -158,6 +159,9 @@ const store = new Vuex.Store({
         state.stampMap[stamp.id] = stamp
         state.stampNameMap[stamp.name] = stamp
       })
+    },
+    setStampHistory (state, stampHistory) {
+      state.stampHistory = stampHistory.map(stamp => state.stampMap[stamp.stampId])
     },
     addMessages (state, message) {
       if (Array.isArray(message)) {
@@ -559,10 +563,13 @@ const store = new Vuex.Store({
     },
     userDisplayName (state) {
       return userId => state.memberMap[userId].displayName
+    },
+    stampHistory (state) {
+      return state.stampHistory
     }
   },
   actions: {
-    whoAmI ({state, commit}) {
+    whoAmI ({commit}) {
       return client.whoAmI()
       .then(res => {
         commit('setMe', res.data)
@@ -607,43 +614,50 @@ const store = new Vuex.Store({
           return false
         })
     },
-    async updateChannels ({state, commit, dispatch}) {
+    async updateChannels ({commit}) {
       return loadGeneralData('Channel', client.getChannels, commit)
     },
-    updateMembers ({state, commit}) {
+    updateMembers ({commit}) {
       return loadGeneralData('Member', client.getMembers, commit)
     },
-    updateGroups ({state, commit}) {
+    updateGroups ({commit}) {
       return loadGeneralData('Group', client.getAllGroups, commit)
     },
-    updateStamps ({state, commit}) {
+    updateStamps ({commit}) {
       return loadGeneralData('Stamp', client.getStamps, commit)
     },
-    updateClipedMessages ({state, commit}) {
+    getStampHistory ({commit}) {
+      client
+        .getStampHistory()
+        .then(res => {
+          commit('setStampHistory', res.data)
+        })
+    },
+    updateClipedMessages ({commit}) {
       return loadGeneralData('ClipedMessages', client.getAllClipMessages, commit)
     },
-    updateUnreadMessages ({state, commit}) {
+    updateUnreadMessages ({commit}) {
       return loadGeneralData('UnreadMessages', client.getUnreadMessages, commit)
     },
-    updateStaredChannels ({state, commit}) {
+    updateStaredChannels ({commit}) {
       return loadGeneralData('StaredChannels', client.getStaredChannels, commit)
     },
-    updateMutedChannels ({state, commit}) {
+    updateMutedChannels ({commit}) {
       return loadGeneralData('MutedChannels', client.getMutedChannels, commit)
     },
-    getCurrentChannelTopic ({state, commit}, channelId) {
+    getCurrentChannelTopic ({commit}, channelId) {
       return client.getChannelTopic(channelId)
         .then(res => {
           commit('setCurrentChannelTopic', res.data)
         })
     },
-    getCurrentChannelPinnedMessages ({state, commit}, channelId) {
+    getCurrentChannelPinnedMessages ({commit}, channelId) {
       return client.getPinnedMessages(channelId)
         .then(res => {
           commit('setCurrentChannelPinnedMessages', res.data)
         })
     },
-    getCurrentChannelNotifications ({state, commit}, channelId) {
+    getCurrentChannelNotifications ({commit}, channelId) {
       return client.getNotifications(channelId)
         .then(res => {
           commit('setCurrentChannelNotifications', res.data)
@@ -695,7 +709,7 @@ const store = new Vuex.Store({
         await dispatch('updateLastChannelId', getters.getChannelByName('general').channelId)
       })
     },
-    loadTheme ({commit, dispatch, getters}) {
+    loadTheme ({commit, dispatch}) {
       return db.read('browserSetting', 'theme').then(data => {
         commit('setTheme', data)
       }).catch(async () => {
@@ -730,14 +744,14 @@ const store = new Vuex.Store({
       const res = await client.getLatestMessages(50, filter)
       commit('setChannelRecentMessages', res.data)
     },
-    async updateMyNotifiedChannels ({state, commit, getters}) {
+    async updateMyNotifiedChannels ({commit, getters}) {
       const res = await client.getNotifiedChannels(getters.getMyId)
       const data = res.data
       console.log(data)
       if (!data) return
       commit('setMyNotifiedChannels', data)
     },
-    async updateCurrentChannelNotifications ({state, commit, dispatch}, {on, off}) {
+    async updateCurrentChannelNotifications ({state, dispatch}, {on, off}) {
       console.log(state.currentChannel)
       await client.changeNotifications(state.currentChannel.channelId, {
         on: on || [],
@@ -749,7 +763,7 @@ const store = new Vuex.Store({
       commit('setFilterSubscribedActivity', filter)
       return db.write('browserSetting', {type: 'filterSubscribedActivity', data: filter})
     },
-    loadFilterSubscribedActivity ({commit, dispatch, getters}) {
+    loadFilterSubscribedActivity ({commit, dispatch}) {
       return db.read('browserSetting', 'filterSubscribedActivity').then(data => {
         commit('setFilterSubscribedActivity', data)
       }).catch(async () => {

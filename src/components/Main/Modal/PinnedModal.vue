@@ -1,8 +1,8 @@
 <template lang="pug">
-BaseCommonModal(title="PINNED" small)
-  IconPin(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+base-common-modal(title="PINNED" small)
+  icon-pin(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
   .message-item
-    MessageElement(:model="data")
+    message-element(:model="data")
 </template>
 
 <script>
