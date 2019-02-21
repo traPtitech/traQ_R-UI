@@ -369,4 +369,18 @@ export default {
 .edit-submit
   background-color: #4e72d6
 
+.emoji
+  &.s24
+    width: 24px
+    height: 24px
+  &.s32
+    width: 32px
+    height: 32px
+.emoji
+  display: inline-block
+  text-indent: 999%
+  white-space: nowrap
+  overflow: hidden
+  color: transparent
+  background-size: contain
 </style>
