@@ -138,7 +138,7 @@ export default {
   position: relative
   padding: 0 0 0 0
   transition: all .2s ease
-  will-change: height padding
+  will-change: height, padding
   &:before
     display: block
     content: ''

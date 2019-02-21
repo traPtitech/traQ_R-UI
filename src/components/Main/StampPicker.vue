@@ -11,9 +11,10 @@ div.stamp-picker
         :name="stampContainerTransitionName"
         @mouseleave="searchPlaceHolder=defaultString")
           div.stamp-picker-body-container(
+            v-if="search.length == 0" 
             v-for="(category, idx) in stampCategolized" 
-            v-show="idx==currentCategoryIndex || search" 
-            :key="category")
+            v-show="idx==currentCategoryIndex" 
+            :key="category.category")
             p.stamp-picker-category-name
               | {{category.category}}
             div.stamp-picker-body-inner-wrapper
@@ -25,6 +26,21 @@ div.stamp-picker
                   :style="stampItemStyle(stamp.fileId)" 
                   :title="`:${stamp.name}:`")
               div.stamp-picker-stamp-item-dummy(v-for="i in 20")
+          div.stamp-picker-body-container(
+            key="filtered"
+            v-if="search.length > 0")
+            p.stamp-picker-category-name
+              | 検索結果
+            div.stamp-picker-body-inner-wrapper
+              div.stamp-picker-stamp-item-wrapper.flex-center(
+                :key="stamp.id"
+                v-for="stamp in filteredStamps" 
+                @click="addStamp(stamp.id)" 
+                @mouseover="hoverStamp(stamp.name)")
+                div.stamp-picker-stamp-item( 
+                  :style="stampItemStyle(stamp.fileId)" 
+                  :title="`:${stamp.name}:`")
+              div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
       div.stamp-picker-footer
           div.stamp-category-wrap
             div.stamp-category-item.flex-center(
@@ -90,6 +106,13 @@ export default {
         category: 'history',
         stamps: this.$store.getters.stampHistory
       }
+    },
+    filteredStamps () {
+      return this.stampCategolized
+        .slice(1, this.stampCategolized.length)
+        .map(c => c.stamps)
+        .flat()
+        .filter(stamp => stamp.name.includes(this.search))
     }
   },
   methods: {
@@ -100,10 +123,7 @@ export default {
       this.$store.commit('inactiveStampPicker')
     },
     stamps (index) {
-      if (this.search === '') {
-        return this.stampCategolized[index].stamps
-      }
-      return this.stampCategolized[index].stamps.filter(stamp => stamp.name.includes(this.search))
+      return this.stampCategolized[index].stamps
     },
     hoverStamp (name) {
       this.searchPlaceHolder = name
@@ -154,6 +174,7 @@ export default {
   border:
     radius: 4px
   box-sizing: border-box
+  color: var(--text-color)
   width: calc( 100% - 10px*2 )
   height: 30px
   margin: 10px 10px 10px
@@ -205,14 +226,16 @@ export default {
     right: 0
     width: 100%
     height: 3px
-    background: var(--primary-color)
+    background: var(--primary-color-on-bg)
 
 .stamp-picker-body
   position: relative
   flex-grow: 1
+  overflow:
+    x: hidden
 
 .stamp-picker-body-container
-  will-change: transform opacity
+  will-change: transform, opacity
   position: absolute
   width: 100%
   height: 100%
