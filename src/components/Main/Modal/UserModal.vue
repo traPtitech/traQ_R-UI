@@ -4,7 +4,7 @@
   .user-modal-area--profile(@click="toggleExpandProfile")
     .user-modal-close-wrap
       .user-modal-close(@click="close")
-        IconClose(color="white" :size=12)
+        IconClose(color="white" :size=16)
     UserModalProfile(:expanded="expandProfile")
   // タグなど
   .user-modal-area--extra
@@ -108,7 +108,7 @@ $profile-area-width: 350px
     +mq(pc)
       width: $profile-area-width
     +mq(sp)
-      height: calc($profile-area-height + 18px)
+      height: calc(#{$profile-area-height} + 18px)
   .user-modal-area--extra
     width: 100%
     opacity: 1
