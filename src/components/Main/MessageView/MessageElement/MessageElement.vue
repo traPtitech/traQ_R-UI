@@ -1,11 +1,11 @@
 <template lang="pug">
-div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported")
+div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported" v-show="rendered")
   div.message-user-icon-wrap
     img.message-user-icon(:src="userIconSrc(model.userId)" @click="openUserModal(model.userId)")
   div.message-detail-wrap
     div.message-user-info-wrap
       div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
-        | {{getUserDisplayName(model.userId)}}
+        | {{userDisplayName(model.userId)}}
       div.message-user-status-badge(v-if="statusBadge(model.userId) !== undefined")
         | {{statusBadge(model.userId)}}
       div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
@@ -26,37 +26,8 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
           | Cancel
         button.edit-button.edit-submit(@click.stop="editSubmit" )
           | Edit
-    div.message-messages-wrap
-      div.attached-message(v-for="m in messages")
-        img.message-user-icon(:src="userIconSrc(m.userId)" @click="openUserModal(m.userId)")
-        p.message-user-name(@click="openUserModal(m.userId)")
-          | {{getUserDisplayName(m.userId)}}
-        component(:is="mark(m.content)" v-bind="$props")
-        small
-          | from
-          router-link(:to="parentChannel(m.parentChannelId).to")
-            | {{parentChannel(m.parentChannelId).name}}
-    div.message-files-wrap
-      div(v-for="file in files")
-        div(v-if="file.fileId !== ''")
-          img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] === 'gif'" :src="`${fileUrl(file.fileId)}/thumbnail`" :onclick="`this.src='${$store.state.baseURL}/api/1.0/files/${file.fileId}'`" :alt="file.name")
-          a(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" target="_blank" rel="nofollow noopener noreferrer")
-            video.attached-video(v-if="file.mime.split('/')[0] === 'video'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-            audio.attached-audio(v-if="file.mime.split('/')[0] === 'audio'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}`" :alt="file.name" preload="none" controls)
-            img.attached-image(v-if="file.mime.split('/')[0] === 'image' && file.mime.split('/')[1] !== 'gif'" :src="`${$store.state.baseURL}/api/1.0/files/${file.fileId}/thumbnail`" :alt="file.name")
-          a.attached-file(:href="`${$store.state.baseURL}/api/1.0/files/${file.fileId}?dl=1`" :download="file.name")
-            p
-              | {{file.name}}
-            br
-            small
-              | {{encodeByte(file.size)}}
-        div(v-else)
-          a
-            p
-              | Not Found
-            br
-            small
-              | {{encodeByte(0)}}
+    message-attached-messages(v-if="hasAttachedMessage" :messages="messages")
+    message-attached-files(v-if="hasAttachedFile" :files="files")
     message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
   div.message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
     message-context-drop-menu(:userId="model.userId" 
@@ -72,70 +43,24 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import { detectFiles, displayDateTime } from '@/bin/utils'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
+import MessageAttachedMessages from './MessageAttachedMessages'
+import MessageAttachedFiles from './MessageAttachedFiles'
 import MessageStampsList from './MessageStampsList'
 import MessageContextDropMenu from './MessageContextDropMenu'
 import IconDots from '@/components/Icon/IconDots'
 import IconStampPlus from '@/components/Icon/IconStampPlus'
 
-function isFile (text) {
-  try {
-    const data = JSON.parse(text)
-    if (data['type'] === 'file' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
-      return true
-    } else {
-      return false
-    }
-  } catch (e) {
-    return false
-  }
-}
-function isMessage (text) {
-  try {
-    const data = JSON.parse(text)
-    if (data['type'] === 'message' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
-      return true
-    } else {
-      return false
-    }
-  } catch (e) {
-    return false
-  }
-}
-function detectFiles (text) {
-  let isInside = false
-  let startIndex = -1
-  let isString = false
-  const ret = []
-  for (let i = 0; i < text.length; i++) {
-    if (isInside) {
-      if (text[i] === '"') {
-        isString ^= true
-      } else if (!isString && text[i] === '}') {
-        isInside = false
-        if (isFile(text.substr(startIndex + 1, i - startIndex)) || isMessage(text.substr(startIndex + 1, i - startIndex))) {
-          ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
-        } else {
-          i = startIndex + 1
-        }
-      }
-    } else {
-      if (i < text.length - 1 && text[i] === '!' && text[i + 1] === '{') {
-        startIndex = i
-        i++
-        isInside = true
-        isString = false
-      }
-    }
-  }
-  return ret
-}
 export default {
   name: 'MessageElement',
   props: {
     model: Object
+  },
+  components: {
+    MessageAttachedMessages, MessageAttachedFiles, MessageStampsList, MessageContextDropMenu, IconDots, IconStampPlus
   },
   data () {
     return {
@@ -143,16 +68,17 @@ export default {
       edited: '',
       files: [],
       messages: [],
+      rendered: false,
       isContextMenuActive: false
     }
   },
   methods: {
+    ...mapActions(['openUserModal']),
+    detectFiles,
+    userIconSrc: client.getUserIconUrl,
     showStampPicker () {
       this.$store.commit('setStampPickerModel', {messageId: this.model.messageId})
       this.$store.commit('activeStampPicker')
-    },
-    userIconSrc (userId) {
-      return client.getUserIconUrl(userId)
     },
     editMessage () {
       this.isEditing = true
@@ -186,10 +112,6 @@ export default {
     clipMessage () {
       client.clipMessage('', this.model.messageId)
     },
-    dateTime: function (datetime) {
-      const d = new Date(datetime)
-      return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
-    },
     async getAttachments () {
       const data = detectFiles(this.model.content)
       this.files = (await Promise.all(data.filter(e => e.type === 'file').map(async e => {
@@ -213,20 +135,13 @@ export default {
           .then(res => res.data)
           .catch(e => null)
       }))).filter(e => e)
-    },
-    encodeByte (byte) {
-      const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-      let rank = 0
-      while (byte >= 1000) {
-        byte /= 1000
-        rank++
+      this.rendered = true
+
+      await this.$nextTick()
+      while (!this.$el) {
+        await this.$nextTick()
       }
-      const nums = byte.toPrecision(4).split('.')
-      if (nums.length > 1) {
-        return nums[0] + '.' + nums[1][0] + suffixes[rank]
-      } else {
-        return nums[0] + suffixes[rank]
-      }
+      this.$el.parentElement.parentElement.parentElement.scrollTop += this.$el.scrollHeight
     },
     mark (text) {
       return {
@@ -243,38 +158,6 @@ export default {
       textarea.select()
       document.execCommand('copy')
       body.removeChild(textarea)
-    },
-    openUserModal (userId) {
-      this.$store.dispatch('openUserModal', userId)
-    },
-    parentChannel (parentChannelId) {
-      const channel = this.$store.state.channelMap[parentChannelId]
-      if (!channel) {
-        return {
-          to: '#',
-          name: '???'
-        }
-      }
-      if (channel.parent === this.$store.state.directMessageId) {
-        let userName = this.$store.state.me.name
-        channel.member.forEach(userId => {
-          if (userId !== this.$store.state.me.userId) {
-            userName = this.$store.state.memberMap[userId].name
-          }
-        })
-        return {
-          to: `/users/${userName}`,
-          name: `@${userName}`
-        }
-      } else {
-        return {
-          to: `/channels/${this.$store.getters.getChannelPathById(parentChannelId)}`,
-          name: `#${this.$store.getters.getChannelPathById(parentChannelId)}`
-        }
-      }
-    },
-    getUserDisplayName (userId) {
-      return this.$store.state.memberMap[userId].displayName
     },
     reportMessage () {
       const reason = window.prompt('このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください')
@@ -302,7 +185,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'fileUrl', 'getMyId'
+      'fileUrl', 'getMyId', 'userDisplayName'
     ]),
     userName () {
       return this.$store.state.memberMap[this.model.userId].name
@@ -313,28 +196,21 @@ export default {
     pinned () {
       return this.$store.getters.isPinned(this.model.messageId)
     },
+    isEdited () {
+      return this.model.createdAt !== this.model.updatedAt
+    },
     displayDateTime () {
-      const d = new Date(this.model.createdAt)
-      if (this.model.createdAt === this.model.updatedAt) {
-        return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
-      } else {
-        const u = new Date(this.model.updatedAt)
-        let result = u.getHours().toString().padStart(2, '0') + ':' + u.getMinutes().toString().padStart(2, '0') + ':' + u.getSeconds().toString().padStart(2, '0') + ' 編集済み'
-        if (d.getDate() !== u.getDate() || d.getMonth() !== u.getMonth()) {
-          result = (u.getMonth() + 1).toString().padStart(2, '0') + '/' + u.getDate().toString().padStart(2, '0') + ' ' + result
-        }
-        if (d.getFullYear() !== u.getFullYear()) {
-          result = u.getFullYear().toString() + '/' + result
-        }
-        return result
-      }
+      return displayDateTime(this.model.createdAt, this.model.updatedAt)
+    },
+    hasAttachedMessage () {
+      return this.messages.length > 0
+    },
+    hasAttachedFile () {
+      return this.files.length > 0
     }
   },
   mounted () {
     this.getAttachments()
-  },
-  components: {
-    MessageStampsList, MessageContextDropMenu, IconDots, IconStampPlus
   }
 }
 </script>
@@ -352,9 +228,7 @@ export default {
   &:hover
     background-color: var(--background-hover-color)
   &.message-pinned
-    background-color: #dce3ff
-  &.message-pinned:hover
-    background-color: #cadaff
+    background-color: var(--pinned-message-color)
 
 .message-user-icon-wrap
   grid-area: user-icon
@@ -396,23 +270,24 @@ export default {
   font:
     weight: bold
     size: 12px
+  line-height: 12px
   padding: 1px 2px 1px
   margin:
     left: 5px
   opacity: 0.8
 
 .message-user-id
+  opacity: 0.6
   margin-left: 5px
   font-size: 0.8em
   max-width: 40%
-  overflow: hidden
   cursor: pointer
 
 .message-date
   display: block
   font-size: 0.7em
   margin-left: 5px
-  .message-item:hover &
+  .message:hover &
     display: none
 
 .message-contents-wrap
@@ -431,14 +306,6 @@ export default {
   & pre
     white-space: pre-wrap
 
-.message-messages-wrap
-  margin:
-    left: 10px
-
-.message-files-wrap
-  margin:
-    left: 10px
-
 .message-actions-wrap
   display: flex
   justify-content: space-between
@@ -449,7 +316,7 @@ export default {
   display: none
   justify-content: flex-end
 
-  .message-item:hover &
+  .message:hover &
     display: flex
     align-items: center
 
@@ -481,19 +348,6 @@ export default {
 
 .message-group-link-highlight
   background-color: #FAFFAD
-
-.attached-image
-  max-width: 250px
-  max-height: 480px
-
-.attached-video
-  max-width: 360px
-  max-height: 480px
-  background-color: #000000
-
-.attached-message
-  padding: 5px 10px
-  border-left: 5px solid
 
 .edit-area
   width: 100%

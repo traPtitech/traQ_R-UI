@@ -410,7 +410,7 @@ const store = new Vuex.Store({
     },
     getUserByName (state, getters) {
       return userName => {
-        const user = state.memberData.find(user => user.name === userName)
+        const user = getters.memberData.find(user => user.name === userName)
         if (user) {
           return user
         } else {
@@ -451,8 +451,9 @@ const store = new Vuex.Store({
     notificationsOnMembers (state) {
       return state.currentChannelNotifications.map(id => state.memberMap[id])
     },
-    notificationsOffMembers (state) {
-      return state.memberData.filter(member => !state.currentChannelNotifications.find(id => id === member.userId))
+    notificationsOffMembers (state, getters) {
+      return getters.memberData
+        .filter(user => !state.currentChannelNotifications.find(id => id === user.userId))
     },
     getCurrentChannelUpdateDate (state) {
       return state.currentChannelUpdateDate
@@ -538,10 +539,11 @@ const store = new Vuex.Store({
         })
     },
     memberData (state) {
-      return state.memberData
+      return state.memberData.filter(user => !user.suspended)
     },
-    nonBotUsers (state) {
-      return state.memberData.filter(user => !user.bot)
+    nonBotUsers (state, getters) {
+      return getters.memberData
+        .filter(user => !user.bot)
     },
     gradeByUserMap (state, getters) {
       const map = {}
@@ -554,6 +556,9 @@ const store = new Vuex.Store({
     },
     getGroupByContent (state) {
       return groupName => state.groupData.find(group => group.name === groupName)
+    },
+    userDisplayName (state) {
+      return userId => state.memberMap[userId].displayName
     }
   },
   actions: {
