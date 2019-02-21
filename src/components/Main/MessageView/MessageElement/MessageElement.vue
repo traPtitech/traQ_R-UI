@@ -14,9 +14,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
       | {{displayDateTime}}
     ul.message-buttons-wrap
       li(@click="showStampPicker")
-        icon-stamp-plus(:size="20" color="gray")
+        icon-stamp-plus(:size="20" color="var(--text-color)")
       li(@click.stop="isContextMenuActive = true")
-        icon-dots(:size="18" color="gray")
+        icon-dots(:size="18" color="var(--text-color)")
   div.message-contents-wrap
     div.message-text-wrap
       component(v-if="!isEditing" :is="renderedText" v-bind="$props")

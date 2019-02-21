@@ -1,0 +1,54 @@
+<template functional>
+<svg :width="props.size" :height="props.size" version="1.1" id="emoji" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 72 72" enable-background="new 0 0 72 72" xml:space="preserve">
+<g id="_x26BD__xFE0F__1_">
+	
+		<circle fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" cx="36" cy="36" r="29"/>
+	<g>
+		<path fill="none" :stroke="props.color" stroke-width="4" stroke-miterlimit="10" d="M34.2,28.1l-6.2,4.5c-1.1,0.8-1.5,2.1-1.1,3.4
+			l2.4,7.2c0.4,1.2,1.6,2.1,2.9,2.1h7.6c1.3,0,2.5-0.8,2.9-2.1l2.4-7.2c0.4-1.2,0-2.6-1.1-3.4l-6.2-4.5
+			C36.7,27.3,35.3,27.3,34.2,28.1z"/>
+		<g>
+			<path fill="none" :stroke="props.color" stroke-width="4" stroke-miterlimit="10" d="M25.1,9.1c-0.1,0.4,0.1,0.9,0.6,1.1l8.6,4.1
+				c0.5,0.2,1.1,0.4,1.7,0.4c0.6,0,1.3-0.1,1.9-0.4l8.4-4.1c0.4-0.2,0.6-0.7,0.6-1.1"/>
+			<path fill="none" :stroke="props.color" stroke-width="4" stroke-miterlimit="10" d="M30.5,64.5c0.2-0.3,0.3-0.8,0.1-1.1l-5-8.2
+				c-0.3-0.5-0.7-0.9-1.2-1.3c-0.5-0.3-1.1-0.6-1.8-0.7l-9.3-1.1c-0.4,0-0.8,0.2-1,0.5"/>
+			<path fill="none" :stroke="props.color" stroke-width="4" stroke-miterlimit="10" d="M12.2,19.4c0.4,0,0.8,0.4,0.9,0.8l2.1,9.3
+				c0.1,0.6,0.1,1.2,0,1.8C15,32,14.8,32.5,14.4,33l-5.9,7.3c-0.3,0.3-0.7,0.5-1.1,0.3"/>
+			<path fill="none" :stroke="props.color" stroke-width="4" stroke-miterlimit="10" d="M41.5,64.5c-0.3-0.3-0.3-0.8-0.1-1.2l5-8.1
+				c0.3-0.5,0.7-0.9,1.2-1.3c0.5-0.3,1.1-0.6,1.7-0.6l9.3-1.1c0.4,0,0.8,0.2,1,0.5c0,0,0,0,0,0"/>
+			<path fill="none" :stroke="props.color" stroke-width="4" stroke-miterlimit="10" d="M64.6,40.7c-0.4,0.1-0.8,0-1-0.3l-6-7.4
+				c-0.8-1-1.1-2.2-0.8-3.4l2.1-9.5c0.1-0.4,0.4-0.7,0.8-0.8"/>
+		</g>
+	</g>
+	<g>
+		
+			<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="36" y1="14.7" x2="36" y2="27.5"/>
+		
+			<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="45" y1="34" x2="56.8" y2="31.3"/>
+		
+			<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="41.6" y1="44.6" x2="47.6" y2="53.9"/>
+		
+			<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="30.4" y1="44.6" x2="24.3" y2="53.9"/>
+		
+			<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="27" y1="34" x2="15.2" y2="31.4"/>
+	</g>
+</g>
+</svg>
+</template>
+
+<script>
+export default {
+  name: 'IconSoccerBall',
+  props: {
+    size: {
+      type: Number,
+      default: 16
+    },
+    color: {
+      type: String,
+      default: 'white'
+    }
+  }
+}
+</script>

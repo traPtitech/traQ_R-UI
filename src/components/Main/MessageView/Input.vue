@@ -426,16 +426,6 @@ export default {
   border-radius: 0
   opacity: 0
   z-index: -1
-.emoji.s16
-  width: 16px
-  height: 16px
-.emoji
-  display: inline-block
-  text-indent: 999%
-  white-space: nowrap
-  overflow: hidden
-  color: transparent
-  background-size: contain
 .suggest-element
   cursor: pointer
 

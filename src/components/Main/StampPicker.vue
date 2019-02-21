@@ -1,38 +1,78 @@
 <template lang="pug">
 div.stamp-picker
-  transition(name="stamp-picker")
-    modal(:active="active" @close="closeStampPicker")
-      div.stamp-picker-container
-        div.stamp-picker-header
-          input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
-          div.stamp-picker-search-icon
-            icon(name="search")
-        div.stamp-picker-body
-          div.emoji-container(v-if="" @mouseleave="searchPlaceHolder=defaultString")
-            div(v-for="(category, idx) in stampCategolized")
-              div(v-show="idx==currentCategoryIndex || search")
-                p
-                  | {{category.category}}
-                div.emoji-item(v-for="stamp in stamps(idx)" class="emoji s32" @click="addStamp(stamp.id)" @mouseover="hoverStamp(stamp.name)" :style="`background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[stamp.id].fileId})`" :title="`:${stamp.name}:`")
-        div.stamp-picker-footer
-            div.stamp-category-wrap
-              div.stamp-category-item(v-for="(category,idx) in stampCategolized" :style="category.stamps[0] ? `background-image: url(${$store.state.baseURL}/api/1.0/files/${$store.state.stampMap[category.stamps[0].id].fileId})` : ''" @click="currentCategoryIndex=idx")
+  stamp-modal(:active="active" @close="closeStampPicker")
+    div.stamp-picker-container
+      div.stamp-picker-header
+        input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
+        div.stamp-picker-search-icon
+          icon-search(color="gray")
+      transition-group.stamp-picker-body(
+        tag="div"
+        :name="stampContainerTransitionName"
+        @mouseleave="searchPlaceHolder=defaultString")
+          div.stamp-picker-body-container(
+            v-for="(category, idx) in stampCategolized" 
+            v-show="idx==currentCategoryIndex || search" 
+            :key="category")
+            p.stamp-picker-category-name
+              | {{category.category}}
+            div.stamp-picker-body-inner-wrapper
+              div.stamp-picker-stamp-item-wrapper.flex-center(
+                v-for="stamp in stamps(idx)"
+                @click="addStamp(stamp.id)" 
+                @mouseover="hoverStamp(stamp.name)")
+                div.stamp-picker-stamp-item( 
+                  :style="stampItemStyle(stamp.fileId)" 
+                  :title="`:${stamp.name}:`")
+              div.stamp-picker-stamp-item-dummy(v-for="i in 20")
+      div.stamp-picker-footer
+          div.stamp-category-wrap
+            div.stamp-category-item.flex-center(
+              v-for="(category,idx) in stampCategolized" 
+              @click="currentCategoryIndex = idx"
+              :class="{'stamp-picker-category-selected': idx === currentCategoryIndex}")
+              component(
+                :is="categoryIcon(idx)" 
+                :size="idx === 1 ? 20 : 28" 
+                :color="idx === currentCategoryIndex ? 'var(--primary-color-on-bg)' : 'gray'")
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import client from '@/bin/client'
-import Vue from 'vue'
+import StampModal from '@/components/Util/StampModal'
+import IconSearch from '@/components/Icon/IconSearch'
+import IconClock from '@/components/Icon/IconClock'
+import IconLogo from '@/components/Icon/IconLogo'
+import IconSmile from '@/components/Icon/IconSmile'
+import IconDogFace from '@/components/Icon/IconDogFace'
+import IconHamburger from '@/components/Icon/IconHamburger'
+import IconSoccerBall from '@/components/Icon/IconSoccerBall'
+import IconAirPlane from '@/components/Icon/IconAirPlane'
+import IconLightBulb from '@/components/Icon/IconLightBulb'
+import IconHeart from '@/components/Icon/IconHeart'
+import IconFlag from '@/components/Icon/IconFlag'
+import IconRegional from '@/components/Icon/IconRegional'
+
 export default {
   name: 'StampPicker',
   props: {
   },
-  created () {
-    this.searchPlaceHolder = this.defaultString
-    client.getStampHistory().then(res => {
-      Vue.set(this.stampHistory, 'stamps', res.data.map(stamp => this.$store.state.stampMap[stamp.stampId]))
-    })
+  components: {StampModal, IconSearch},
+  data () {
+    return {
+      search: '',
+      defaultString: 'スタンプを検索',
+      searchPlaceHolder: 'スタンプを検索',
+      currentCategoryIndex: 0,
+      stampContainerTransitionName: 'slide-right',
+      categoryIcons: [IconClock, IconLogo, IconSmile, IconDogFace, IconHamburger, IconSoccerBall, IconAirPlane, IconLightBulb, IconHeart, IconFlag, IconRegional]
+    }
   },
   computed: {
+    ...mapGetters([
+      'fileUrl'
+    ]),
     active () {
       return this.$store.state.stampPickerActive
     },
@@ -40,22 +80,15 @@ export default {
       return this.$store.state.stampPickerModel
     },
     stampCategolized () {
-      if (this.stampHistory.length === 0) {
+      if (this.stampHistory.stamps.length === 0) {
         return this.$store.state.stampCategolized
       }
       return [this.stampHistory].concat(this.$store.state.stampCategolized)
-    }
-  },
-  data () {
-    return {
-      search: '',
-      defaultString: 'スタンプを検索',
-      searchPlaceHolder: this.defaultString,
-      loaded: false,
-      currentCategoryIndex: 0,
-      stampHistory: {
+    },
+    stampHistory () {
+      return {
         category: 'history',
-        stamps: []
+        stamps: this.$store.getters.stampHistory
       }
     }
   },
@@ -75,9 +108,20 @@ export default {
     hoverStamp (name) {
       this.searchPlaceHolder = name
     },
-    emojiLoaded () {
-      this.loaded = true
+    categoryIcon (categoryIndex) {
+      return this.categoryIcons[categoryIndex]
+    },
+    stampItemStyle (fileId) {
+      return `background-image: url(${this.fileUrl(fileId)})`
     }
+  },
+  watch: {
+    currentCategoryIndex (newIndex, oldIndex) {
+      this.stampContainerTransitionName = newIndex > oldIndex ? 'slide-right' : 'slide-left'
+    }
+  },
+  created () {
+    this.$store.dispatch('getStampHistory')
   }
 }
 </script>
@@ -93,60 +137,151 @@ export default {
     +mq(pc)
       right: 50px
     bottom: 60px
-    transition: all .2s ease-out
-.stamp-picker-enter .modal, .stamp-picker-leave-active .modal
-  transform: translateY(100%)
-.stamp-picker-enter-active, .stamp-picker-leave-active
+
+.stamp-picker-container
+  display: flex
+  flex-flow: column
+  height: 100%
+  overflow: hidden
+
 .stamp-picker-header
-  background: $primary-color
+  // background: $primary-color
   position: relative
+
 .stamp-picker-search
   outline: none
   border: none
+  border:
+    radius: 4px
   box-sizing: border-box
   width: calc( 100% - 10px*2 )
   height: 30px
   margin: 10px 10px 10px
-  padding: 5px 5px
+  padding:
+    top: 5px
+    left: 5px
+    right: 30px
+    bottom: 5px
+  background: var(--setting-background-color)
+  
 .stamp-picker-search-icon
-  display: inline-block
-  color: gray
+  display: inline-flex
+  align-items: center
   position: absolute
   top: 50%
   right: 20px
   transform: translateY(-50%)
+
 .stamp-category-wrap
   display: flex
-  padding: 0
+  justify-content: space-between
+  padding:
+    left: 10px
+    right: 10px
+
 .stamp-category-item
-  width: 20px
-  height: 20px
-  background-size: contain
-  background-repeat: none
-  margin: 5px
+  width: 25px
+  height: 40px
+  padding: 
+    top: 2px
+    right: 2px
+    left: 2px
+    bottom: 2px
   cursor: pointer
+  box-sizing: content-box
+
+  &:hover
+    background: var(--background-hover-color)
+
+.stamp-picker-category-selected
+  position: relative
+
+  &::before
+    content: ''
+    display: block
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    width: 100%
+    height: 3px
+    background: var(--primary-color)
+
 .stamp-picker-body
-  overflow-y: scroll
-  height: 40vh
+  position: relative
+  flex-grow: 1
+
+.stamp-picker-body-container
+  will-change: transform opacity
+  position: absolute
+  width: 100%
+  height: 100%
+  padding: 6px 12px 6px
+  overflow: scroll
+
+.stamp-picker-body-inner-wrapper
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
+
+.stamp-picker-category-name
+  font-weight: bold
+  margin-bottom: 12px
+
 .stamp-picker-footer
-.emoji-item
+  z-index: 1
+  box-shadow: 0 -1px 5px 0 rgba(0,0,0,0.3)
+  // border-top: solid 1px var(--primary-color)
+  box-sizing: border-box
+
+.stamp-picker-stamp-item-wrapper
+  width: 32px
+  height: 32px
+
+  &:hover
+    background-color: var(--background-hover-color)
+
+.stamp-picker-stamp-item
   border-radius: 5px
   cursor: pointer
-  &:hover
-    background-color: gray
-.emoji
-  &.s24
-    width: 24px
-    height: 24px
-  &.s32
-    width: 32px
-    height: 32px
-.emoji
-  display: inline-block
-  text-indent: 999%
-  white-space: nowrap
-  overflow: hidden
-  color: transparent
-  background-size: contain
+  background:
+    size: contain
+  width: 28px
+  height: 28px
+
+.stamp-picker-stamp-item-dummy
+  width: 32px
+  height: 0
+
+.slide-left
+  &-enter-active
+    transition: all .3s ease
+
+  &-leave-active
+    transition: all .3s ease
+
+  &-enter
+    transform: translateX(-50px)
+    opacity: 0
+
+  &-leave-to
+    transform: translateX(50px)
+    opacity: 0
+
+.slide-right
+  &-enter-active
+    transition: all .3s ease
+
+  &-leave-active
+    transition: all .3s ease
+
+  &-enter
+    transform: translateX(50px)
+    opacity: 0
+
+  &-leave-to
+    transform: translateX(-50px)
+    opacity: 0
+
 </style>
 

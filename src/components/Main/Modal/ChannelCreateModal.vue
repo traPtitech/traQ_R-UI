@@ -1,16 +1,16 @@
 <template lang="pug">
-BaseCommonModal(title="CREATE" small)
+base-common-modal(title="CREATE" small)
   icon-plus(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
   .channel-create-modal
     h2.channel-create-description 子チャンネルを作成する
     .channel-create-input-wrap
-      SettingInput(type="textarea" v-model="channelName")
+      setting-input(type="textarea" v-model="channelName")
     p.channel-create-status(v-if="state === 'failed'")
       | 失敗しました
     p.channel-create-status(v-if="state === 'successed'")
       | 作成されました
     .channel-create-button-wrap
-      SettingButton(@click="createChannel")
+      setting-button(@click="createChannel")
         | 作成
 </template>
 
