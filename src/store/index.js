@@ -144,6 +144,9 @@ const store = new Vuex.Store({
       })
     },
     setGroupData (state, newGroupData) {
+      newGroupData.forEach(group => {
+        group.members = group.members.filter(userId => state.memberMap[userId].accountStatus !== 0)
+      })
       state.groupData = newGroupData
       const map = {}
       state.groupData.forEach(group => {
@@ -526,7 +529,7 @@ const store = new Vuex.Store({
     grades (state) {
       const gradeReg = /^\d\d[BMDR]$/
       return state.groupData
-        .filter(group => gradeReg.test(group.name) && group.members.filter(m => !m.suspended).length > 0)
+        .filter(group => gradeReg.test(group.name) && group.members.length > 0)
     },
     sortedGrades (state, getters) {
       const map = {
@@ -544,7 +547,7 @@ const store = new Vuex.Store({
         })
     },
     memberData (state) {
-      return state.memberData.filter(user => !user.suspended)
+      return state.memberData.filter(user => user.accountStatus !== 0)
     },
     nonBotUsers (state, getters) {
       return getters.memberData
@@ -567,6 +570,9 @@ const store = new Vuex.Store({
     },
     stampHistory (state) {
       return state.stampHistory
+    },
+    filteringUser (state) {
+      return users => users.filter(userId => state.memberData[userId].accountStatus !== 0)
     }
   },
   actions: {

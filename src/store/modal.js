@@ -47,13 +47,14 @@ export default {
     },
     updateCurrentTagUsers ({state, commit}) {
       return client.getTag(state.data.tagId).then(res => {
-        commit('setCurrentTagUsers', res.data.users)
+        commit('setCurrentTagUsers', res.data.users.filter(user => user.accountStatus !== 0))
       })
     },
     openUserModal: {
       root: true,
       handler ({state, rootState, commit, dispatch}, userId) {
         if (/#/.test(rootState.memberMap[userId].name)) return
+        if (rootState.memberMap[userId].accountStatus === 0) return
         dispatch('open', {
           name: 'UserModal',
           data: rootState.memberMap[userId]
