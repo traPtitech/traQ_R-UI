@@ -39,7 +39,7 @@ export default {
       }
     },
     sidebarStyle () {
-      if (deviceType === 'pc') {
+      if (this.deviceType === 'pc') {
         return {}
       }
       if (this.isOpenSwipeActive && !this.isSidebarOpened) {
