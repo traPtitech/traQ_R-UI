@@ -6,8 +6,9 @@ content.content-wrap.is-scroll(@scroll="checkLoad")
     li.message-item(v-for="(message, index) in $store.state.messages" :key="message.messageId")
       time.date-partition(v-if="index === 0 || date($store.state.messages[index - 1].createdAt) !== date(message.createdAt)")
         | {{date(message.createdAt)}}
-      p(v-if="new Date(message.createdAt) - updateDate === 0")
-        | ここから新規メッセージ
+      div.new-message-partition(v-if="new Date(message.createdAt) - updateDate === 0")
+        span
+          | 新規メッセージ
       MessageElement(:model="message")
   div
 </template>
@@ -102,12 +103,14 @@ export default {
   overflow-y: scroll
   min-width: 0
   -webkit-overflow-scrolling: touch
+
 .message-wrap
   width: 100%
   height: 100%
   z-index: 10
   top: 0
   left: 0
+
 .sticky-container
   height: 100%
   width: 100%
@@ -115,6 +118,7 @@ export default {
   left: 0
   z-index: 20
   pointer-events: none
+
 .no-more-message
   margin: 15px 0
   text-align: center
@@ -143,6 +147,36 @@ export default {
     left: 10px
   &:after
     right: 10px
+
+.new-message-partition
+  position: relative
+  width: 100%
+
+  span
+    display: inline-block
+    position: relative
+    font:
+      weight: bold
+      size: 0.8em
+    color: $notification-color
+    border:
+      width: 1px
+      style: solid
+      color: $notification-color
+      radius: 3px
+    padding: 2px 4px
+    margin:
+      left: 10px
+
+  &:after
+    content: ''
+    display: block
+    position: absolute
+    width: calc( 100% - 135px )
+    height: 1px
+    background-color: $notification-color
+    top: 50%
+    right: 15px
 
 .message-list
   padding:
