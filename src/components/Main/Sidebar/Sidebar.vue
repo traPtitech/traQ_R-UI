@@ -30,6 +30,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['deviceType']),
     sidebarClass () {
       return {
         'is-sidebar-opened': this.isSidebarOpened,
@@ -38,6 +39,9 @@ export default {
       }
     },
     sidebarStyle () {
+      if (deviceType === 'pc') {
+        return {}
+      }
       if (this.isOpenSwipeActive && !this.isSidebarOpened) {
         return {
           'transform': `translateX(${this.openSwipedX - this.sidebarWidth}px)`,
