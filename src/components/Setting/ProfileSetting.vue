@@ -86,6 +86,11 @@ export default {
         this.error = '現在のパスワードが必要です'
         return
       }
+      if (this.newPassword.length < 10 || this.newPassword.length > 32) {
+        this.state = 'failed'
+        this.error = '新しいパスワードは10文字以上32文字以下でなければなりません'
+        return
+      }
       const tasks = []
       if (this.icon) {
         tasks.push(client.changeIcon(this.icon).then(() => {
@@ -104,7 +109,7 @@ export default {
         }))
       }
       if (this.newPassword !== '') {
-        tasks.push(client.changePassword(this.newPassword, this.oldPassword).then(() => {
+        tasks.push(client.changePassword(this.oldPassword, this.newPassword).then(() => {
           this.done += 'パスワード '
         }))
       }
