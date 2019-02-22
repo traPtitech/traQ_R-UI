@@ -108,6 +108,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)
+    console.log(nextUser)
     if (nextUser) {
       const member = [nextUser.userId]
       if (store.state.me.userId !== nextUser.userId) {
@@ -141,7 +142,7 @@ router.beforeEach(async (to, from, next) => {
       next(true)
       return
     } else {
-      next('NotFound')
+      next('/notfound')
       return
     }
   }
@@ -154,7 +155,7 @@ router.beforeEach(async (to, from, next) => {
 
   const nextChannel = store.getters.getChannelByName(to.params.channel)
   if (!nextChannel) {
-    next('NotFound')
+    next('/notfound')
     return
   } else {
     store.commit('changeChannel', nextChannel)
