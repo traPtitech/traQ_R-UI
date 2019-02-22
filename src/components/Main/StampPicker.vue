@@ -10,7 +10,7 @@ div.stamp-picker
         tag="div"
         :name="stampContainerTransitionName"
         @mouseleave="searchPlaceHolder=defaultString")
-          div.stamp-picker-body-container(
+          div.stamp-picker-body-container.is-scroll(
             v-if="search.length == 0" 
             v-for="(category, idx) in stampCategolized" 
             v-show="idx==currentCategoryIndex" 
@@ -26,7 +26,7 @@ div.stamp-picker
                   :style="stampItemStyle(stamp.fileId)" 
                   :title="`:${stamp.name}:`")
               div.stamp-picker-stamp-item-dummy(v-for="i in 20")
-          div.stamp-picker-body-container(
+          div.stamp-picker-body-container.is-scroll(
             key="filtered"
             v-if="search.length > 0")
             p.stamp-picker-category-name
@@ -236,7 +236,7 @@ export default {
 
 .stamp-picker-body-container
   will-change: transform, opacity
-  position: absolute
+  // position: absolute
   width: 100%
   height: 100%
   padding: 6px 12px 6px
@@ -278,9 +278,11 @@ export default {
 
 .slide-left
   &-enter-active
+    position: absolute
     transition: all .3s ease
 
   &-leave-active
+    position: absolute
     transition: all .3s ease
 
   &-enter
@@ -293,9 +295,11 @@ export default {
 
 .slide-right
   &-enter-active
+    position: absolute
     transition: all .3s ease
 
   &-leave-active
+    position: absolute
     transition: all .3s ease
 
   &-enter
