@@ -117,17 +117,15 @@ export default {
     width: $sidebar-width
     position: fixed
     z-index: $sidebar-index
-    transform: translateX(-$sidebar-width)
+    transform: translateX(-102%)
     left: 0
     bottom: 0
-    will-change: none
+    will-change: transform
     transition: transform .3s ease
     &.is-sidebar-opened
-      will-change: transform
       transition: transform .3s ease-in-out
       transform: translateY(0)
     &.is-swipe-active
-      will-change: transform
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     padding-left: calc(env(safe-area-inset-left) - 7px)
     background-color: #3a4891
