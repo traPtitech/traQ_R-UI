@@ -7,19 +7,19 @@ file-drop-detector(
   modal
   swipe-detector(@swipeStart="swipeStart" @swipeMoving="swipeMoving" @swipeEnd="swipeEnd")
     div.index(:data-enable-blur="name ? 'true' : 'false'")
-      Titlebar
+      titlebar
       channel-information
       // ↓grid-item on pc
-      Message
-      Input
-      Sidebar(:swipeEvent="swipeEvent")
+      message-container
+      message-input
+      sidebar(:swipeEvent="swipeEvent")
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import sse from '@/bin/sse'
 import client from '@/bin/client'
-import Message from '@/components/Main/MessageView/MessageContainer'
+import MessageContainer from '@/components/Main/MessageView/MessageContainer'
 import FileDropDetector from '@/components/Util/FileDropDetector'
 import Modal from '@/components/Main/Modal'
 import SwipeDetector from '@/components/Util/SwipeDetector'
@@ -42,12 +42,12 @@ export default {
   components: {
     'Sidebar': window.asyncLoadComponents(import('@/components/Main/Sidebar/Sidebar')),
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
-    'Input': window.asyncLoadComponents(import('@/components/Main/MessageView/Input')),
+    'MessageInput': window.asyncLoadComponents(import('@/components/Main/MessageView/MessageInput')),
     'ChannelInformation': window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
     'User': window.asyncLoadComponents(import('@/components/Main/User')),
     'Tag': window.asyncLoadComponents(import('@/components/Main/Tag')),
     'StampPicker': window.asyncLoadComponents(import('@/components/Main/StampPicker')),
-    Message,
+    MessageContainer,
     Modal,
     FileDropDetector,
     SwipeDetector
@@ -310,7 +310,6 @@ export default {
     grid-template-columns: $sidebar-width 1fr
     grid-template-areas: "side content""side input"
   +mq(sp)
-    overflow: scroll
     overscroll-behavior: contain
     -webkit-overflow-scrolling: touch
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)

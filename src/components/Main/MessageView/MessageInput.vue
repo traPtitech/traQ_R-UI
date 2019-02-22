@@ -18,7 +18,7 @@ import client from '@/bin/client'
 import suggest from '@/bin/suggest'
 
 export default {
-  name: 'Input',
+  name: 'MessageInput',
   data () {
     return {
       focused: false,

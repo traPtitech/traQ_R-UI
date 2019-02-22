@@ -1,39 +1,33 @@
 <template lang="pug">
-div.splash
+  div.splash.flex-center
+    icon-logo(:size="100")
 </template>
 
 <script>
+import IconLogo from '@/components/Icon/IconLogo'
+
 export default {
   name: 'Splash',
-  data () {
-    return {
-      text: 'ローディング中！！！'
-    }
-  },
+  components: {IconLogo},
   created () {
-    this.addText()
   },
   methods: {
-    addText () {
-      if (!this.$store.state.loaded || !this.$store.state.loadedComponent) {
-        this.text = this.text + '\nローディング中！'
-        setTimeout(this.addText, 100)
-      }
-    }
   }
 }
 </script>
 
 <style lang="sass">
 .splash
-  display: fix
+  display: fixed
   width: 100vw
   height: 100vh
-  background-color: #6cb8ff
+  background: var(--primary-color)
   z-index: 1000
-  animation: gradationTest 3s infinite
-@keyframes gradationTest 
-  0% {background-color: #6cb8ff;}
-  50% {background-color: #fff66c;}
-  100% {background-color: #ffa36c;}
+  animation: logo-fade-in .4s ease
+
+@keyframes logo-fade-in
+  from
+    opacity: 0
+  to
+    opacity: 1
 </style>

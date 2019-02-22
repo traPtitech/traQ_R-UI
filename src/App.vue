@@ -1,7 +1,7 @@
 <template lang="pug">
 div#app(:data-theme="$store.state.theme" :style="globalStyle")
   Favicon
-  //- Splash(v-if="!$store.state.loaded || !$store.state.loadedComponent")
+  Splash(v-if="!($store.state.loaded && $store.state.loadedComponent)")
   router-view()
 </template>
 

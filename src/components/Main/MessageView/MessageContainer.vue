@@ -93,6 +93,10 @@ export default {
 .content-wrap
   +mq(pc)
     grid-area: content
+  +mq(sp)
+    display: block
+    height: 100vh
+    height: vh(100)
   background-color: $background-color
   overflow-x: hidden
   overflow-y: scroll
