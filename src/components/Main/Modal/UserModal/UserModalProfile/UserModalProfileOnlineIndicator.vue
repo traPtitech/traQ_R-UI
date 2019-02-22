@@ -16,7 +16,7 @@ function paddingNumber (n, k) {
   return ret.slice(-k)
 }
 function dateParse (date) {
-  return `${date.getFullYear()}/${paddingNumber(date.getMonth(), 2)}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(date.getHours(), 2)}:${paddingNumber(date.getMinutes(), 2)}`
+  return `${date.getFullYear()}/${paddingNumber(date.getMonth() + 1, 2)}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(date.getHours(), 2)}:${paddingNumber(date.getMinutes(), 2)}`
 }
 export default {
   props: {
