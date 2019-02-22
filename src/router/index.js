@@ -108,7 +108,6 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)
-    console.log(nextUser)
     if (nextUser) {
       const member = [nextUser.userId]
       if (store.state.me.userId !== nextUser.userId) {
