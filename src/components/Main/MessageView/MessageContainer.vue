@@ -73,6 +73,18 @@ export default {
     updateDate () {
       return this.$store.getters.getCurrentChannelUpdateDate
     }
+  },
+  async mounted () {
+    while (!this.$el) {
+      await this.$nextTick()
+    }
+    this.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'addMessages') {
+        if (this.$el && state.messages[state.messages.length - 1].userId === state.me.userId) {
+          this.$el.scrollTop = this.$el.scrollHeight
+        }
+      }
+    })
   }
 }
 </script>
