@@ -1,13 +1,13 @@
 <template lang="pug">
   div.message-files-wrap
     div.message-file-wrap(v-for="file in files")
-      div(v-if="file.fileId !== ''")
+      div.message-file-inner-wrap(v-if="file.fileId !== ''")
         div(v-if="isGif(file.mime)")
           img.attached-image(
             :src="`${fileUrl(file.fileId)}/thumbnail`" 
             :onClick="`this.src = '${fileUrl(file.fileId)}'`" 
             :alt="file.name")
-        a(
+        a.attached-image-wrapper(
           v-else-if="isImage(file.mime)" 
           :href="fileUrl(file.fileId)" 
           target="_blank" 
@@ -27,6 +27,7 @@
           :alt="file.name" 
           preload="none" 
           controls)
+
         a.attached-file-info(
           :href="`${fileUrl(file.fileId)}?dl=1`" 
           :download="file.name")
@@ -79,6 +80,13 @@ export default {
 .message-file-wrap:not(:first-child)
   margin:
     top: 16px
+
+.message-file-inner-wrap
+  display: inline-flex
+  flex-flow: column
+
+.attached-image-wrap
+  display: inline-flex
 
 .attached-image
   cursor: pointer
