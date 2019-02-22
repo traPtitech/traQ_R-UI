@@ -37,7 +37,12 @@ export default {
       }
     },
     filteredMembers () {
-      return this.filterMembers()
+      return this.members
+        .map(userId => this.$store.state.memberMap[userId])
+        .filter(m => !m.suspended)
+        .filter(m => {
+          return this.caseIgnoreFilterText.test(m.displayName) || this.caseIgnoreFilterText.test(m.name)
+        })
     },
     caseIgnoreFilterText () {
       return new RegExp(this.filterText, 'i')
@@ -49,12 +54,6 @@ export default {
     },
     zeroHeight () {
       this.$refs.list.style.height = '0'
-    },
-    filterMembers () {
-      return this.members.map(userId => this.$store.state.memberMap[userId])
-        .filter(m => {
-          return this.caseIgnoreFilterText.test(m.displayName) || this.caseIgnoreFilterText.test(m.name)
-        })
     }
   },
   watch: {

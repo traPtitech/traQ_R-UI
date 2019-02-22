@@ -525,7 +525,8 @@ const store = new Vuex.Store({
     },
     grades (state) {
       const gradeReg = /^\d\d[BMDR]$/
-      return state.groupData.filter(group => gradeReg.test(group.name) && group.members.length > 0)
+      return state.groupData
+        .filter(group => gradeReg.test(group.name) && group.members.filter(m => !m.suspended).length > 0)
     },
     sortedGrades (state, getters) {
       const map = {
