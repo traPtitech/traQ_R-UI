@@ -60,7 +60,12 @@ export default {
     model: Object
   },
   components: {
-    MessageAttachedMessages, MessageAttachedFiles, MessageStampsList, MessageContextDropMenu, IconDots, IconStampPlus
+    MessageAttachedMessages,
+    MessageAttachedFiles,
+    MessageStampsList,
+    MessageContextDropMenu,
+    IconDots,
+    IconStampPlus
   },
   data () {
     return {
@@ -77,7 +82,9 @@ export default {
     detectFiles,
     userIconSrc: client.getUserIconUrl,
     showStampPicker () {
-      this.$store.commit('setStampPickerModel', {messageId: this.model.messageId})
+      this.$store.commit('setStampPickerModel', {
+        messageId: this.model.messageId
+      })
       this.$store.commit('activeStampPicker')
     },
     editMessage () {
@@ -103,38 +110,54 @@ export default {
     },
     async pinMessage () {
       await client.pinMessage(this.model.messageId)
-      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
+      this.$store.dispatch(
+        'getCurrentChannelPinnedMessages',
+        this.$store.state.currentChannel.channelId
+      )
     },
     async unpinMessage () {
       await client.unpinMessage(this.pinned.pinId)
-      this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId)
+      this.$store.dispatch(
+        'getCurrentChannelPinnedMessages',
+        this.$store.state.currentChannel.channelId
+      )
     },
     clipMessage () {
       client.clipMessage('', this.model.messageId)
     },
     async getAttachments () {
       const data = detectFiles(this.model.content)
-      this.files = (await Promise.all(data.filter(e => e.type === 'file').map(async e => {
-        return client.getFileMeta(e.id)
-        .then(res => res.data)
-        .catch(e => {
-          return {
-            fileId: '',
-            name: 'not found',
-            mime: 'none',
-            size: 0,
-            dateTime: '2019-02-05T05:43:00.452Z',
-            hasThumb: true,
-            thumbWidth: 0,
-            thumbHeight: 0
-          }
-        })
-      })))
-      this.messages = (await Promise.all(data.filter(e => e.type === 'message').map(async e => {
-        return client.getMessage(e.id)
-          .then(res => res.data)
-          .catch(e => null)
-      }))).filter(e => e)
+      this.files = await Promise.all(
+        data
+          .filter(e => e.type === 'file')
+          .map(async e => {
+            return client
+              .getFileMeta(e.id)
+              .then(res => res.data)
+              .catch(e => {
+                return {
+                  fileId: '',
+                  name: 'not found',
+                  mime: 'none',
+                  size: 0,
+                  dateTime: '2019-02-05T05:43:00.452Z',
+                  hasThumb: true,
+                  thumbWidth: 0,
+                  thumbHeight: 0
+                }
+              })
+          })
+      )
+      this.messages = (await Promise.all(
+        data
+          .filter(e => e.type === 'message')
+          .map(async e => {
+            return client
+              .getMessage(e.id)
+              .then(res => res.data)
+              .catch(e => null)
+          })
+      )).filter(e => e)
       this.rendered = true
 
       await this.$nextTick()
@@ -153,17 +176,20 @@ export default {
       const body = document.body
       if (!body) return
       const textarea = document.createElement('textarea')
-      textarea.value = `!{"raw":"","type":"message","id":"${this.model.messageId}"}`
+      textarea.value = `!{"raw":"","type":"message","id":"${
+        this.model.messageId
+      }"}`
       body.appendChild(textarea)
       textarea.select()
       document.execCommand('copy')
       body.removeChild(textarea)
     },
     reportMessage () {
-      const reason = window.prompt('このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください')
+      const reason = window.prompt(
+        'このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください'
+      )
       if (reason) {
-        client.reportMessage(this.model.messageId, reason)
-        .then(() => {
+        client.reportMessage(this.model.messageId, reason).then(() => {
           this.$store.commit('removeMessage', this.model.messageId)
         })
       }
@@ -184,9 +210,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'fileUrl', 'getMyId', 'userDisplayName'
-    ]),
+    ...mapGetters(['fileUrl', 'getMyId', 'userDisplayName']),
     userName () {
       return this.$store.state.memberMap[this.model.userId].name
     },
