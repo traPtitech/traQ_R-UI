@@ -2,7 +2,7 @@
 .image-cropper-wrap
   .image-cropper(:class="{'rounded': rounded}")
     img.image-cropper-raw-image(:src="imageData")
-  p.image-cropper-note 画像の位置・サイズを編集できます
+  p.image-cropper-note {{ cropperNote }}
 </template>
 
 <script>
@@ -14,11 +14,13 @@ export default {
   data () {
     return {
       cropper: null,
-      value: null
+      value: null,
+      cropperNote: '画像の位置・サイズを編集できます'
     }
   },
   props: {
     imageData: {
+      // base64エンコードされた画像データ
       type: String,
       required: true
     },
@@ -31,6 +33,13 @@ export default {
       default: null
     }
   },
+  computed: {
+    mime () {
+      const start = this.imageData.indexOf(':') + 1
+      const end = this.imageData.indexOf(';') - start
+      return this.imageData.substr(start, end)
+    }
+  },
   watch: {
     imageData () {
       if (this.cropper) {
@@ -40,18 +49,32 @@ export default {
   },
   mounted () {
     const image = this.$el.querySelector('.image-cropper-raw-image')
-    this.cropper = new Cropper(image, Object.assign({
-      // スタンプ編集用の設定
-      viewMode: 3,
-      aspectRatio: 1,
-      autoCropArea: 1,
-      dragMode: 'move',
-      cropend: () => {
-        this.cropper.getCroppedCanvas().toBlob(blob => {
-          this.$emit('input', blob)
-        })
-      }
-    }, this.options))
+    if (this.mime === 'image/gif') {
+      this.cropperNote = 'GIFは切り抜きできません'
+      this.cropper = new Cropper(image, Object.assign({
+        // スタンプ編集用の設定
+        viewMode: 3,
+        aspectRatio: 1,
+        autoCropArea: 1,
+        dragMode: 'none',
+        cropBoxMovable: false,
+        cropBoxResizable: false,
+        toggleDragModeOnDblclick: false
+      }, this.options))
+    } else {
+      this.cropper = new Cropper(image, Object.assign({
+        // スタンプ編集用の設定
+        viewMode: 3,
+        aspectRatio: 1,
+        autoCropArea: 1,
+        dragMode: 'move',
+        cropend: () => {
+          this.cropper.getCroppedCanvas().toBlob(blob => {
+            this.$emit('input', blob)
+          }, this.mime)
+        }
+      }, this.options))
+    }
   }
 }
 </script>

@@ -145,6 +145,7 @@ $header-height: 3rem
     display: block
   > *:not(:last-child)
     margin-bottom: 2rem
+  -webkit-overflow-scrolling: touch
 
 
 .setting-menu
