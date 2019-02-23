@@ -527,9 +527,8 @@ const store = new Vuex.Store({
       }
     },
     grades (state) {
-      const gradeReg = /^\d\d[BMDR]$/
       return state.groupData
-        .filter(group => gradeReg.test(group.name) && group.members.length > 0)
+        .filter(group => group.type === 'grade' && group.members.length > 0)
     },
     sortedGrades (state, getters) {
       const map = {
@@ -541,9 +540,22 @@ const store = new Vuex.Store({
       const f = (s) => {
         return map[s[2]] * 100 + parseInt(s.substr(0, 2), 10)
       }
+      const gradeReg = /^\d\d[BMDR]$/
       return getters.grades
         .sort((lhs, rhs) => {
-          return f(lhs.name) - f(rhs.name)
+          if (gradeReg.test(lhs.name) && gradeReg.test(rhs.name)) {
+            return f(lhs.name) - f(rhs.name)
+          } else if (gradeReg.test(lhs.name)) {
+            return -1
+          } else if (gradeReg.test(rhs.name)) {
+            return 1
+          } else {
+            if (lhs.name < rhs.name) {
+              return -1
+            } else {
+              return 1
+            }
+          }
         })
     },
     memberData (state) {
