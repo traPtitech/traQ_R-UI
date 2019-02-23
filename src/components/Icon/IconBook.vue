@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'IconWrench',
+  name: 'IconBook',
   props: {
     size: {
       type: Number,
