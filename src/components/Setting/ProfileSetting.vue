@@ -11,7 +11,8 @@
   .profile-image-editor(v-if="encodedFile")
     ImageCropper(
       v-model="croppedBlob"
-      :imageData="encodedFile")
+      :imageData="encodedFile"
+      rounded)
   SettingInput(v-model="displayName" label="表示名")
   SettingInput(v-model="twitterId" label="Twitter ID")
   SettingInput(v-model="newPassword" type="password" label="新しいパスワード")

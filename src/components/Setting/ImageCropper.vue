@@ -1,5 +1,5 @@
 <template lang="pug">
-.image-cropper
+.image-cropper(:class="{'rounded': rounded}")
   img.image-cropper-raw-image(:src="imageData")
 </template>
 
@@ -20,6 +20,10 @@ export default {
       type: String,
       required: true
     },
+    rounded: {
+      type: Boolean,
+      default: false
+    },
     options: {
       type: Object,
       default: null
@@ -34,9 +38,9 @@ export default {
   },
   mounted () {
     const image = this.$el.querySelector('.image-cropper-raw-image')
-    this.cropper = new Cropper(image, this.options || {
+    this.cropper = new Cropper(image, Object.assign({
       // スタンプ編集用の設定
-      viewMode: 2,
+      viewMode: 3,
       aspectRatio: 1,
       autoCropArea: 1,
       dragMode: 'move',
@@ -45,12 +49,20 @@ export default {
           this.$emit('input', blob)
         })
       }
-    })
+    }, this.options))
   }
 }
 </script>
 
 <style lang="sass">
 .image-cropper
-  min-height: 30vw
+  width: 400px
+  height: 400px
+  +mq(sp)
+    width: 80vw
+    height: 80vw
+.image-cropper.rounded
+  .cropper-view-box, .cropper-face
+    border-radius: 50%;
+
 </style>
