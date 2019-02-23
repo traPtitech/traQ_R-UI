@@ -156,6 +156,10 @@ export default {
 
 .stamp-setting-registerd-stamp-info
   margin-left: 8px
+  flex-shrink: 1
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-all;
 
 .stamp-setting-registerd-stamp-wrap
   &:hover, &.stamp-editing
@@ -163,6 +167,7 @@ export default {
 
 .stamp-setting-registerd-stamp
   border-radius: 5px
+  flex-shrink: 0
   background:
     size: contain
     repeat: no-repeat
@@ -185,6 +190,7 @@ export default {
   font-weight: 600
 
 .stamp-action-container
+  flex-shrink: 0
   padding: 1rem
 
 .stamp-action-icon
