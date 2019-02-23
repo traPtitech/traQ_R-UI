@@ -97,7 +97,7 @@ export default {
       this.rawStampFile = null
       this.stampName = ''
       this.encodedFile = null
-      this.croppedBrob = null
+      this.croppedBlob = null
     },
     async updateStamp () {
       await client.fixStamp(this.model.id, '', this.stampFile)
