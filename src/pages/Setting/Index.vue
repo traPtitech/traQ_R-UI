@@ -132,11 +132,12 @@ $header-height: 3rem
   overflow: scroll
   flex: 1
   display: block
+  -webkit-overflow-scrolling: touch
   @media (max-width: 750px)
     display: none
 
 .setting-page-all-container
-  padding: 2rem
+  padding: 1rem
   flex: 1
   overflow: scroll
   display: none
@@ -145,7 +146,6 @@ $header-height: 3rem
     display: block
   > *:not(:last-child)
     margin-bottom: 2rem
-  -webkit-overflow-scrolling: touch
 
 
 .setting-menu
