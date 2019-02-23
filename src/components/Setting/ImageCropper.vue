@@ -52,5 +52,5 @@ export default {
 
 <style lang="sass">
 .image-cropper
-  min-height: 50vw
+  min-height: 30vw
 </style>
