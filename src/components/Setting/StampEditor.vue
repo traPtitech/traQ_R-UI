@@ -1,6 +1,12 @@
 <template lang="pug">
 .stamp-editor
-  SettingFileInput.stamp-file-input(v-model="stampFile" :name="model ? `stamp-edit_model.id` : 'stamp-register'" label="ファイルを選択")
+  SettingFileInput.stamp-file-input(
+    v-model="stampFile"
+    :name="model ? `stamp-edit_model.id` : 'stamp-register'"
+    @load="onFileLoad"
+    label="ファイルを選択")
+  .stamp-preview(v-if="previewData")
+    img(:src="previewData")
   SettingInput(v-model="stampName" v-if="!model" label="スタンプ名")
   SettingButton(v-if="canPerformOperation" @click="perform")
     | {{ model ? '更新' : '追加' }}
@@ -27,7 +33,8 @@ export default {
   data () {
     return {
       stampFile: null,
-      stampName: ''
+      stampName: '',
+      previewData: null
     }
   },
   props: {
@@ -69,28 +76,25 @@ export default {
     }
   },
   methods: {
-    perform () {
+    onFileLoad (dataUrl) {
+      this.previewData = dataUrl
+    },
+    async perform () {
       if (this.model) {
-        this.updateStamp()
+        await this.updateStamp()
       } else {
-        this.addStamp()
+        await this.addStamp()
       }
+      this.$store.dispatch('updateStamps')
+      this.stampFile = null
+      this.stampName = ''
+      this.previewData = ''
     },
-    updateStamp () {
-      client.fixStamp(this.model.id, '', this.stampFile)
-      .then(() => {
-        this.$store.dispatch('updateStamps')
-        this.stampFile = null
-        this.stampName = ''
-      })
+    async updateStamp () {
+      await client.fixStamp(this.model.id, '', this.stampFile)
     },
-    addStamp () {
-      client.addStamp(this.stampName, this.stampFile)
-      .then(() => {
-        this.$store.dispatch('updateStamps')
-        this.stampFile = null
-        this.stampName = ''
-      })
+    async addStamp () {
+      await client.addStamp(this.stampName, this.stampFile)
     },
     stampItemStyle (fileId) {
       return `background-image: url(${this.fileUrl(fileId)})`
@@ -110,4 +114,6 @@ export default {
 </script>
 
 <style lang="sass">
+.stamp-preview
+  margin-bottom: 1rem
 </style>
