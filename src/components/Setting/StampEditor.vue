@@ -5,12 +5,10 @@
     :name="model ? `stamp-edit_model.id` : 'stamp-register'"
     @load="onFileLoad"
     label="ファイルを選択")
-  .stamp-preview(v-if="previewData")
+  .stamp-preview(v-if="encodedFile")
     ImageCropper(
       v-model="croppedBlob"
-      :imageData="previewData"
-      :aspect-ratio="1"
-    )
+      :imageData="encodedFile")
   SettingInput(v-model="stampName" v-if="!model" label="スタンプ名")
   SettingButton(v-if="canPerformOperation" @click="perform")
     | {{ model ? '更新' : '追加' }}
@@ -40,8 +38,8 @@ export default {
     return {
       rawStampFile: null,
       stampName: '',
-      previewData: null,
-      croppedBlob: null
+      encodedFile: null,  // base64エンコードされた選択中のファイル
+      croppedBlob: null   // 切り抜かれた画像のBlob
     }
   },
   props: {
@@ -87,7 +85,7 @@ export default {
   },
   methods: {
     onFileLoad (dataUrl) {
-      this.previewData = dataUrl
+      this.encodedFile = dataUrl
     },
     async perform () {
       if (this.model) {
@@ -98,7 +96,7 @@ export default {
       this.$store.dispatch('updateStamps')
       this.rawStampFile = null
       this.stampName = ''
-      this.previewData = ''
+      this.encodedFile = ''
     },
     async updateStamp () {
       await client.fixStamp(this.model.id, '', this.stampFile)

@@ -116,6 +116,8 @@ $header-height: 3rem
   border-radius: $modal-border-radius
 
 .setting-page-container
+  position: relative
+  margin-left: -1rem
   padding: 2rem
   overflow: scroll
   flex: 1

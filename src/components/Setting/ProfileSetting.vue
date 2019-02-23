@@ -3,7 +3,15 @@
   SettingTitle
     | プロフィール設定
   img.setting-user-icon(:src="iconFileId")
-  SettingFileInput.setting-icon-input(v-model="icon" label="アイコンを変更" name="icon")
+  SettingFileInput.setting-icon-input(
+    v-model="rawIconFile"
+    @load="onFileLoad"
+    name="icon-edit"
+    label="アイコンを変更")
+  .profile-image-editor(v-if="encodedFile")
+    ImageCropper(
+      v-model="croppedBlob"
+      :imageData="encodedFile")
   SettingInput(v-model="displayName" label="表示名")
   SettingInput(v-model="twitterId" label="Twitter ID")
   SettingInput(v-model="newPassword" type="password" label="新しいパスワード")
@@ -24,6 +32,7 @@
 
 <script>
 import client from '@/bin/client'
+import ImageCropper from '@/components/Setting/ImageCropper'
 import SettingTitle from '@/components/Setting/SettingTitle'
 import SettingInput from '@/components/Setting/SettingInput'
 import SettingFileInput from '@/components/Setting/SettingFileInput'
@@ -31,6 +40,7 @@ import SettingButton from '@/components/Setting/SettingButton'
 export default {
   name: 'ProfileSetting',
   components: {
+    ImageCropper,
     SettingTitle,
     SettingInput,
     SettingFileInput,
@@ -39,16 +49,21 @@ export default {
   data () {
     return {
       state: 'default',
+      encodedFile: null,  // base64エンコードされた選択中のファイル
+      croppedBlob: null,  // 切り抜かれた画像のBlob
       done: '',
       displayName: '',
       twitterId: '',
       newPassword: '',
       checkNewPassword: '',
       oldPassword: '',
-      icon: null
+      rawIconFile: null
     }
   },
   computed: {
+    icon () {
+      return this.croppedBlob || this.rawIconFile
+    },
     iconFileId () {
       return `${this.$store.state.baseURL}/api/1.0/files/${this.$store.state.me.iconFileId}`
     },
@@ -67,8 +82,8 @@ export default {
     }
   },
   methods: {
-    addFile (event) {
-      this.icon = event.target.files[0]
+    onFileLoad (dataUrl) {
+      this.encodedFile = dataUrl
     },
     async submitWithCertification () {
       if (this.state === 'processing') {
@@ -96,7 +111,9 @@ export default {
         tasks.push(client.changeIcon(this.icon).then(() => {
           this.done += 'アイコン '
         }))
-        this.icon = null
+        this.rawIconFile = null
+        this.encodedFile = null
+        this.croppedBlob = null
       }
       if (this.displayName !== this.$store.state.me.displayName) {
         tasks.push(client.changeDisplayName(this.displayName).then(() => {
@@ -135,7 +152,9 @@ export default {
         tasks.push(client.changeIcon(this.icon).then(() => {
           this.done += 'アイコン '
         }))
-        this.icon = null
+        this.rawIconFile = null
+        this.encodedFile = null
+        this.croppedBlob = null
       }
       if (this.displayName !== this.$store.state.me.displayName) {
         tasks.push(client.changeDisplayName(this.displayName).then(() => {
@@ -178,4 +197,7 @@ export default {
 
 .update-info
   margin-top: 0.75rem
+
+.profile-image-editor
+  margin-bottom: 1rem
 </style>
