@@ -7,7 +7,7 @@
     v-model="rawIconFile"
     @load="onFileLoad"
     name="icon-edit"
-    label="アイコンを変更")
+    label="ファイルを選択")
   .profile-image-editor(v-if="encodedFile")
     ImageCropper(
       v-model="croppedBlob"

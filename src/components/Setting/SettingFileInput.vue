@@ -46,10 +46,6 @@ export default {
 </script>
 
 <style lang="sass">
-.setting-file-input
-  display: flex
-  align-items: center
-
 .setting-file-raw-input
   display: none
 
@@ -62,6 +58,6 @@ export default {
   cursor: pointer
 
 .setting-file-name
-  margin-left: 1rem
+  margin-top: 0.5rem
 </style>
 

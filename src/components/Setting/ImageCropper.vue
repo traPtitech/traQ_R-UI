@@ -1,6 +1,8 @@
 <template lang="pug">
-.image-cropper(:class="{'rounded': rounded}")
-  img.image-cropper-raw-image(:src="imageData")
+.image-cropper-wrap
+  .image-cropper(:class="{'rounded': rounded}")
+    img.image-cropper-raw-image(:src="imageData")
+  p.image-cropper-note 画像の位置・サイズを編集できます
 </template>
 
 <script>
@@ -65,4 +67,8 @@ export default {
   .cropper-view-box, .cropper-face
     border-radius: 50%;
 
+.image-cropper-note
+  margin: 1rem 0
+  opacity: 0.8
+  font-size: 0.8rem
 </style>
