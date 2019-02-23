@@ -73,7 +73,7 @@ export default {
       return this.stampFile && this.stampName.length > 0 && !this.hasNameTaken
     },
     canStampBeUpdated () {
-      return !!this.stampFile
+      return this.stampFile
     },
     stampIdsCreatedByMe () {
       return this.stamps.filter(s => s.creatorId === this.getMyId).map(s => s.id)
@@ -96,7 +96,8 @@ export default {
       this.$store.dispatch('updateStamps')
       this.rawStampFile = null
       this.stampName = ''
-      this.encodedFile = ''
+      this.encodedFile = null
+      this.croppedBrob = null
     },
     async updateStamp () {
       await client.fixStamp(this.model.id, '', this.stampFile)
