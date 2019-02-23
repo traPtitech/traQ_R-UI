@@ -1,6 +1,6 @@
 <template lang="pug">
 .setting-file-input
-  input.setting-file-raw-input(:name="name" :id="name" type="file" @change="$emit('input', $event.target.files[0])")
+  input.setting-file-raw-input(:name="name" :id="name" type="file" @change="onChange")
   label.setting-file-label(:for="name") {{ label }}
   p.setting-file-name(v-if="value") {{ value.name }}
 </template>
@@ -31,16 +31,21 @@ export default {
     reset () {
       this.settingText = ''
       this.$emit('inputsetting', '')
+    },
+    onChange (event) {
+      this.$emit('input', event.target.files[0])
+      const file = event.target.files[0]
+      const reader = new FileReader()
+      reader.onload = e => {
+        this.$emit('load', e.target.result)
+      }
+      reader.readAsDataURL(file)
     }
   }
 }
 </script>
 
 <style lang="sass">
-.setting-file-input
-  display: flex
-  align-items: center
-
 .setting-file-raw-input
   display: none
 
@@ -53,6 +58,6 @@ export default {
   cursor: pointer
 
 .setting-file-name
-  margin-left: 1rem
+  margin-top: 0.5rem
 </style>
 

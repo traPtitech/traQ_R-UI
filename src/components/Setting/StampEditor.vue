@@ -1,6 +1,14 @@
 <template lang="pug">
 .stamp-editor
-  SettingFileInput.stamp-file-input(v-model="stampFile" :name="model ? `stamp-edit_model.id` : 'stamp-register'" label="ファイルを選択")
+  SettingFileInput.stamp-file-input(
+    v-model="rawStampFile"
+    :name="model ? `stamp-edit_model.id` : 'stamp-register'"
+    @load="onFileLoad"
+    label="ファイルを選択")
+  .stamp-preview(v-if="encodedFile")
+    ImageCropper(
+      v-model="croppedBlob"
+      :imageData="encodedFile")
   SettingInput(v-model="stampName" v-if="!model" label="スタンプ名")
   SettingButton(v-if="canPerformOperation" @click="perform")
     | {{ model ? '更新' : '追加' }}
@@ -11,6 +19,7 @@
 <script>
 import {mapGetters} from 'vuex'
 import client from '@/bin/client'
+import ImageCropper from '@/components/Setting/ImageCropper'
 import SettingInput from '@/components/Setting/SettingInput'
 import SettingFileInput from '@/components/Setting/SettingFileInput'
 import SettingButton from '@/components/Setting/SettingButton'
@@ -19,6 +28,7 @@ import SettingDescription from '@/components/Setting/SettingDescription'
 export default {
   name: 'StampEditor',
   components: {
+    ImageCropper,
     SettingInput,
     SettingFileInput,
     SettingButton,
@@ -26,8 +36,10 @@ export default {
   },
   data () {
     return {
-      stampFile: null,
-      stampName: ''
+      rawStampFile: null,
+      stampName: '',
+      encodedFile: null,  // base64エンコードされた選択中のファイル
+      croppedBlob: null   // 切り抜かれた画像のBlob
     }
   },
   props: {
@@ -40,6 +52,9 @@ export default {
     ...mapGetters([
       'fileUrl', 'getMyId'
     ]),
+    stampFile () {
+      return this.croppedBlob || this.rawStampFile
+    },
     stamps () {
       return this.$store.state.stampCategolized[0].stamps
     },
@@ -58,7 +73,7 @@ export default {
       return this.stampFile && this.stampName.length > 0 && !this.hasNameTaken
     },
     canStampBeUpdated () {
-      return !!this.stampFile
+      return this.stampFile
     },
     stampIdsCreatedByMe () {
       return this.stamps.filter(s => s.creatorId === this.getMyId).map(s => s.id)
@@ -69,28 +84,26 @@ export default {
     }
   },
   methods: {
-    perform () {
+    onFileLoad (dataUrl) {
+      this.encodedFile = dataUrl
+    },
+    async perform () {
       if (this.model) {
-        this.updateStamp()
+        await this.updateStamp()
       } else {
-        this.addStamp()
+        await this.addStamp()
       }
+      this.$store.dispatch('updateStamps')
+      this.rawStampFile = null
+      this.stampName = ''
+      this.encodedFile = null
+      this.croppedBrob = null
     },
-    updateStamp () {
-      client.fixStamp(this.model.id, '', this.stampFile)
-      .then(() => {
-        this.$store.dispatch('updateStamps')
-        this.stampFile = null
-        this.stampName = ''
-      })
+    async updateStamp () {
+      await client.fixStamp(this.model.id, '', this.stampFile)
     },
-    addStamp () {
-      client.addStamp(this.stampName, this.stampFile)
-      .then(() => {
-        this.$store.dispatch('updateStamps')
-        this.stampFile = null
-        this.stampName = ''
-      })
+    async addStamp () {
+      await client.addStamp(this.stampName, this.stampFile)
     },
     stampItemStyle (fileId) {
       return `background-image: url(${this.fileUrl(fileId)})`
@@ -110,4 +123,6 @@ export default {
 </script>
 
 <style lang="sass">
+.stamp-preview
+  margin-bottom: 1rem
 </style>

@@ -25,7 +25,7 @@
             .setting-page-list-item-icon
               IconStamp(color="white" :size="22")
             | スタンプ設定
-      .setting-page-container
+      .setting-page-container(v-if="windowWidth >= 750")
         transition(name="fade" mode="out-in")
           keep-alive
             ProfileSetting(v-if="active === 0")
@@ -59,9 +59,12 @@ export default {
     IconStamp
   },
   data () {
-    return { active: 0 }
+    return { active: 0, windowWidth: 0 }
   },
   methods: {
+    onResize () {
+      this.windowWidth = window.innerWidth
+    },
     back () {
       if (this.$store.state.currentChannel['channelId']) {
         this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.$store.state.currentChannel.channelId)}`)
@@ -69,6 +72,13 @@ export default {
         this.$router.push('/channels/random')
       }
     }
+  },
+  mounted () {
+    window.addEventListener('resize', this.onResize)
+    this.onResize()
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
   }
 }
 </script>
@@ -116,6 +126,8 @@ $header-height: 3rem
   border-radius: $modal-border-radius
 
 .setting-page-container
+  position: relative
+  margin-left: -1rem
   padding: 2rem
   overflow: scroll
   flex: 1
