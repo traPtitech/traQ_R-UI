@@ -137,7 +137,7 @@ $header-height: 3rem
     display: none
 
 .setting-page-all-container
-  padding: 2rem
+  padding: 1rem
   flex: 1
   overflow: scroll
   display: none
