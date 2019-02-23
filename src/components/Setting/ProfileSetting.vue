@@ -2,7 +2,7 @@
 .profile-setting
   SettingTitle
     | プロフィール設定
-  img.setting-user-icon(:src="iconFileId")
+  img.setting-user-icon(:src="iconSrc")
   SettingFileInput.setting-icon-input(
     v-model="rawIconFile"
     @load="onFileLoad"
@@ -51,6 +51,7 @@ export default {
       state: 'default',
       encodedFile: null,  // base64エンコードされた選択中のファイル
       croppedBlob: null,  // 切り抜かれた画像のBlob
+      croppedBlobEncoded: null,  // 切り抜かれた画像のData URL
       done: '',
       displayName: '',
       twitterId: '',
@@ -63,6 +64,9 @@ export default {
   computed: {
     icon () {
       return this.croppedBlob || this.rawIconFile
+    },
+    iconSrc () {
+      return this.croppedBlobEncoded || this.iconFileId
     },
     iconFileId () {
       return `${this.$store.state.baseURL}/api/1.0/files/${this.$store.state.me.iconFileId}`
@@ -114,6 +118,7 @@ export default {
         this.rawIconFile = null
         this.encodedFile = null
         this.croppedBlob = null
+        this.croppedBlobEncoded = null
       }
       if (this.displayName !== this.$store.state.me.displayName) {
         tasks.push(client.changeDisplayName(this.displayName).then(() => {
@@ -174,6 +179,15 @@ export default {
         this.state = 'failed'
         this.error = '失敗しました'
       })
+    }
+  },
+  watch: {
+    croppedBlob () {
+      const reader = new FileReader()
+      reader.onload = e => {
+        this.croppedBlobEncoded = e.target.result
+      }
+      reader.readAsDataURL(this.croppedBlob)
     }
   },
   mounted () {
