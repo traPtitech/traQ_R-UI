@@ -1,12 +1,16 @@
 <template lang="pug">
 .stamp-editor
   SettingFileInput.stamp-file-input(
-    v-model="stampFile"
+    v-model="rawStampFile"
     :name="model ? `stamp-edit_model.id` : 'stamp-register'"
     @load="onFileLoad"
     label="ファイルを選択")
   .stamp-preview(v-if="previewData")
-    img(:src="previewData")
+    ImageCropper(
+      v-model="croppedBlob"
+      :imageData="previewData"
+      :aspect-ratio="1"
+    )
   SettingInput(v-model="stampName" v-if="!model" label="スタンプ名")
   SettingButton(v-if="canPerformOperation" @click="perform")
     | {{ model ? '更新' : '追加' }}
@@ -17,6 +21,7 @@
 <script>
 import {mapGetters} from 'vuex'
 import client from '@/bin/client'
+import ImageCropper from '@/components/Setting/ImageCropper'
 import SettingInput from '@/components/Setting/SettingInput'
 import SettingFileInput from '@/components/Setting/SettingFileInput'
 import SettingButton from '@/components/Setting/SettingButton'
@@ -25,6 +30,7 @@ import SettingDescription from '@/components/Setting/SettingDescription'
 export default {
   name: 'StampEditor',
   components: {
+    ImageCropper,
     SettingInput,
     SettingFileInput,
     SettingButton,
@@ -32,9 +38,10 @@ export default {
   },
   data () {
     return {
-      stampFile: null,
+      rawStampFile: null,
       stampName: '',
-      previewData: null
+      previewData: null,
+      croppedBlob: null
     }
   },
   props: {
@@ -47,6 +54,9 @@ export default {
     ...mapGetters([
       'fileUrl', 'getMyId'
     ]),
+    stampFile () {
+      return this.croppedBlob || this.rawStampFile
+    },
     stamps () {
       return this.$store.state.stampCategolized[0].stamps
     },
@@ -86,7 +96,7 @@ export default {
         await this.addStamp()
       }
       this.$store.dispatch('updateStamps')
-      this.stampFile = null
+      this.rawStampFile = null
       this.stampName = ''
       this.previewData = ''
     },
