@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'settingInput',
+  name: 'settingFileInput',
   data () {
     return {
       settingText: ''

@@ -371,7 +371,7 @@ const client = {
       form.enctype = 'multipart/form-data'
       form.append('name', name)
       form.append('file', file)
-      return axios.post(`/api/1.0/stamps/${stampId}`, form)
+      return axios.patch(`/api/1.0/stamps/${stampId}`, form)
     })
   },
   deleteStamp (stampId) {
