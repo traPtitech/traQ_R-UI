@@ -37,10 +37,10 @@ export default {
   align-items: start
 
 .user-modal-online-indicator
-  width: 0.6rem
-  height: 0.6rem
+  width: 10px
+  height: 10px
   border-radius: 50%
-  transform: translateY(0.15rem)
+  transform: translateY(0.25rem)
   &[data-is-online="true"]
     background-color: #18FCFC
   &:not([data-is-online="true"])
