@@ -2,9 +2,9 @@
 div.input-ui(:class="{'input-focused':focused}")
   input.upload-button(id="upload" style="display:none" type="file" @change="addFiles")
   div.upload-button.flex-center(@click="clickUploadButton")
-    icon(name="file")
+    IconFile(:size="20" color="var(--text-color)")
   div.submit-button.flex-center(@click="submit")
-    icon(name="angle-right")
+    IconAngleRight(:size="24" color="var(--text-color)")
   div.input-area-wrapper(@drom="dropFile")
     p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
     textarea.input-area(id="messageInput" @focus="inputFocus()" @blur="inputBlur()" v-model="inputText" @keydown="keydown" @click="clearKey" ref="inputArea" placeholder="進捗どうですか")
@@ -16,9 +16,15 @@ div.input-ui(:class="{'input-focused':focused}")
 import autosize from 'autosize'
 import client from '@/bin/client'
 import suggest from '@/bin/suggest'
+import IconAngleRight from '@/components/Icon/IconAngleRight'
+import IconFile from '@/components/Icon/IconFile'
 
 export default {
   name: 'MessageInput',
+  components: {
+    IconAngleRight,
+    IconFile
+  },
   data () {
     return {
       focused: false,
