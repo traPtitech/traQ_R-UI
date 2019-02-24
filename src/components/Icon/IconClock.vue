@@ -1,14 +1,8 @@
 <template functional>
-<svg :width="props.size" :height="props.size" version="1.1" id="emoji" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 72 72" enable-background="new 0 0 72 72" xml:space="preserve">
-<g id="_xD83D__xDD52__xFE0F__1_">
-		<circle fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" cx="36" cy="36" r="23"/>
-	
-		<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="36" y1="19" x2="36" y2="36"/>
-	
-		<line fill="none" :stroke="props.color" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="47.6" y1="36" x2="36.1" y2="36"/>
-</g>
-</svg>
+  <svg :width="props.size" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 21.087C17.0186 21.087 21.087 17.0186 21.087 12C21.087 6.98141 17.0186 2.91304 12 2.91304C6.98141 2.91304 2.91304 6.98141 2.91304 12C2.91304 17.0186 6.98141 21.087 12 21.087ZM23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12Z" :fill="props.size"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.0435 3.86963V12.9566H12.9565V12.9565H17.5478V11.0435H12.9565V3.86963H11.0435Z" :fill="props.size"/>
+  </svg>
 </template>
 
 <script>
