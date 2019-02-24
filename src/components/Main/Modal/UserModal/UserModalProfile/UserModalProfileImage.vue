@@ -3,14 +3,19 @@
 .user-modal-img(:style="profileImgStyle")
   .user-modal-dm(@click="openDirectMessage")
     .user-modal-dm-indicator(v-if="hasUnreadMessages")
-    icon.user-modal-dm-icon-envelope(name="envelope" scale="1.5")
+    .user-modal-dm-icon-envelope
+      IconEnverope(size="100%")
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import IconEnverope from '@/components/Icon/IconEnverope'
 
 export default {
   name: 'UserModalProfileImage',
+  components: {
+    IconEnverope
+  },
   props: {
     expanded: false
   },

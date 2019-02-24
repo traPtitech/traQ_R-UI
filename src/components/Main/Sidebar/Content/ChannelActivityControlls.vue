@@ -1,15 +1,21 @@
 <template lang="pug">
 div.channel-activity-controls-container
   div.channel-activity-button.channel-activity-refresh(@click="refresh")
-    icon(v-if="isLoading" name="redo-alt" scale="0.8" spin)
-    icon(v-else name="redo-alt" scale="0.8")
+    IconSync(:class="{rotate: isLoading}")
   div.channel-activity-button.channel-activity-notification-toggle(@click="toggleNotification" :class="notificationToggleClass")
-    icon(name="bell" scale="0.8")
+    IconNotificationFill(:color="notificationIconColor")
 </template>
 
 <script>
+import IconNotificationFill from '@/components/Icon/IconNotificationFill'
+import IconSync from '@/components/Icon/IconSync'
+
 export default {
   name: 'ChannelActivityControlls',
+  components: {
+    IconNotificationFill,
+    IconSync
+  },
   props: {
     isLoading: {
       type: Boolean,
@@ -19,6 +25,9 @@ export default {
   computed: {
     notificationToggleClass () {
       return this.$store.state.filterSubscribedActivity ? 'filter-enabled' : ''
+    },
+    notificationIconColor () {
+      return this.$store.state.filterSubscribedActivity ? 'var(--primary-color)' : 'white'
     }
   },
   methods: {

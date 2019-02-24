@@ -4,13 +4,22 @@ div.footer
     | traQ R alpha
   ul.footer-button-wrap
     li.menu-button.theme(@click="changeTheme")
-      icon(:name="themeIconName")
+      IconCrescent(v-if="theme === 'light'")
+      IconCrescentFill(v-else)
     li.menu-button.setting(@click="$router.push('/setting')")
-      icon(name="cog")
+      IconGear(:size="16")
 </template>
 
 <script>
+import IconGear from '@/components/Icon/IconGear'
+import IconCrescent from '@/components/Icon/IconCrescent'
+import IconCrescentFill from '@/components/Icon/IconCrescentFill'
 export default {
+  components: {
+    IconGear,
+    IconCrescent,
+    IconCrescentFill
+  },
   methods: {
     changeTheme () {
       if (this.theme === 'light') {
@@ -23,9 +32,6 @@ export default {
   computed: {
     theme () {
       return this.$store.state.theme
-    },
-    themeIconName () {
-      return this.theme === 'light' ? 'regular/moon' : 'moon'
     }
   }
 }
