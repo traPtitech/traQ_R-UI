@@ -82,6 +82,7 @@ const store = new Vuex.Store({
     currentChannelPinnedMessages: [],
     currentChannelNotifications: [],
     myNotifiedChannels: [],
+    myNotifiedChannelSet: new Set(),
     me: null,
     menuContent: 'Channels',
     heartbeatStatus: {userStatuses: []},
@@ -381,6 +382,11 @@ const store = new Vuex.Store({
     },
     setMyNotifiedChannels (state, channels) {
       state.myNotifiedChannels = channels
+      const set = new Set()
+      channels.forEach(channelId => {
+        set.add(channelId)
+      })
+      state.myNotifiedChannelSet = set
     },
     setChannelRecentMessages (state, data) {
       state.channelRecentMessages = data
@@ -764,9 +770,8 @@ const store = new Vuex.Store({
       commit('setChannelRecentMessages', res.data)
     },
     async updateMyNotifiedChannels ({commit, getters}) {
-      const res = await client.getNotifiedChannels(getters.getMyId)
+      const res = await client.getMyNotifiedChannels()
       const data = res.data
-      console.log(data)
       if (!data) return
       commit('setMyNotifiedChannels', data)
     },

@@ -179,6 +179,11 @@ const client = {
       return axios.post(`/api/1.0/notification/device`, {token})
     })
   },
+  getMyNotifiedChannels () {
+    return middleWare('getMyNotifiedChannels', () => {
+      return axios.get('/api/1.0/users/me/notification')
+    })
+  },
 
   // Tag: user
   registerUser (name, password) {

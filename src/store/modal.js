@@ -6,7 +6,7 @@ export default {
     name: null,
     data: null,
     currentUserTags: [],
-    currentTagUsers: [],
+    currentTagUserIds: [],
     lastUser: null
   },
   getters: {
@@ -16,7 +16,7 @@ export default {
       return current.filter(tag => !tag.editable).concat(current.filter(tag => tag.editable))
     },
     currentTagUsersSorted: state => {
-      return state.currentTagUsers
+      return state.currentTagUserIds
     }
   },
   mutations: {
@@ -33,9 +33,9 @@ export default {
       tags = tags || []
       state.currentUserTags = tags
     },
-    setCurrentTagUsers (state, users) {
+    setCurrentTagUserIds (state, users) {
       users = users || []
-      state.currentTagUsers = users
+      state.currentTagUserIds = users
     }
   },
   actions: {
@@ -45,9 +45,9 @@ export default {
         commit('setCurrentUserTags', res.data)
       })
     },
-    updateCurrentTagUsers ({state, commit}) {
+    updateCurrentTagUserIds ({state, commit}) {
       return client.getTag(state.data.tagId).then(res => {
-        commit('setCurrentTagUsers', res.data.users.filter(user => user.accountStatus !== 0))
+        commit('setCurrentTagUserIds', res.data.users)
       })
     },
     openUserModal: {
@@ -78,7 +78,7 @@ export default {
           name: 'TagModal',
           data: tag
         })
-        return dispatch('updateCurrentTagUsers')
+        return dispatch('updateCurrentTagUserIds')
       }
     },
     openChannelCreateModal: {

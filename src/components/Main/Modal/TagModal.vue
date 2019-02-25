@@ -36,8 +36,14 @@ export default {
   computed: {
     ...mapState('modal', ['data']),
     ...mapGetters('modal', {
-      users: 'currentTagUsersSorted'
-    })
+      userIds: 'currentTagUsersSorted'
+    }),
+    ...mapGetters(['memberMap']),
+    users () {
+      return this.userIds
+        .filter(userId => this.memberMap[userId] && this.memberMap[userId].accountStatus !== 0)
+        .map(userId => this.memberMap[userId])
+    }
   }
 }
 </script>
