@@ -11,7 +11,7 @@ base-common-modal(title="NOTIFICATIONS" small)
                          :member="member"
                          :key="member.userId")
       .notifications-empty(v-else)
-        icon(name="moon" scale="3")
+        IconLandscapeNight(:size="64" color="lightgray")
         | 通知がONの人はいません
     .notifications-item
       h2 OFFにしてる人
@@ -22,7 +22,7 @@ base-common-modal(title="NOTIFICATIONS" small)
                          :member="member"
                          :key="member.userId")
       .notifications-empty(v-else)
-        icon(name="sun" scale="3")
+        IconLandscapeDay(:size="64" color="lightgray")
         | 通知がOFFの人はいません
 </template>
 
@@ -32,6 +32,8 @@ import MessageElement from '@/components/Main/MessageView/MessageElement/Message
 import MemberChoice from '@/components/Main/Modal/Util/MemberChoice'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconNotificationFill from '@/components/Icon/IconNotificationFill'
+import IconLandscapeDay from '@/components/Icon/IconLandScapeDay'
+import IconLandscapeNight from '@/components/Icon/IconLandScapeNight'
 
 export default {
   name: 'ChannelNotificationModal',
@@ -39,7 +41,9 @@ export default {
     MessageElement,
     MemberChoice,
     BaseCommonModal,
-    IconNotificationFill
+    IconNotificationFill,
+    IconLandscapeDay,
+    IconLandscapeNight
   },
   data () {
     return {

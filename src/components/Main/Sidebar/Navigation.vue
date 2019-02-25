@@ -2,23 +2,34 @@
 nav.navigation
   ul
     li.menu-button.channels(@click="navClicked('channels')" :class="{'menu-active':menuContent==='channels'}")
-      icon(name="hashtag")
+      IconHash(:size="20")
       p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
         | {{channelsUnreadNum}}
     li.menu-button.members(@click="navClicked('members')" :class="{'menu-active':menuContent==='members'}")
-      icon(name="user")
+      IconProfileFill(:size="20")
       p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
         | {{usersUnreadNum}}
     li.menu-button.clips(@click="navClicked('clips')" :class="{'menu-active':menuContent==='clips'}")
-      icon(name="paperclip")
+      IconAttach(:size="20")
     li.menu-button.links(@click="navClicked('links')" :class="{'menu-active':menuContent==='links'}")
-      icon(name="th-large")
+      IconToolBox(:size="20")
 </template>
 
 <script>
 import client from '@/bin/client'
+import IconHash from '@/components/Icon/IconHash'
+import IconProfileFill from '@/components/Icon/IconProfileFill'
+import IconAttach from '@/components/Icon/IconAttach'
+import IconToolBox from '@/components/Icon/IconToolBox'
+
 export default {
   name: 'Navigation',
+  components: {
+    IconHash,
+    IconProfileFill,
+    IconAttach,
+    IconToolBox
+  },
   data () {
     return {
       userMenuOpened: false,

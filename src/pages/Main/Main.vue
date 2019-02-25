@@ -44,8 +44,6 @@ export default {
     'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     'MessageInput': window.asyncLoadComponents(import('@/components/Main/MessageView/MessageInput')),
     'ChannelInformation': window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
-    'User': window.asyncLoadComponents(import('@/components/Main/User')),
-    'Tag': window.asyncLoadComponents(import('@/components/Main/Tag')),
     'StampPicker': window.asyncLoadComponents(import('@/components/Main/StampPicker')),
     MessageContainer,
     Modal,

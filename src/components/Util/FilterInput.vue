@@ -2,12 +2,17 @@
 div.filter-input-container
   input.input-reset.filter-input(placeholder="検索" v-model="filterText" @input="$emit('inputFilter', filterText)")
   div.filter-input-reset(v-if="filterText !== ''" @click="reset")
-    icon(name="times" scale="0.8")
+    IconClose(color="white")
 </template>
 
 <script>
+import IconClose from '@/components/Icon/IconClose'
+
 export default {
   name: 'FilterInput',
+  components: {
+    IconClose
+  },
   data () {
     return {
       filterText: ''
@@ -43,12 +48,11 @@ input.filter-input
     opacity: 0.8
 
 .filter-input-reset
-  color: white
   cursor: pointer
   position: absolute
   width: 12px
   height: 16px
-  right: 3px
+  right: 10px
   top: 50%
   transform: translateY(-50%)
 
