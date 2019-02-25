@@ -10,11 +10,11 @@ content.content-wrap.is-scroll(@scroll="checkLoad")
         span
           | 新規メッセージ
       MessageElement(:model="message")
-  div
 </template>
 
 <script>
 import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
+
 export default {
   name: 'MessageContainer',
   data () {
@@ -25,7 +25,7 @@ export default {
     }
   },
   components: {
-    'MessageElement': MessageElement
+    MessageElement
   },
   created () {
     this.$store.commit('loadEndComponent')
@@ -92,13 +92,9 @@ export default {
 
 <style lang="sass">
 .content-wrap
-  +mq(pc)
-    grid-area: content
-  +mq(sp)
-    display: block
-    height: 100vh
-    height: vh(100)
+  display: block
   background-color: $background-color
+  height: 100%
   overflow-x: hidden
   overflow-y: scroll
   min-width: 0
@@ -183,5 +179,9 @@ export default {
     top: 60px
     right: 0
     left: 0
-    bottom: 50px
+    bottom: 20px
+  +mq(sp)
+    margin:
+      bottom: 80px
+  
 </style>

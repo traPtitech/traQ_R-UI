@@ -49,7 +49,7 @@ div.stamp-picker
               :class="{'stamp-picker-category-selected': idx === currentCategoryIndex}")
               component(
                 :is="categoryIcon(idx)" 
-                :size="idx === 1 ? 20 : 28" 
+                :size="idx <= 1 ? 20 : 28" 
                 :color="idx === currentCategoryIndex ? 'var(--primary-color-on-bg)' : 'gray'")
 </template>
 
@@ -148,15 +148,6 @@ export default {
 
 <style lang="sass">
 .stamp-picker
-  .modal-overlay
-    background: none
-  .modal
-    max-width: 330px
-    width: 100%
-    right: 0
-    +mq(pc)
-      right: 50px
-    bottom: 60px
 
 .stamp-picker-container
   display: flex
@@ -165,7 +156,6 @@ export default {
   overflow: hidden
 
 .stamp-picker-header
-  // background: $primary-color
   position: relative
 
 .stamp-picker-search

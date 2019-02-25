@@ -576,7 +576,7 @@ const store = new Vuex.Store({
       getters.nonBotUsers.forEach(u => {
         let gradeObj = getters.grades
           .find(g => g.members.some(userId => userId === u.userId))
-        map[u.userId] = gradeObj ? gradeObj.name : undefined
+        map[u.userId] = gradeObj || undefined
       })
       return map
     },

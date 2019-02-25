@@ -105,16 +105,15 @@ export default {
 .sidebar
   background-color: white
   z-index: $sidebar-index
+  width: $sidebar-width
   +mq(pc)
     height: 100vh
     height: vh(100)
+    flex-shrink: 0
     position: relative
-    grid-area: side
-    will-change: none
   +mq(sp)
     height: calc(100vh - 50px)
     height: calc( #{vh(100)} - 50px)
-    width: $sidebar-width
     position: fixed
     z-index: $sidebar-index
     transform: translateX(-102%)

@@ -7,7 +7,12 @@
             :src="`${fileUrl(file.fileId)}/thumbnail`" 
             :onClick="`this.src = '${fileUrl(file.fileId)}'`" 
             :alt="file.name")
-        a.attached-image-wrapper(
+        div(v-else-if="isSvg(file.mime)")
+          img.attached-image(
+            :src="`${fileUrl(file.fileId)}`" 
+            :onClick="`this.src = '${fileUrl(file.fileId)}'`" 
+            :alt="file.name")
+        a.attached-image-wrap(
           v-else-if="isImage(file.mime)" 
           :href="fileUrl(file.fileId)" 
           target="_blank" 
@@ -46,7 +51,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import {encodeByte, isImage, isGif, isVideo, isAudio} from '@/bin/utils.js'
+import {encodeByte, isImage, isGif, isSvg, isVideo, isAudio} from '@/bin/utils.js'
 import IconAttach from '@/components/Icon/IconAttach'
 
 export default {
@@ -65,6 +70,7 @@ export default {
     encodeByte,
     isImage,
     isGif,
+    isSvg,
     isVideo,
     isAudio
   }
@@ -86,13 +92,15 @@ export default {
   flex-flow: column
 
 .attached-image-wrap
-  display: inline-flex
+  display: block
+  max-width: 250px
+  max-height: 480px
 
 .attached-image
   cursor: pointer
-  max-width: 250px
-  max-height: 480px
-  width: 100%
+  object-fit: cover
+  max-width: 100%
+  max-height: 100%
   border:
     color: var(--tertiary-color-on-bg)
     style: solid

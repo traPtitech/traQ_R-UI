@@ -6,9 +6,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
     div.message-user-info-wrap
       div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
         | {{userDisplayName(model.userId)}}
-      div.message-user-status-badge(v-if="statusBadge(model.userId) !== undefined")
+      div.message-user-status-badge(v-if="statusBadge(model.userId) !== undefined" @click="handleStatusClick")
         | {{statusBadge(model.userId)}}
-      div.text-ellipsis.message-user-id(@click="openUserModal(model.userId)")
+      div.text-ellipsis.message-user-id
         | @{{userName}}
     time.message-date
       | {{displayDateTime}}
@@ -22,9 +22,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
       component(v-if="!isEditing" :is="renderedText" v-bind="$props")
       div(v-if="isEditing")
         textarea.input-reset.edit-area(v-model="edited")
-        button.edit-button.edit-cancel(@click.stop="editCancel" )
+        button.edit-button.edit-cancel(@click.stop="editCancel")
           | Cancel
-        button.edit-button.edit-submit(@click.stop="editSubmit" )
+        button.edit-button.edit-submit(@click.stop="editSubmit")
           | Edit
     message-attached-messages(v-if="hasAttachedMessage" :messages="messages")
     message-attached-files(v-if="hasAttachedFile" :files="files")
@@ -194,25 +194,33 @@ export default {
         })
       }
     },
-    isBot (userId) {
-      return this.$store.state.memberMap[userId].bot
-    },
     grade (userId) {
       return this.$store.getters.gradeByUserMap[this.model.userId]
     },
     statusBadge (userId) {
       // grade or bot or undefined
-      if (this.isBot(userId)) {
+      if (this.isBot) {
         return 'bot'
       } else {
-        return this.grade(userId)
+        return this.grade(userId) ? this.grade(userId).name : undefined
+      }
+    },
+    handleStatusClick () {
+      if (!this.isBot) {
+        this.$store.dispatch('openGroupModal', this.grade(this.model.userId).groupId)
       }
     }
   },
   computed: {
     ...mapGetters(['fileUrl', 'getMyId', 'userDisplayName']),
+    userDetail () {
+      return this.$store.state.memberMap[this.model.userId]
+    },
     userName () {
-      return this.$store.state.memberMap[this.model.userId].name
+      return this.userDetail.name
+    },
+    isBot () {
+      return this.userDetail.bot
     },
     renderedText () {
       return this.mark(this.model.content)
@@ -299,13 +307,13 @@ export default {
   margin:
     left: 5px
   opacity: 0.8
+  cursor: pointer
 
 .message-user-id
   opacity: 0.6
   margin-left: 5px
   font-size: 0.8em
   max-width: 40%
-  cursor: pointer
 
 .message-date
   display: block

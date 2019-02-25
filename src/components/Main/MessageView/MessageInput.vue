@@ -1,29 +1,80 @@
 <template lang="pug">
-div.input-ui(:class="{'input-focused':focused}")
+.message-input(:class="{'input-focused':focused}")
   input.upload-button(id="upload" style="display:none" type="file" @change="addFiles")
-  div.upload-button.flex-center(@click="clickUploadButton")
-    IconFile(:size="20" color="var(--text-color)")
-  div.submit-button.flex-center(@click="submit")
-    IconAngleRight(:size="24" color="var(--text-color)")
-  div.input-area-wrapper(@drom="dropFile")
-    p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
-    textarea.input-area(id="messageInput" @focus="inputFocus()" @blur="inputBlur()" v-model="inputText" @keydown="keydown" @click="clearKey" ref="inputArea" placeholder="進捗どうですか")
-    div(v-for="(file, index) in files" @click="removeFile(index)")
-      | {{ file.name }}
+  .message-input-body
+    .message-input-buttons-wrapper
+      .message-input-button.flex-center(@click="clickUploadButton")
+        icon-upload(:size="24" color="var(--tertiary-color-on-bg)")
+      .message-input-button.flex-center(@click="showStampPicker")
+        icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
+      .message-input-button.flex-center
+        icon-hash(:size="22" color="var(--tertiary-color-on-bg)")
+      .message-input-button.flex-center
+        icon-profile(:size="24" color="var(--tertiary-color-on-bg)")
+    .message-input-files-wrapper(v-if="hasFile")
+      .message-input-file(v-for="(file, index) in files")
+        .message-input-file-thumbnail(
+          v-if="file.thumbnail"
+          :style="{backgroundImage: `url(${file.thumbnail})`}")
+        .message-input-file-icon.flex-center(v-else)
+          icon-file(:size="24" color="var(--tertiary-color-on-bg)")
+        span.message-input-file-name.text-ellipsis
+          | {{ file.file.name }}
+        .message-input-file-close-button(@click="removeFile(index)")
+          icon-close(:size="18" color="var(--tertiary-color-on-bg)")
+    .message-input-text-area-wrapper
+      .message-input-button.flex-center(@click="clickUploadButton")
+        icon-upload(:size="24" color="var(--tertiary-color-on-bg)")
+      textarea#message-input-text-area.input-reset(
+        rows="1"
+        :placeholder="placeholder"
+        v-model="inputText"
+        @focus="inputFocus"
+        @blur="inputBlur" 
+        @keydown="keydown"
+        @click="clearKey"
+        ref="inputArea")
+      .message-input-button.flex-center(@click="showStampPicker")
+        icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
+      .message-input-send-button.flex-center(
+        @click="submit"
+        :style="sendButtonStyle")
+        icon-send(:size="24" color="var(--tertiary-color-on-bg)")
+  //- input.upload-button(id="upload" style="display:none" type="file" @change="addFiles")
+  //- div.upload-button.flex-center(@click="clickUploadButton")
+  //-   IconFile(:size="20" color="var(--text-color)")
+  //- div.submit-button.flex-center(@click="submit")
+  //-   IconAngleRight(:size="24" color="var(--text-color)")
+  //- div.input-area-wrapper(@drom="dropFile")
+  //-   p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
+  //-   textarea.input-area(id="messageInput" @focus="inputFocus()" @blur="inputBlur()" v-model="inputText" @keydown="keydown" @click="clearKey" ref="inputArea" placeholder="進捗どうですか")
+  //-   div(v-for="(file, index) in files" @click="removeFile(index)")
+  //-     | {{ file.name }}
 </template>
 
 <script>
 import autosize from 'autosize'
 import client from '@/bin/client'
+import {isImage} from '@/bin/utils'
 import suggest from '@/bin/suggest'
-import IconAngleRight from '@/components/Icon/IconAngleRight'
+import IconSend from '@/components/Icon/IconSend'
+import IconUpload from '@/components/Icon/IconUpload'
+import IconStamp from '@/components/Icon/IconStamp'
+import IconHash from '@/components/Icon/IconHash'
+import IconProfile from '@/components/Icon/IconProfile'
 import IconFile from '@/components/Icon/IconFile'
+import IconClose from '@/components/Icon/IconClose'
 
 export default {
   name: 'MessageInput',
   components: {
-    IconAngleRight,
-    IconFile
+    IconSend,
+    IconUpload,
+    IconStamp,
+    IconHash,
+    IconProfile,
+    IconFile,
+    IconClose
   },
   data () {
     return {
@@ -54,6 +105,7 @@ export default {
     })
   },
   methods: {
+    isImage,
     inputFocus () {
       this.focused = true
       this.$store.commit('setEditing', true)
@@ -270,8 +322,21 @@ export default {
     },
     dropFile (files) {
       for (let i = 0; i < files.length; i++) {
-        this.files.push(files[i])
-        this.files.push(files[i])
+        if (files[i].size > 30 * 1000 * 1000) {
+          window.alert('ファイルサイズが大きすぎます')
+          continue
+        }
+        this.files.push({
+          file: files[i]
+        })
+        let index = this.files.length - 1
+        if (isImage(files[i].type)) {
+          let reader = new FileReader()
+          reader.onload = (e) => {
+            this.$set(this.files[index], 'thumbnail', e.target.result)
+          }
+          reader.readAsDataURL(files[i])
+        }
       }
     },
     removeFile (id) {
@@ -287,7 +352,7 @@ export default {
       return Promise.all(this.files.map(async (file, index) => {
         try {
           let progress = 0
-          const res = await client.uploadFile(file, this.$store.state.currentChannel.member || [], (event) => {
+          const res = await client.uploadFile(file.file, this.$store.state.currentChannel.member || [], (event) => {
             if (event.lengthComputable) {
               this.uploadProgressSum -= progress
               progress = event.loaded / event.total
@@ -301,6 +366,9 @@ export default {
           console.log(e)
         }
       }))
+    },
+    showStampPicker () {
+      this.$store.commit('activeStampPicker')
     }
   },
   computed: {
@@ -313,126 +381,179 @@ export default {
     uploadProgress () {
       if (this.uploadedIds.length === 0) return 0
       return this.uploadProgressSum / this.uploadedIds.length
+    },
+    channelTitle () {
+      if (this.$route.params.user) return `@${this.$route.params.user}`
+      if (!this.$route.params.channel) return ''
+      let ret = '#'
+      this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
+        ret += e.charAt(0) + '/'
+      })
+      ret += this.$store.state.currentChannel.name
+      return ret
+    },
+    placeholder () {
+      return `Message ${this.channelTitle}`
+    },
+    hasFile () {
+      return this.files.length > 0
+    },
+    isEmptyMessage () {
+      return this.inputText.length === 0
+    },
+    sendButtonStyle () {
+      return {
+        opacity: this.hasFile || !this.isEmptyMessage ? 1 : 0.6
+      }
     }
   },
   watch: {
-    inputAreaHeight () {
-      console.log(this.$refs.inputArea.scrollHeight)
-      return this.$refs.inputArea.scrollHeight + 'px'
-    },
     files (newFiles) {
       this.isOpened = !(newFiles.length === 0 && this.inputText === '')
     }
   },
   mounted () {
-    autosize(document.getElementById('messageInput'))
-    this.messageInput = document.getElementById('messageInput')
+    autosize(document.getElementById('message-input-text-area'))
+    this.messageInput = document.getElementById('message-input-text-area')
     this.uploadElem = document.getElementById('upload')
   }
 }
 </script>
 
 <style lang="sass">
-.input-ui > *
-  pointer-events: auto
-.input-ui
-  overflow: hidden
+.message-input
   +mq(pc)
-    grid-area: input
+    flex-shrink: 0
+    min-height: 50px
     position: relative
+    width: calc(100vw - #{$sidebar-width})
   +mq(sp)
     position: fixed
-  width: 100%
-  bottom: 0
-  pointer-events: none
-.upload-button, .submit-button
-  position: absolute
-  z-index: 100
-  width: 40px
-  height: 40px
-  bottom: 10px
-  font-size: 1.5em
-.upload-button
-  left: 5px
-.submit-button
-  right: 5px
-.input-area-wrapper
-  width: 100%
-  min-height: 50px
-  max-height: 150px
-  overflow-x: hidden
-  overflow-y: scroll
-  position: relative
-  right: 0
-  left: 0
-  // bottom: 0
-  // border-top: solid 1px $border-color
-  margin: auto
-.input-area
-  box-sizing: border-box
-  z-index: 100
-  width: 100%
-  height: $input-height
-  margin: 0
-  background: none
-  resize: none
-  -webkit-appearance: none
-  padding: 15px 45px
-  font-size: 1em
-  cursor: text
-  border: 0
-  line-height: 1em
-  animation: openInputArea 1s ease
-  background-color: $background-color
-  caret-color: $text-color
-  /*transition: all .3s ease-in-out*/
-  &:focus
-    outline: 0
-  &::placeholder
-  color: rgba(#{$text-color}, 0.5)
-    transition: all .3s ease
-  &:focus::placeholder
-    transform: translateY(-10px)
-    opacity: 0
+    bottom: 0
+    width: 100vw
+  z-index: $message-input-index
 
-.input-area-opened
-@keyframes openInputArea
-  0%
-    opacity: 0
-  100%
-    opacity: 1
-.input-background
-  z-index: 10
-  position: absolute
-  text-align: center
-  box-sizing: border-box
-  color: white
-  width: 60%
-  max-width: 300px
-  height: 25px
-  bottom: 20px
-  right: 0
-  left: 0
-  margin: auto
-  transition: all .2s cubic-bezier(0.645, 0.045, 0.355, 1)
-  opacity: 1
-  border-radius: 15px
-  background-clip: content-box
-  cursor: pointer
-  &:hover
-    box-shadow: 0 0 5px rgba(112, 112, 112, 1)
-.input-background-gradation
-  background: linear-gradient(95deg,#00E1FF,#e22af9)
-.input-background-opened
+.message-input-body
+  display: flex
+  flex-flow: column
+  background: var(--background-color)
+  border:
+    top:
+      style: solid
+      color: var(--tertiary-color-on-bg)
+      width: 1px
+  padding:
+    right: 6px
+    left: 6px
   width: 100%
-  max-width: 100%
-  bottom: 0
-  height: 60px
-  border-width: 0
-  border-radius: 0
-  opacity: 0
-  z-index: -1
-.suggest-element
+
+.message-input-buttons-wrapper
+  +mq(pc)
+    display: none
+  display: flex
+  flex-flow: row
+  margin:
+    top: 6px
+
+.message-input-button
+  .message-input-text-area-wrapper &
+    +mq(sp)
+      display: none
   cursor: pointer
+  padding:
+    left: 6px
+    right: 6px
+  height: 36px
+
+  &:hover
+    background: var(--background-hover-color)
+
+.message-input-send-button
+  cursor: pointer
+  padding:
+    left: 6px
+    right: 6px
+  height: 36px
+
+  &:hover
+    background: var(--background-hover-color)
+
+.message-input-files-wrapper
+  display: flex
+  flex:
+    flow: row
+    wrap: nowrap
+  overflow:
+    x: scroll
+  margin:
+    top: 6px
+
+.message-input-file
+  position: relative
+  display: flex
+  flex-shrink: 0
+  align-items: center
+  width: 150px
+  margin:
+    right: 6px
+  padding: 4px
+  border-radius: 3px
+
+  &:hover
+    background: var(--background-hover-color)
+
+.message-input-file-thumbnail
+  width: 50px
+  height: 50px
+  background:
+    size: cover
+  flex-shrink: 0
+
+.message-input-file-icon
+  width: 50px
+  height: 50px
+  flex-shrink: 0
+
+.message-input-file-name
+  margin-left: 4px
+  font-size: 12px
+  color: var(--tertiary-color-on-bg)
+  height: 50px
+  line-height: 50px
+
+.message-input-file-close-button
+  position: absolute
+  top: 0
+  right: 0
+  cursor: pointer
+
+.message-input-text-area-wrapper
+  position: relative
+  display: flex
+  flex-flow: row
+  align-items: center
+  width: 100%
+  height: 100%
+
+#message-input-text-area
+  display: block
+  background: none
+  color: var(--text-color)
+  resize: none
+  width: 100%
+  height: 49px
+  max-height: 240px
+  padding:
+    top: 15px
+    left: 6px
+    right: 6px
+    bottom: 12px
+
+  &::placeholder
+    transform: translateY(-2px) translateX(2px)
+    color: var(--tertiary-color-on-bg)
+    opacity: 0.6
+    text-overflow: ellipsis
+    user-select: none
 
 </style>

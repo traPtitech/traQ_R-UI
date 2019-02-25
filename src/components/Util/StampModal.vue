@@ -25,8 +25,11 @@ export default {
   position: fixed
   background-color: $background-color
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)
-  right: 10px
   bottom: $input-height
+
+  +mq(pc)
+    right: 20px
+    bottom: 60px
 
   +mq(sp)
     width: 96vw
