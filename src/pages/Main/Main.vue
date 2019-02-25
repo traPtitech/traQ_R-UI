@@ -9,20 +9,19 @@ file-drop-detector(
     div.index(:data-enable-blur="name ? 'true' : 'false'")
       titlebar
       channel-information
-      // ↓grid-item on pc
-      message-container
-      message-input
       sidebar(:swipeEvent="swipeEvent")
+      message-view
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import sse from '@/bin/sse'
 import client from '@/bin/client'
-import MessageContainer from '@/components/Main/MessageView/MessageContainer'
 import FileDropDetector from '@/components/Util/FileDropDetector'
 import Modal from '@/components/Main/Modal'
 import SwipeDetector from '@/components/Util/SwipeDetector'
+import MessageView from '@/components/Main/MessageView'
+import Sidebar from '@/components/Main/Sidebar/Sidebar'
 
 export default {
   name: 'Main',
@@ -40,12 +39,11 @@ export default {
     }
   },
   components: {
-    'Sidebar': window.asyncLoadComponents(import('@/components/Main/Sidebar/Sidebar')),
-    'Titlebar': window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
-    'MessageInput': window.asyncLoadComponents(import('@/components/Main/MessageView/MessageInput')),
-    'ChannelInformation': window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
-    'StampPicker': window.asyncLoadComponents(import('@/components/Main/StampPicker')),
-    MessageContainer,
+    Titlebar: window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
+    ChannelInformation: window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
+    StampPicker: window.asyncLoadComponents(import('@/components/Main/StampPicker')),
+    Sidebar,
+    MessageView,
     Modal,
     FileDropDetector,
     SwipeDetector
@@ -303,10 +301,8 @@ export default {
   height: 100vh
   height: vh(100)
   +mq(pc)
-    display: grid
-    grid-template-rows: 1fr $input-height
-    grid-template-columns: $sidebar-width 1fr
-    grid-template-areas: "side content""side input"
+    display: flex
+    flex-flow: row
   +mq(sp)
   @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) and (orientation: landscape)
     grid-template-columns: calc(260px + env(safe-area-inset-left) - 7px) 1fr calc(40px + env(safe-area-inset-right) - 7px)

@@ -1,17 +1,17 @@
 <template lang="pug">
 nav.navigation
   ul
-    li.menu-button.channels(@click="navClicked('channels')" :class="{'menu-active':menuContent==='channels'}")
+    li.sidebar-menu-button.channels(@click="navClicked('channels')" :class="{'menu-active':menuContent==='channels'}")
       IconHash(:size="20")
       p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
         | {{channelsUnreadNum}}
-    li.menu-button.members(@click="navClicked('members')" :class="{'menu-active':menuContent==='members'}")
+    li.sidebar-menu-button.members(@click="navClicked('members')" :class="{'menu-active':menuContent==='members'}")
       IconProfileFill(:size="20")
       p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
         | {{usersUnreadNum}}
-    li.menu-button.clips(@click="navClicked('clips')" :class="{'menu-active':menuContent==='clips'}")
+    li.sidebar-menu-button.clips(@click="navClicked('clips')" :class="{'menu-active':menuContent==='clips'}")
       IconAttach(:size="20")
-    li.menu-button.links(@click="navClicked('links')" :class="{'menu-active':menuContent==='links'}")
+    li.sidebar-menu-button.links(@click="navClicked('links')" :class="{'menu-active':menuContent==='links'}")
       IconToolBox(:size="20")
 </template>
 
@@ -87,7 +87,7 @@ export default {
     height: $navigation-height
     display: flex
     align-items: flex-end
-.menu-button
+.sidebar-menu-button
   display: flex
   position: relative
   width: 100%
@@ -125,7 +125,7 @@ export default {
   height: 30px
   border-radius: 100%
   background-color: white
-  .menu-buttons &
+  .sidebar-menu-buttons &
     border: solid 2px white
     transition: border-color .5s ease
     cursor: pointer

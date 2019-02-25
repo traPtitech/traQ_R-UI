@@ -50,6 +50,7 @@ export default {
   display: flex
 
 .menu-button
+  cursor: pointer
   margin-left: 1rem
   color: white
 

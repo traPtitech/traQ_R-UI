@@ -1,5 +1,5 @@
 <template lang="pug" functional>
-<svg :width="props.size" viewBox="-4 -4 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg :width="props.size" viewBox="-2 -2 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M13.5 9C14.3284 9 15 8.32843 15 7.5C15 6.67157 14.3284 6 13.5 6C12.6716 6 12 6.67157 12 7.5C12 8.32843 12.6716 9 13.5 9Z" :fill="props.color"/>
   <path d="M6.5 9C7.32843 9 8 8.32843 8 7.5C8 6.67157 7.32843 6 6.5 6C5.67157 6 5 6.67157 5 7.5C5 8.32843 5.67157 9 6.5 9Z" :fill="props.color"/>
   <path d="M13.5 9C14.3284 9 15 8.32843 15 7.5C15 6.67157 14.3284 6 13.5 6C12.6716 6 12 6.67157 12 7.5C12 8.32843 12.6716 9 13.5 9Z" :fill="props.color"/>

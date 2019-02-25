@@ -35,6 +35,10 @@ export const isGif = mime => {
   return mime.split('/')[0] === 'image' && mime.split('/')[1] === 'gif'
 }
 
+export const isSvg = mime => {
+  return mime.split('/')[0] === 'image' && mime.split('/')[1] === 'svg+xml'
+}
+
 export const isImage = mime => {
   return mime.split('/')[0] === 'image'
 }

@@ -1,5 +1,10 @@
 <template lang="pug">
-div(@dragenter="style=onDragStyle" @dragend="style=''" @dragleave="style=''" @dragover.stop.prevent="dragover" @drop.stop.prevent="dropFile" :style="style")
+div(
+  @dragenter="style=onDragStyle" 
+  @dragend="style=''" 
+  @dragleave="style=''" 
+  @dragover.stop.prevent="dragover" 
+  @drop.stop.prevent="dropFile" :style="style")
   slot
 </template>
 
