@@ -32,8 +32,8 @@ import MessageElement from '@/components/Main/MessageView/MessageElement/Message
 import MemberChoice from '@/components/Main/Modal/Util/MemberChoice'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconNotificationFill from '@/components/Icon/IconNotificationFill'
-import IconLandscapeDay from '@/components/Icon/IconLandScapeDay'
-import IconLandscapeNight from '@/components/Icon/IconLandScapeNight'
+import IconLandscapeDay from '@/components/Icon/IconLandscapeDay'
+import IconLandscapeNight from '@/components/Icon/IconLandscapeNight'
 
 export default {
   name: 'ChannelNotificationModal',
