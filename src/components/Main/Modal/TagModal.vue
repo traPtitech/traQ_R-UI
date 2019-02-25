@@ -38,7 +38,7 @@ export default {
     ...mapGetters('modal', {
       userIds: 'currentTagUsersSorted'
     }),
-    ...mapGetters(['memberMap']),
+    ...mapState(['memberMap']),
     users () {
       return this.userIds
         .filter(userId => this.memberMap[userId] && this.memberMap[userId].accountStatus !== 0)
