@@ -65,7 +65,8 @@ export default {
     channelBeforeClass () {
       return {
         'has-unread': this.unreadNum > 0,
-        'has-unread-child': !this.isOpened && (this.unreadSum - this.unreadNum) > 0
+        'has-unread-child': !this.isOpened && (this.unreadSum - this.unreadNum) > 0,
+        'channel-notified': this.isNotified
       }
     },
     children () {
@@ -74,6 +75,9 @@ export default {
         .map(c => {
           return this.getChannelById(c)
         })
+    },
+    isNotified () {
+      return this.$store.state.myNotifiedChannelSet.has(this.model.channelId)
     }
   },
   watch: {
@@ -134,6 +138,8 @@ export default {
     background-color: black
     border-radius: 100%
     z-index: 2
+.channel-notified
+  text-decoration: underline
 .channel-children
   position: relative
   padding: 0 0 0 0
