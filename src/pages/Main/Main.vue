@@ -25,6 +25,11 @@ import Sidebar from '@/components/Main/Sidebar/Sidebar'
 
 export default {
   name: 'Main',
+  metaInfo () {
+    return {
+      title: this.title
+    }
+  },
   data () {
     return {
       heartbeat: null,
@@ -288,18 +293,30 @@ export default {
     }
   },
   computed: {
-    ...mapState('modal', ['name'])
+    ...mapState('modal', ['name']),
+    title () {
+      if (this.$route.params.user) return `@${this.$route.params.user}`
+      if (!this.$route.params.channel) return ''
+      let ret = '#'
+      this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
+        ret += e.charAt(0) + '/'
+      })
+      ret += this.$store.state.currentChannel.name
+      return ret
+    }
   }
 }
 </script>
 
 <style lang="sass">
 .index
-  position: relative
+  position: fixed
+  top: 0
+  right: 0
   grid-gap: 0
-  width: 100vw
-  height: 100vh
-  height: vh(100)
+  width: 100%
+  height: 100%
+  // height: vh(100)
   +mq(pc)
     display: flex
     flex-flow: row

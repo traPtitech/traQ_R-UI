@@ -5,7 +5,7 @@ div.login
       | Welcome to traQ
   div.login-right-box
     div.input-wrap
-      input.input-reset.login-input.input-id(v-model="name" type="text" placeholder="IDまたはメールアドレス" required @keydown.enter="loginPost")
+      input.input-reset.login-input.input-id(v-model="name" type="text" placeholder="ID" required @keydown.enter="loginPost")
       input.input-reset.login-input.input-password(v-model="pass" type="password" placeholder="パスワード" required @keydown.enter="loginPost")
     div.login-button-wrap
       button.login-button(v-on:click="loginPost()")
@@ -15,6 +15,7 @@ div.login
 
 <script>
 import client from '@/bin/client'
+
 export default {
   name: 'login',
   data () {
@@ -33,20 +34,20 @@ export default {
   methods: {
     loginPost: function () {
       this.status = 'processing'
-      client.login(this.name, this.pass)
-      .then(res => {
-        this.status = 'successed'
-        console.log(res)
-        this.$store.commit('loadStart')
-        this.$store.dispatch('whoAmI')
-        .then(() => {
-          this.$router.push('/channels/random')
+      client
+        .login(this.name, this.pass)
+        .then(res => {
+          this.status = 'successed'
+          console.log(res)
+          this.$store.commit('loadStart')
+          this.$store.dispatch('whoAmI').then(() => {
+            this.$router.push('/channels/random')
+          })
         })
-      })
-      .catch(err => {
-        this.status = 'failed'
-        console.error(err)
-      })
+        .catch(err => {
+          this.status = 'failed'
+          console.error(err)
+        })
     }
   }
 }
@@ -55,12 +56,15 @@ export default {
 <style lang="sass">
 .login
   display: flex
+  background: white
+
 .login-left-box
   width: 40vw
   height: 100vh
-  background-color: #4f74d6
+  background-color: var(--primary-color)
   display: flex
   align-items: center
+
 .login-right-box
   flex: 1
   height: 100vh
@@ -68,15 +72,18 @@ export default {
   align-items: center
   justify-content: center
   flex-flow: column
+
 .login-welcome
   font-weight: bold
   color: white
   text-align: center
   width: 100%
+
 .input-wrap
   display: flex
   flex-flow: column
   margin: 0 auto
+
 .login-input
   width: 200px
   height: 30px
@@ -92,8 +99,10 @@ export default {
   &:-webkit-autofill
     box-shadow: 0 0 0 1000px #bfdcff inset
     border-color: #4e73d6
+
 .login-button-wrap
   position: relative
+
 .login-button
   border: none
   width: 200px
@@ -108,6 +117,7 @@ export default {
     background-color: #4254a6
   &:active
     border: none
+
 .login-failed-message
   position: absolute
   display: block
@@ -116,18 +126,5 @@ export default {
   background-color: #4f74d6
   border-radius: 3px
   color: white
-  animation: balloon-shown .8s ease-in-out
-@keyframes balloon-shown
-  0%
-    transform: rotate(0)
-  10%
-    transform: rotate(3deg)
-  20%
-    transform: rotate(-3deg)
-  40%
-    transform: rotate(1deg)
-  50%
-    transform: rotate(-1deg)
-  60%
-    transform: rotate(0)
+
 </style>
