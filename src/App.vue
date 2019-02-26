@@ -1,5 +1,5 @@
 <template lang="pug">
-#app(:data-theme="$store.state.theme" :style="appStyles" :class="appClasses")
+#app(:data-theme="$store.getters.theme" :style="appStyles" :class="appClasses")
   Favicon
   Splash(v-if="isLoading")
   router-view
