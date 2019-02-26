@@ -14,11 +14,11 @@ nav.navigation
       p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
         | {{usersUnreadNum}}
     li.sidebar-menu-button.clips(
-      @click="navClicked('clips')" 
+      @click="navClicked('Clips')" 
       :class="{'menu-active':menuContent==='Clips'}")
       IconAttach(:size="20")
     li.sidebar-menu-button.links(
-      @click="navClicked('links')" 
+      @click="navClicked('Links')" 
       :class="{'menu-active':menuContent==='Links'}")
       IconToolBox(:size="20")
 </template>
@@ -46,21 +46,17 @@ export default {
   methods: {
     navClicked: function (n) {
       switch (n) {
-        case 'channels':
+        case 'Channels':
           this.$store.commit('changeMenuContent', 'Channels')
-          this.menuContent = 'Channels'
           break
-        case 'members':
+        case 'Members':
           this.$store.commit('changeMenuContent', 'Members')
-          this.menuContent = 'Members'
           break
-        case 'clips':
+        case 'Clips':
           this.$store.commit('changeMenuContent', 'Clips')
-          this.menuContent = 'Clips'
           break
-        case 'links':
+        case 'Links':
           this.$store.commit('changeMenuContent', 'Links')
-          this.menuContent = 'Links'
           break
         default:
       }
