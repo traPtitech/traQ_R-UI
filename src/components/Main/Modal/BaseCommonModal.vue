@@ -1,7 +1,7 @@
 <template lang="pug">
 .common-modal(:data-is-small="small")
   .common-modal-header-wrap
-    .common-modal-header
+    .common-modal-header(:class="{'common-modal-header-back': enableBack}" @click="handleHeaderClick")
       slot(name="header-icon")
       h1.common-modal-header-title {{ title }}
     .common-modal-close(@click="close")
@@ -25,13 +25,23 @@ export default {
     small: {
       type: Boolean,
       defualt: null
+    },
+    enableBack: {
+      // enable "back to user modal" when header is clicked
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     ...mapState('modal', ['data'])
   },
   methods: {
-    ...mapActions('modal', ['close'])
+    ...mapActions('modal', ['close']),
+    handleHeaderClick () {
+      if (this.enableBack) {
+        this.$store.dispatch('openUserModal', this.$store.state.modal.lastUser.userId)
+      }
+    }
   }
 }
 </script>
@@ -68,6 +78,6 @@ export default {
     font:
         weight: 200
         size: 1.2rem
-.common-modal-close
+.common-modal-close, .common-modal-header-back
    cursor: pointer
 </style>

@@ -1,5 +1,7 @@
 <template lang="pug">
-base-common-modal(:title="`TAG: ${data.tag}`" small)
+base-common-modal(:title="`TAG: ${data.tag}`"
+                  :enable-back="!!$store.state.modal.lastUser"
+                  small)
   .tag-modal-go-back(v-if="$store.state.modal.lastUser"
                      slot="header-icon"
                      @click="backToUserModal")
