@@ -55,7 +55,7 @@
 <script>
 import autosize from 'autosize'
 import client from '@/bin/client'
-import {isImage} from '@/bin/utils'
+import { isImage } from '@/bin/utils'
 import suggest from '@/bin/suggest'
 import IconSend from '@/components/Icon/IconSend'
 import IconUpload from '@/components/Icon/IconUpload'
@@ -120,14 +120,14 @@ export default {
       }
       if (this.files.length > 0) {
         this.uploadFiles()
-        .then(() => {
-          this.files = []
-          this.postMessage()
-        })
-        .catch(err => {
-          console.log(err)
-          this.postStatus = 'failed'
-        })
+          .then(() => {
+            this.files = []
+            this.postMessage()
+          })
+          .catch(err => {
+            console.log(err)
+            this.postStatus = 'failed'
+          })
       } else {
         this.postMessage()
       }
@@ -142,36 +142,50 @@ export default {
       })
       this.uploadedIds = []
       let inCodeBlock = false
-      message = message.split('\n').map(line => {
-        if (/^```/.test(line)) {
-          inCodeBlock = !inCodeBlock
-        }
-        if (!inCodeBlock) {
-          let inQuote = false
-          return line.split('`').map(s => {
-            if (inQuote) {
-              inQuote = false
-              return s
-            } else {
-              inQuote = true
-              return this.replaceGroup(this.replaceChannel(this.replaceUser(s)))
-            }
-          }).join('`')
-        } else {
-          return line
-        }
-      }).join('\n')
-      const postedMessage = (!nowChannel.dm)
+      message = message
+        .split('\n')
+        .map(line => {
+          if (/^```/.test(line)) {
+            inCodeBlock = !inCodeBlock
+          }
+          if (!inCodeBlock) {
+            let inQuote = false
+            return line
+              .split('`')
+              .map(s => {
+                if (inQuote) {
+                  inQuote = false
+                  return s
+                } else {
+                  inQuote = true
+                  return this.replaceGroup(
+                    this.replaceChannel(this.replaceUser(s))
+                  )
+                }
+              })
+              .join('`')
+          } else {
+            return line
+          }
+        })
+        .join('\n')
+      const postedMessage = !nowChannel.dm
         ? client.postMessage(nowChannel.channelId, message)
-        : client.postDirectMessage(this.$store.getters.getUserIdByDirectMessageChannel(nowChannel), message)
+        : client.postDirectMessage(
+            this.$store.getters.getUserIdByDirectMessageChannel(nowChannel),
+            message
+          )
       postedMessage
-      .then(() => {
-        this.inputText = ''
-        this.postStatus = 'succeeded'
-      })
-      .catch(() => {
-        this.postStatus = 'failed'
-      })
+        .then(() => {
+          this.inputText = ''
+          this.$nextTick(() => {
+            autosize.update(this.messageInput)
+          })
+          this.postStatus = 'succeeded'
+        })
+        .catch(() => {
+          this.postStatus = 'failed'
+        })
     },
     replaceUser (message) {
       return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
@@ -187,22 +201,30 @@ export default {
       return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
-          return `!{"type": "channel", "raw": "${match.replace(/_/g, '\\_')}", "id": "${channel.channelId}"}`
+          return `!{"type": "channel", "raw": "${match.replace(
+            /_/g,
+            '\\_'
+          )}", "id": "${channel.channelId}"}`
         } else {
           return match
         }
       })
     },
     replaceGroup (message) {
-      return message.replace(/^"@([\S]+)|(?:@([\S]+))/g, (match, userId, content) => {
-        if (userId) return match
-        const group = this.$store.getters.getGroupByContent(content)
-        if (group) {
-          return `!{"type": "group", "raw": "${match}", "id": "${group.groupId}"}`
-        } else {
-          return match
+      return message.replace(
+        /^"@([\S]+)|(?:@([\S]+))/g,
+        (match, userId, content) => {
+          if (userId) return match
+          const group = this.$store.getters.getGroupByContent(content)
+          if (group) {
+            return `!{"type": "group", "raw": "${match}", "id": "${
+              group.groupId
+            }"}`
+          } else {
+            return match
+          }
         }
-      })
+      )
     },
     clearKey () {
       this.key = {
@@ -254,7 +276,10 @@ export default {
         keyword: ''
       }
       this.suggestMode = false
-      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+      if (
+        event.key === 'Enter' &&
+        (event.ctrlKey || event.metaKey || event.shiftKey)
+      ) {
         this.submit()
         event.returnValue = false
       } else {
@@ -299,16 +324,22 @@ export default {
       const messageInput = document.getElementById('messageInput')
       const startIndex = messageInput.selectionStart
       const replaceSuffix = this.inputText.substr(startIndex)
-      const prefixes = this.inputText.substr(0, startIndex).split(this.key.type)
+      const prefixes = this.inputText
+        .substr(0, startIndex)
+        .split(this.key.type)
       const lastSize = prefixes.pop().length + this.key.type.length
       let replacePrefix = prefixes[0]
       for (let i = 1; i < prefixes.length; i++) {
         replacePrefix += this.key.type + prefixes[i]
       }
-      const replace = this.suggests[index].start + this.suggests[index].replace + this.suggests[index].suffix
+      const replace =
+        this.suggests[index].start +
+        this.suggests[index].replace +
+        this.suggests[index].suffix
       this.inputText = replacePrefix + replace + replaceSuffix
       this.$nextTick(() => {
-        messageInput.selectionStart = messageInput.selectionEnd = startIndex - lastSize + replace.length
+        messageInput.selectionStart = messageInput.selectionEnd =
+          startIndex - lastSize + replace.length
       })
       this.key = {
         keyword: '',
@@ -332,7 +363,7 @@ export default {
         let index = this.files.length - 1
         if (isImage(files[i].type)) {
           let reader = new FileReader()
-          reader.onload = (e) => {
+          reader.onload = e => {
             this.$set(this.files[index], 'thumbnail', e.target.result)
           }
           reader.readAsDataURL(files[i])
@@ -349,23 +380,29 @@ export default {
       this.postStatus = 'processing'
       this.uploadedIds = new Array(this.files.length)
       this.uploadProgressSum = 0
-      return Promise.all(this.files.map(async (file, index) => {
-        try {
-          let progress = 0
-          const res = await client.uploadFile(file.file, this.$store.state.currentChannel.member || [], (event) => {
-            if (event.lengthComputable) {
-              this.uploadProgressSum -= progress
-              progress = event.loaded / event.total
-              this.uploadProgressSum += progress
-            }
-          })
-          this.uploadProgressSum -= progress
-          this.uploadProgressSum += 1.0
-          this.uploadedIds[index] = res.data.fileId
-        } catch (e) {
-          console.log(e)
-        }
-      }))
+      return Promise.all(
+        this.files.map(async (file, index) => {
+          try {
+            let progress = 0
+            const res = await client.uploadFile(
+              file.file,
+              this.$store.state.currentChannel.member || [],
+              event => {
+                if (event.lengthComputable) {
+                  this.uploadProgressSum -= progress
+                  progress = event.loaded / event.total
+                  this.uploadProgressSum += progress
+                }
+              }
+            )
+            this.uploadProgressSum -= progress
+            this.uploadProgressSum += 1.0
+            this.uploadedIds[index] = res.data.fileId
+          } catch (e) {
+            console.log(e)
+          }
+        })
+      )
     },
     showStampPicker () {
       this.$store.commit('activeStampPicker')
@@ -386,9 +423,12 @@ export default {
       if (this.$route.params.user) return `@${this.$route.params.user}`
       if (!this.$route.params.channel) return ''
       let ret = '#'
-      this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
-        ret += e.charAt(0) + '/'
-      })
+      this.$route.params.channel
+        .split('/')
+        .slice(0, -1)
+        .forEach(e => {
+          ret += e.charAt(0) + '/'
+        })
       ret += this.$store.state.currentChannel.name
       return ret
     },
