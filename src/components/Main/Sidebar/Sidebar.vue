@@ -1,6 +1,6 @@
 <template lang="pug">
 div.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
-  navigation
+  sidebar-tab-menu
   div.menu-content-wrapper
     Content
   Footer
@@ -8,7 +8,7 @@ div.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
 </template>
 
 <script>
-import Navigation from '@/components/Main/Sidebar/Navigation'
+import SidebarTabMenu from '@/components/Main/Sidebar/SidebarTabMenu'
 import Footer from '@/components/Main/Sidebar/Footer'
 import { mapGetters } from 'vuex'
 
@@ -18,7 +18,7 @@ export default {
     swipeEvent: Object
   },
   components: {
-    Navigation,
+    SidebarTabMenu,
     Content: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
     Footer
   },
