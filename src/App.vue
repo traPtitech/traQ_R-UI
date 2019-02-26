@@ -15,7 +15,13 @@ export default {
   metaInfo () {
     return {
       title: 'Welcome',
-      titleTemplate: '%s | traQ'
+      titleTemplate: '%s | traQ',
+      meta: [
+        {
+          name: 'theme-color',
+          content: this.themeColor
+        }
+      ]
     }
   },
   components: {
@@ -79,8 +85,9 @@ export default {
 <style lang="sass">
 @import "~@/styles/global.sass"
 #app
+  position: fixed
   width: 100%
-  heigth: 100%
+  height: 100%
   font-family: 'Mplus 1p','メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale

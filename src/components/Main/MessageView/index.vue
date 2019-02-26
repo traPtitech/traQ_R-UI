@@ -22,6 +22,7 @@ export default {
     flex-grow: 1
     display: flex
     flex-flow: column
+    height: 100%
   +mq(sp)
     display: flex
     flex-flow: column
