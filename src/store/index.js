@@ -396,6 +396,12 @@ const store = new Vuex.Store({
     }
   },
   getters: {
+    windowWidth (state) {
+      return state.windowWidth
+    },
+    windowHeight (state) {
+      return state.windowHeight
+    },
     childrenChannels (state) {
       return parentId => state.channelData
           .filter(channel => channel.parent === parentId && channel.name !== '')
