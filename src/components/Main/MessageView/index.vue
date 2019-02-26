@@ -25,6 +25,6 @@ export default {
   +mq(sp)
     display: flex
     flex-flow: column
-    height: 100vh
-    height: vh(100)
+    height: 100%
+    // height: vh(100)
 </style>

@@ -65,6 +65,7 @@ export default {
   user-select: none
   padding:
     bottom: 40px
+
 .channel-tab-switcher-wrap
   position: absolute
   bottom: 10px
@@ -78,6 +79,7 @@ export default {
   border-radius: 30px
   overflow: hidden
   animation: fade-in .5s ease
+
 .channel-tab-switcher-item
   display: inline-block
   width: calc( 100% / 3 )
@@ -86,6 +88,7 @@ export default {
   background: none
   &.selected
     background: $tertiary-color
+    
 .channel-list-action-area-wrapper
   width: 80%
   padding:

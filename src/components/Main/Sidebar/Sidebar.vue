@@ -107,13 +107,13 @@ export default {
   z-index: $sidebar-index
   width: $sidebar-width
   +mq(pc)
-    height: 100vh
-    height: vh(100)
+    height: 100%
+    // height: vh(100)
     flex-shrink: 0
     position: relative
   +mq(sp)
-    height: calc(100vh - 50px)
-    height: calc( #{vh(100)} - 50px)
+    height: calc(100% - 50px)
+    // height: calc( #{vh(100)} - 50px)
     position: fixed
     z-index: $sidebar-index
     transform: translateX(-102%)
@@ -135,9 +135,9 @@ export default {
     top: 0
     right: 0
     left: 0
-    width: 200vw
-    height: 100vh
-    height: vh(100)
+    width: 200%
+    height: 100%
+    // height: vh(100)
     z-index: -100
     background-color: rgba(0,0,0,0.2)
     opacity: 0

@@ -1,8 +1,8 @@
 <template lang="pug">
-div#app(:data-theme="$store.state.theme" :style="globalStyle")
+#app(:data-theme="$store.state.theme" :style="appStyles" :class="appClasses")
   Favicon
-  Splash(v-if="!($store.state.loaded && $store.state.loadedComponent)")
-  router-view()
+  Splash(v-if="isLoading")
+  router-view
 </template>
 
 <script>
@@ -12,13 +12,20 @@ import Favicon from '@/components/Util/Favicon'
 
 export default {
   name: 'app',
-  metaInfo: {
-    title: 'Welcome',
-    titleTemplate: '%s | traQ'
+  metaInfo () {
+    return {
+      title: 'Welcome',
+      titleTemplate: '%s | traQ'
+    }
   },
   components: {
     Splash,
     Favicon
+  },
+  data () {
+    return {
+      splashDisplayed: false
+    }
   },
   created () {
     console.log('REVISION:' + process.env.REVISION)
@@ -42,15 +49,29 @@ export default {
     vh () {
       return this.windowHeight * 0.01
     },
-    globalStyle () {
+    isLoading () {
+      return !(this.$store.state.loaded && this.$store.state.loadedComponent)
+    },
+    appStyles () {
       return {
         '--vh': `${this.vh}px`
       }
+    },
+    appClasses () {
+      return {
+        'app-loaded': !this.isLoading
+      }
+    },
+    themeColor () {
+      return this.$store.state.theme === 'light' ? '#0D67EA' : '#232C36'
     }
   },
   mounted () {
-    this.handleResizeWindow()
+    this.$nextTick(() => {
+      this.handleResizeWindow()
+    })
     window.addEventListener('resize', this.handleResizeWindow)
+    window.addEventListener('orientationchange', this.handleResizeWindow)
   }
 }
 </script>
@@ -58,9 +79,14 @@ export default {
 <style lang="sass">
 @import "~@/styles/global.sass"
 #app
+  width: 100%
+  heigth: 100%
   font-family: 'Mplus 1p','メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
-  color: $text-color
-  background-color: $background-color
+  color: var(--text-color)
+  background-color: var(--primary-color)
+
+.app-loaded + .initial-splash
+  display: none
 </style>

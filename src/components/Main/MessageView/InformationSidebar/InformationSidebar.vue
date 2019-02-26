@@ -224,9 +224,9 @@ export default {
 .information-sidebar-content-scroller
   overflow-y: scroll
   +mq(pc)
-    height: calc(100vh - 60px)
+    height: calc(100% - 60px)
   +mq(sp)
-    height: calc(100vh - 50px)
+    height: calc(100% - 50px)
 
 .information-sidebar-content-item
   margin:

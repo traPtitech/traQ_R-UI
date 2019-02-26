@@ -12,10 +12,10 @@ div(v-if="hasStamp").message-stamps-list
         p.stamp-number
           | {{stamp.sum}}
     div.button-open-stamps-list(@click="toggleExpand")
-      icon-down-direction(:size="24" color="gray")
+      icon-down-direction(:size="24" color="var(--text-color)")
   template(v-else)
     div.button-close-stamps-list(@click="toggleExpand")
-      icon-down-direction(:size="24" color="gray")
+      icon-down-direction(:size="24" color="var(--text-color)")
     div
       div.stamps-info-wrap(v-for="stamp in stamps")
         div.stamps-info-stamps-wrap
@@ -219,6 +219,13 @@ export default {
   left: -30px
   width: 24px
   height: 24px
+  opacity: 0
+
+  .message:hover &
+    opacity: 0.6
+
+  .message:hover &:hover
+    opacity: 1
 
 .button-close-stamps-list
   top: -1px

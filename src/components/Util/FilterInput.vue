@@ -1,8 +1,11 @@
 <template lang="pug">
-div.filter-input-container
-  input.input-reset.filter-input(placeholder="検索" v-model="filterText" @input="$emit('inputFilter', filterText)")
-  div.filter-input-reset(v-if="filterText !== ''" @click="reset")
-    IconClose(color="white")
+.filter-input-container
+  input.input-reset.filter-input(
+    placeholder="検索" 
+    v-model="filterText" 
+    @input="$emit('inputFilter', filterText)")
+  .filter-input-reset(v-if="filterText !== ''" @click="reset")
+    icon-close(color="white")
 </template>
 
 <script>
@@ -43,6 +46,7 @@ input.filter-input
   background: rgba(255,255,255,0.2)
   color: $text-light-color
   box-sizing: border-box
+  
   &::placeholder
     color: $text-light-color
     opacity: 0.8

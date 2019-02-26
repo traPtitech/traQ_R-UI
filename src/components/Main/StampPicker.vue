@@ -259,6 +259,8 @@ export default {
   cursor: pointer
   background:
     size: contain
+    repeat: no-repeat
+    position: center center
   width: 28px
   height: 28px
 

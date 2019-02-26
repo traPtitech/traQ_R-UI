@@ -408,6 +408,7 @@ export default {
   &.s32
     width: 32px
     height: 32px
+    
 .emoji
   display: inline-block
   text-indent: 999%
@@ -415,4 +416,7 @@ export default {
   overflow: hidden
   color: transparent
   background-size: contain
+  background-repeat: no-repeat
+  background-position: center center
+
 </style>
