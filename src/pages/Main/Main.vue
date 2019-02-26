@@ -1,25 +1,25 @@
 <template lang="pug">
-file-drop-detector(
-  @dropFile="dropFile"
-  :onDragStyle="'{background-color: #fff;}'"
-  )
+action-detector(
+  @dropFile = "dropFile"
+  @swipeStart = "swipeStart" 
+  @swipeMoving = "swipeMoving" 
+  @swipeEnd = "swipeEnd"
+  :onDragStyle = "'{background-color: #fff;}'")
   stamp-picker
   modal
-  swipe-detector(@swipeStart="swipeStart" @swipeMoving="swipeMoving" @swipeEnd="swipeEnd")
-    div.index(:data-enable-blur="name ? 'true' : 'false'")
-      titlebar
-      channel-information
-      sidebar(:swipeEvent="swipeEvent")
-      message-view
+  .index(:data-enable-blur="name ? 'true' : 'false'")
+    titlebar
+    channel-information
+    sidebar(:swipeEvent="swipeEvent")
+    message-view
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import sse from '@/bin/sse'
 import client from '@/bin/client'
-import FileDropDetector from '@/components/Util/FileDropDetector'
+import ActionDetector from '@/components/Util/ActionDetector'
 import Modal from '@/components/Main/Modal'
-import SwipeDetector from '@/components/Util/SwipeDetector'
 import MessageView from '@/components/Main/MessageView'
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
 
@@ -50,8 +50,7 @@ export default {
     Sidebar,
     MessageView,
     Modal,
-    FileDropDetector,
-    SwipeDetector
+    ActionDetector
   },
   async created () {
     if (!this.$route.params.channel) {
@@ -310,7 +309,7 @@ export default {
 
 <style lang="sass">
 .index
-  position: fixed
+  position: absolute
   top: 0
   right: 0
   grid-gap: 0
