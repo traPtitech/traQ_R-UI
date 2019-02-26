@@ -19,9 +19,18 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
             icon-topic(:size="24")
             span
               | TOPIC
-          div.information-sidebar-content-body
+            div.indormation-sidebar-topic-edit-button(:class="{'topic-edit-cancel': isTopicEditing}" @click="toggleTopicEdit")
+              icon-close(v-if="isTopicEditing")
+              icon-edit(v-else)
+              div.indormation-sidebar-topic-edit-button-text(v-if="isTopicEditing")
+                | キャンセル
+          div.information-sidebar-content-body(v-if="isTopicEditing")
+            textarea.information-topic-edit-input(v-model="newTopic" rows="3")
+            div.indormation-sidebar-topic-edit-confirm-button.flex-center(@click="updateTopic")
+              | 更新
+          div.information-sidebar-content-body(v-else)
             span(v-if="topic !== ''")
-              | {{topic}}
+              | {{ topic }}
             span.no-topic(v-else)
               | 設定されていません
         div.information-sidebar-content-item.separator-line(v-if="hasPinnedMessage")
@@ -42,21 +51,27 @@ import client from '@/bin/client'
 import IconClose from '@/components/Icon/IconClose'
 import IconTopic from '@/components/Icon/IconTopic'
 import IconPin from '@/components/Icon/IconPin'
+import IconEdit from '@/components/Icon/IconEdit'
 import SlimMessageElement from '@/components/Main/MessageView/InformationSidebar/SlimMessageElement'
 import SlimMemberElement from '@/components/Main/MessageView/InformationSidebar/SlimMemberElement'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 
 export default {
   name: 'InformationSidebar',
-  components: {IconClose, IconTopic, IconPin, SlimMessageElement, SlimMemberElement, MemberElement},
+  components: {IconClose, IconTopic, IconPin, IconEdit, SlimMessageElement, SlimMemberElement, MemberElement},
   data () {
     return {
       isOpened: false,
       isNotFirst: false,
-      isScrolled: false
+      isScrolled: false,
+      isTopicEditing: false,
+      newTopic: ''
     }
   },
   computed: {
+    route () {
+      return this.$route
+    },
     isUserDM () {
       return this.$route.params.user !== undefined
     },
@@ -107,9 +122,25 @@ export default {
       } else {
         this.isScrolled = false
       }
+    },
+    toggleTopicEdit () {
+      this.isTopicEditing = !this.isTopicEditing
+    },
+    async updateTopic () {
+      await this.$store.dispatch('updateCurrentChannelTopic', this.newTopic)
+      this.isTopicEditing = false
+    }
+  },
+  watch: {
+    route () {
+      this.isTopicEditing = false
+    },
+    topic () {
+      this.newTopic = this.topic
     }
   },
   mounted () {
+    this.newTopic = this.topic
   }
 }
 </script>
@@ -313,5 +344,38 @@ export default {
     opacity: 0.5
     background: $light-bg-color
 
+.indormation-sidebar-topic-edit-button
+  position: relative
+  margin-left: auto
+  cursor: pointer
+  display: flex
+  align-items: center
+  opacity: 0.5
+  &:hover, &.topic-edit-cancel
+    opacity: 1
+
+.indormation-sidebar-topic-edit-button-text
+  font-size: 0.8rem
+  margin-left: 0.5rem
+
+.indormation-sidebar-topic-edit-confirm-button
+  margin:
+    top: 0.5rem
+    left: auto
+  width: 4rem
+  height: 2.5rem
+  border-radius: 4px
+  border: 1px solid white
+  cursor: pointer
+
+.information-topic-edit-input
+  overflow: auto
+  background: none
+  color: white
+  border-radius: 3px
+  border: 1px solid white
+  padding: 0.25rem
+  box-sizing: border-box
+  width: 100%
 </style>
 
