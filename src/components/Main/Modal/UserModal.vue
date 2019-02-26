@@ -18,7 +18,8 @@
           IconProfileFill(:size="20" color="var(--primary-color-on-bg)")
           .user-modal-tabs-pane-text
             | GROUPS
-    component(:is="activeExtraComponent")
+    keep-alive
+      component(:is="activeExtraComponent")
 </template>
 
 <script>
