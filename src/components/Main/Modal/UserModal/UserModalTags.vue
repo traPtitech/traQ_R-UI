@@ -18,7 +18,7 @@
   .user-modal-tags-input-container
     .user-modal-tags-icon
       IconTag(:size="16" color="gray" :style="detailInputIconStyle")
-    input.user-modal-tags-input(
+    input.user-modal-tags-input.input-reset(
       v-model="tagInput"
       @keydown="onInputChange"
       placeholder="タグを追加……"

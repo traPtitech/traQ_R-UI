@@ -589,7 +589,7 @@ export default {
     bottom: 12px
 
   &::placeholder
-    transform: translateY(-2px) translateX(2px)
+    transform: translateX(2px)
     color: var(--tertiary-color-on-bg)
     opacity: 0.6
     text-overflow: ellipsis
