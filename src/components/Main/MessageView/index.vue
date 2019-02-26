@@ -23,7 +23,8 @@ export default {
     display: flex
     flex-flow: column
   +mq(sp)
-    display: block
+    display: flex
+    flex-flow: column
     height: 100vh
     height: vh(100)
 </style>
