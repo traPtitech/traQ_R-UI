@@ -1,17 +1,25 @@
 <template lang="pug">
 nav.navigation
   ul
-    li.sidebar-menu-button.channels(@click="navClicked('channels')" :class="{'menu-active':menuContent==='channels'}")
+    li.sidebar-menu-button.channels(
+      @click="navClicked('Channels')" 
+      :class="{'menu-active':menuContent==='Channels'}")
       IconHash(:size="20")
       p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
         | {{channelsUnreadNum}}
-    li.sidebar-menu-button.members(@click="navClicked('members')" :class="{'menu-active':menuContent==='members'}")
+    li.sidebar-menu-button.members(
+      @click="navClicked('Members')" 
+      :class="{'menu-active':menuContent==='Members'}")
       IconProfileFill(:size="20")
       p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
         | {{usersUnreadNum}}
-    li.sidebar-menu-button.clips(@click="navClicked('clips')" :class="{'menu-active':menuContent==='clips'}")
+    li.sidebar-menu-button.clips(
+      @click="navClicked('clips')" 
+      :class="{'menu-active':menuContent==='Clips'}")
       IconAttach(:size="20")
-    li.sidebar-menu-button.links(@click="navClicked('links')" :class="{'menu-active':menuContent==='links'}")
+    li.sidebar-menu-button.links(
+      @click="navClicked('links')" 
+      :class="{'menu-active':menuContent==='Links'}")
       IconToolBox(:size="20")
 </template>
 
@@ -32,8 +40,7 @@ export default {
   },
   data () {
     return {
-      userMenuOpened: false,
-      menuContent: 'channels'
+      userMenuOpened: false
     }
   },
   methods: {
@@ -41,22 +48,19 @@ export default {
       switch (n) {
         case 'channels':
           this.$store.commit('changeMenuContent', 'Channels')
-          this.menuContent = 'channels'
+          this.menuContent = 'Channels'
           break
         case 'members':
           this.$store.commit('changeMenuContent', 'Members')
-          this.menuContent = 'members'
+          this.menuContent = 'Members'
           break
         case 'clips':
           this.$store.commit('changeMenuContent', 'Clips')
-          this.menuContent = 'clips'
+          this.menuContent = 'Clips'
           break
         case 'links':
           this.$store.commit('changeMenuContent', 'Links')
-          this.menuContent = 'links'
-          break
-        case 'wiki':
-          this.menuContent = 'wiki'
+          this.menuContent = 'Links'
           break
         default:
       }
@@ -69,6 +73,9 @@ export default {
     }
   },
   computed: {
+    menuContent () {
+      return this.$store.state.menuContent
+    },
     channelsUnreadNum () {
       return this.$store.getters.getChannelUnreadMessageSum('')
     },
