@@ -4,30 +4,49 @@
   .user-modal-area--profile(@click="toggleExpandProfile")
     .user-modal-close-wrap
       .user-modal-close(@click="close")
-        icon-close(color="white" :size=12)
+        icon-close(color="white" :size="16")
     user-modal-profile(:expanded="expandProfile")
   // タグなど
   .user-modal-area--extra
+    .user-modal-tabs-container
+      modal-tabs(v-model="activeExtraComponent" :options="extraComponents")
+        template(slot="UserModalTags")
+          IconTag(:size="20" color="var(--primary-color-on-bg)")
+          .user-modal-tabs-pane-text
+            | TAGS
+        template(slot="UserModalGroups")
+          IconProfileFill(:size="20" color="var(--primary-color-on-bg)")
+          .user-modal-tabs-pane-text
+            | GROUPS
     component(:is="activeExtraComponent")
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import ModalTabs from '@/components/Main/Modal/Util/ModalTabs'
 import UserModalProfile from '@/components/Main/Modal/UserModal/UserModalProfile'
 import UserModalTags from '@/components/Main/Modal/UserModal/UserModalTags'
+import UserModalGroups from '@/components/Main/Modal/UserModal/UserModalGroups'
 import IconClose from '@/components/Icon/IconClose'
+import IconTag from '@/components/Icon/IconTag'
+import IconProfileFill from '@/components/Icon/IconProfileFill'
 
 export default {
   name: 'UserModal',
   components: {
+    ModalTabs,
     UserModalProfile,
     UserModalTags,
-    IconClose
+    UserModalGroups,
+    IconClose,
+    IconTag,
+    IconProfileFill
   },
   data () {
     return {
       expandProfile: false,
-      activeExtraComponent: 'UserModalTags'
+      activeExtraComponent: 'UserModalTags',
+      extraComponents: ['UserModalTags', 'UserModalGroups']
     }
   },
   methods: {
@@ -80,6 +99,7 @@ $profile-area-width: 350px
   flex-shrink: 3
   min-height: 0
   display: flex
+  flex-direction: column
 
 @keyframes delayedOpacityChange
   0%
@@ -126,5 +146,23 @@ $profile-area-width: 350px
     opacity: 0
     animation: delayedOpacityChange .3s ease
 
+.user-modal-tabs-container
+  margin-top: 1rem
+  margin-bottom: 1rem
+  +mq(pc)
+    margin-left: 2rem
+    margin-right: 2rem
+  +mq(sp)
+    margin-left: 1rem
+    margin-right: 1rem
+
+.user-modal-tabs-pane-text
+  margin-left: 1rem
+  color: $primary-color-on-bg
+  font:
+    size: 1.2rem
+    weight: 400
+  @media (max-width: 900px)
+    display: none
 </style>
 
