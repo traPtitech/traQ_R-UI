@@ -20,11 +20,23 @@ jobs:
             fi
             docker build -t trap/traq-ui:$IMAGE_TAG .
             docker push trap/traq-ui:$IMAGE_TAG
+  build:
+    docker: 
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - run:
+          name: module install
+          command: npm ci
+      - run:
+          name: build
+          command: npm run build
 
 workflows:
   version: 2
   main:
     jobs:
+      - build
       - build-image:
           filters:
             branches:
