@@ -1,6 +1,6 @@
 <template lang="pug">
 .message-input(:class="{'input-focused':focused}")
-  input.upload-button(id="upload" style="display:none" type="file" @change="addFiles")
+  input.upload-button(id="upload" style="display:none" type="file" multiple="multiple" @change="addFiles")
   .message-input-body
     .message-input-buttons-wrapper
       .message-input-button.flex-center(@click="clickUploadButton")
@@ -40,16 +40,7 @@
         @click="submit"
         :style="sendButtonStyle")
         icon-send(:size="24" color="var(--tertiary-color-on-bg)")
-  //- input.upload-button(id="upload" style="display:none" type="file" @change="addFiles")
-  //- div.upload-button.flex-center(@click="clickUploadButton")
-  //-   IconFile(:size="20" color="var(--text-color)")
-  //- div.submit-button.flex-center(@click="submit")
-  //-   IconAngleRight(:size="24" color="var(--text-color)")
-  //- div.input-area-wrapper(@drom="dropFile")
   //-   p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
-  //-   textarea.input-area(id="messageInput" @focus="inputFocus()" @blur="inputBlur()" v-model="inputText" @keydown="keydown" @click="clearKey" ref="inputArea" placeholder="進捗どうですか")
-  //-   div(v-for="(file, index) in files" @click="removeFile(index)")
-  //-     | {{ file.name }}
 </template>
 
 <script>
@@ -113,6 +104,12 @@ export default {
     inputBlur () {
       this.focused = false
       this.$store.commit('setEditing', false)
+      this.$nextTick(() => {
+        this.$store.commit('setWindowSize', {
+          windowWidth: window.innerWidth,
+          windowHeight: window.innerHeight
+        })
+      })
     },
     submit () {
       if (this.inputText === '' && this.files.length === 0) {
@@ -348,26 +345,29 @@ export default {
     },
     addFiles (event) {
       for (let i = 0; i < event.target.files.length; i++) {
-        this.files.push(event.target.files[i])
+        this.addFile(event.target.files[i])
       }
     },
     dropFile (files) {
       for (let i = 0; i < files.length; i++) {
-        if (files[i].size > 30 * 1000 * 1000) {
-          window.alert('ファイルサイズが大きすぎます')
-          continue
+        this.addFile(files[i])
+      }
+    },
+    addFile (file) {
+      if (file.size > 30 * 1000 * 1000) {
+        window.alert('ファイルサイズが大きすぎます')
+        return
+      }
+      this.files.push({
+        file: file
+      })
+      let index = this.files.length - 1
+      if (isImage(file.type)) {
+        let reader = new FileReader()
+        reader.onload = e => {
+          this.$set(this.files[index], 'thumbnail', e.target.result)
         }
-        this.files.push({
-          file: files[i]
-        })
-        let index = this.files.length - 1
-        if (isImage(files[i].type)) {
-          let reader = new FileReader()
-          reader.onload = e => {
-            this.$set(this.files[index], 'thumbnail', e.target.result)
-          }
-          reader.readAsDataURL(files[i])
-        }
+        reader.readAsDataURL(file)
       }
     },
     removeFile (id) {

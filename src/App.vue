@@ -6,6 +6,7 @@ div#app(:data-theme="$store.state.theme" :style="globalStyle")
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import Splash from '@/components/Splash/Splash'
 import Favicon from '@/components/Util/Favicon'
 
@@ -14,11 +15,6 @@ export default {
   metaInfo: {
     title: 'Welcome',
     titleTemplate: '%s | traQ'
-  },
-  data () {
-    return {
-      vh: Number
-    }
   },
   components: {
     Splash,
@@ -39,11 +35,13 @@ export default {
       this.$store.commit('setWindowSize', {
         windowWidth: window.innerWidth,
         windowHeight: window.innerHeight})
-
-      this.vh = window.innerHeight * 0.01
     }
   },
   computed: {
+    ...mapGetters(['windowWidth', 'windowHeight']),
+    vh () {
+      return this.windowHeight * 0.01
+    },
     globalStyle () {
       return {
         '--vh': `${this.vh}px`
