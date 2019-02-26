@@ -11,7 +11,7 @@
         icon-hash(:size="22" color="var(--tertiary-color-on-bg)")
       .message-input-button.flex-center
         icon-profile(:size="24" color="var(--tertiary-color-on-bg)")
-    .message-input-files-wrapper(v-if="hasFile")
+    .message-input-files-wrapper.is-scroll(v-if="hasFile")
       .message-input-file(v-for="(file, index) in files")
         .message-input-file-thumbnail(
           v-if="file.thumbnail"
@@ -468,8 +468,7 @@ export default {
     position: relative
     width: calc(100vw - #{$sidebar-width})
   +mq(sp)
-    position: fixed
-    bottom: 0
+    position: relative
     width: 100vw
   z-index: $message-input-index
 

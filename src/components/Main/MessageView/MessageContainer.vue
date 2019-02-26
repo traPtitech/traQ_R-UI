@@ -180,8 +180,5 @@ export default {
     right: 0
     left: 0
     bottom: 20px
-  +mq(sp)
-    margin:
-      bottom: 80px
   
 </style>
