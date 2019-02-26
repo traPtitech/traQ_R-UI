@@ -1,26 +1,24 @@
 <template lang="pug">
-nav.navigation
+nav.sidebar-tab-menu
   ul
-    li.sidebar-menu-button.channels(
+    li.sidebar-menu-button.flex-center.channels(
       @click="navClicked('Channels')" 
       :class="{'menu-active':menuContent==='Channels'}")
-      IconHash(:size="20")
-      p(v-if="menuContent !== 'channels' && channelsUnreadNum > 0")
-        | {{channelsUnreadNum}}
-    li.sidebar-menu-button.members(
+      icon-hash(:size="20")
+      .sidebar-tab-menu-unread-indicator(v-if="channelsUnreadNum > 0")
+    li.sidebar-menu-button.flex-center.members(
       @click="navClicked('Members')" 
       :class="{'menu-active':menuContent==='Members'}")
-      IconProfileFill(:size="20")
-      p(v-if="menuContent !== 'members' && usersUnreadNum > 0")
-        | {{usersUnreadNum}}
-    li.sidebar-menu-button.clips(
+      icon-profile-fill(:size="20")
+      .sidebar-tab-menu-unread-indicator(v-if="usersUnreadNum > 0")
+    li.sidebar-menu-button.flex-center.clips(
       @click="navClicked('Clips')" 
       :class="{'menu-active':menuContent==='Clips'}")
-      IconAttach(:size="20")
-    li.sidebar-menu-button.links(
+      icon-attach(:size="20")
+    li.sidebar-menu-button.flex-center.links(
       @click="navClicked('Links')" 
       :class="{'menu-active':menuContent==='Links'}")
-      IconToolBox(:size="20")
+      icon-tool-box(:size="20")
 </template>
 
 <script>
@@ -31,7 +29,7 @@ import IconAttach from '@/components/Icon/IconAttach'
 import IconToolBox from '@/components/Icon/IconToolBox'
 
 export default {
-  name: 'Navigation',
+  name: 'SidebarTabMenu',
   components: {
     IconHash,
     IconProfileFill,
@@ -83,7 +81,7 @@ export default {
 </script>
 
 <style lang="sass">
-.navigation
+.sidebar-tab-menu
   user-select: none
   background-color: $secondary-color
   ul
@@ -91,13 +89,10 @@ export default {
     display: flex
     align-items: flex-end
 .sidebar-menu-button
-  display: flex
   position: relative
   width: 100%
   height: 100%
   cursor: pointer
-  align-items: center
-  justify-content: center
   color: rgba(255, 255, 255, 0.6)
   font-size: 1.3em
   &:hover
@@ -149,4 +144,15 @@ export default {
     height: 100%
   &:hover p
     background-color: rgba(255, 255, 255, 0.3)
+
+.sidebar-tab-menu-unread-indicator
+  position: absolute
+  display: block
+  width: 7px
+  height: 7px
+  right: 17px
+  top: 15px
+  border-radius: 100%
+  background: $notification-color
+
 </style>

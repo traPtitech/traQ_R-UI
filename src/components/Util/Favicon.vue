@@ -28,17 +28,10 @@ export default {
       this.ctx.drawImage(this.img, 0, 0, 32, 32)
       if (Object.keys(this.$store.state.unreadMessages).length > 0) {
         this.ctx.font = "bold 10px 'ヒラギノ角ゴ ProN W3'"
-        this.ctx.fillStyle = '#f00'
+        this.ctx.fillStyle = '#F2994A'
         this.ctx.beginPath()
-        this.ctx.arc(22, 22, 10, 0, Math.PI * 2, true)
+        this.ctx.arc(6, 6, 10, 0, Math.PI * 2, true)
         this.ctx.fill()
-        this.ctx.fillStyle = '#fff'
-
-        if (this.$store.getters.getUnreadMessageNum >= 10) {
-          this.ctx.fillText(this.$store.getters.getUnreadMessageNum, 15, 27)
-        } else {
-          this.ctx.fillText(this.$store.getters.getUnreadMessageNum, 20, 27)
-        }
       }
 
       const faviconImage = this.canvas.toDataURL('image/png')
