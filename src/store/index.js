@@ -782,12 +782,16 @@ const store = new Vuex.Store({
       commit('setMyNotifiedChannels', data)
     },
     async updateCurrentChannelNotifications ({state, dispatch}, {on, off}) {
-      console.log(state.currentChannel)
       await client.changeNotifications(state.currentChannel.channelId, {
         on: on || [],
         off: off || []
       })
       await dispatch('getCurrentChannelNotifications', state.currentChannel.channelId)
+    },
+    async updateCurrentChannelTopic ({state, dispatch}, text) {
+      const channelId = state.currentChannel.channelId
+      await client.changeChannelTopic(channelId, text)
+      await dispatch('getCurrentChannelTopic', channelId)
     },
     updateFilterSubscribedActivity ({commit}, filter) {
       commit('setFilterSubscribedActivity', filter)
