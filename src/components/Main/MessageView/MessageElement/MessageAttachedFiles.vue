@@ -39,7 +39,7 @@
           div.attached-file-info-icon-wrap
             icon-attach(:size="24" color="var(--tertiary-color-on-bg)")
           div
-            p.attached-file-name
+            p.attached-file-name.break-text
               | {{file.name}}
             p.attached-file-size
               | {{encodeByte(file.size)}}
