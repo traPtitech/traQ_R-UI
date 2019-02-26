@@ -396,6 +396,9 @@ const store = new Vuex.Store({
     }
   },
   getters: {
+    theme (state) {
+      return typeof (state.theme) === 'string' ? state.theme : 'light'
+    },
     windowWidth (state) {
       return state.windowWidth
     },
