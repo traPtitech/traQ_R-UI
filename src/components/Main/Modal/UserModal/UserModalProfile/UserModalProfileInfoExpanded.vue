@@ -37,12 +37,7 @@ export default {
       tags: 'currentUserTags'
     }),
     grade () {
-      const tag = this.tags.find(tag => /^\d{2}[BMDR]$/.test(tag.tag))
-      if (tag) {
-        return tag.tag
-      } else {
-        return '___'
-      }
+      return this.$store.getters.gradeByUserMap[this.data.userId].name
     },
     twitterId () {
       return this.data.twitterId !== '' ? this.data.twitterId : '-'
@@ -75,10 +70,12 @@ export default {
 .user-modal-profile-info-name
   margin-bottom: .5rem
   display: flex
+  align-items: center
 
 .user-modal-profile-info-grade
   font-size: .9rem
   border: 1px solid rgba(255, 255, 255, 0.7)
+  border-radius: 4px
   padding: .1rem .4rem
   margin-left: 1rem;
 
