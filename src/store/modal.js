@@ -7,6 +7,7 @@ export default {
     data: null,
     currentUserTags: [],
     currentTagUserIds: [],
+    currentUserGroupIds: [],
     lastUser: null
   },
   getters: {
@@ -17,6 +18,11 @@ export default {
     },
     currentTagUsersSorted: state => {
       return state.currentTagUserIds
+    },
+    currentUserGroupsSorted: (state, _, rootState) => {
+      const currentIds = state.currentUserGroupIds
+      const current = currentIds.map(id => rootState.groupMap[id])
+      return current.filter(group => group.type === 'grade').concat(current.filter(group => group.type !== 'grade'))
     }
   },
   mutations: {
@@ -36,6 +42,10 @@ export default {
     setCurrentTagUserIds (state, users) {
       users = users || []
       state.currentTagUserIds = users
+    },
+    setCurrentUserGroupIds (state, groups) {
+      groups = groups || []
+      state.currentUserGroupIds = groups
     }
   },
   actions: {
@@ -43,6 +53,12 @@ export default {
       return client.getUserTags(state.data.userId)
       .then(res => {
         commit('setCurrentUserTags', res.data)
+      })
+    },
+    updateCurrentUserGroupIds ({state, commit}) {
+      return client.getUserGroups(state.data.userId)
+      .then(res => {
+        commit('setCurrentUserGroupIds', res.data)
       })
     },
     updateCurrentTagUserIds ({state, commit}) {
@@ -59,7 +75,10 @@ export default {
           name: 'UserModal',
           data: rootState.memberMap[userId]
         })
-        return dispatch('updateCurrentUserTags')
+        return Promise.all([
+          dispatch('updateCurrentUserTags'),
+          dispatch('updateCurrentUserGroupIds')
+        ])
       }
     },
     openGroupModal: {
@@ -103,8 +122,8 @@ export default {
       }
     },
     open ({state, commit}, {name, data}) {
-      if (state.name === 'UserModal' && name === 'TagModal') {
-        // Transition from user modal to tag modal
+      if (state.name === 'UserModal') {
+        // Transition from user modal
         commit('setLastUser', state.data)
       }
       commit('setModalName', name)
