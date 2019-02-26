@@ -1,5 +1,5 @@
 # traQ-ui
-[![CircleCI](https://circleci.com/gh/traPtitech/traQ-UI.svg?style=svg)](https://circleci.com/gh/traPtitech/traQ-UI)
+[![CircleCI](https://circleci.com/gh/traPtitech/traQ-UI.svg?style=svg)](https://circleci.com/gh/traPtitech/traQ-UI) [![Greenkeeper badge](https://badges.greenkeeper.io/traPtitech/traQ-UI.svg)](https://greenkeeper.io/)
 
 ## Build Setup
 
