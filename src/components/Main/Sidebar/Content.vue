@@ -36,8 +36,8 @@ export default {
   },
   watch: {
     menuContent (newv, oldv) {
+      this.scrollTopMap[oldv] = this.$el.scrollTop
       this.$nextTick(() => {
-        this.scrollTopMap[oldv] = this.$el.scrollTop
         this.$el.scrollTop = this.scrollTopMap[newv]
       })
     }
