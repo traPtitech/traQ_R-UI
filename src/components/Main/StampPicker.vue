@@ -6,11 +6,11 @@ div.stamp-picker
         input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
         div.stamp-picker-search-icon
           icon-search(color="gray")
-      transition-group.stamp-picker-body(
+      transition-group.stamp-picker-body.is-scroll(
         tag="div"
         :name="stampContainerTransitionName"
         @mouseleave="searchPlaceHolder=defaultString")
-          div.stamp-picker-body-container.is-scroll(
+          div.stamp-picker-body-container(
             v-if="search.length == 0" 
             v-for="(category, idx) in stampCategolized" 
             v-show="idx==currentCategoryIndex" 
@@ -26,7 +26,7 @@ div.stamp-picker
                   :style="stampItemStyle(stamp.fileId)" 
                   :title="`:${stamp.name}:`")
               div.stamp-picker-stamp-item-dummy(v-for="i in 20")
-          div.stamp-picker-body-container.is-scroll(
+          div.stamp-picker-body-container(
             key="filtered"
             v-if="search.length > 0")
             p.stamp-picker-category-name

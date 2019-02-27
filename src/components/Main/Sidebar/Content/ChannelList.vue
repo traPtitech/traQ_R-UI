@@ -1,5 +1,5 @@
 <template lang="pug">
-div.channel-list.is-scroll
+div.channel-list
   div.channel-list-action-area-wrapper
     transition(name="slide" mode="out-in")
       keep-alive

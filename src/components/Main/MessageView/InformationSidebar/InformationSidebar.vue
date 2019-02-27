@@ -147,7 +147,7 @@ export default {
 
 <style lang="sass">
 .information-sidebar
-  position: fixed
+  position: absolute
   z-index: $information-sidebar-index
   width: $information-sidebar-button-width
   height: 60px

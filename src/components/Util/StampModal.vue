@@ -9,10 +9,6 @@ export default {
   name: 'StampModal',
   props: {
     active: Boolean
-  },
-  created: function () {
-  },
-  methods: {
   }
 }
 </script>
@@ -21,8 +17,8 @@ export default {
 .stamp-modal
   border-radius: 10px
   width: 360px
-  height: 60vh
-  position: fixed
+  height: 60%
+  position: absolute
   background-color: $background-color
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)
   bottom: $input-height
@@ -39,7 +35,7 @@ export default {
 
 .stamp-modal-overlay
   z-index: $stamp-modal-index
-  position: fixed
+  position: absolute
   width: 100%
   height: 100%
   top: 0

@@ -6,7 +6,7 @@
         IconBack(color="white")
       .back-to-traq-text-wrap traQへ戻る
   .setting-container-wrap
-    .setting-container.drop-shadow
+    .setting-container.drop-shadow.is-scroll
       .setting-menu.drop-shadow
         .setting-title-container
           .setting-traq-logo
@@ -87,14 +87,15 @@ export default {
 <style lang="sass">
 $header-height: 3rem
 .setting-page
+  position: absolute
   background-color: $setting-background-color
-  height: 100vh
+  height: 100%
   color: $text-color
 .setting-header
   position: absolute
   display: flex
   align-items: center
-  width: 100vw
+  width: 100%
   height: $header-height
   background-color: $primary-color
   color: white
