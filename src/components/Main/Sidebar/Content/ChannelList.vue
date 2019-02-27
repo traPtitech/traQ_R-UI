@@ -1,36 +1,27 @@
 <template lang="pug">
 div.channel-list
   div.channel-list-action-area-wrapper
-    transition(name="slide" mode="out-in")
-      keep-alive
-        filter-input(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
-        channel-activity-controlls(v-else
-                                 :isLoading="isLoading"
-                                 @refreshClick="refresh"
-                                 @filterToggle="toggleNotification")
-  transition(name="slide" mode="out-in")
     keep-alive
-      channel-treeView(v-if="channelView === 'tree'" :filterText="filterText")
-      channel-stared(v-if="channelView === 'stared'" :filterText="filterText")
-      channel-activity(v-if="channelView === 'activity'")
-  div.channel-tab-switcher-wrap.drop-shadow
-    div.channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
-    div.channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
-    div.channel-tab-switcher-item(@click="channelView = 'activity'" :class="{selected: channelView === 'activity'}")
+      filter-input(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
+      channel-activity-controlls(v-else
+                                :isLoading="isLoading"
+                                @refreshClick="refresh"
+                                @filterToggle="toggleNotification")
+  keep-alive
+    channel-treeView(v-if="channelView === 'tree'" :filterText="filterText")
+    channel-stared(v-if="channelView === 'stared'" :filterText="filterText")
+    channel-activity(v-if="channelView === 'activity'")
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import ChannelTreeView from '@/components/Main/Sidebar/Content/ChannelTreeView'
-import ChannelStared from '@/components/Main/Sidebar/Content/ChannelStared'
-import ChannelActivity from '@/components/Main/Sidebar/Content/ChannelActivity'
-import ChannelActivityControlls from '@/components/Main/Sidebar/Content/ChannelActivityControlls'
 import FilterInput from '@/components/Util/FilterInput'
 
 export default {
   name: 'ChannelList',
   data () {
     return {
-      channelView: 'tree',
       filterText: '',
       filterSubscribed: true,
       isLoading: false
@@ -38,10 +29,10 @@ export default {
   },
   components: {
     ChannelTreeView,
-    ChannelStared,
-    ChannelActivity,
-    ChannelActivityControlls,
-    FilterInput
+    FilterInput,
+    ChannelStared: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelStared')),
+    ChannelActivity: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelActivity')),
+    ChannelActivityControlls: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelActivityControlls'))
   },
   methods: {
     async refresh () {
@@ -56,6 +47,9 @@ export default {
       this.$store.dispatch('updateFilterSubscribedActivity', !filter)
       this.refresh()
     }
+  },
+  computed: {
+    ...mapGetters(['channelView'])
   }
 }
 </script>
@@ -65,29 +59,6 @@ export default {
   user-select: none
   padding:
     bottom: 40px
-
-.channel-tab-switcher-wrap
-  position: absolute
-  bottom: 10px
-  width: 120px
-  height: 30px
-  right: 0
-  left: 0
-  margin: 0 auto
-  background: $secondary-color
-  z-index: $sidebar-index + 10
-  border-radius: 30px
-  overflow: hidden
-  animation: fade-in .5s ease
-
-.channel-tab-switcher-item
-  display: inline-block
-  width: calc( 100% / 3 )
-  height: 100%
-  cursor: pointer
-  background: none
-  &.selected
-    background: $tertiary-color
     
 .channel-list-action-area-wrapper
   width: 80%

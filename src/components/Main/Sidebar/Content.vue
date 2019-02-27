@@ -1,14 +1,12 @@
 <template lang="pug">
-div.sidebar-content(ref="sidebarContent")
+div.sidebar-content.is-scroll(ref="sidebarContent")
   keep-alive
     component(:is="componentMap[menuContent]")
+  channel-list-tab-switcher(v-if="menuContent === 'Channels'")
 </template>
 
 <script>
 import ChannelList from '@/components/Main/Sidebar/Content/ChannelList'
-import MemberList from '@/components/Main/Sidebar/Content/MemberList'
-import ClipList from '@/components/Main/Sidebar/Content/ClipList'
-import LinkList from '@/components/Main/Sidebar/Content/LinkList'
 
 export default {
   name: 'MenuContent',
@@ -22,12 +20,15 @@ export default {
       },
       componentMap: {
         'Channels': ChannelList,
-        'Members': MemberList,
-        'Clips': ClipList,
-        'Links': LinkList
+        'Members': window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/MemberList')),
+        'Clips': window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ClipList')),
+        'Links': window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/LinkList'))
       },
       currentTabComponentName: 'Channels'
     }
+  },
+  components: {
+    ChannelListTabSwitcher: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelListTabSwitcher'))
   },
   computed: {
     menuContent () {

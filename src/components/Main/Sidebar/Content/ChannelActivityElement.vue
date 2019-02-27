@@ -24,6 +24,8 @@ export default {
   },
   methods: {
     channelLink () {
+      this.$store.commit('closeSidebar')
+      this.$store.commit('contractTitlebar')
       this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.parentChannelId)}`)
     }
   },
