@@ -5,6 +5,7 @@
   img.setting-user-icon(:src="iconSrc")
   SettingFileInput.setting-icon-input(
     v-model="rawIconFile"
+    :max-size="2 * 1000 * 1000"
     @load="onFileLoad"
     name="icon-edit"
     label="ファイルを選択")
