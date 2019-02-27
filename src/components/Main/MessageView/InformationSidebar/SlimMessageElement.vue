@@ -32,7 +32,7 @@ export default {
     },
     renderedContent () {
       return {
-        template: `<div class="slim-message-content" v-pre>${md.render(this.content)}</div>`
+        template: `<div class="slim-message-content markdown-body" v-pre>${md.render(this.content)}</div>`
       }
     },
     isOverflow () {

@@ -2,16 +2,15 @@
 // imported once
 
 @import url('//fonts.googleapis.com/earlyaccess/mplus1p.css')
-@import url('https://fonts.googleapis.com/css?family=Oxygen+Mono')
 
 @import 'highlight.js/styles/default.css'
-@import 'normalize.css'
 @import 'reset.scss'
 
 @import '_theme'
 @import '_variables'
 @import '_mixins'
 @import '_keyframes'
+@import '_markdown.scss'
 
 input
   line-height: normal
@@ -19,9 +18,7 @@ input
     line-height: 1.6
   &::-moz-placeholder
     opacity: 1
-code
-  font-family: 'Oxygen Mono', monospace
-  font-size: 0.9em
+
 ::selection
   color: white
   background-color: $secondary-color
