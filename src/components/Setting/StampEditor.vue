@@ -3,6 +3,7 @@
   SettingFileInput.stamp-file-input(
     v-model="rawStampFile"
     :name="model ? `stamp-edit_model.id` : 'stamp-register'"
+    :max-size="2 * 1000 * 1000"
     @load="onFileLoad"
     label="ファイルを選択")
   .stamp-preview(v-if="encodedFile")

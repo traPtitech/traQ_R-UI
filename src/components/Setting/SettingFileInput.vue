@@ -25,6 +25,10 @@ export default {
     name: {
       type: String,
       required: true
+    },
+    maxSize: {
+      type: Number,
+      required: false
     }
   },
   methods: {
@@ -33,8 +37,14 @@ export default {
       this.$emit('inputsetting', '')
     },
     onChange (event) {
-      this.$emit('input', event.target.files[0])
       const file = event.target.files[0]
+      if (this.maxSize && file.size > this.maxSize) {
+        window.alert('ファイルサイズが大きすぎます')
+        this.value = null
+        event.preventDefault()
+        return
+      }
+      this.$emit('input', file)
       const reader = new FileReader()
       reader.onload = e => {
         this.$emit('load', e.target.result)
