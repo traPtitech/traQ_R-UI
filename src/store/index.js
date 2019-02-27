@@ -85,6 +85,7 @@ const store = new Vuex.Store({
     myNotifiedChannelSet: new Set(),
     me: null,
     menuContent: 'Channels',
+    channelView: 'tree',
     heartbeatStatus: {userStatuses: []},
     baseURL: process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : '',
     files: [],
@@ -393,9 +394,15 @@ const store = new Vuex.Store({
     },
     setFilterSubscribedActivity (state, data) {
       state.filterSubscribedActivity = data
+    },
+    setChannelView (state, mode) {
+      state.channelView = mode
     }
   },
   getters: {
+    channelView (state) {
+      return state.channelView
+    },
     theme (state) {
       return typeof (state.theme) === 'string' ? state.theme : 'light'
     },

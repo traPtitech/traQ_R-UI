@@ -1,7 +1,8 @@
 <template lang="pug">
-  div.message-view
+  .message-view
     message-container
-    message-input
+    .message-view-input-wrap
+      message-input
 </template>
 
 <script>
@@ -27,5 +28,8 @@ export default {
     display: flex
     flex-flow: column
     height: 100%
-    // height: vh(100)
+
+.message-view-input-wrap
+  min-height: 50px
+
 </style>
