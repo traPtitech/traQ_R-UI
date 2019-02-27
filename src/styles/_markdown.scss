@@ -1,0 +1,224 @@
+.markdown-body {
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+      monospace;
+    font-size: 12px;
+  }
+
+  pre {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+      monospace;
+    font-size: 12px;
+  }
+
+  ol,
+  ul {
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 2em;
+  }
+
+  ol ol,
+  ul ol {
+    list-style-type: lower-roman;
+  }
+
+  ol ol ol,
+  ol ul ol,
+  ul ol ol,
+  ul ul ol {
+    list-style-type: lower-alpha;
+  }
+
+  dd {
+    margin-left: 0;
+  }
+
+  ol ol,
+  ol ul,
+  ul ol,
+  ul ul {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  li {
+		list-style-type: disc;
+    word-wrap: break-all;
+	}
+	
+	li li {
+		list-style-type: circle;
+		margin-left: 2em;
+	}
+
+  li > p {
+    margin-top: 16px;
+  }
+
+  li + li {
+    margin-top: 0.25em;
+  }
+
+  dl {
+    padding: 0;
+  }
+
+  dl dt {
+    font-size: 1em;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 16px;
+    padding: 0;
+  }
+
+  dl dd {
+    margin-bottom: 16px;
+    padding: 0 16px;
+  }
+}
+
+#app[data-theme="light"] .markdown-body {
+  a {
+    color: #2980b9;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+  }
+
+  pre code {
+    color: #333;
+  }
+
+  code {
+    color: #c0392b;
+  }
+
+  pre:not(.hljs),
+  code > div {
+    color: #333;
+    background-color: #f8f8f8;
+    font-weight: normal;
+  }
+
+  table > thead > tr > th {
+    border-color: #ddd;
+  }
+
+  h1,
+  hr,
+  table > tbody > tr + tr > td {
+    border-color: #eee;
+  }
+
+  blockquote {
+    padding: 0 1em;
+    color: #777;
+    border-left: 0.25em solid #ddd;
+    background: transparent;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+  }
+
+  table th {
+    font-weight: 600;
+  }
+
+  table th,
+  table td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5;
+  }
+
+  table tr {
+    background-color: #fff;
+    border-top: 1px solid #c6cbd1;
+  }
+
+  table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+  }
+}
+
+#app[data-theme="dark"] .markdown-body {
+  a {
+    color: #61afef;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    color: #e06c75;
+  }
+
+  pre code {
+    color: #abb2bf;
+  }
+
+  code {
+    color: #90c378;
+  }
+
+  pre:not(.hljs),
+  code > div {
+    background-color: #2c323c;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+  }
+
+  table th {
+    font-weight: 600;
+  }
+
+  table th,
+  table td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5;
+  }
+
+  table tr {
+    background-color: transparent;
+    border-top: 1px solid #c6cbd1;
+  }
+
+  table tr:nth-child(2n) {
+    background-color: transparent;
+  }
+
+  table > thead > tr > th {
+    border-color: #c6cbd1;
+  }
+
+  h1,
+  hr,
+  table > tbody > tr + tr > td {
+    border-color: #c6cbd1;
+  }
+
+  blockquote {
+    color: #5c6370;
+    font-style: italic;
+    background: transparent;
+    border-color: #2c323c;
+  }
+}

@@ -14,7 +14,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "cropperjs": "^1.4.3",
-    "normalize.css": "^8.0.1",
     "vue": "^2.6.7",
     "vue-meta": "^1.5.8",
     "vue-router": "^3.0.2",
