@@ -138,8 +138,6 @@ export default {
     background-color: black
     border-radius: 100%
     z-index: 2
-.channel-notified
-  text-decoration: underline
 .channel-children
   position: relative
   padding: 0 0 0 0
@@ -182,6 +180,35 @@ export default {
   font-weight: bold
   .channel-watched &
     color: $primary-color
+  &.channel-notified:not(.has-unread)::after
+    content: ''
+    position: absolute
+    display: block
+    width: 8px
+    height: 8px
+    right: -3px
+    top: -3px
+    border-radius: 100%
+    background: rgba(255, 255, 255, 0.3)
+    border: 2px solid $primary-color
+  &.channel-notified.channel-toggle:not(.has-unread)::before
+    content: ''
+    position: absolute
+    display: block
+    width: 8px
+    height: 8px
+    right: -3px
+    top: -3px
+    border-radius: 100%
+    background: $primary-color
+  .channel-watched &.channel-notified:not(.has-unread)::before
+    background: white;
+    opacity: 1;
+  .channel-watched &.channel-notified:not(.has-unread)::after
+    background-color: $primary-color;
+    border: 2px solid white;
+    opacity: 0.3;
+
   &.has-unread::after
     content: ''
     position: absolute
