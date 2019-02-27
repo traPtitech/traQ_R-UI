@@ -104,12 +104,6 @@ export default {
     inputBlur () {
       this.focused = false
       this.$store.commit('setEditing', false)
-      this.$nextTick(() => {
-        this.$store.commit('setWindowSize', {
-          windowWidth: window.innerWidth,
-          windowHeight: window.innerHeight
-        })
-      })
     },
     submit () {
       if (this.inputText === '' && this.files.length === 0) {

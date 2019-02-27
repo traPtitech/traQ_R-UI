@@ -114,7 +114,7 @@ export default {
   +mq(sp)
     height: calc(100% - 50px)
     // height: calc( #{vh(100)} - 50px)
-    position: fixed
+    position: absolute
     z-index: $sidebar-index
     transform: translateX(-102%)
     left: 0
@@ -131,7 +131,7 @@ export default {
 
 .sidebar-overlay
   +mq(sp)
-    position: fixed
+    position: absolute
     top: 0
     right: 0
     left: 0

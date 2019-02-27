@@ -154,7 +154,7 @@ export default {
 $topic-height: 14px
 
 .titlebar
-  position: fixed
+  position: absolute
   display: inline-block
   z-index: $titlebar-index
   transition: max-width .3s ease, min-width .3s ease

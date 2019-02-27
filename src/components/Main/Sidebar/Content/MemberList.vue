@@ -41,6 +41,7 @@ export default {
   color: $text-light-color
   padding:
     bottom: 20px
+
 .member-filter-input-wrapper
   width: 80%
   padding:
