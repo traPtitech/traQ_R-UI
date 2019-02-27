@@ -33,6 +33,7 @@
         @blur="inputBlur" 
         @keydown="keydown"
         @click="clearKey"
+        @paste="pasteImage"
         ref="inputArea")
       .message-input-button.flex-center(@click="showStampPicker")
         icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
@@ -405,6 +406,14 @@ export default {
     },
     showStampPicker () {
       this.$store.commit('activeStampPicker')
+    },
+    pasteImage (event) {
+      const items = event.clipboardData.items
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        const file = item.getAsFile()
+        this.addFile(file)
+      }
     }
   },
   computed: {
