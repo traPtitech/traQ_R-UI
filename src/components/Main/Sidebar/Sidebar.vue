@@ -3,6 +3,7 @@ div.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
   sidebar-tab-menu
   div.menu-content-wrapper
     Content
+    channel-list-tab-switcher(v-if="menuContent === 'Channels'")
   Footer
   div.sidebar-overlay(draggable="false" @click="close" v-if="isSidebarOpened")
 </template>
@@ -20,7 +21,8 @@ export default {
   components: {
     SidebarTabMenu,
     Content: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
-    Footer
+    Footer,
+    ChannelListTabSwitcher: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelListTabSwitcher'))
   },
   data () {
     return {
@@ -31,6 +33,9 @@ export default {
   },
   computed: {
     ...mapGetters(['deviceType']),
+    menuContent () {
+      return this.$store.state.menuContent
+    },
     sidebarClass () {
       return {
         'is-sidebar-opened': this.isSidebarOpened,
