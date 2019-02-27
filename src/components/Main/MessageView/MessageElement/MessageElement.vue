@@ -1,5 +1,9 @@
 <template lang="pug">
 div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported" v-show="rendered")
+  div.message-pin-detail
+    IconPin(color="#F2994A")
+    div.message-pin-detail-text
+      | {{ pinnerName }}さんがピン留めしました
   div.message-user-icon-wrap
     img.message-user-icon(:src="userIconSrc(model.userId)" @click="openUserModal(model.userId)")
   div.message-detail-wrap
@@ -52,6 +56,7 @@ import MessageAttachedFiles from './MessageAttachedFiles'
 import MessageStampsList from './MessageStampsList'
 import MessageContextDropMenu from './MessageContextDropMenu'
 import IconDots from '@/components/Icon/IconDots'
+import IconPin from '@/components/Icon/IconPin'
 import IconStampPlus from '@/components/Icon/IconStampPlus'
 
 export default {
@@ -65,7 +70,8 @@ export default {
     MessageStampsList,
     MessageContextDropMenu,
     IconDots,
-    IconStampPlus
+    IconStampPlus,
+    IconPin
   },
   data () {
     return {
@@ -232,6 +238,17 @@ export default {
     },
     hasAttachedFile () {
       return this.files.length > 0
+    },
+    pinDetail () {
+      return this.$store.state.currentChannelPinnedMessages.find(
+        pin => pin.message.messageId === this.model.messageId
+      ) || null
+    },
+    pinnerName () {
+      if (!this.pinDetail) {
+        return ''
+      }
+      return this.$store.state.memberMap[this.pinDetail.userId].name
     }
   },
   mounted () {
@@ -254,6 +271,22 @@ export default {
     background-color: var(--background-hover-color)
   &.message-pinned
     background-color: var(--pinned-message-color)
+    grid-template-areas: "pin-detail pin-detail" "user-icon detail" "user-icon contents" "... contents"
+    grid-template-rows: 1.5rem 20px 1fr
+    grid-template-columns: 40px 1fr
+
+.message-pin-detail
+  display: none
+  .message-pinned &
+    padding: 0 0.25rem
+    display: flex
+    align-items: top
+    grid-area: pin-detail
+
+.message-pin-detail-text
+  opacity: 0.8
+  font-size: 0.8rem
+  margin-left: 0.5rem
 
 .message-user-icon-wrap
   grid-area: user-icon
