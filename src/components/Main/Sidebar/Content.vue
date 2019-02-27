@@ -2,7 +2,6 @@
 div.sidebar-content.is-scroll(ref="sidebarContent")
   keep-alive
     component(:is="componentMap[menuContent]")
-  channel-list-tab-switcher(v-if="menuContent === 'Channels'")
 </template>
 
 <script>
@@ -26,9 +25,6 @@ export default {
       },
       currentTabComponentName: 'Channels'
     }
-  },
-  components: {
-    ChannelListTabSwitcher: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelListTabSwitcher'))
   },
   computed: {
     menuContent () {

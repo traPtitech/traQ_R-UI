@@ -73,6 +73,7 @@ export default {
       inputText: '',
       // postStatus: {'default', 'processing', 'succeeded', 'failed'}
       postStatus: 'default',
+      postLock: false,
       files: [],
       uploadedIds: [],
       messageInput: null,
@@ -106,9 +107,10 @@ export default {
       this.$store.commit('setEditing', false)
     },
     submit () {
-      if (this.inputText === '' && this.files.length === 0) {
+      if (this.postLock || (this.inputText === '' && this.files.length === 0)) {
         return
       }
+      this.postLock = true
       if (this.files.length > 0) {
         this.uploadFiles()
           .then(() => {
@@ -118,6 +120,7 @@ export default {
           .catch(err => {
             console.log(err)
             this.postStatus = 'failed'
+            this.postLock = false
           })
       } else {
         this.postMessage()
@@ -173,9 +176,11 @@ export default {
             autosize.update(this.messageInput)
           })
           this.postStatus = 'succeeded'
+          this.postLock = false
         })
         .catch(() => {
           this.postStatus = 'failed'
+          this.postLock = false
         })
     },
     replaceUser (message) {

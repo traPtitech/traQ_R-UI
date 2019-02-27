@@ -173,16 +173,9 @@ export default {
       }
     },
     copyMessage () {
-      const body = document.body
-      if (!body) return
-      const textarea = document.createElement('textarea')
-      textarea.value = `!{"raw":"","type":"message","id":"${
+      this.$copyText(`!{"raw":"","type":"message","id":"${
         this.model.messageId
-      }"}`
-      body.appendChild(textarea)
-      textarea.select()
-      document.execCommand('copy')
-      body.removeChild(textarea)
+      }"}`)
     },
     reportMessage () {
       const reason = window.prompt(
