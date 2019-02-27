@@ -30,6 +30,5 @@ export default {
     height: 100%
 
 .message-view-input-wrap
-  min-height: 50px
 
 </style>
