@@ -94,6 +94,7 @@ export default {
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   color: var(--text-color)
+  background: var(--background-color)
 
 .app-loaded + .initial-splash
   display: none

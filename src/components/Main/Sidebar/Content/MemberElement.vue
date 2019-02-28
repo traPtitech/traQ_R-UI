@@ -66,7 +66,7 @@ export default {
     },
     borderStyle () {
       return {
-        borderColor: this.backgroundColor
+        borderColor: this.isWatched ? 'white' : this.backgroundColor
       }
     },
     isWatched () {

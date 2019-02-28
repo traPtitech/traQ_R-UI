@@ -9,7 +9,7 @@
       :name="stampContainerTransitionName"
       @mouseleave="searchPlaceHolder=defaultString")
         div.stamp-picker-body-container(
-          v-if="search.length == 0" 
+          v-if="search.length === 0" 
           v-for="(category, idx) in stampCategolized" 
           v-show="idx==currentCategoryIndex" 
           :key="category.category")
@@ -25,11 +25,11 @@
                 :title="`:${stamp.name}:`")
             div.stamp-picker-stamp-item-dummy(v-for="i in 20")
         div.stamp-picker-body-container(
-          v-show="search.length !== 0"
+          v-else
           key="filtered")
           p.stamp-picker-category-name
             | 検索結果
-          div.stamp-picker-body-inner-wrapper
+          div.stamp-picker-body-inner-wrapper(v-if="search.length > 1")
             div.stamp-picker-stamp-item-wrapper.flex-center(
               :key="stamp.id"
               v-for="stamp in filteredStamps" 
@@ -39,6 +39,8 @@
                 :style="stampItemStyle(stamp.fileId)" 
                 :title="`:${stamp.name}:`")
             div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
+          div.stamp-picker-body-inner-wrapper.flex-center(v-else)
+            | 検索には二文字以上の入力が必要です
     div.stamp-picker-footer
         div.stamp-category-wrap
           div.stamp-category-item.flex-center(
