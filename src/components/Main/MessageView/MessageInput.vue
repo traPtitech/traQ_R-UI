@@ -1,5 +1,7 @@
 <template lang="pug">
 .message-input(:class="{'input-focused':focused}")
+  transition(name="typing-slide-in")
+    message-typing-users
   input.upload-button(id="upload" style="display:none" type="file" multiple="multiple" @change="addFiles")
   .message-input-body
     .message-input-buttons-wrapper
@@ -50,6 +52,7 @@ import autosize from 'autosize'
 import client from '@/bin/client'
 import { isImage } from '@/bin/utils'
 import suggest from '@/bin/suggest'
+import MessageTypingUsers from './MessageTypingUsers'
 import IconSend from '@/components/Icon/IconSend'
 import IconUpload from '@/components/Icon/IconUpload'
 import IconStamp from '@/components/Icon/IconStamp'
@@ -61,6 +64,7 @@ import IconClose from '@/components/Icon/IconClose'
 export default {
   name: 'MessageInput',
   components: {
+    MessageTypingUsers,
     IconSend,
     IconUpload,
     IconStamp,
@@ -415,7 +419,7 @@ export default {
         const item = items[i]
         const file = item.getAsFile()
         this.addFile(file)
-      }    
+      }
     }
   },
   computed: {
@@ -485,6 +489,7 @@ $message-input-button-height-sp: 50px - 2px
 $message-input-button-height-pc: 40px - 2px
 
 .message-input
+  background-color: var(--background-color)
   +mq(pc)
     flex-shrink: 0
     min-height: 50px
@@ -629,5 +634,20 @@ $message-input-button-height-pc: 40px - 2px
     opacity: 0.6
     text-overflow: ellipsis
     user-select: none
+
+.typing-slide-in
+  &-enter-active
+    transition: all .3s ease
+
+  &-leave-active
+    transition: all .3s ease
+
+  &-enter
+    transform: translateY(0)
+    opacity: 0
+
+  &-leave-to
+    transform: translateY(0)
+    opacity: 0
 
 </style>
