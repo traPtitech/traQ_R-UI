@@ -25,8 +25,8 @@
                 :title="`:${stamp.name}:`")
             div.stamp-picker-stamp-item-dummy(v-for="i in 20")
         div.stamp-picker-body-container(
-          key="filtered"
-          v-if="search.length > 0")
+          v-show="search.length !== 0"
+          key="filtered")
           p.stamp-picker-category-name
             | 検索結果
           div.stamp-picker-body-inner-wrapper
@@ -261,35 +261,35 @@ export default {
 .slide-left
   &-enter-active
     position: absolute
-    transition: all .3s ease
+    transition: all .2s ease
 
   &-leave-active
     position: absolute
-    transition: all .3s ease
+    transition: all .2s ease
 
   &-enter
-    transform: translateX(-50px)
+    transform: translateX(-10px)
     opacity: 0
 
   &-leave-to
-    transform: translateX(50px)
+    transform: translateX(10px)
     opacity: 0
 
 .slide-right
   &-enter-active
     position: absolute
-    transition: all .3s ease
+    transition: all .2s ease
 
   &-leave-active
     position: absolute
-    transition: all .3s ease
+    transition: all .2s ease
 
   &-enter
-    transform: translateX(50px)
+    transform: translateX(10px)
     opacity: 0
 
   &-leave-to
-    transform: translateX(-50px)
+    transform: translateX(-10px)
     opacity: 0
 
 </style>
