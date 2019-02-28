@@ -1,5 +1,7 @@
 <template lang="pug">
-  div.slim-message-element(:class="{'is-overflow': isOverflow}" ref="root" @click="openModal")
+  div.slim-message-element(
+    :class="{'is-overflow': isOverflow}" 
+    @click.stop.prevent="openModal")
     div
       | {{userName}}
     component(:is="renderedContent")
@@ -50,7 +52,7 @@ export default {
     }
   },
   mounted () {
-    this.height = this.$refs.root.offsetHeight
+    this.height = this.$el.offsetHeight
   }
 }
 </script>

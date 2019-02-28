@@ -99,6 +99,17 @@ export default {
       } else {
         this.$store.commit('expandTitlebar')
       }
+    },
+    listen: function (target, eventType, callback) {
+      if (!this._eventRemovers) {
+        this._eventRemovers = []
+      }
+      target.addEventListener(eventType, callback)
+      this._eventRemovers.push({
+        remove: function () {
+          target.removeEventListener(eventType, callback)
+        }
+      })
     }
   },
   computed: {
@@ -145,6 +156,22 @@ export default {
       return {
         transform: `rotate(${this.isTitlebarExpanded ? 180 : 0}deg)`
       }
+    }
+  },
+  created: function () {
+    this.$nextTick(() => {
+      this.listen(window, 'click', function (e) {
+        if (!this.$el.contains(e.target)) {
+          this.$store.commit('contractTitlebar')
+        }
+      }.bind(this))
+    })
+  },
+  destroyed: function () {
+    if (this._eventRemovers) {
+      this._eventRemovers.forEach(function (eventRemover) {
+        eventRemover.remove()
+      })
     }
   }
 }
