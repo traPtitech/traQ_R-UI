@@ -4,11 +4,11 @@ div.login
     p.login-welcome
       | Welcome to traQ
   div.login-right-box
-    div.input-wrap
-      input.input-reset.login-input.input-id(v-model="name" type="text" placeholder="ID" required @keydown.enter="loginPost")
-      input.input-reset.login-input.input-password(v-model="pass" type="password" placeholder="パスワード" required @keydown.enter="loginPost")
+    form.input-wrap.login-form(:action="action" method="post")
+      input.input-reset.login-input.input-id(v-model="name" name="name" type="text" placeholder="ID" required @keydown.enter="loginPost")
+      input.input-reset.login-input.input-password(v-model="pass" name="pass" type="password" placeholder="パスワード" required @keydown.enter="loginPost")
     div.login-button-wrap
-      button.login-button(v-on:click="loginPost()")
+      button.login-button(@click="sendLoginForm")
         p ログイン
       p.login-failed-message(v-if="status === 'failed'") IDまたはパスワードが異なります
 </template>
@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     loginPost: function () {
+      // no longer used
       this.status = 'processing'
       client
         .login(this.name, this.pass)
@@ -48,6 +49,18 @@ export default {
           this.status = 'failed'
           console.error(err)
         })
+    },
+    sendLoginForm () {
+      document.forms[0].submit()
+    }
+  },
+  computed: {
+    action () {
+      return `${this.$store.state.baseURL}/api/1.0/login${this.redirect}`
+    },
+    redirect () {
+      return this.$route.query.redirect
+        ? `?redirect=${encodeURIComponent(`/pipeline?redirect=${this.$route.query.redirect}`)}` : ''
     }
   }
 }
