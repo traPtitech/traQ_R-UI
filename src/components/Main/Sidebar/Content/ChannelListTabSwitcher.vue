@@ -1,13 +1,27 @@
 <template lang="pug">
   .channel-tab-switcher-wrap.drop-shadow
     .channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
+      .channel-tab-switcher-item-icon
+        IconHash(:size="12")
     .channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
+      .channel-tab-switcher-item-icon
+        IconStarFill(:size="12")
     .channel-tab-switcher-item(@click="channelView = 'activity'" :class="{selected: channelView === 'activity'}")
+      .channel-tab-switcher-item-icon
+        IconLightning(:size="12")
 </template>
 
 <script>
+import IconHash from '@/components/Icon/IconHash'
+import IconStarFill from '@/components/Icon/IconStarFill'
+import IconLightning from '@/components/Icon/IconLightning'
 export default {
   name: 'ChannelListTabSwitcher',
+  components: {
+    IconHash,
+    IconStarFill,
+    IconLightning
+  },
   computed: {
     channelView: {
       get () {
@@ -38,10 +52,20 @@ export default {
 
 .channel-tab-switcher-item
   display: inline-block
+  position: relative
   width: calc( 100% / 3 )
   height: 100%
   cursor: pointer
   background: none
   &.selected
     background: $tertiary-color
+
+.channel-tab-switcher-item-icon
+  position: absolute
+  left: 50%
+  top: 50%
+  opacity: 0.5
+  transform: translateX(-50%) translateY(-50%)
+  .selected &
+    opacity: 1
 </style>
