@@ -60,6 +60,7 @@ export default {
   border-radius: 10px
   width: 360px
   height: 60%
+  max-height: 500px
   position: absolute
   background-color: $background-color
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)

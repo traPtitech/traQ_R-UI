@@ -23,6 +23,7 @@ export default {
 
 <style lang="sass">
 .message-typing-users
+  opacity: 0.9
   position: absolute
   width: 100%
   transform: translateY(-100%)
@@ -40,6 +41,7 @@ export default {
 .message-typing-users-wrap
   display: flex
   flex-flow: row
+  height: 20px
 
 .message-typing-users-text
   font:

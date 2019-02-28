@@ -179,6 +179,6 @@ export default {
     top: 60px
     right: 0
     left: 0
-    bottom: 40px
+    bottom: 30px
   
 </style>
