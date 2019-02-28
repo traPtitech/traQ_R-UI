@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import ProfileSetting from '@/components/Setting/ProfileSetting'
-import BrowserSetting from '@/components/Setting/BrowserSetting'
-import StampSetting from '@/components/Setting/StampSetting'
+import ProfileSetting from '@/pages/Setting/ProfileSetting'
+import BrowserSetting from '@/pages/Setting/BrowserSetting'
+import StampSetting from '@/pages/Setting/StampSetting'
 import IconBack from '@/components/Icon/IconBack'
 import IconLogo from '@/components/Icon/IconLogo'
 import IconProfile from '@/components/Icon/IconProfile'
