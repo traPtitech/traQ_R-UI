@@ -130,6 +130,7 @@ $profile-area-width: 350px
     border-radius: $modal-border-radius 0 0 $modal-border-radius
     flex-grow: 1
     flex-shrink: 1
+    padding-right: 2.5rem
   +mq(sp)
     border-radius: $modal-border-radius $modal-border-radius 0 0
     flex-grow: 0
@@ -184,6 +185,7 @@ $profile-area-width: 350px
       height: calc(#{$profile-area-height} + 18px)
   .user-modal-area--extra
     width: 100%
+    min-width: 0;
     opacity: 1
     animation: delayedOpacityChangeReversed .3s ease
 
