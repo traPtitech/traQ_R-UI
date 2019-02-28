@@ -62,9 +62,15 @@ $input-height: 3rem
   grid-template-columns: 2rem 1fr
   grid-gap: $gap
   +mq(pc)
-    margin: 1.3rem 2.5rem
+    padding: 0.8rem 2.5rem
   +mq(sp)
-    margin: 1rem 2rem
+    padding: 0.6rem 2rem
+  &:first-child
+    margin-top: 1rem
+  &:last-child
+    margin-bottom: 1rem
+  &:hover
+    background: $background-hover-color
 
   .user-modal-group-icon
     display: flex
@@ -75,19 +81,4 @@ $input-height: 3rem
     flex: auto
     word-wrap: break-word
     cursor: pointer
-
-  .user-modal-group-status-icon
-    display: flex
-    justify-content: flex-end
-    align-items: center
-
-    .user-modal-icon--gray
-      margin: 0px 0.5rem
-      cursor: pointer
-
-.non-clickable
-  cursor: default !important
-
-.user-moda-icon-wrap
-  margin: 0 0.25rem
 </style>

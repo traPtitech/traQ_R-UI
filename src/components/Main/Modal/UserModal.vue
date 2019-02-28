@@ -5,6 +5,9 @@
     .user-modal-close-wrap
       .user-modal-close(@click="close")
         icon-close(color="white" :size="16")
+    .user-modal-expand-wrap
+      .user-modal-expand
+        icon-down-direction(color="white" :size="22")
     user-modal-profile(:expanded="expandProfile")
   // タグなど
   .user-modal-area--extra
@@ -19,7 +22,7 @@
           .user-modal-tabs-pane-text
             | GROUPS
     keep-alive
-      component(:is="activeExtraComponent")
+      component.user-modal-extra-component(:is="activeExtraComponent")
 </template>
 
 <script>
@@ -31,6 +34,7 @@ import UserModalGroups from '@/components/Main/Modal/UserModal/UserModalGroups'
 import IconClose from '@/components/Icon/IconClose'
 import IconTag from '@/components/Icon/IconTag'
 import IconProfileFill from '@/components/Icon/IconProfileFill'
+import IconDownDirection from '@/components/Icon/IconDownDirection'
 
 export default {
   name: 'UserModal',
@@ -41,7 +45,8 @@ export default {
     UserModalGroups,
     IconClose,
     IconTag,
-    IconProfileFill
+    IconProfileFill,
+    IconDownDirection
   },
   data () {
     return {
@@ -74,7 +79,11 @@ $profile-area-width: 350px
     flex-direction: column
 
 .user-modal-close-wrap
+  position: absolute
   width: 100%
+  top: 0
+  left: 0
+  padding: 1rem
   display: flex
   justify-content: end
 .user-modal-close
@@ -84,23 +93,65 @@ $profile-area-width: 350px
   &:hover
     opacity: 1
 
+.user-modal-expand-wrap
+  position: absolute
+  +mq(pc)
+    height: 100%
+    top: 0
+    right: 0
+    flex-direction: column
+  +mq(sp)
+    width: 100%
+    bottom: 0
+    left: 0
+    flex-direction: row
+  padding: 1rem
+  opacity: 0.3
+  display: flex
+  justify-content: center
+  .user-modal-area--profile:hover &
+    +mq(pc)
+      opacity: 1
+.user-modal-expand
+  transition: transform 0.3s ease
+  +mq(pc)
+    transform: rotate(-90deg)
+  +mq(sp)
+    transform: rotate(0deg)
+  .user-modal[data-is-expanded] &
+    +mq(pc)
+      transform: rotate(90deg)
+    +mq(sp)
+      transform: rotate(180deg)
+
+
 .user-modal-area--profile
   +mq(pc)
     border-radius: $modal-border-radius 0 0 $modal-border-radius
+    flex-grow: 1
+    flex-shrink: 1
   +mq(sp)
     border-radius: $modal-border-radius $modal-border-radius 0 0
+    flex-grow: 0
+    flex-shrink: 0
   padding: $modal-profile-padding
+  position: relative
   background: $primary-color
-  flex-grow: 1
-  flex-shrink: 1
   transition: height .3s ease, width .3s ease
+  cursor: pointer
 
 .user-modal-area--extra
   flex-grow: 3
-  // flex-shrink: 3
   min-height: 0
-  display: flex
-  flex-direction: column
+  flex-shrink: 2
+  @media screen and (max-width: 900px)
+    flex-shrink: 1
+
+.user-modal-extra-component
+  +mq(pc)
+    height: calc(100% - 4.5rem)
+  +mq(sp)
+    height: calc(100% - 3.5rem)
 
 @keyframes delayedOpacityChange
   0%

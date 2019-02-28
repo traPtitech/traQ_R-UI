@@ -251,7 +251,7 @@ export default {
     font-size: 20px
 
 .information-sidebar-content
-  height: 100vh
+  height: 100%
 
 .information-sidebar-content-scroller
   overflow-y: scroll

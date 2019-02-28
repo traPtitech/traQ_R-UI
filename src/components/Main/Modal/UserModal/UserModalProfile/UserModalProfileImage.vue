@@ -107,14 +107,13 @@ export default {
       width: $indicator-size
       top: - $indicator-size / 3
       right: - 2 * $indicator-size / 3
-      border: $indicator-border-width solid white
+      border: $indicator-border-width solid $primary-color
       border-radius: 50%
-      // [TODO] variable
-      background: #F2994A
+      background: $notification-color
     +mq(pc)
-      +user-modal-dm-indicator-style(0.75rem, 2px)
+      +user-modal-dm-indicator-style(0.85rem, 2px)
     +mq(sp)
-      +user-modal-dm-indicator-style(0.5rem, 1px)
+      +user-modal-dm-indicator-style(0.6rem, 1px)
 
   .user-modal-dm-icon-envelope
     height: auto

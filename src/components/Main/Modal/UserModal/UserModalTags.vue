@@ -2,18 +2,18 @@
 .user-modal-tags
   .user-modal-tags-container
     .user-modal-tag-element(v-for="(tag, index) in tags" :key="tag.tagId")
-      .user-modal-icon--gray.user-modal-tag-icon
+      .user-modal-tag-icon
         IconTag(:size="16" color="gray")
       .user-modal-tag-body(@click="openTagModal(tag)")
         | {{tag.tag}}
       .user-modal-tag-status-icon(v-if="tag.editable")
-        .user-moda-icon-wrap(@click="lockTag(index)" v-show="hasAuth && !tag.isLocked")
+        .user-modal-icon-wrap(@click="lockTag(index)" v-show="hasAuth && !tag.isLocked" role="button")
           IconUnlocked(:size="16" color="gray")
-        .user-moda-icon-wrap(@click="eraseTag(index)" v-show="!tag.isLocked")
+        .user-modal-icon-wrap(@click="eraseTag(index)" v-show="!tag.isLocked" role="button")
           IconClose(:size="16" color="gray")
-        .user-moda-icon-wrap(@click="unlockTag(index)" v-show="hasAuth && tag.isLocked")
+        .user-modal-icon-wrap(@click="unlockTag(index)" v-show="hasAuth && tag.isLocked" role="button")
           IconLocked(:size="16" color="gray")
-        .user-moda-icon-wrap(v-show="!hasAuth && tag.isLocked")
+        .user-modal-icon-wrap(v-show="!hasAuth && tag.isLocked")
           IconLocked.non-clickable(:size="16" color="gray")
   .user-modal-tags-input-container
     .user-modal-tags-icon
@@ -23,7 +23,7 @@
       @keydown="onInputChange"
       placeholder="タグを追加……"
     )
-    .user-modal-tags-icon(@click="addTag")
+    .user-modal-tags-icon(@click="addTag" role="button")
       IconPlus(:size="16" color="gray" :style="detailInputIconStyle")
 </template>
 
@@ -129,9 +129,15 @@ $input-height: 3rem
   grid-template-columns: 2rem calc(100% - 6rem - 1rem * 2) 4rem
   grid-gap: $gap
   +mq(pc)
-    margin: 1.3rem 2.5rem
+    padding: 0.8rem 2.5rem
   +mq(sp)
-    margin: 1rem 2rem
+    padding: 0.6rem 2rem
+  &:first-child
+    margin-top: 1rem
+  &:last-child
+    margin-bottom: 1rem
+  &:hover
+    background: $background-hover-color
 
   .user-modal-tag-icon
     display: flex
@@ -147,10 +153,6 @@ $input-height: 3rem
     display: flex
     justify-content: flex-end
     align-items: center
-
-    .user-modal-icon--gray
-      margin: 0px 0.5rem
-      cursor: pointer
 
 .user-modal-tags-input-container
   height: $input-height
@@ -192,6 +194,10 @@ $input-height: 3rem
 .non-clickable
   cursor: default !important
 
-.user-moda-icon-wrap
+.user-modal-icon-wrap
   margin: 0 0.25rem
+
+.user-modal-tag-status-icon[role="button"]
+.user-modal-tags-icon[role="button"]
+  cursor: pointer
 </style>

@@ -36,6 +36,7 @@ export default {
 .modal
   border-radius: $modal-border-radius
   width: $modal-width
+  max-width: $modal-max-width
   +mq
     width: $modal-width--wide
   height: $modal-height

@@ -43,7 +43,10 @@ export default {
 <style lang="sass">
 .modal-tabs
   width: 100%
-  height: 4rem
+  +mq(pc)
+    height: 4rem
+  +mq(sp)
+    height: 3rem
   position: relative
   border-bottom: 1px solid $primary-color-on-bg
 .modal-tabs-pane-wrap
