@@ -2,8 +2,8 @@
 div.member-container.is-scroll
   div.member-filter-input-wrapper
     filter-input(@inputFilter="filterText = $event")
-  member-group(v-for="grade in sortedGrades" :key="grade.groupId" :members="grade.members" :groupName="grade.name" :filterText="filterText")
-  member-group(v-if="bots.length > 0" :members="bots" :groupName="'BOT'" :filterText="filterText")
+  member-group(v-for="grade in sortedGrades" :key="grade.groupId" :members="grade.members" :groupName="grade.name" :groupId="grade.groupId" :filterText="filterText")
+  member-group(v-if="bots.length > 0" :members="bots" :groupName="'BOT'" :filterText="filterText" :groupId="'BOT'")
 </template>
 
 <script>

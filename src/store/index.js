@@ -55,6 +55,7 @@ const store = new Vuex.Store({
     channelMap: {},
     channelRecentMessages: [],
     openChannels: {},
+    openUserLists: {},
     sidebarOpened: false,
     titlebarExpanded: false,
     memberData: [],
@@ -351,6 +352,12 @@ const store = new Vuex.Store({
     },
     setOpenChannels (state, data) {
       state.openChannels = data
+    },
+    setOpenUserLists (state, data) {
+      state.openUserLists = data
+    },
+    setOpenUserList (state, {groupId, isOpen}) {
+      Vue.set(state.openUserLists, groupId, isOpen)
     },
     setOpenChannel (state, {channelId, isOpen}) {
       Vue.set(state.openChannels, channelId, isOpen)
@@ -715,6 +722,10 @@ const store = new Vuex.Store({
       commit('setOpenChannel', {channelId, isOpen})
       return db.write('generalData', {type: 'openChannels', data: state.openChannels})
     },
+    updateUserListOpen ({state, commit}, {groupId, isOpen}) {
+      commit('setOpenUserList', {groupId, isOpen})
+      return db.write('generalData', {type: 'openUserLists', data: state.openUserLists})
+    },
     loadSetting ({dispatch}) {
       return Promise.all([
         dispatch('loadOpenMode'),
@@ -722,7 +733,8 @@ const store = new Vuex.Store({
         dispatch('loadLastChannelId'),
         dispatch('loadTheme'),
         dispatch('loadOpenChannels'),
-        dispatch('loadFilterSubscribedActivity')
+        dispatch('loadFilterSubscribedActivity'),
+        dispatch('loadOpenUserLists')
       ])
     },
     loadOpenMode ({commit, dispatch}) {
@@ -758,6 +770,13 @@ const store = new Vuex.Store({
         commit('setOpenChannels', data || {})
       }).catch(_ => {
         commit('setOpenChannels', {})
+      })
+    },
+    loadOpenUserLists ({commit}) {
+      return db.read('generalData', 'openUserLists').then(data => {
+        commit('setOpenUserLists', data || {})
+      }).catch(_ => {
+        commit('setOpenUserLists', {})
       })
     },
     updateOpenMode ({commit}, mode) {
