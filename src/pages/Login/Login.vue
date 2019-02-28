@@ -56,10 +56,11 @@ export default {
   },
   computed: {
     action () {
-      return `${this.$store.state.baseURL}/api/1.0/login?redirect=${encodeURIComponent(this.redirect)}`
+      return `${this.$store.state.baseURL}/api/1.0/login${this.redirect}`
     },
     redirect () {
-      return this.$route.query.redirect || ''
+      return this.$route.query.redirect
+        ? `?redirect=${encodeURIComponent(`/pipeline?${this.$route.query.redirect}`)}` : ''
     }
   }
 }
