@@ -1,6 +1,8 @@
 <template lang="pug">
 div.login
   div.login-left-box
+    div
+      //- icon-logo(:size="64" color="white")
     p.login-welcome
       | Welcome to traQ
   div.login-right-box
@@ -15,6 +17,8 @@ div.login
 
 <script>
 import client from '@/bin/client'
+import IconLogo from '@/components/Icon/IconLogo'
+import IconLogotraP from '@/components/Icon/IconLogotraP'
 
 export default {
   name: 'login',
@@ -30,6 +34,9 @@ export default {
        * successed: success login
        */
     }
+  },
+  components: {
+    IconLogo, IconLogotraP
   },
   methods: {
     loginPost: function () {

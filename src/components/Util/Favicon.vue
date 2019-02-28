@@ -12,6 +12,9 @@ export default {
     }
   },
   created () {
+    if (!this.$store.state.me) {
+      return
+    }
     this.canvas = document.createElement('canvas')
     this.canvas.width = 32
     this.canvas.height = 32
