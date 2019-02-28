@@ -1,5 +1,5 @@
 <template lang="pug">
-.common-modal(:data-is-small="small")
+.common-modal(:data-is-small="small" :data-is-tiny="tiny")
   .common-modal-header-wrap
     .common-modal-header(:class="{'common-modal-header-back': enableBack}" @click="handleHeaderClick")
       slot(name="header-icon")
@@ -23,6 +23,10 @@ export default {
       default: 'MODAL'
     },
     small: {
+      type: Boolean,
+      defualt: null
+    },
+    tiny: {
       type: Boolean,
       defualt: null
     },
@@ -56,6 +60,8 @@ export default {
     padding: 1rem
 .common-modal[data-is-small="true"]
     max-width: 40rem
+.common-modal[data-is-tiny="true"]
+    max-width: 25rem
 .common-modal-header-wrap
     display: flex
     align-items: center
