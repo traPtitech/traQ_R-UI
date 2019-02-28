@@ -562,7 +562,7 @@ const store = new Vuex.Store({
       return getters.grades
         .sort((lhs, rhs) => {
           if (gradeReg.test(lhs.name) && gradeReg.test(rhs.name)) {
-            return f(lhs.name) - f(rhs.name)
+            return f(rhs.name) - f(lhs.name)
           } else if (gradeReg.test(lhs.name)) {
             return -1
           } else if (gradeReg.test(rhs.name)) {

@@ -1,5 +1,5 @@
 <template lang="pug">
-div.member-element
+div.member-element(:class="{'is-watched': isWatched}")
   div.member-element-icon-container(v-on:click="openUserModal")
     div.member-element-icon(:style="iconImg" :class="iconClass")
     div.member-element-online-indicator(v-if="!model.bot && model.isOnline" :style="borderStyle")
@@ -68,6 +68,10 @@ export default {
       return {
         borderColor: this.backgroundColor
       }
+    },
+    isWatched () {
+      if (this.$route.params.user) return this.$route.params.user === this.model.name
+      else return false
     }
   }
 }
@@ -81,6 +85,9 @@ export default {
   padding: 5px 10px
   &:hover
     background: rgba(0,0,0,0.1)
+  
+  &.is-watched
+    background: white
 
 .member-element-icon-container
   position: relative
@@ -125,17 +132,21 @@ export default {
   bottom: -3px
   border:
     radius: 100%
-    // color: var(--primary-color)
     style: solid
     width: 2px
   background: $online-color
 
 .member-display-name
+  .is-watched &
+    color: var(--primary-color)
 
 .member-name
   font:
     size: 0.9em
   opacity: 0.6
+
+  .is-watched &
+    color: var(--primary-color)
 
 .member-name-container
   margin: 0 0 0 10px
