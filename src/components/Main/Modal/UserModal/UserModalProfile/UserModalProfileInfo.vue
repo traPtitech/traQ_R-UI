@@ -26,6 +26,11 @@ export default {
 <style lang="sass">
 .user-modal-profile-info
   color: white
+  max-height: 100%
+  max-width: 150px
+  word-break: break-all
+  overflow: scroll
+  -webkit-overflow-scrolling: touch
 
 .user-modal-profile-info-name-contaner
   display: flex
