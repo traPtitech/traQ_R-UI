@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getMyId'
+      'getMyId', 'activeMessageContextMenu'
     ]),
     isDirectMessage () {
       if (this.$store.state.currentChannel.channelId === this.$store.state.directMessageId) return true
@@ -58,17 +58,26 @@ export default {
     }
   },
   created: function () {
-    this.listen(window, 'click', function (e) {
-      if (!this.$el.contains(e.target)) {
-        this.$emit('deactive')
-      }
-    }.bind(this))
+    this.$nextTick(() => {
+      this.listen(window, 'click', function (e) {
+        if (!this.$el.contains(e.target)) {
+          this.$emit('deactive')
+        }
+      }.bind(this))
+    })
   },
   destroyed: function () {
     if (this._eventRemovers) {
       this._eventRemovers.forEach(function (eventRemover) {
         eventRemover.remove()
       })
+    }
+  },
+  watch: {
+    activeMessageContextMenu (newMessageId) {
+      if (newMessageId !== this.messageId) {
+        this.$emit('deactive')
+      }
     }
   }
 }
@@ -79,7 +88,7 @@ export default {
   position: absolute
   background: var(--background-color)
   right: 10px
-  top: 14px
+  top: 25px
   padding: 4px 0 4px
   border-radius: 4px
   min-width: 100px

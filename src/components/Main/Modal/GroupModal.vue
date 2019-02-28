@@ -8,7 +8,7 @@ base-common-modal(:title="`GROUP: ${data.name}`"
     icon-back(color="var(--primary-color-on-bg)" :size="16")
   icon-profile-fill(v-else color="var(--primary-color-on-bg)" slot="header-icon" :size="22")
   .group-modal
-    .group-user-list
+    .group-user-list.is-scroll
       member-element.group-user-element(v-for="member in members" :model="member" :key="member.userId" backgroundColor="var(--background-color)")
 </template>
 

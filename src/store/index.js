@@ -4,7 +4,7 @@ import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import modal from './modal'
-import theme from './theme'
+import pickerModal from './pickerModal'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -46,7 +46,7 @@ const stringSortGen = (key) => (lhs, rhs) => {
 const store = new Vuex.Store({
   modules: {
     modal,
-    theme
+    pickerModal
   },
   state: {
     loaded: false,
@@ -57,8 +57,6 @@ const store = new Vuex.Store({
     openChannels: {},
     sidebarOpened: false,
     titlebarExpanded: false,
-    stampPickerActive: false,
-    stampPickerModel: null,
     memberData: [],
     memberMap: {},
     groupData: [],
@@ -100,18 +98,10 @@ const store = new Vuex.Store({
     theme: 'light',
     windowWidth: 0,
     windowHeight: 0,
-    filterSubscribedActivity: true
+    filterSubscribedActivity: true,
+    activeMessageContextMenu: ''
   },
   mutations: {
-    setStampPickerModel (state, model) {
-      state.stampPickerModel = model
-    },
-    activeStampPicker (state) {
-      state.stampPickerActive = true
-    },
-    inactiveStampPicker (state) {
-      state.stampPickerActive = false
-    },
     openSidebar (state) {
       state.sidebarOpened = true
     },
@@ -397,9 +387,15 @@ const store = new Vuex.Store({
     },
     setChannelView (state, mode) {
       state.channelView = mode
+    },
+    setActiveMessageContextMenu (state, messageId) {
+      state.activeMessageContextMenu = messageId
     }
   },
   getters: {
+    activeMessageContextMenu (state) {
+      return state.activeMessageContextMenu
+    },
     channelView (state) {
       return state.channelView
     },

@@ -5,7 +5,7 @@ action-detector(
   @swipeMoving = "swipeMoving" 
   @swipeEnd = "swipeEnd"
   :onDragStyle = "'{background-color: #fff;}'")
-  stamp-picker
+  picker-modal
   modal
   .index(:data-enable-blur="name ? 'true' : 'false'")
     titlebar
@@ -19,7 +19,6 @@ import { mapState } from 'vuex'
 import sse from '@/bin/sse'
 import client from '@/bin/client'
 import ActionDetector from '@/components/Util/ActionDetector'
-import Modal from '@/components/Main/Modal'
 import MessageView from '@/components/Main/MessageView'
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
 
@@ -46,10 +45,10 @@ export default {
   components: {
     Titlebar: window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
     ChannelInformation: window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
-    StampPicker: window.asyncLoadComponents(import('@/components/Main/StampPicker')),
+    PickerModal: window.asyncLoadComponents(import('@/components/Main/PickerModal')),
     Sidebar,
     MessageView,
-    Modal,
+    Modal: window.asyncLoadComponents(import('@/components/Main/Modal')),
     ActionDetector
   },
   async created () {
@@ -312,7 +311,6 @@ export default {
   position: absolute
   top: 0
   right: 0
-  grid-gap: 0
   width: 100%
   height: 100%
   // height: vh(100)
