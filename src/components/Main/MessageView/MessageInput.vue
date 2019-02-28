@@ -1,7 +1,7 @@
 <template lang="pug">
 .message-input(:class="{'input-focused':focused}")
   transition(name="typing-slide-in")
-    message-typing-users
+    message-typing-users(v-if="isAnyoneTyping" :typingUsers="typingUsers")
   input.upload-button(id="upload" style="display:none" type="file" multiple="multiple" @change="addFiles")
   .message-input-body
     .message-input-buttons-wrapper
@@ -467,6 +467,17 @@ export default {
       return {
         opacity: this.hasFile || !this.isEmptyMessage ? 1 : 0.4
       }
+    },
+    me () {
+      return this.$store.state.me
+    },
+    typingUsers () {
+      return this.$store.state.heartbeatStatus.userStatuses
+        .filter(user => user.userId !== this.me.userId)
+        .filter(user => user.status === 'editing')
+    },
+    isAnyoneTyping () {
+      return this.typingUsers.length > 0
     }
   },
   watch: {
