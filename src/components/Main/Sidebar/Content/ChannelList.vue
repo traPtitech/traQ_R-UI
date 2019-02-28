@@ -58,7 +58,7 @@ export default {
 .channel-list
   user-select: none
   padding:
-    bottom: 40px
+    bottom: 60px
     
 .channel-list-action-area-wrapper
   width: 80%
