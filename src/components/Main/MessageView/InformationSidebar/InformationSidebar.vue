@@ -129,6 +129,33 @@ export default {
     async updateTopic () {
       await this.$store.dispatch('updateCurrentChannelTopic', this.newTopic)
       this.isTopicEditing = false
+    },
+    listen: function (target, eventType, callback) {
+      if (!this._eventRemovers) {
+        this._eventRemovers = []
+      }
+      target.addEventListener(eventType, callback)
+      this._eventRemovers.push({
+        remove: function () {
+          target.removeEventListener(eventType, callback)
+        }
+      })
+    }
+  },
+  created: function () {
+    this.$nextTick(() => {
+      this.listen(window, 'click', function (e) {
+        if (!this.$el.contains(e.target)) {
+          this.closeSidebar()
+        }
+      }.bind(this))
+    })
+  },
+  destroyed: function () {
+    if (this._eventRemovers) {
+      this._eventRemovers.forEach(function (eventRemover) {
+        eventRemover.remove()
+      })
     }
   },
   watch: {
