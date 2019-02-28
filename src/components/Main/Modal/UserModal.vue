@@ -19,7 +19,7 @@
           .user-modal-tabs-pane-text
             | GROUPS
     keep-alive
-      component(:is="activeExtraComponent")
+      component.user-modal-extra-component(:is="activeExtraComponent")
 </template>
 
 <script>
@@ -87,20 +87,25 @@ $profile-area-width: 350px
 .user-modal-area--profile
   +mq(pc)
     border-radius: $modal-border-radius 0 0 $modal-border-radius
+    flex-grow: 1
+    flex-shrink: 1
   +mq(sp)
     border-radius: $modal-border-radius $modal-border-radius 0 0
+    flex-grow: 0
+    flex-shrink: 0
   padding: $modal-profile-padding
   background: $primary-color
-  flex-grow: 1
-  flex-shrink: 1
   transition: height .3s ease, width .3s ease
 
 .user-modal-area--extra
   flex-grow: 3
-  // flex-shrink: 3
   min-height: 0
-  display: flex
-  flex-direction: column
+  flex-shrink: 2
+  @media screen and (max-width: 900px)
+    flex-shrink: 1
+
+.user-modal-extra-component
+  height: calc(100% - 4.5rem)
 
 @keyframes delayedOpacityChange
   0%
