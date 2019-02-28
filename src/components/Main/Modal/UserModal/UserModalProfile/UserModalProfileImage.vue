@@ -78,7 +78,7 @@ export default {
   +mq(sp)
     height: 5rem
     width: 5rem
-    margin: 0 2rem 0 0
+    margin: 0 1.5rem 0 0
   border-radius: 50%
   border: 3px solid white
   background-size: cover

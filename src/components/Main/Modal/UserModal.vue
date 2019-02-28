@@ -68,7 +68,7 @@ export default {
 
 <style lang="sass">
 $profile-area-height: 20vh
-$profile-area-width: 350px
+$profile-area-width: 400px
 
 .user-modal
   grid-template-columns: 100%
