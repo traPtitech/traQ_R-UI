@@ -26,19 +26,25 @@ export default {
 
 <style lang="sass">
 .user-modal-profile-info-wrap
-  position: relative
   color: white
-  max-height: 100%
-  max-width: 150px
   overflow: hidden
+  +mq(pc)
+    max-width: 250px
+  +mq(sp)
+    max-width: 150px
+    height: 100%
+    display: flex
+    align-items: center
+    padding: 1.5rem 0
 
 .user-modal-profile-info
-  height: 100%
-  width: calc(100% + 30px)
+  height: min-content
+  width: 100%
   word-break: break-all
   overflow-y: scroll
   -webkit-overflow-scrolling: touch
   &::-webkit-scrollbar
+    display: none
     transform: translateX(-30px)
 
 .user-modal-profile-info-name-contaner
