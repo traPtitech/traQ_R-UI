@@ -1,7 +1,8 @@
 <template lang="pug">
-  .message-typing-users(v-if="isAnyoneTyping")
-    .message-typing-users-user(v-for="user in typingUsers")
-      img.message-typing-users-user-icon(:src="getUserIconUrl(user.userId)")
+  .message-typing-users
+    transition-group.message-typing-users-wrap(name="user-icon-slide-in")
+      .message-typing-users-user(v-for="user in typingUsers" :key="user.userId")
+        img.message-typing-users-user-icon(:src="getUserIconUrl(user.userId)")
     .message-typing-users-text
       | is typing
 </template>
@@ -11,18 +12,8 @@ import client from '@/bin/client'
 
 export default {
   name: 'MessageEditingUsers',
-  computed: {
-    me () {
-      return this.$store.state.me
-    },
-    typingUsers () {
-      return this.$store.state.heartbeatStatus.userStatuses
-        .filter(user => user.userId !== this.me.userId)
-        .filter(user => user.status === 'editing')
-    },
-    isAnyoneTyping () {
-      return this.typingUsers.length > 0
-    }
+  props: {
+    typingUsers: Array
   },
   methods: {
     getUserIconUrl: client.getUserIconUrl
@@ -46,6 +37,10 @@ export default {
     left: 10px
     bottom: 5px
 
+.message-typing-users-wrap
+  display: flex
+  flex-flow: row
+
 .message-typing-users-text
   font:
     size: 12px
@@ -63,5 +58,15 @@ export default {
   height: 20px
   border:
     radius: 100%
+
+.user-icon-slide-in
+  &-enter-active, &-leave-active
+    transition: all .3s ease
+    transform: translateY(0)
+  &-enter, &-leave-to
+    transform: translateY(10px)
+    opacity: 0
+  &-leave-active
+    position: absolute
 
 </style>
