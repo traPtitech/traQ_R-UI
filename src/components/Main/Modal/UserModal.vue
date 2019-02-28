@@ -105,7 +105,10 @@ $profile-area-width: 350px
     flex-shrink: 1
 
 .user-modal-extra-component
-  height: calc(100% - 4.5rem)
+  +mq(pc)
+    height: calc(100% - 4.5rem)
+  +mq(sp)
+    height: calc(100% - 3.5rem)
 
 @keyframes delayedOpacityChange
   0%
