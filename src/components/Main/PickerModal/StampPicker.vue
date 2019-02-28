@@ -1,7 +1,7 @@
 <template lang="pug">
   div.stamp-picker-container
     div.stamp-picker-header
-      input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
+      DebouncedInput.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
       div.stamp-picker-search-icon
         icon-search(color="gray")
     transition-group.stamp-picker-body.is-scroll(
@@ -53,6 +53,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
+import DebouncedInput from '@/components/Util/DebouncedInput'
 import IconSearch from '@/components/Icon/IconSearch'
 import IconClock from '@/components/Icon/IconClock'
 import IconLogo from '@/components/Icon/IconLogo'
@@ -70,7 +71,7 @@ export default {
   name: 'StampPicker',
   props: {
   },
-  components: {IconSearch},
+  components: {DebouncedInput, IconSearch},
   data () {
     return {
       search: '',
@@ -78,6 +79,7 @@ export default {
       searchPlaceHolder: 'スタンプを検索',
       currentCategoryIndex: 0,
       stampContainerTransitionName: 'slide-right',
+      doFilter: false,
       categoryIcons: [IconClock, IconLogo, IconSmile, IconDogFace, IconHamburger, IconSoccerBall, IconAirPlane, IconLightBulb, IconHeart, IconFlag, IconRegional]
     }
   },
