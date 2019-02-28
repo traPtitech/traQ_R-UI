@@ -16,16 +16,18 @@
       rounded)
   SettingInput(v-model="displayName" label="表示名")
   SettingInput(v-model="twitterId" label="Twitter ID")
-  SettingInput(v-model="newPassword" type="password" label="新しいパスワード")
-  SettingInput(v-model="checkNewPassword" type="password" label="新しいパスワード(確認)")
+  // SettingInput(v-model="newPassword" type="password" label="新しいパスワード")
+  // SettingInput(v-model="checkNewPassword" type="password" label="新しいパスワード(確認)")
+  .profile-setting-password-disabled
+    | 現在パスワードは変更できません
   br
   SettingButton(v-if="isChanged && !needPass" @click="submit")
     | 更新
-  div(v-if="isChanged && needPass")
-    SettingInput(v-model="oldPassword" type="password" label="現在のパスワード")
-    br
-    SettingButton(@click="submitWithCertification")
-      | 更新
+  // div(v-if="isChanged && needPass")
+  //   SettingInput(v-model="oldPassword" type="password" label="現在のパスワード")
+  //   br
+  //   SettingButton(@click="submitWithCertification")
+  //     | 更新
   p.update-info(v-if="done !== ''")
     | {{done}}が更新されました
   p.update-info(v-if="state === 'failed'")
@@ -216,4 +218,7 @@ export default {
 
 .profile-image-editor
   margin-bottom: 1rem
+
+.profile-setting-password-disabled
+  opacity: 0.5
 </style>
