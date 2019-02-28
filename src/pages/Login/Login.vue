@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     action () {
-      return `${this.$store.state.baseURL}/api/1.0/login?redirect=${this.redirect}`
+      return `${this.$store.state.baseURL}/api/1.0/login?redirect=${encodeURIComponent(this.redirect)}`
     },
     redirect () {
       return this.$route.query.redirect || ''
