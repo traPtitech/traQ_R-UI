@@ -11,7 +11,7 @@ const client = {
   // Tag: authorization
   login (name, pass) {
     return middleWare('login', () => {
-      return axios.post(`/api/1.0/login?redirect=/pipeline`, {name, pass})
+      return axios.post(`/api/1.0/login`, {name, pass})
     })
   },
   logout () {
