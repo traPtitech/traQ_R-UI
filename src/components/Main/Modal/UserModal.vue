@@ -184,6 +184,7 @@ $profile-area-width: 350px
       height: calc(#{$profile-area-height} + 18px)
   .user-modal-area--extra
     width: 100%
+    min-width: 0;
     opacity: 1
     animation: delayedOpacityChangeReversed .3s ease
 

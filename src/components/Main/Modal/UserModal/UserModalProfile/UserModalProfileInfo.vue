@@ -1,5 +1,6 @@
 <template lang="pug">
-.user-modal-profile-info
+.user-modal-profile-info-wrap
+  .user-modal-profile-info
     .user-modal-profile-info-display-name
       | {{data.displayName}}
     .user-modal-profile-info-name-contaner
@@ -24,13 +25,21 @@ export default {
 </script>
 
 <style lang="sass">
-.user-modal-profile-info
+.user-modal-profile-info-wrap
+  position: relative
   color: white
   max-height: 100%
   max-width: 150px
+  overflow: hidden
+
+.user-modal-profile-info
+  height: 100%
+  width: calc(100% + 30px)
   word-break: break-all
-  overflow: scroll
+  overflow-y: scroll
   -webkit-overflow-scrolling: touch
+  &::-webkit-scrollbar
+    transform: translateX(-30px)
 
 .user-modal-profile-info-name-contaner
   display: flex
