@@ -60,7 +60,7 @@ export default {
     },
     redirect () {
       return this.$route.query.redirect
-        ? `?redirect=${encodeURIComponent(`/pipeline?${this.$route.query.redirect}`)}` : ''
+        ? `?redirect=${encodeURIComponent(`/pipeline?redirect=${this.$route.query.redirect}`)}` : ''
     }
   }
 }
