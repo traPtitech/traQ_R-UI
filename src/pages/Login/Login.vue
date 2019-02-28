@@ -2,7 +2,7 @@
 div.login
   div.login-left-box
     div
-      icon-logo(:size="64" color="white")
+      //- icon-logo(:size="64" color="white")
     p.login-welcome
       | Welcome to traQ
   div.login-right-box
