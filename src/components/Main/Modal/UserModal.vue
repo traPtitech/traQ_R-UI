@@ -5,6 +5,9 @@
     .user-modal-close-wrap
       .user-modal-close(@click="close")
         icon-close(color="white" :size="16")
+    .user-modal-expand-wrap
+      .user-modal-expand
+        icon-down-direction(color="white" :size="22")
     user-modal-profile(:expanded="expandProfile")
   // タグなど
   .user-modal-area--extra
@@ -31,6 +34,7 @@ import UserModalGroups from '@/components/Main/Modal/UserModal/UserModalGroups'
 import IconClose from '@/components/Icon/IconClose'
 import IconTag from '@/components/Icon/IconTag'
 import IconProfileFill from '@/components/Icon/IconProfileFill'
+import IconDownDirection from '@/components/Icon/IconDownDirection'
 
 export default {
   name: 'UserModal',
@@ -41,7 +45,8 @@ export default {
     UserModalGroups,
     IconClose,
     IconTag,
-    IconProfileFill
+    IconProfileFill,
+    IconDownDirection
   },
   data () {
     return {
@@ -74,7 +79,11 @@ $profile-area-width: 350px
     flex-direction: column
 
 .user-modal-close-wrap
+  position: absolute
   width: 100%
+  top: 0
+  left: 0
+  padding: 1rem
   display: flex
   justify-content: end
 .user-modal-close
@@ -83,6 +92,38 @@ $profile-area-width: 350px
   cursor: pointer
   &:hover
     opacity: 1
+
+.user-modal-expand-wrap
+  position: absolute
+  +mq(pc)
+    height: 100%
+    top: 0
+    right: 0
+    flex-direction: column
+  +mq(sp)
+    width: 100%
+    bottom: 0
+    left: 0
+    flex-direction: row
+  padding: 1rem
+  opacity: 0.3
+  display: flex
+  justify-content: center
+  .user-modal-area--profile:hover &
+    +mq(pc)
+      opacity: 1
+.user-modal-expand
+  transition: transform 0.3s ease
+  +mq(pc)
+    transform: rotate(-90deg)
+  +mq(sp)
+    transform: rotate(0deg)
+  .user-modal[data-is-expanded] &
+    +mq(pc)
+      transform: rotate(90deg)
+    +mq(sp)
+      transform: rotate(180deg)
+
 
 .user-modal-area--profile
   +mq(pc)
@@ -94,8 +135,10 @@ $profile-area-width: 350px
     flex-grow: 0
     flex-shrink: 0
   padding: $modal-profile-padding
+  position: relative
   background: $primary-color
   transition: height .3s ease, width .3s ease
+  cursor: pointer
 
 .user-modal-area--extra
   flex-grow: 3

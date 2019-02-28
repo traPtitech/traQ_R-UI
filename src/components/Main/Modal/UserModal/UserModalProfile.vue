@@ -74,7 +74,6 @@ export default {
 
 .user-modal-profile
   height: 100%
-  padding-bottom: 18px
   display: flex
   align-items: center
   justify-content: center
