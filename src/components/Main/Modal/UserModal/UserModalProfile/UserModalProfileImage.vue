@@ -84,6 +84,7 @@ export default {
   background-size: cover
   background-position: center
   background-color: white
+  background-repeat: no-repeat
 
 .user-modal-dm
   position: absolute

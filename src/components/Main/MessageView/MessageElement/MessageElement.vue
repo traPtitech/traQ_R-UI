@@ -5,7 +5,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
     div.message-pin-detail-text
       | {{ pinnerName }}さんがピン留めしました
   div.message-user-icon-wrap
-    img.message-user-icon(:src="userIconSrc(model.userId)" @click="openUserModal(model.userId)")
+    div.message-user-icon(
+      :style="userIconBackground(model.userId)" 
+      @click="openUserModal(model.userId)")
   div.message-detail-wrap
     div.message-user-info-wrap
       div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
@@ -213,6 +215,11 @@ export default {
       if (!this.isBot) {
         this.$store.dispatch('openGroupModal', this.grade(this.model.userId).groupId)
       }
+    },
+    userIconBackground (userId) {
+      return {
+        backgroundImage: `url(${this.userIconSrc(userId)})`
+      }
     }
   },
   computed: {
@@ -301,6 +308,10 @@ export default {
   height: 40px
   border-radius: 100%
   cursor: pointer
+  background:
+    size: cover
+    repeat: no-repeat
+    position: center center
 
 .message-detail-wrap
   grid-area: detail
