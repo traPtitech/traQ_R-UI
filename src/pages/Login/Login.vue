@@ -4,11 +4,11 @@ div.login
     p.login-welcome
       | Welcome to traQ
   div.login-right-box
-    form.input-wrap.login-form(:action="action" method="post")
+    .input-wrap.login-form
       input.input-reset.login-input.input-id(v-model="name" name="name" type="text" placeholder="ID" required @keydown.enter="loginPost")
       input.input-reset.login-input.input-password(v-model="pass" name="pass" type="password" placeholder="パスワード" required @keydown.enter="loginPost")
-    div.login-button-wrap
-      button.login-button(@click="sendLoginForm")
+    .login-button-wrap
+      button.login-button(@click="loginPost")
         p ログイン
       p.login-failed-message(v-if="status === 'failed'") IDまたはパスワードが異なります
 </template>
@@ -33,34 +33,31 @@ export default {
   },
   methods: {
     loginPost: function () {
-      // no longer used
       this.status = 'processing'
       client
         .login(this.name, this.pass)
         .then(res => {
           this.status = 'successed'
           console.log(res)
-          this.$store.commit('loadStart')
-          this.$store.dispatch('whoAmI').then(() => {
-            this.$router.push('/channels/random')
-          })
+          if (this.$store.state.baseURL === '') {
+            document.location.href = this.redirect
+          } else {
+            this.$store.commit('loadStart')
+            this.$store.dispatch('whoAmI').then(() => {
+              this.$router.push('/channels/random')
+            })
+          }
         })
         .catch(err => {
           this.status = 'failed'
           console.error(err)
         })
-    },
-    sendLoginForm () {
-      document.forms[0].submit()
     }
   },
   computed: {
-    action () {
-      return `${this.$store.state.baseURL}/api/1.0/login${this.redirect}`
-    },
     redirect () {
       return this.$route.query.redirect
-        ? `?redirect=${encodeURIComponent(`/pipeline?redirect=${this.$route.query.redirect}`)}` : ''
+        ? `/pipeline?redirect=${encodeURIComponent(this.$route.query.redirect)}` : '/pipeline'
     }
   }
 }
