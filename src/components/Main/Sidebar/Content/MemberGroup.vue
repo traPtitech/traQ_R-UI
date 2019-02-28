@@ -1,6 +1,6 @@
 <template lang="pug">
   div.member-group-container(:class="memberGroupClass")
-    div.member-group-name-container(@click="isOpen=!isOpen")
+    div.member-group-name-container(@click="toggle")
       p
         | {{groupName}}
     div.member-group-list(ref="list")
@@ -15,12 +15,13 @@ export default {
   name: 'MemberGroup',
   data () {
     return {
-      isOpen: true,
+      isOpen: false,
       height: 0
     }
   },
   props: {
     groupName: String,
+    groupId: String,
     members: Array,
     filterText: {
       type: String,
@@ -54,6 +55,13 @@ export default {
     },
     zeroHeight () {
       this.$refs.list.style.height = '0'
+    },
+    toggle () {
+      this.isOpen = !this.isOpen
+      this.$store.dispatch('updateUserListOpen', {
+        groupId: this.groupId,
+        isOpen: this.isOpen
+      })
     }
   },
   watch: {
@@ -64,6 +72,17 @@ export default {
           this.$refs.list.style.height = this.height + 'px'
         })
       }
+    }
+  },
+  mounted () {
+    if (this.$store.state.openUserLists.hasOwnProperty(this.groupId)) {
+      this.isOpen = this.$store.state.openUserLists[this.groupId]
+    } else {
+      this.isOpen = true
+      this.$store.dispatch('updateUserListOpen', {
+        groupId: this.groupId,
+        isOpen: true
+      })
     }
   }
 }
