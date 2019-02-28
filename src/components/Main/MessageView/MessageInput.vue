@@ -234,7 +234,6 @@ export default {
       }
     },
     keydown (event) {
-      console.log(event)
       if (this.postStatus === 'processing') {
         event.returnValue = false
         return
