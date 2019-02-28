@@ -41,11 +41,11 @@ export default {
   height: min-content
   width: 100%
   word-break: break-all
-  overflow-y: scroll
-  -webkit-overflow-scrolling: touch
+  +mq(sp)
+    overflow-y: scroll
+    -webkit-overflow-scrolling: touch
   &::-webkit-scrollbar
     display: none
-    transform: translateX(-30px)
 
 .user-modal-profile-info-name-contaner
   display: flex
