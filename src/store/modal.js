@@ -100,6 +100,12 @@ export default {
         return dispatch('updateCurrentTagUserIds')
       }
     },
+    openFileModal: {
+      root: true,
+      handler ({state, rootState, commit, dispatch}, data) {
+        dispatch('open', { name: 'FileModal', data })
+      }
+    },
     openChannelCreateModal: {
       root: true,
       handler ({state, rootState, commit, dispatch}) {

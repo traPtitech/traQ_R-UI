@@ -10,11 +10,12 @@
         div(v-else-if="isSvg(file.mime)")
           img.attached-image(
             :src="`${fileUrl(file.fileId)}`" 
-            :onClick="`this.src = '${fileUrl(file.fileId)}'`" 
+            @click.prevent="onAttachedImageClick(file)"
             :alt="file.name")
         a.attached-image-wrap(
           v-else-if="isImage(file.mime)" 
           :href="fileUrl(file.fileId)" 
+          @click.prevent="onAttachedImageClick(file)"
           target="_blank" 
           rel="nofollow noopener noreferrer")
           img.attached-image(
@@ -72,7 +73,10 @@ export default {
     isGif,
     isSvg,
     isVideo,
-    isAudio
+    isAudio,
+    onAttachedImageClick (file) {
+      this.$store.dispatch('openFileModal', file)
+    }
   }
 }
 </script>
