@@ -56,6 +56,7 @@ export default {
   overflow-y: scroll
   border: 1px solid #eeeeee
   background-color: $background-color
+  -webkit-overflow-scrolloing: touch
 .group-modal-go-back
   cursor: pointer
 </style>
