@@ -1,7 +1,7 @@
 <template lang="pug">
 div.footer
   span.version-text
-    | traQ R alpha
+    | traQ R 2.0.0
   ul.footer-button-wrap
     li.menu-button.theme(@click="changeTheme")
       IconCrescent(v-if="theme === 'light'")
