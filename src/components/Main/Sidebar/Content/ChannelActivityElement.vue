@@ -13,10 +13,16 @@ div.channel-activity-wrap
         | {{ authorName }}
       span.channel-recent-message-content
         | {{ sanitizedMessage }}
+      span.channel-recent-message-attachment-info(v-if="hasFile")
+        | ファイルを送信しました
+      span.channel-recent-message-attachment-info(v-if="hasMessage")
+        | メッセージを引用しました
 </template>
 
 <script>
 import md from '@/bin/markdown-it'
+import { detectFiles } from '@/bin/utils'
+
 export default {
   name: 'ChannelActivityElement',
   props: {
@@ -49,16 +55,21 @@ export default {
       const parsed = md.parseInline(this.model.content)
       return parsed[0].children
     },
+    attachments () {
+      return detectFiles(this.model.content)
+    },
+    hasMessage () {
+      return this.attachments.filter(a => a.type === 'message').length > 0
+    },
+    hasFile () {
+      return this.attachments.filter(a => a.type === 'file').length > 0
+    },
     sanitizedMessage () {
       const parsed = md.parseInline(this.model.content)
       const tokens = parsed[0].children
       const message = []
       for (let token of tokens) {
-        if (token.type === 'traq_extends_link_open' && token.meta) {
-          if (token.meta.type === 'file') {
-            message.push(` [file: ${token.attrs[1][1]}]`)
-          }
-        } else if (token.type === 'regexp-0') {
+        if (token.type === 'regexp-0') {
           // emoji
           message.push(token.meta.match[0])
         } else if (token.type === 'softbreak') {
@@ -173,4 +184,7 @@ export default {
 .list-complete-enter, .list-complete-leave-to
   opacity: 0
   transform: translateX(-5px)
+
+.channel-recent-message-attachment-info
+  font-style: italic
 </style>
