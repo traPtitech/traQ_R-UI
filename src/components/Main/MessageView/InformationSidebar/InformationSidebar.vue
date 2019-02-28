@@ -146,7 +146,7 @@ export default {
     this.$nextTick(() => {
       this.listen(window, 'click', function (e) {
         if (!this.$el.contains(e.target)) {
-          this.closeSidebar()
+          this.isOpened = false
         }
       }.bind(this))
     })
