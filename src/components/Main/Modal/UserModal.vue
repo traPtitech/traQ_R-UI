@@ -144,6 +144,7 @@ $profile-area-width: 350px
   flex-grow: 3
   min-height: 0
   flex-shrink: 2
+  height: 100%
   @media screen and (max-width: 900px)
     flex-shrink: 1
 

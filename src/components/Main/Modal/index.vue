@@ -49,7 +49,7 @@ export default {
   z-index: $modal-index
   position: fixed
   width: 100vw
-  height: 100vh
+  height: 100%
   top: 0
   left: 0
   display: flex
