@@ -1,6 +1,12 @@
 <template lang="pug">
 .filter-input-container
+  DebouncedInput.input-reset.filter-input(
+    v-if="useDebounce"
+    placeholder="検索" 
+    v-model="filterText" 
+    @input="$emit('inputFilter', filterText)")
   input.input-reset.filter-input(
+    v-else
     placeholder="検索" 
     v-model="filterText" 
     @input="$emit('inputFilter', filterText)")
@@ -9,12 +15,20 @@
 </template>
 
 <script>
+import DebouncedInput from '@/components/Util/DebouncedInput'
 import IconClose from '@/components/Icon/IconClose'
 
 export default {
   name: 'FilterInput',
   components: {
+    DebouncedInput,
     IconClose
+  },
+  props: {
+    useDebounce: {
+      type: Boolean,
+      defualt: false
+    }
   },
   data () {
     return {

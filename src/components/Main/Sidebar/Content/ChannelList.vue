@@ -2,7 +2,7 @@
 div.channel-list
   div.channel-list-action-area-wrapper
     keep-alive
-      filter-input(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event")
+      filter-input(v-if="channelView === 'tree' || channelView === 'stared'" @inputFilter="filterText = $event" :useDebounce="true")
       channel-activity-controlls(v-else
                                 :isLoading="isLoading"
                                 @refreshClick="refresh"
