@@ -9,10 +9,10 @@
         icon-upload(:size="24" color="var(--tertiary-color-on-bg)")
       .message-input-button.flex-center(@click.stop="showStampPicker")
         icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
-      .message-input-button.flex-center
-        icon-hash(:size="22" color="var(--tertiary-color-on-bg)")
-      .message-input-button.flex-center
-        icon-profile(:size="24" color="var(--tertiary-color-on-bg)")
+      //- .message-input-button.flex-center
+      //-   icon-hash(:size="22" color="var(--tertiary-color-on-bg)")
+      //- .message-input-button.flex-center
+      //-   icon-profile(:size="24" color="var(--tertiary-color-on-bg)")
     .message-input-files-wrapper.is-scroll(v-if="hasFile")
       .message-input-file(v-for="(file, index) in files")
         .message-input-file-thumbnail(

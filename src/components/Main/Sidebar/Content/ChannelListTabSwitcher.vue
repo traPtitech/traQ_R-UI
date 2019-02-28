@@ -1,14 +1,14 @@
 <template lang="pug">
   .channel-tab-switcher-wrap.drop-shadow
     .channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
-      .channel-tab-switcher-item-icon
-        IconHash(:size="12")
+      .channel-tab-switcher-item-icon.flex-center
+        IconHash(:size="16")
     .channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
-      .channel-tab-switcher-item-icon
-        IconStarFill(:size="12")
+      .channel-tab-switcher-item-icon.flex-center
+        IconStarFill(:size="18")
     .channel-tab-switcher-item(@click="channelView = 'activity'" :class="{selected: channelView === 'activity'}")
-      .channel-tab-switcher-item-icon
-        IconLightning(:size="12")
+      .channel-tab-switcher-item-icon.flex-center
+        IconLightning(:size="18")
 </template>
 
 <script>
@@ -38,9 +38,9 @@ export default {
 <style lang="sass">
 .channel-tab-switcher-wrap
   position: absolute
-  bottom: 10px
-  width: 120px
-  height: 30px
+  bottom: 2px
+  width: 160px
+  height: 40px
   right: 0
   left: 0
   margin: 0 auto
@@ -57,6 +57,9 @@ export default {
   height: 100%
   cursor: pointer
   background: none
+  &:hover
+    background: rgba(0,0,0,0.1)
+
   &.selected
     background: $tertiary-color
 
@@ -65,6 +68,8 @@ export default {
   left: 50%
   top: 50%
   opacity: 0.5
+  width: 20px
+  height: 20px
   transform: translateX(-50%) translateY(-50%)
   .selected &
     opacity: 1

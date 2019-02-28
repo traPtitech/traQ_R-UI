@@ -5,6 +5,7 @@ div.sidebar-content.is-scroll(ref="sidebarContent")
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import ChannelList from '@/components/Main/Sidebar/Content/ChannelList'
 
 export default {
@@ -12,7 +13,11 @@ export default {
   data () {
     return {
       scrollTopMap: {
-        Channels: 0,
+        Channels: {
+          tree: 0,
+          stared: 0,
+          activity: 0
+        },
         Members: 0,
         Clips: 0,
         Links: 0
@@ -27,15 +32,30 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['channelView']),
     menuContent () {
       return this.$store.state.menuContent
     }
   },
   watch: {
     menuContent (newv, oldv) {
-      this.scrollTopMap[oldv] = this.$el.scrollTop
+      if (oldv === 'Channels') {
+        this.scrollTopMap[oldv][this.channelView] = this.$el.scrollTop
+      } else {
+        this.scrollTopMap[oldv] = this.$el.scrollTop
+      }
       this.$nextTick(() => {
-        this.$el.scrollTop = this.scrollTopMap[newv]
+        if (newv === 'Channels') {
+          this.$el.scrollTop = this.scrollTopMap[newv][this.channelView]
+        } else {
+          this.$el.scrollTop = this.scrollTopMap[newv]
+        }
+      })
+    },
+    channelView (newv, oldv) {
+      this.scrollTopMap[this.menuContent][oldv] = this.$el.scrollTop
+      this.$nextTick(() => {
+        this.$el.scrollTop = this.scrollTopMap[this.menuContent][newv]
       })
     }
   }

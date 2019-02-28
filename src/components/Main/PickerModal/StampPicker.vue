@@ -258,39 +258,39 @@ export default {
   width: 32px
   height: 0
 
-.slide-left
-  &-enter-active
-    position: absolute
-    transition: all .2s ease
+// .slide-left
+//   &-enter-active
+//     position: absolute
+//     transition: all .2s ease
 
-  &-leave-active
-    position: absolute
-    transition: all .2s ease
+//   &-leave-active
+//     position: absolute
+//     transition: all .2s ease
 
-  &-enter
-    transform: translateX(-10px)
-    opacity: 0
+//   &-enter
+//     transform: translateX(-10px)
+//     opacity: 0
 
-  &-leave-to
-    transform: translateX(10px)
-    opacity: 0
+//   &-leave-to
+//     transform: translateX(10px)
+//     opacity: 0
 
-.slide-right
-  &-enter-active
-    position: absolute
-    transition: all .2s ease
+// .slide-right
+//   &-enter-active
+//     position: absolute
+//     transition: all .2s ease
 
-  &-leave-active
-    position: absolute
-    transition: all .2s ease
+//   &-leave-active
+//     position: absolute
+//     transition: all .2s ease
 
-  &-enter
-    transform: translateX(10px)
-    opacity: 0
+//   &-enter
+//     transform: translateX(10px)
+//     opacity: 0
 
-  &-leave-to
-    transform: translateX(-10px)
-    opacity: 0
+//   &-leave-to
+//     transform: translateX(-10px)
+//     opacity: 0
 
 </style>
 
