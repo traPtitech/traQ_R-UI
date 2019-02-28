@@ -3,6 +3,9 @@
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
       monospace;
     font-size: 12px;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
   }
 
   pre {

@@ -33,7 +33,7 @@ export default {
     userIconSrc: client.getUserIconUrl,
     mark (text) {
       return {
-        template: `<div class="message-content" v-pre>${md.render(text)}</div>`,
+        template: `<div class="message-content markdown-body" v-pre>${md.render(text)}</div>`,
         props: this.$options.props
       }
     },
