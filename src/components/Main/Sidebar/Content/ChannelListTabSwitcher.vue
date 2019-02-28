@@ -38,9 +38,9 @@ export default {
 <style lang="sass">
 .channel-tab-switcher-wrap
   position: absolute
-  bottom: 2px
-  width: 160px
-  height: 40px
+  bottom: 10px
+  width: 200px
+  height: 35px
   right: 0
   left: 0
   margin: 0 auto
