@@ -550,10 +550,10 @@ const store = new Vuex.Store({
     },
     sortedGrades (state, getters) {
       const map = {
-        B: 0,
-        M: 1,
-        D: 2,
-        R: 3
+        B: 3,
+        M: 2,
+        D: 1,
+        R: 0
       }
       const f = (s) => {
         return map[s[2]] * 100 + parseInt(s.substr(0, 2), 10)
@@ -629,8 +629,8 @@ const store = new Vuex.Store({
           .catch(() => {})
       }
       const loadedMessages = (!nowChannel.dm)
-        ? client.loadMessages(nowChannel.channelId, 50, latest ? 0 : state.messages.length)
-        : client.loadDirectMessages(getters.getUserIdByDirectMessageChannel(nowChannel), 50, latest ? 0 : state.messages.length)
+        ? client.loadMessages(nowChannel.channelId, 20, latest ? 0 : state.messages.length)
+        : client.loadDirectMessages(getters.getUserIdByDirectMessageChannel(nowChannel), 20, latest ? 0 : state.messages.length)
       return loadedMessages
         .then(res => {
           loaded = true
