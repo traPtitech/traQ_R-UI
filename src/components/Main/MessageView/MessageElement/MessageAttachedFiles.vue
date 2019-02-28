@@ -7,20 +7,13 @@
             :src="`${fileUrl(file.fileId)}/thumbnail`" 
             :onClick="`this.src = '${fileUrl(file.fileId)}'`" 
             :alt="file.name")
-        div(v-else-if="isSvg(file.mime)")
-          img.attached-image(
-            :src="`${fileUrl(file.fileId)}`" 
-            @click.prevent="onAttachedImageClick(file)"
-            :alt="file.name")
-        a.attached-image-wrap(
+        .attached-image(v-else-if="isSvg(file.mime)"
+          :style="backgroundImageStyle(`${fileUrl(file.fileId)}`)"
+          @click.prevent="onAttachedImageClick(file)")
+        .attached-image(
           v-else-if="isImage(file.mime)" 
-          :href="fileUrl(file.fileId)" 
           @click.prevent="onAttachedImageClick(file)"
-          target="_blank" 
-          rel="nofollow noopener noreferrer")
-          img.attached-image(
-            :src="`${fileUrl(file.fileId)}/thumbnail`" 
-            :alt="file.name")
+          :style="backgroundImageStyle(`${fileUrl(file.fileId)}/thumbnail`)")
         video.attached-video(
           v-else-if="isVideo(file.mime)" 
           :src="fileUrl(file.fileId)" 
@@ -76,6 +69,11 @@ export default {
     isAudio,
     onAttachedImageClick (file) {
       this.$store.dispatch('openFileModal', file)
+    },
+    backgroundImageStyle (url) {
+      return {
+        backgroundImage: `url(${url})`
+      }
     }
   }
 }
@@ -102,9 +100,12 @@ export default {
 
 .attached-image
   cursor: pointer
-  object-fit: cover
-  max-width: 100%
-  max-height: 100%
+  background:
+    size: cover
+    position: center center
+    repeat: no-repeat
+  width: 250px
+  height: 150px
   border:
     color: var(--tertiary-color-on-bg)
     style: solid
