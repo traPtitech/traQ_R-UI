@@ -60,6 +60,7 @@ export default {
     padding: 1rem
 .common-modal[data-is-small="true"]
     max-width: 40rem
+    max-height: 80vh
 .common-modal[data-is-tiny="true"]
     max-width: 25rem
 .common-modal-header-wrap

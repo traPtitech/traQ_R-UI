@@ -2,9 +2,7 @@
 base-common-modal(:title="`FILE: ${data.name}`" small)
   icon-file(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
   .file-modal-wrapper
-    img.file-modal-image(
-      :src="fileUrl(data.fileId)" 
-    )
+    .file-modal-image(:style="imageStyle")
 
 </template>
 
@@ -28,10 +26,29 @@ export default {
   },
   computed: {
     ...mapState('modal', ['data']),
-    ...mapGetters(['fileUrl'])
+    ...mapGetters(['fileUrl']),
+    imageStyle () {
+      return {
+        backgroundImage: `url(${this.fileUrl(this.data.fileId)})`
+      }
+    }
   }
 }
 </script>
 
 <style lang="sass">
+.file-modal-wrapper
+  height: calc(80vh - 6rem)
+  display: flex
+  justify-content: center
+  align-items: center
+
+.file-modal-image
+  width: 100%
+  height: 100%
+  background:
+    size: contain
+    repeat: no-repeat
+    position: center
+
 </style>
