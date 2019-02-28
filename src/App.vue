@@ -85,7 +85,7 @@ export default {
 <style lang="sass">
 @import "~@/styles/global.sass"
 #app
-  position: absolute
+  position: fixed
   top: 0;
   right: 0;
   width: 100%

@@ -91,13 +91,13 @@ $profile-area-width: 350px
     border-radius: $modal-border-radius $modal-border-radius 0 0
   padding: $modal-profile-padding
   background: $primary-color
-  flex-grow: 1
+  flex-grow: 2
   flex-shrink: 1
   transition: height .3s ease, width .3s ease
 
 .user-modal-area--extra
   flex-grow: 3
-  // flex-shrink: 3
+  flex-shrink: 3
   min-height: 0
   display: flex
   flex-direction: column

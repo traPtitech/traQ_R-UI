@@ -1,6 +1,6 @@
 <template lang="pug">
 .user-modal-tags
-  .user-modal-tags-container
+  .user-modal-tags-container.is-scroll
     .user-modal-tag-element(v-for="(tag, index) in tags" :key="tag.tagId")
       .user-modal-icon--gray.user-modal-tag-icon
         IconTag(:size="16" color="gray")

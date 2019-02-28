@@ -5,7 +5,7 @@
     .message-input-buttons-wrapper
       .message-input-button.flex-center(@click="clickUploadButton")
         icon-upload(:size="24" color="var(--tertiary-color-on-bg)")
-      .message-input-button.flex-center(@click="showStampPicker")
+      .message-input-button.flex-center(@click.stop="showStampPicker")
         icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
       .message-input-button.flex-center
         icon-hash(:size="22" color="var(--tertiary-color-on-bg)")
@@ -34,7 +34,7 @@
         @keydown="keydown"
         @click="clearKey"
         ref="inputArea")
-      .message-input-button.flex-center(@click="showStampPicker")
+      .message-input-button.flex-center(@click.stop="showStampPicker")
         icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
       .message-input-send-button.flex-center(
         @click="submit"
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import autosize from 'autosize'
 import client from '@/bin/client'
 import { isImage } from '@/bin/utils'
@@ -70,7 +71,6 @@ export default {
   data () {
     return {
       focused: false,
-      inputText: '',
       // postStatus: {'default', 'processing', 'succeeded', 'failed'}
       postStatus: 'default',
       postLock: false,
@@ -229,6 +229,7 @@ export default {
       }
     },
     keydown (event) {
+      console.log(event)
       if (this.postStatus === 'processing') {
         event.returnValue = false
         return
@@ -239,15 +240,15 @@ export default {
         this.suggestIndex = 0
       } else {
         if (!this.suggestMode) {
-          if (event.keyCode === 40 || event.keyCode === 38) {
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
             this.suggestMode = true
             this.suggestIndex = 0
             event.returnValue = false
             return
           }
         } else {
-          if (event.keyCode === 40 || event.keyCode === 38) {
-            if (event.keyCode === 40) {
+          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            if (event.key === 'ArrowDown') {
               this.suggestIndex++
             } else {
               this.suggestIndex--
@@ -260,7 +261,7 @@ export default {
             }
             event.returnValue = false
             return
-          } else if (event.keyCode === 13) {
+          } else if (event.key === 'Enter') {
             this.replaceSuggest(this.suggestIndex)
             event.returnValue = false
             return
@@ -404,10 +405,20 @@ export default {
       )
     },
     showStampPicker () {
-      this.$store.commit('activeStampPicker')
+      this.$store.commit('setStampPickerModeAsInput')
+      this.$store.commit('setStampPickerActive', !this.stampPickerActive)
     }
   },
   computed: {
+    ...mapGetters(['stampPickerActive']),
+    inputText: {
+      get () {
+        return this.$store.state.pickerModal.inputText
+      },
+      set (text) {
+        this.$store.commit('setInputText', text)
+      }
+    },
     suggests () {
       if (this.key.type === '') {
         return []
@@ -442,7 +453,7 @@ export default {
     },
     sendButtonStyle () {
       return {
-        opacity: this.hasFile || !this.isEmptyMessage ? 1 : 0.6
+        opacity: this.hasFile || !this.isEmptyMessage ? 1 : 0.4
       }
     }
   },
@@ -460,12 +471,17 @@ export default {
 </script>
 
 <style lang="sass">
+$message-input-min-height: 50px
+$message-input-button-height-sp: 50px - 2px
+$message-input-button-height-pc: 40px - 2px
+
 .message-input
   +mq(pc)
     flex-shrink: 0
     min-height: 50px
     position: relative
     width: calc(100vw - #{$sidebar-width})
+    padding-bottom: 10px
   +mq(sp)
     position: relative
     width: 100vw
@@ -475,15 +491,26 @@ export default {
   display: flex
   flex-flow: column
   background: var(--background-color)
-  border:
-    top:
+  +mq(sp)
+    border:
+      top:
+        style: solid
+        color: var(--tertiary-color-on-bg)
+        width: 1px
+        radius: 8px
+  +mq(pc)
+    border:
       style: solid
       color: var(--tertiary-color-on-bg)
       width: 1px
+      radius: 8px
   padding:
     right: 6px
     left: 6px
   width: 100%
+  +mq(pc)
+    width: calc(100% - 20px)
+    margin: 0 auto 0
 
 .message-input-buttons-wrapper
   +mq(pc)
@@ -501,7 +528,7 @@ export default {
   padding:
     left: 6px
     right: 6px
-  height: 36px
+  height: $message-input-button-height-pc
 
   &:hover
     background: var(--background-hover-color)
@@ -511,7 +538,7 @@ export default {
   padding:
     left: 6px
     right: 6px
-  height: 36px
+  height: $message-input-button-height-pc
 
   &:hover
     background: var(--background-hover-color)
@@ -569,7 +596,7 @@ export default {
   position: relative
   display: flex
   flex-flow: row
-  align-items: center
+  align-items: flex-end
   width: 100%
   height: 100%
 
@@ -579,13 +606,13 @@ export default {
   color: var(--text-color)
   resize: none
   width: 100%
-  height: 49px
+  height: $message-input-button-height-pc
   max-height: 240px
   padding:
-    top: 15px
+    top: 9px
     left: 6px
     right: 6px
-    bottom: 12px
+    bottom: 9px
 
   &::placeholder
     transform: translateX(2px)

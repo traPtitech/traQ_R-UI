@@ -1,62 +1,58 @@
 <template lang="pug">
-div.stamp-picker
-  stamp-modal(:active="active" @close="closeStampPicker")
-    div.stamp-picker-container
-      div.stamp-picker-header
-        input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
-        div.stamp-picker-search-icon
-          icon-search(color="gray")
-      transition-group.stamp-picker-body.is-scroll(
-        tag="div"
-        :name="stampContainerTransitionName"
-        @mouseleave="searchPlaceHolder=defaultString")
-          div.stamp-picker-body-container(
-            v-if="search.length == 0" 
-            v-for="(category, idx) in stampCategolized" 
-            v-show="idx==currentCategoryIndex" 
-            :key="category.category")
-            p.stamp-picker-category-name
-              | {{category.category}}
-            div.stamp-picker-body-inner-wrapper
-              div.stamp-picker-stamp-item-wrapper.flex-center(
-                v-for="stamp in stamps(idx)"
-                @click="addStamp(stamp.id)" 
-                @mouseover="hoverStamp(stamp.name)")
-                div.stamp-picker-stamp-item( 
-                  :style="stampItemStyle(stamp.fileId)" 
-                  :title="`:${stamp.name}:`")
-              div.stamp-picker-stamp-item-dummy(v-for="i in 20")
-          div.stamp-picker-body-container(
-            key="filtered"
-            v-if="search.length > 0")
-            p.stamp-picker-category-name
-              | 検索結果
-            div.stamp-picker-body-inner-wrapper
-              div.stamp-picker-stamp-item-wrapper.flex-center(
-                :key="stamp.id"
-                v-for="stamp in filteredStamps" 
-                @click="addStamp(stamp.id)" 
-                @mouseover="hoverStamp(stamp.name)")
-                div.stamp-picker-stamp-item( 
-                  :style="stampItemStyle(stamp.fileId)" 
-                  :title="`:${stamp.name}:`")
-              div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
-      div.stamp-picker-footer
-          div.stamp-category-wrap
-            div.stamp-category-item.flex-center(
-              v-for="(category,idx) in stampCategolized" 
-              @click="currentCategoryIndex = idx"
-              :class="{'stamp-picker-category-selected': idx === currentCategoryIndex}")
-              component(
-                :is="categoryIcon(idx)" 
-                :size="idx <= 1 ? 20 : 28" 
-                :color="idx === currentCategoryIndex ? 'var(--primary-color-on-bg)' : 'gray'")
+  div.stamp-picker-container
+    div.stamp-picker-header
+      input.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
+      div.stamp-picker-search-icon
+        icon-search(color="gray")
+    transition-group.stamp-picker-body.is-scroll(
+      tag="div"
+      :name="stampContainerTransitionName"
+      @mouseleave="searchPlaceHolder=defaultString")
+        div.stamp-picker-body-container(
+          v-if="search.length == 0" 
+          v-for="(category, idx) in stampCategolized" 
+          v-show="idx==currentCategoryIndex" 
+          :key="category.category")
+          p.stamp-picker-category-name
+            | {{category.category}}
+          div.stamp-picker-body-inner-wrapper
+            div.stamp-picker-stamp-item-wrapper.flex-center(
+              v-for="stamp in stamps(idx)"
+              @click="addStamp(stamp)" 
+              @mouseover="hoverStamp(stamp.name)")
+              div.stamp-picker-stamp-item( 
+                :style="stampItemStyle(stamp.fileId)" 
+                :title="`:${stamp.name}:`")
+            div.stamp-picker-stamp-item-dummy(v-for="i in 20")
+        div.stamp-picker-body-container(
+          key="filtered"
+          v-if="search.length > 0")
+          p.stamp-picker-category-name
+            | 検索結果
+          div.stamp-picker-body-inner-wrapper
+            div.stamp-picker-stamp-item-wrapper.flex-center(
+              :key="stamp.id"
+              v-for="stamp in filteredStamps" 
+              @click="addStamp(stamp)" 
+              @mouseover="hoverStamp(stamp.name)")
+              div.stamp-picker-stamp-item( 
+                :style="stampItemStyle(stamp.fileId)" 
+                :title="`:${stamp.name}:`")
+            div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
+    div.stamp-picker-footer
+        div.stamp-category-wrap
+          div.stamp-category-item.flex-center(
+            v-for="(category,idx) in stampCategolized" 
+            @click="currentCategoryIndex = idx"
+            :class="{'stamp-picker-category-selected': idx === currentCategoryIndex}")
+            component(
+              :is="categoryIcon(idx)" 
+              :size="idx <= 1 ? 20 : 28" 
+              :color="idx === currentCategoryIndex ? 'var(--primary-color-on-bg)' : 'gray'")
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
-import client from '@/bin/client'
-import StampModal from '@/components/Util/StampModal'
 import IconSearch from '@/components/Icon/IconSearch'
 import IconClock from '@/components/Icon/IconClock'
 import IconLogo from '@/components/Icon/IconLogo'
@@ -74,7 +70,7 @@ export default {
   name: 'StampPicker',
   props: {
   },
-  components: {StampModal, IconSearch},
+  components: {IconSearch},
   data () {
     return {
       search: '',
@@ -90,15 +86,12 @@ export default {
       'fileUrl'
     ]),
     active () {
-      return this.$store.state.stampPickerActive
+      return this.$store.getters.stampPickerActive
     },
     model () {
-      return this.$store.state.stampPickerModel
+      return this.$store.getters.stampPickerModel
     },
     stampCategolized () {
-      if (this.stampHistory.stamps.length === 0) {
-        return this.$store.state.stampCategolized
-      }
       return [this.stampHistory].concat(this.$store.state.stampCategolized)
     },
     stampHistory () {
@@ -116,11 +109,8 @@ export default {
     }
   },
   methods: {
-    addStamp (stampId) {
-      client.stampMessage(this.model.messageId, stampId)
-    },
-    closeStampPicker () {
-      this.$store.commit('inactiveStampPicker')
+    addStamp (stamp) {
+      this.$store.dispatch('addStamp', stamp)
     },
     stamps (index) {
       return this.stampCategolized[index].stamps

@@ -13,9 +13,9 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
     time.message-date
       | {{displayDateTime}}
     ul.message-buttons-wrap
-      li(@click="showStampPicker")
+      li(@click.stop="showStampPicker")
         icon-stamp-plus(:size="20" color="var(--text-color)")
-      li(@click.stop="isContextMenuActive = true")
+      li.message-button-drop-menu(@click.stop="activeDropMenu")
         icon-dots(:size="18" color="var(--text-color)")
   div.message-contents-wrap
     div.message-text-wrap
@@ -80,12 +80,17 @@ export default {
   methods: {
     ...mapActions(['openUserModal']),
     detectFiles,
+    activeDropMenu () {
+      this.$store.commit('setActiveMessageContextMenu', this.model.messageId)
+      this.isContextMenuActive = true
+    },
     userIconSrc: client.getUserIconUrl,
     showStampPicker () {
+      this.$store.commit('setStampPickerModeAsMessage')
       this.$store.commit('setStampPickerModel', {
         messageId: this.model.messageId
       })
-      this.$store.commit('activeStampPicker')
+      this.$store.commit('setStampPickerActive', true)
     },
     editMessage () {
       this.isEditing = true
@@ -277,6 +282,7 @@ export default {
   width: calc(100% - 110px)
 
 .message-user-name
+  color: var(--bold-text-color)
   margin: 0 0 0 10px
   font-weight: bold
   text-align: left
@@ -411,5 +417,8 @@ export default {
   background-size: contain
   background-repeat: no-repeat
   background-position: center center
+
+.message-button-drop-menu
+  transform: rotate(90deg)
 
 </style>
