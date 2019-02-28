@@ -9,6 +9,7 @@ import UserModal from './UserModal'
 import GroupModal from './GroupModal'
 import TagModal from './TagModal'
 import PinnedModal from './PinnedModal'
+import FileModal from './FileModal'
 import ChannelCreateModal from './ChannelCreateModal'
 import ChannelNotificationModal from './ChannelNotificationModal'
 
@@ -19,6 +20,7 @@ export default {
     GroupModal,
     TagModal,
     PinnedModal,
+    FileModal,
     ChannelCreateModal,
     ChannelNotificationModal
   },
