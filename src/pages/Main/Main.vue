@@ -143,9 +143,9 @@ export default {
       sse.on('USER_ICON_UPDATED', (data) => this.userIconUpdated(data))
       sse.on('USER_ONLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: true}))
       sse.on('USER_OFFLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: false}))
-      sse.on('CHANNEL_CREATED', () => this.$store.dispatch('updateChannels'))
-      sse.on('CHANNEL_DELETED', () => this.$store.dispatch('updateChannels'))
-      sse.on('CHANNEL_UPDATED', () => this.$store.dispatch('updateChannels'))
+      sse.on('CHANNEL_CREATED', (data) => this.$store.dispatch('addChannel', data.id))
+      sse.on('CHANNEL_DELETED', (data) => this.$store.dispatch('deleteChannel', data.id))
+      sse.on('CHANNEL_UPDATED', (data) => this.channelUpdated(data.id))
       sse.on('CHANNEL_STARED', () => this.$store.dispatch('updateStaredChannels'))
       sse.on('CHANNEL_UNSTARED', () => this.$store.dispatch('updateStaredChannels'))
       sse.on('CHANNEL_VISIBILITY_CHANGED', () => this.$store.dispatch('updateChannels'))
@@ -233,6 +233,12 @@ export default {
     messageDeleted (data) {
       this.$store.commit('deleteMessage', data.id)
       this.$store.dispatch('checkPinnedMessage', data.id)
+    },
+    channelUpdated (channelId) {
+      if (this.$store.state.currentChannel.channelId === channelId) {
+        this.$store.dispatch('getCurrentChannelTopic', channelId)
+      }
+      this.$store.dispatch('updateChannel', channelId)
     },
     userIconUpdated (data) {
       console.log(data)

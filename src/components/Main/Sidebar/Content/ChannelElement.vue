@@ -41,9 +41,6 @@ export default {
     },
     zeroHeight () {
       this.$refs.children.style.height = '0'
-    },
-    getChannelById (id) {
-      return this.$store.state.channelMap[id]
     }
   },
   computed: {
@@ -73,7 +70,7 @@ export default {
       if (!this.model.children) return []
       return this.model.children
         .map(c => {
-          return this.getChannelById(c)
+          return this.$store.state.channelMap[c]
         })
     },
     isNotified () {
