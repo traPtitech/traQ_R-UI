@@ -20,7 +20,7 @@ export default {
   data () {
     return {
       messageLoading: false,
-      noMoreMessage: false,
+      noMoreMessage: true,
       lastEvent: null
     }
   },
@@ -32,6 +32,7 @@ export default {
   },
   methods: {
     loadMessages () {
+      this.noMoreMessage = false
       this.$store.dispatch('getMessages')
         .then(res => {
           if (res) {
