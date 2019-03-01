@@ -153,10 +153,14 @@ const store = new Vuex.Store({
       state.stampData = newStampData
       state.stampCategolized = stampCategorizer(newStampData)
       state.stampData.sort(stringSortGen('name'))
+      const stampMap = {}
+      const stampNameMap = {}
       state.stampData.forEach(stamp => {
-        state.stampMap[stamp.id] = stamp
-        state.stampNameMap[stamp.name] = stamp
+        stampMap[stamp.id] = stamp
+        stampNameMap[stamp.name] = stamp
       })
+      state.stampMap = stampMap
+      state.stampNameMap = stampNameMap
     },
     setStampHistory (state, stampHistory) {
       state.stampHistory = stampHistory.map(stamp => state.stampMap[stamp.stampId])
@@ -678,6 +682,11 @@ const store = new Vuex.Store({
         .then(res => {
           commit('setStampHistory', res.data)
         })
+    },
+    addStamp ({commit, state}, stampId) {
+      return client.getStampDetail(stampId).then(res => {
+        commit('setStampData', state.stampData.concat([res.data]))
+      })
     },
     updateClipedMessages ({commit}) {
       return loadGeneralData('ClipedMessages', client.getAllClipMessages, commit)

@@ -159,7 +159,7 @@ export default {
       sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
       sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
       sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
-      sse.on('STAMP_CREATED', () => this.$store.dispatch('updateStamps'))
+      sse.on('STAMP_CREATED', (data) => this.$store.dispatch('addStamp', data.id))
       sse.on('STAMP_DELETED', () => this.$store.dispatch('updateStamps'))
       sse.on('TRAQ_UPDATED', () => location.reload(true))
     }
