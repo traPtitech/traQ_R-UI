@@ -62,10 +62,18 @@ export default {
   },
   methods: {
     toggleMemberOff (userId) {
-      this.$store.dispatch('updateCurrentChannelNotifications', { off: [userId] })
+      this.$store.dispatch('updateCurrentChannelNotifications', { off: [userId] }).then(() => {
+        if (userId === this.$store.state.me.userId) {
+          this.$store.dispatch('updateMyNotifiedChannels')
+        }
+      })
     },
     toggleMemberOn (userId) {
-      this.$store.dispatch('updateCurrentChannelNotifications', { on: [userId] })
+      this.$store.dispatch('updateCurrentChannelNotifications', { on: [userId] }).then(() => {
+        if (userId === this.$store.state.me.userId) {
+          this.$store.dispatch('updateMyNotifiedChannels')
+        }
+      })
     }
   }
 }
