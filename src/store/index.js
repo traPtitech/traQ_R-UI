@@ -121,9 +121,11 @@ const store = new Vuex.Store({
     setChannelData (state, newChannelData) {
       newChannelData.sort(stringSortGen('name'))
       state.channelData = newChannelData
+      const map = {}
       state.channelData.forEach(channel => {
-        state.channelMap[channel.channelId] = channel
+        map[channel.channelId] = channel
       })
+      state.channelMap = map
       state.channelData.forEach(channel => {
         if (channel.children) {
           channel.children.sort((lhs, rhs) => stringSortGen('name')(state.channelMap[lhs], state.channelMap[rhs]))
@@ -151,10 +153,14 @@ const store = new Vuex.Store({
       state.stampData = newStampData
       state.stampCategolized = stampCategorizer(newStampData)
       state.stampData.sort(stringSortGen('name'))
+      const stampMap = {}
+      const stampNameMap = {}
       state.stampData.forEach(stamp => {
-        state.stampMap[stamp.id] = stamp
-        state.stampNameMap[stamp.name] = stamp
+        stampMap[stamp.id] = stamp
+        stampNameMap[stamp.name] = stamp
       })
+      state.stampMap = stampMap
+      state.stampNameMap = stampNameMap
     },
     setStampHistory (state, stampHistory) {
       state.stampHistory = stampHistory.map(stamp => state.stampMap[stamp.stampId])
@@ -677,6 +683,11 @@ const store = new Vuex.Store({
           commit('setStampHistory', res.data)
         })
     },
+    addStamp ({commit, state}, stampId) {
+      return client.getStampDetail(stampId).then(res => {
+        commit('setStampData', state.stampData.concat([res.data]))
+      })
+    },
     updateClipedMessages ({commit}) {
       return loadGeneralData('ClipedMessages', client.getAllClipMessages, commit)
     },
@@ -706,6 +717,31 @@ const store = new Vuex.Store({
         .then(res => {
           commit('setCurrentChannelNotifications', res.data)
         })
+    },
+    addChannel ({state, commit}, channelId) {
+      return client.getChannelInfo(channelId).then(res => {
+        const parent = state.channelData.find(channel => channel.channelId === res.data.parent)
+        if (parent) {
+          if (parent.children) {
+            parent.children.push(channelId)
+          } else {
+            parent.children = [channelId]
+          }
+        }
+        commit('setChannelData', [res.data].concat(state.channelData))
+      })
+    },
+    deleteChannel ({state, commit}, channelId) {
+      const parent = state.channel.find(channel => channel.channelId === state.channelMap[channelId].parent)
+      if (parent) {
+        parent.children = parent.children.filter(c => c !== channelId)
+      }
+      commit('setChannelData', state.channelData.filter(channel => channel.channelId !== channelId))
+    },
+    updateChannel ({state, commit}, channelId) {
+      return client.getChannelInfo(channelId).then(res => {
+        commit('setChannelData', [res.data].concat(state.channelData.filter(channel => channel.channelId !== channelId)))
+      })
     },
     checkPinnedMessage ({state, dispatch}, messageId) {
       if (state.currentChannelPinnedMessages.find(pin => pin.message.messageId === messageId)) {
