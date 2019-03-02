@@ -137,7 +137,7 @@ export default {
       let message = this.inputText
       // temporary format
       this.uploadedIds.forEach(id => {
-        message += `!{"type": "file", "raw": "", "id": "${id}"}`
+        message += `\n!{"type": "file", "raw": "", "id": "${id}"}`
       })
       this.uploadedIds = []
       let inCodeBlock = false
