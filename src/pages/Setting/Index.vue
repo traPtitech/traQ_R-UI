@@ -66,7 +66,9 @@ export default {
       this.windowWidth = window.innerWidth
     },
     back () {
-      if (this.$store.state.currentChannel['channelId']) {
+      if (this.$store.state.currentChannel.parent === this.$store.state.directMessageId) {
+        this.$router.push(`/users/${this.$store.state.currentChannel.name}`)
+      } else if (this.$store.state.currentChannel['channelId']) {
         this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.$store.state.currentChannel.channelId)}`)
       } else {
         this.$router.push('/channels/random')
