@@ -29,7 +29,7 @@
           key="filtered")
           p.stamp-picker-category-name
             | 検索結果
-          div.stamp-picker-body-inner-wrapper(v-if="search.length > 1")
+          div.stamp-picker-body-inner-wrapper
             div.stamp-picker-stamp-item-wrapper.flex-center(
               :key="stamp.id"
               v-for="stamp in filteredStamps" 
@@ -39,8 +39,6 @@
                 :style="stampItemStyle(stamp.fileId)" 
                 :title="`:${stamp.name}:`")
             div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
-          div.stamp-picker-body-inner-wrapper.flex-center(v-else)
-            | 検索には二文字以上の入力が必要です
     div.stamp-picker-footer
         div.stamp-category-wrap
           div.stamp-category-item.flex-center(
@@ -105,11 +103,19 @@ export default {
       }
     },
     filteredStamps () {
-      return this.stampCategolized
-        .slice(1, this.stampCategolized.length)
-        .map(c => c.stamps)
-        .flat()
-        .filter(stamp => stamp.name.includes(this.search))
+      if (this.search.length === 1) {
+        return this.stampCategolized
+          .slice(1, this.stampCategolized.length)
+          .map(c => c.stamps)
+          .flat()
+          .filter(stamp => stamp.name === this.search)
+      } else {
+        return this.stampCategolized
+          .slice(1, this.stampCategolized.length)
+          .map(c => c.stamps)
+          .flat()
+          .filter(stamp => stamp.name.includes(this.search))
+      }
     }
   },
   methods: {
