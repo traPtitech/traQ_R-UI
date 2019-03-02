@@ -47,7 +47,6 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
 </template>
 
 <script>
-import client from '@/bin/client'
 import IconClose from '@/components/Icon/IconClose'
 import IconTopic from '@/components/Icon/IconTopic'
 import IconPin from '@/components/Icon/IconPin'
@@ -105,9 +104,6 @@ export default {
     }
   },
   methods: {
-    userIconSrc (userId) {
-      return client.getUserIconUrl(userId)
-    },
     openSidebar () {
       this.isOpened = true
     },

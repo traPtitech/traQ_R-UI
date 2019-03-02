@@ -2,13 +2,13 @@
   .message-typing-users
     transition-group.message-typing-users-wrap(name="user-icon-slide-in")
       .message-typing-users-user(v-for="user in typingUsers" :key="user.userId")
-        img.message-typing-users-user-icon(:src="getUserIconUrl(user.userId)")
+        div.message-typing-users-user-icon(:style="userIconBackground(user.userId)")
     .message-typing-users-text
       | is typing
 </template>
 
 <script>
-import client from '@/bin/client'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'MessageEditingUsers',
@@ -16,7 +16,17 @@ export default {
     typingUsers: Array
   },
   methods: {
-    getUserIconUrl: client.getUserIconUrl
+    userIconBackground (userId) {
+      return {
+        backgroundImage: `url(${this.fileUrl(this.userDetail(userId).iconFileId)})`
+      }
+    },
+    userDetail (userId) {
+      return this.$store.state.memberMap[userId]
+    }
+  },
+  computed: {
+    ...mapGetters(['fileUrl'])
   }
 }
 </script>
@@ -60,6 +70,10 @@ export default {
   height: 20px
   border:
     radius: 100%
+  background:
+    size: cover
+    position: center center
+    repeat: no-repeat
 
 .user-icon-slide-in
   &-enter-active, &-leave-active

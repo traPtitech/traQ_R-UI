@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import client from '@/bin/client'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'SlimMemberElement',
@@ -19,11 +19,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['fileUrl']),
     userId () {
       return this.member.userId
     },
     userIconSrc () {
-      return client.getUserIconUrl(this.userId)
+      return this.fileUrl(this.$store.state.memberMap[this.userId].iconFileId)
     },
     userName () {
       return this.getUserName(this.userId)

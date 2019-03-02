@@ -31,7 +31,7 @@ md.use(regexp(/:([a-zA-Z0-9+_-]{1,32}):/, (match, utils) => {
     return `<i class="emoji s24 message-emoji" title=":${store.state.stampNameMap[match[1]].name}:" style="background-image: url(${store.state.baseURL}/api/1.0/files/${store.state.stampNameMap[match[1]].fileId});">:${utils.escape(match[1])}:</i>`
   } else if (store.getters.getUserByName(match[1])) {
     const user = store.getters.getUserByName(match[1])
-    return `<i class="emoji s24 message-emoji" title=":${match[1]}:" style="background-image: url(${store.state.baseURL}/api/1.0/users/${user.userId}/icon);">:${utils.escape(match[1])}:</i>`
+    return `<i class="emoji s24 message-emoji" title=":${match[1]}:" style="background-image: url(${store.state.baseURL}/api/1.0/files/${user.iconFileId});">:${utils.escape(match[1])}:</i>`
   } else {
     const colorReg = /0x([0-9a-f]{6})/
     const cols = colorReg.exec(match[1])

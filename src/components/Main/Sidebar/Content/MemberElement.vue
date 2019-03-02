@@ -11,7 +11,7 @@ div.member-element(:class="{'is-watched': isWatched}")
 </template>
 
 <script>
-import client from '@/bin/client'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'MemberElement',
@@ -36,6 +36,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['fileUrl']),
     directMessageChannel () {
       if (this.model.userId === this.$store.state.me.userId) {
         return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.length === 1)
@@ -44,7 +45,7 @@ export default {
       }
     },
     userIconSrc () {
-      return client.getUserIconUrl(this.model.userId)
+      return this.fileUrl(this.model.iconFileId)
     },
     unreadMessagesNum () {
       if (this.directMessageChannel) {

@@ -6,7 +6,7 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
       | {{ pinnerName }}さんがピン留めしました
   div.message-user-icon-wrap
     div.message-user-icon(
-      :style="userIconBackground(model.userId)" 
+      :style="userIconBackground" 
       @click="openUserModal(model.userId)")
   div.message-detail-wrap
     div.message-user-info-wrap
@@ -17,7 +17,10 @@ div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('cl
       div.text-ellipsis.message-user-id
         | @{{userName}}
     time.message-date
-      | {{displayDateTime}}
+      div
+        | {{displayDateTime}}
+      div.message-edited-icon(v-if="isEdited")
+        icon-pen(size="12" color="var(--text-color)")
     ul.message-buttons-wrap
       li(@click.stop="showStampPicker")
         icon-stamp-plus(:size="20" color="var(--text-color)")
@@ -60,6 +63,7 @@ import MessageContextDropMenu from './MessageContextDropMenu'
 import IconDots from '@/components/Icon/IconDots'
 import IconPin from '@/components/Icon/IconPin'
 import IconStampPlus from '@/components/Icon/IconStampPlus'
+import IconPen from '@/components/Icon/IconPen'
 
 export default {
   name: 'MessageElement',
@@ -73,7 +77,8 @@ export default {
     MessageContextDropMenu,
     IconDots,
     IconStampPlus,
-    IconPin
+    IconPin,
+    IconPen
   },
   data () {
     return {
@@ -92,7 +97,6 @@ export default {
       this.$store.commit('setActiveMessageContextMenu', this.model.messageId)
       this.isContextMenuActive = true
     },
-    userIconSrc: client.getUserIconUrl,
     showStampPicker () {
       this.$store.commit('setStampPickerModeAsMessage')
       this.$store.commit('setStampPickerModel', {
@@ -181,7 +185,10 @@ export default {
     },
     mark (text) {
       return {
-        template: `<div class="message-content markdown-body" v-pre>${md.render(text)}</div>`,
+        template: `
+          <div class="message-content markdown-body" v-pre>
+            ${md.render(text)}
+          </div>`,
         props: this.$options.props
       }
     },
@@ -215,15 +222,15 @@ export default {
       if (!this.isBot) {
         this.$store.dispatch('openGroupModal', this.grade(this.model.userId).groupId)
       }
-    },
-    userIconBackground (userId) {
-      return {
-        backgroundImage: `url(${this.userIconSrc(userId)})`
-      }
     }
   },
   computed: {
     ...mapGetters(['fileUrl', 'getMyId', 'userDisplayName']),
+    userIconBackground () {
+      return {
+        backgroundImage: `url(${this.fileUrl(this.userDetail.iconFileId)})`
+      }
+    },
     userDetail () {
       return this.$store.state.memberMap[this.model.userId]
     },
@@ -359,11 +366,16 @@ export default {
   max-width: 40%
 
 .message-date
-  display: block
+  display: flex
+  align-items: center
   font-size: 0.7em
   margin-left: 5px
   .message:hover &
     display: none
+
+.message-edited-icon
+  opacity: 0.8
+  margin-left: 4px
 
 .message-contents-wrap
   grid-area: contents

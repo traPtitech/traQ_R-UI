@@ -1,14 +1,14 @@
 <template lang="pug">
   div.member-choice(@click="$emit('memberSelected')")
     div.member-choice-icon-container
-      img.member-choice-icon(:src="userIconSrc")
+      div.member-choice-icon(:style="userIconBackground")
     div.member-choice-username.text-ellipsis
       span
         | {{userName}}
 </template>
 
 <script>
-import client from '@/bin/client'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'MemberChoice',
@@ -19,11 +19,17 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['fileUrl']),
     userId () {
       return this.member.userId
     },
-    userIconSrc () {
-      return client.getUserIconUrl(this.userId)
+    userIconBackground () {
+      return {
+        backgroundImage: `url(${this.fileUrl(this.userDetail.iconFileId)})`
+      }
+    },
+    userDetail () {
+      return this.$store.state.memberMap[this.userId]
     },
     userName () {
       return this.getUserName(this.userId)
@@ -64,6 +70,10 @@ export default {
   height: 30px
   border:
     radius: 100%
+  background:
+    size: cover
+    position: center center
+    repeat: no-repeat
 
 .member-choice-username
   margin:
