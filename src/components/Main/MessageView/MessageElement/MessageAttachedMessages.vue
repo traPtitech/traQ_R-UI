@@ -2,7 +2,9 @@
   div.message-attached-messages-wrap
     div.attached-message(v-for="m in messages")
       div.attached-message-detail-wrap
-        img.attached-message-user-icon(:src="userIconSrc(m.userId)" @click="openUserModal(m.userId)")
+        div.attached-message-user-icon(
+          :style="userIconBackground(m.userId)" 
+          @click="openUserModal(m.userId)")
         p.attached-message-user-name(@click="openUserModal(m.userId)")
           | {{userDisplayName(m.userId)}}
       component(:is="mark(m.content)" v-bind="$props")
@@ -15,7 +17,6 @@
 <script>
 import {mapGetters, mapActions} from 'vuex'
 import md from '@/bin/markdown-it'
-import client from '@/bin/client'
 
 export default {
   name: 'MessageAttachedMessages',
@@ -26,11 +27,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userDisplayName'])
+    ...mapGetters(['userDisplayName', 'fileUrl'])
   },
   methods: {
     ...mapActions(['openUserModal']),
-    userIconSrc: client.getUserIconUrl,
+    userIconBackground (userId) {
+      return {
+        backgroundImage: `url(${this.fileUrl(this.userDetail(userId).iconFileId)})`
+      }
+    },
+    userDetail (userId) {
+      return this.$store.state.memberMap[userId]
+    },
     mark (text) {
       return {
         template: `<div class="message-content markdown-body" v-pre>${md.render(text)}</div>`,
@@ -87,6 +95,10 @@ export default {
   height: 20px
   border-radius: 100%
   cursor: pointer
+  background:
+    size: cover
+    position: center center
+    repeat: no-repeat
 
 .attached-message-user-name
   font:

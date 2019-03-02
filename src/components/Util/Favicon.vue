@@ -12,9 +12,6 @@ export default {
     }
   },
   created () {
-    if (!this.$store.state.me) {
-      return
-    }
     this.canvas = document.createElement('canvas')
     this.canvas.width = 32
     this.canvas.height = 32
@@ -24,7 +21,9 @@ export default {
 
     this.ctx = this.canvas.getContext('2d')
 
-    this.updateFavicon()
+    if (this.$store.state.me) {
+      this.updateFavicon()
+    }
   },
   methods: {
     updateFavicon () {

@@ -201,6 +201,7 @@ const client = {
       return axios.get(`/api/1.0/users/me`)
     })
   },
+  // deprecated
   getUserIconUrl (userId) {
     return (axios.defaults.baseURL || '/') + 'api/1.0/users/' + userId + '/icon'
   },
