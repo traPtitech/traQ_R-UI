@@ -32,7 +32,7 @@ export default {
   name: 'IconHeart',
   props: {
     size: {
-      type: Number,
+      type: String,
       default: 16
     },
     color: {

@@ -7,14 +7,13 @@
 
 <script>
 import MessageContainer from '@/components/Main/MessageView/MessageContainer'
+import MessageInput from '@/components/Main/MessageView/MessageInput'
 
 export default {
   name: 'MessageView',
   components: {
     MessageContainer,
-    MessageInput: window.asyncLoadComponents(
-      import('@/components/Main/MessageView/MessageInput')
-    )
+    MessageInput
   }
 }
 </script>

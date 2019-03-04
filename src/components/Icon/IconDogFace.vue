@@ -118,7 +118,7 @@ export default {
   name: 'IconDogFace',
   props: {
     size: {
-      type: Number,
+      type: String,
       default: 16
     },
     color: {

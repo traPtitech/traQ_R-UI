@@ -77,7 +77,6 @@ export default {
   padding-top: 15px
   li
     padding: 5px 10px 5px 20px
-    transition: all .5s ease
     &:hover
       background-color: rgba(0,0,0,0.1)
   a

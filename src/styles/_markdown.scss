@@ -81,6 +81,12 @@
     margin-bottom: 16px;
     padding: 0 16px;
   }
+
+  a {
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
 }
 
 #app[data-theme="light"] .markdown-body {

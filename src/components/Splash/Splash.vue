@@ -1,6 +1,6 @@
 <template lang="pug">
   div.splash.flex-center
-    icon-logo(:size="100")
+    icon-logo(size="100")
 </template>
 
 <script>

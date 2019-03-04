@@ -26,7 +26,7 @@ export default {
   name: 'IconClock',
   props: {
     size: {
-      type: Number,
+      type: String,
       default: 16
     },
     color: {

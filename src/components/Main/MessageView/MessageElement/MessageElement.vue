@@ -1,54 +1,64 @@
 <template lang="pug">
-div.message(ontouchstart="" :class="{'message-pinned':pinned}" @click="$emit('close')" v-if="!model.reported" v-show="rendered")
-  div.message-pin-detail
-    IconPin(color="#F2994A")
-    div.message-pin-detail-text
-      | {{ pinnerName }}さんがピン留めしました
-  div.message-user-icon-wrap
-    div.message-user-icon(
-      :style="userIconBackground" 
-      @click="openUserModal(model.userId)")
-  div.message-detail-wrap
-    div.message-user-info-wrap
-      div.text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
-        | {{userDisplayName(model.userId)}}
-      div.message-user-status-badge(v-if="statusBadge(model.userId) !== undefined" @click="handleStatusClick")
-        | {{statusBadge(model.userId)}}
-      div.text-ellipsis.message-user-id
-        | @{{userName}}
-    time.message-date
-      div
-        | {{displayDateTime}}
-      div.message-edited-icon(v-if="isEdited")
-        icon-pen(size="12" color="var(--text-color)")
-    ul.message-buttons-wrap
-      li(@click.stop="showStampPicker")
-        icon-stamp-plus(:size="20" color="var(--text-color)")
-      li.message-button-drop-menu(@click.stop="activeDropMenu")
-        icon-dots(:size="18" color="var(--text-color)")
-  div.message-contents-wrap
-    div.message-text-wrap
-      component(v-if="!isEditing" :is="renderedText" v-bind="$props")
-      div(v-if="isEditing")
-        textarea.input-reset.edit-area(v-model="edited")
-        button.edit-button.edit-cancel(@click.stop="editCancel")
-          | Cancel
-        button.edit-button.edit-submit(@click.stop="editSubmit")
-          | Edit
-    message-attached-messages(v-if="hasAttachedMessage" :messages="messages")
-    message-attached-files(v-if="hasAttachedFile" :files="files")
-    message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
-  div.message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
-    message-context-drop-menu(:userId="model.userId" 
-      :messageId="model.messageId" 
-      @deactive="isContextMenuActive = false" 
-      @pin="pinMessage" 
-      @unpin="unpinMessage" 
-      @edit="editMessage" 
-      @copy="copyMessage" 
-      @delete="deleteMessage" 
-      @report="reportMessage"
-      )
+.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned':pinned}")
+  template(v-if="!isRendered")
+    .message-dummy-user-icon-wrap
+      .message-dummy-user-icon
+    .message-dummy-detail-wrap
+      .message-dummy-detail-username
+      .message-dummy-detail-etc
+    .message-dummy-content-wrap
+      .message-dummy-content
+      .message-dummy-content-attached(v-for="i in attachedData")
+  template(v-else)
+    .message-pin-detail(v-if="pinned")
+      icon-pin(color="#F2994A")
+      .message-pin-detail-text
+        | {{ pinnerName }}さんがピン留めしました
+    .message-user-icon-wrap
+      .message-user-icon(
+        :style="userIconBackground"
+        @click="openUserModal(model.userId)")
+    .message-detail-wrap
+      .message-user-info-wrap
+        .text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
+          | {{userDisplayName(model.userId)}}
+        .message-user-status-badge(v-if="statusBadge(model.userId) !== undefined" @click="handleStatusClick")
+          | {{statusBadge(model.userId)}}
+        .text-ellipsis.message-user-id
+          | @{{userName}}
+      time.message-date
+        .message-display-date-time
+          | {{displayDateTime}}
+        .message-edited-icon(v-if="isEdited")
+          icon-pen(:size="12" color="var(--text-color)")
+      ul.message-buttons-wrap
+        li(@click.stop="showStampPicker")
+          icon-stamp-plus(:size="20" color="var(--text-color)")
+        li.message-button-drop-menu(@click.stop="activeDropMenu")
+          icon-dots(:size="18" color="var(--text-color)")
+    .message-contents-wrap
+      .message-text-wrap
+        component(v-if="!isEditing" :is="renderedBody")
+        .message-editing-wrap(v-if="isEditing")
+          textarea.input-reset.edit-area(v-model="edited")
+          button.edit-button.edit-cancel(@click.stop="editCancel")
+            | Cancel
+          button.edit-button.edit-submit(@click.stop="editSubmit")
+            | Edit
+      message-attached-messages(v-if="hasAttachedMessage" :messages="messages" @rendered="attachedMessageRendered")
+      message-attached-files(v-if="hasAttachedFile" :files="files")
+      message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
+    .message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
+      message-context-drop-menu(:userId="model.userId"
+        :messageId="model.messageId"
+        @deactive="isContextMenuActive = false"
+        @pin="pinMessage"
+        @unpin="unpinMessage"
+        @edit="editMessage"
+        @copy="copyMessage"
+        @delete="deleteMessage"
+        @report="reportMessage"
+        )
 </template>
 
 <script>
@@ -68,7 +78,8 @@ import IconPen from '@/components/Icon/IconPen'
 export default {
   name: 'MessageElement',
   props: {
-    model: Object
+    model: Object,
+    isFirstView: Boolean
   },
   components: {
     MessageAttachedMessages,
@@ -86,8 +97,10 @@ export default {
       edited: '',
       files: [],
       messages: [],
-      rendered: false,
-      isContextMenuActive: false
+      isRendered: false,
+      isContextMenuActive: false,
+      attachedData: null,
+      renderedBody: null
     }
   },
   methods: {
@@ -142,10 +155,10 @@ export default {
     clipMessage() {
       client.clipMessage('', this.model.messageId)
     },
-    async getAttachments() {
-      const data = detectFiles(this.model.content)
+    async getAttachments () {
+      this.attachedData = detectFiles(this.model.content)
       this.files = await Promise.all(
-        data
+        this.attachedData
           .filter(e => e.type === 'file')
           .map(async e => {
             return client
@@ -166,7 +179,7 @@ export default {
           })
       )
       this.messages = (await Promise.all(
-        data
+        this.attachedData
           .filter(e => e.type === 'message')
           .map(async e => {
             return client
@@ -175,19 +188,19 @@ export default {
               .catch(() => null)
           })
       )).filter(e => e)
-      this.rendered = true
+      this.isRendered = true
 
-      await this.$nextTick()
-      while (!this.$el) {
-        await this.$nextTick()
-      }
-      this.$el.parentElement.parentElement.parentElement.scrollTop += this.$el.scrollHeight
+      if (!this.isFirstView) return
+      this.$nextTick(() => {
+        this.$emit('rendered')
+      })
+      // this.$el.parentElement.parentElement.parentElement.scrollTop += this.$el.parentElement.scrollHeight
     },
-    mark(text) {
-      return {
+    render () {
+      this.renderedBody = {
         template: `
           <div class="message-content markdown-body" v-pre>
-            ${md.render(text)}
+            ${md.render(this.model.content)}
           </div>`,
         props: this.$options.props
       }
@@ -225,6 +238,9 @@ export default {
           this.grade(this.model.userId).groupId
         )
       }
+    },
+    attachedMessageRendered () {
+      this.$emit('rendered')
     }
   },
   computed: {
@@ -243,10 +259,7 @@ export default {
     isBot() {
       return this.userDetail.bot
     },
-    renderedText() {
-      return this.mark(this.model.content)
-    },
-    pinned() {
+    pinned () {
       return this.$store.getters.isPinned(this.model.messageId)
     },
     isEdited() {
@@ -275,7 +288,8 @@ export default {
       return this.$store.state.memberMap[this.pinDetail.userId].name
     }
   },
-  mounted() {
+  mounted () {
+    this.render()
     this.getAttachments()
   }
 }
@@ -481,4 +495,77 @@ export default {
 
 .message-button-drop-menu
   transform: rotate(90deg)
+
+.message-dummy-user-icon-wrap
+  grid-area: user-icon
+
+.message-dummy-user-icon
+  opacity: 0.6
+  width: 40px
+  height: 40px
+  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
+    size: 400% 100%
+  animation: dummy-gradient 15s ease infinite
+  border-radius: 100%
+
+.message-dummy-detail-wrap
+  grid-area: detail
+  display: flex
+  align-items: center
+
+.message-dummy-detail-username
+  opacity: 0.6
+  width: 30%
+  height: 10px
+  border-radius: 10px
+  margin-left: 10px
+  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
+    size: 400% 100%
+  animation: dummy-gradient 15s ease infinite
+
+.message-dummy-detail-etc
+  opacity: 0.6
+  width: 10%
+  height: 10px
+  border-radius: 10px
+  margin-left: 10px
+  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
+    size: 400% 100%
+  animation: dummy-gradient 15s ease infinite
+
+.message-dummy-content-wrap
+  grid-area: contents
+
+.message-dummy-content
+  opacity: 0.6
+  width: 40%
+  height: 10px
+  border-radius: 10px
+  margin:
+    top: 5px
+    left: 10px
+  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
+    size: 400% 100%
+  animation: dummy-gradient 15s ease infinite
+
+.message-dummy-content-attached
+  opacity: 0.6
+  width: 60%
+  height: 120px
+  border-radius: 4px
+  margin:
+    top: 10px
+    left: 10px
+  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
+    size: 400% 100%
+  animation: dummy-gradient 15s ease infinite
+
+@keyframes dummy-gradient
+	0%
+		background-position: 0% 50%
+	50%
+		background-position: 100% 50%
+	100%
+		background-position: 0% 50%
+
 </style>

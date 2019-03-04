@@ -1,13 +1,13 @@
 <template lang="pug">
   div.message-attached-messages-wrap
-    div.attached-message(v-for="m in messages")
+    div.attached-message(v-for="(m, index) in messages")
       div.attached-message-detail-wrap
         div.attached-message-user-icon(
           :style="userIconBackground(m.userId)" 
           @click="openUserModal(m.userId)")
         p.attached-message-user-name(@click="openUserModal(m.userId)")
           | {{userDisplayName(m.userId)}}
-      component(:is="mark(m.content)" v-bind="$props")
+      component(:is="renderedBodies[index]" v-bind="$props")
       div.attached-message-from
         | from 
         router-link(:to="parentChannel(m.parentChannelId).to")
@@ -25,6 +25,15 @@ export default {
       type: Array,
       required: true
     }
+  },
+  data () {
+    return {
+      renderedBodies: []
+    }
+  },
+  mounted () {
+    this.renderedBodies = this.messages.map(m => this.mark(m.content))
+    this.$emit('rendered')
   },
   computed: {
     ...mapGetters(['userDisplayName', 'fileUrl'])
