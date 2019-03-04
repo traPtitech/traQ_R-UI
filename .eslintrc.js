@@ -7,8 +7,12 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
-    "quotes": ["error", "single"],
-    "semi": ["error", "never"]
+    "prettier/prettier": [
+      2, {
+        singleQuote: true,
+        semi: false
+      }
+    ]
   },
   parserOptions: {
     parser: "babel-eslint"
