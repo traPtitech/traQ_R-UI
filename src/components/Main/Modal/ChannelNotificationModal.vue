@@ -45,7 +45,7 @@ export default {
     IconLandscapeDay,
     IconLandscapeNight
   },
-  data () {
+  data() {
     return {
       channelName: '',
       state: 'default'
@@ -53,27 +53,35 @@ export default {
   },
   computed: {
     ...mapState('modal', ['data']),
-    onMembers () {
-      return this.$store.getters.notificationsOnMembers.filter(user => !user.bot)
+    onMembers() {
+      return this.$store.getters.notificationsOnMembers.filter(
+        user => !user.bot
+      )
     },
-    offMembers () {
-      return this.$store.getters.notificationsOffMembers.filter(user => !user.bot)
+    offMembers() {
+      return this.$store.getters.notificationsOffMembers.filter(
+        user => !user.bot
+      )
     }
   },
   methods: {
-    toggleMemberOff (userId) {
-      this.$store.dispatch('updateCurrentChannelNotifications', { off: [userId] }).then(() => {
-        if (userId === this.$store.state.me.userId) {
-          this.$store.dispatch('updateMyNotifiedChannels')
-        }
-      })
+    toggleMemberOff(userId) {
+      this.$store
+        .dispatch('updateCurrentChannelNotifications', { off: [userId] })
+        .then(() => {
+          if (userId === this.$store.state.me.userId) {
+            this.$store.dispatch('updateMyNotifiedChannels')
+          }
+        })
     },
-    toggleMemberOn (userId) {
-      this.$store.dispatch('updateCurrentChannelNotifications', { on: [userId] }).then(() => {
-        if (userId === this.$store.state.me.userId) {
-          this.$store.dispatch('updateMyNotifiedChannels')
-        }
-      })
+    toggleMemberOn(userId) {
+      this.$store
+        .dispatch('updateCurrentChannelNotifications', { on: [userId] })
+        .then(() => {
+          if (userId === this.$store.state.me.userId) {
+            this.$store.dispatch('updateMyNotifiedChannels')
+          }
+        })
     }
   }
 }

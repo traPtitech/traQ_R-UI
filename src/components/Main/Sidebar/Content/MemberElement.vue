@@ -11,7 +11,7 @@ div.member-element(:class="{'is-watched': isWatched}")
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MemberElement',
@@ -23,10 +23,10 @@ export default {
     }
   },
   methods: {
-    openUserModal () {
+    openUserModal() {
       this.$store.dispatch('openUserModal', this.model.userId)
     },
-    openDMChannel () {
+    openDMChannel() {
       this.$store.commit('closeSidebar')
       this.$store.commit('contractTitlebar')
       if (this.model.bot) {
@@ -37,41 +37,50 @@ export default {
   },
   computed: {
     ...mapGetters(['fileUrl']),
-    directMessageChannel () {
+    directMessageChannel() {
       if (this.model.userId === this.$store.state.me.userId) {
-        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.length === 1)
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel => channel.member && channel.member.length === 1
+        )
       } else {
-        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.model.userId))
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel =>
+            channel.member &&
+            channel.member.some(userId => userId === this.model.userId)
+        )
       }
     },
-    userIconSrc () {
+    userIconSrc() {
       return this.fileUrl(this.model.iconFileId)
     },
-    unreadMessagesNum () {
+    unreadMessagesNum() {
       if (this.directMessageChannel) {
-        return this.$store.getters.getChannelUnreadMessageNum(this.directMessageChannel.channelId)
+        return this.$store.getters.getChannelUnreadMessageNum(
+          this.directMessageChannel.channelId
+        )
       } else {
         return 0
       }
     },
-    iconClass () {
+    iconClass() {
       return {
         'member-element-dm-indicator': this.unreadMessagesNum > 0
       }
     },
-    iconImg () {
+    iconImg() {
       return {
         backgroundImage: `url(${this.userIconSrc})`,
         borderColor: this.backgroundColor
       }
     },
-    borderStyle () {
+    borderStyle() {
       return {
         borderColor: this.isWatched ? 'white' : this.backgroundColor
       }
     },
-    isWatched () {
-      if (this.$route.params.user) return this.$route.params.user === this.model.name
+    isWatched() {
+      if (this.$route.params.user)
+        return this.$route.params.user === this.model.name
       else return false
     }
   }
@@ -86,7 +95,7 @@ export default {
   padding: 5px 10px
   &:hover
     background: rgba(0,0,0,0.1)
-  
+
   &.is-watched
     background: white
 
@@ -157,5 +166,4 @@ export default {
 .member-element > p
   padding-left: 10px
   white-space: nowrap
-
 </style>

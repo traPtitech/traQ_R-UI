@@ -28,11 +28,14 @@ export default {
     IconBack
   },
   methods: {
-    closeModal () {
+    closeModal() {
       this.$store.dispatch('modal/close')
     },
-    backToUserModal () {
-      this.$store.dispatch('openUserModal', this.$store.state.modal.lastUser.userId)
+    backToUserModal() {
+      this.$store.dispatch(
+        'openUserModal',
+        this.$store.state.modal.lastUser.userId
+      )
     }
   },
   computed: {
@@ -41,9 +44,12 @@ export default {
       userIds: 'currentTagUsersSorted'
     }),
     ...mapState(['memberMap']),
-    users () {
+    users() {
       return this.userIds
-        .filter(userId => this.memberMap[userId] && this.memberMap[userId].accountStatus !== 0)
+        .filter(
+          userId =>
+            this.memberMap[userId] && this.memberMap[userId].accountStatus !== 0
+        )
         .map(userId => this.memberMap[userId])
     }
   }

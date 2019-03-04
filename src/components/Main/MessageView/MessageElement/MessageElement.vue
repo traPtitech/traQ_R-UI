@@ -80,7 +80,7 @@ export default {
     IconPin,
     IconPen
   },
-  data () {
+  data() {
     return {
       isEditing: false,
       edited: '',
@@ -93,22 +93,22 @@ export default {
   methods: {
     ...mapActions(['openUserModal']),
     detectFiles,
-    activeDropMenu () {
+    activeDropMenu() {
       this.$store.commit('setActiveMessageContextMenu', this.model.messageId)
       this.isContextMenuActive = true
     },
-    showStampPicker () {
+    showStampPicker() {
       this.$store.commit('setStampPickerModeAsMessage')
       this.$store.commit('setStampPickerModel', {
         messageId: this.model.messageId
       })
       this.$store.commit('setStampPickerActive', true)
     },
-    editMessage () {
+    editMessage() {
       this.isEditing = true
       this.edited = this.model.content
     },
-    editSubmit () {
+    editSubmit() {
       if (this.edited === this.model.content) {
         this.isEditing = false
         return
@@ -117,32 +117,32 @@ export default {
       this.isEditing = false
       this.getAttachments()
     },
-    editCancel () {
+    editCancel() {
       this.isEditing = false
     },
-    deleteMessage () {
+    deleteMessage() {
       if (window.confirm('このメッセージを削除してもよろしいですか？')) {
         client.deleteMessage(this.model.messageId)
       }
     },
-    async pinMessage () {
+    async pinMessage() {
       await client.pinMessage(this.model.messageId)
       this.$store.dispatch(
         'getCurrentChannelPinnedMessages',
         this.$store.state.currentChannel.channelId
       )
     },
-    async unpinMessage () {
+    async unpinMessage() {
       await client.unpinMessage(this.pinned.pinId)
       this.$store.dispatch(
         'getCurrentChannelPinnedMessages',
         this.$store.state.currentChannel.channelId
       )
     },
-    clipMessage () {
+    clipMessage() {
       client.clipMessage('', this.model.messageId)
     },
-    async getAttachments () {
+    async getAttachments() {
       const data = detectFiles(this.model.content)
       this.files = await Promise.all(
         data
@@ -183,7 +183,7 @@ export default {
       }
       this.$el.parentElement.parentElement.parentElement.scrollTop += this.$el.scrollHeight
     },
-    mark (text) {
+    mark(text) {
       return {
         template: `
           <div class="message-content markdown-body" v-pre>
@@ -192,12 +192,12 @@ export default {
         props: this.$options.props
       }
     },
-    copyMessage () {
-      this.$copyText(`!{"raw":"","type":"message","id":"${
-        this.model.messageId
-      }"}`)
+    copyMessage() {
+      this.$copyText(
+        `!{"raw":"","type":"message","id":"${this.model.messageId}"}`
+      )
     },
-    reportMessage () {
+    reportMessage() {
       const reason = window.prompt(
         'このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください'
       )
@@ -207,10 +207,10 @@ export default {
         })
       }
     },
-    grade (userId) {
+    grade(userId) {
       return this.$store.getters.gradeByUserMap[this.model.userId]
     },
-    statusBadge (userId) {
+    statusBadge(userId) {
       // grade or bot or undefined
       if (this.isBot) {
         return 'bot'
@@ -218,59 +218,64 @@ export default {
         return this.grade(userId) ? this.grade(userId).name : undefined
       }
     },
-    handleStatusClick () {
+    handleStatusClick() {
       if (!this.isBot) {
-        this.$store.dispatch('openGroupModal', this.grade(this.model.userId).groupId)
+        this.$store.dispatch(
+          'openGroupModal',
+          this.grade(this.model.userId).groupId
+        )
       }
     }
   },
   computed: {
     ...mapGetters(['fileUrl', 'getMyId', 'userDisplayName']),
-    userIconBackground () {
+    userIconBackground() {
       return {
         backgroundImage: `url(${this.fileUrl(this.userDetail.iconFileId)})`
       }
     },
-    userDetail () {
+    userDetail() {
       return this.$store.state.memberMap[this.model.userId]
     },
-    userName () {
+    userName() {
       return this.userDetail.name
     },
-    isBot () {
+    isBot() {
       return this.userDetail.bot
     },
-    renderedText () {
+    renderedText() {
       return this.mark(this.model.content)
     },
-    pinned () {
+    pinned() {
       return this.$store.getters.isPinned(this.model.messageId)
     },
-    isEdited () {
+    isEdited() {
       return this.model.createdAt !== this.model.updatedAt
     },
-    displayDateTime () {
+    displayDateTime() {
       return displayDateTime(this.model.createdAt, this.model.updatedAt)
     },
-    hasAttachedMessage () {
+    hasAttachedMessage() {
       return this.messages.length > 0
     },
-    hasAttachedFile () {
+    hasAttachedFile() {
       return this.files.length > 0
     },
-    pinDetail () {
-      return this.$store.state.currentChannelPinnedMessages.find(
-        pin => pin.message.messageId === this.model.messageId
-      ) || null
+    pinDetail() {
+      return (
+        this.$store.state.currentChannelPinnedMessages.find(
+          pin => pin.message.messageId === this.model.messageId
+        ) || null
+      )
     },
-    pinnerName () {
+    pinnerName() {
       if (!this.pinDetail) {
         return ''
       }
       return this.$store.state.memberMap[this.pinDetail.userId].name
     }
   },
-  mounted () {
+  mounted() {
     this.getAttachments()
   }
 }
@@ -463,7 +468,7 @@ export default {
   &.s32
     width: 32px
     height: 32px
-    
+
 .emoji
   display: inline-block
   text-indent: 999%
@@ -476,5 +481,4 @@ export default {
 
 .message-button-drop-menu
   transform: rotate(90deg)
-
 </style>

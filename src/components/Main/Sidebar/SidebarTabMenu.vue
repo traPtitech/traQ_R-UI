@@ -36,13 +36,13 @@ export default {
     IconAttach,
     IconToolBox
   },
-  data () {
+  data() {
     return {
       userMenuOpened: false
     }
   },
   methods: {
-    navClicked: function (n) {
+    navClicked: function(n) {
       switch (n) {
         case 'Channels':
           this.$store.commit('changeMenuContent', 'Channels')
@@ -59,21 +59,20 @@ export default {
         default:
       }
     },
-    logout () {
-      client.logout()
-        .then(() => {
-          location.href = '/login'
-        })
+    logout() {
+      client.logout().then(() => {
+        location.href = '/login'
+      })
     }
   },
   computed: {
-    menuContent () {
+    menuContent() {
       return this.$store.state.menuContent
     },
-    channelsUnreadNum () {
+    channelsUnreadNum() {
       return this.$store.getters.getChannelUnreadMessageSum('')
     },
-    usersUnreadNum () {
+    usersUnreadNum() {
       return this.$store.getters.getUnreadDirectMessagesSum
     }
   }
@@ -154,5 +153,4 @@ export default {
   top: 15px
   border-radius: 100%
   background: $notification-color
-
 </style>

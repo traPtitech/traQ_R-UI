@@ -47,129 +47,163 @@ import IconPlus from '@/components/Icon/IconPlus'
 
 export default {
   name: 'Titlebar',
-  components: {IconDownDirection, IconNotificationFill, IconNotification, IconStar, IconStarFill, IconPlus},
-  data () {
+  components: {
+    IconDownDirection,
+    IconNotificationFill,
+    IconNotification,
+    IconStar,
+    IconStarFill,
+    IconPlus
+  },
+  data() {
     return {
       width: 0
     }
   },
   methods: {
-    starChannel () {
-      client.starChannel(this.$store.state.currentChannel.channelId)
-      .then(() => {
-        this.$store.dispatch('updateStaredChannels')
-      })
+    starChannel() {
+      client
+        .starChannel(this.$store.state.currentChannel.channelId)
+        .then(() => {
+          this.$store.dispatch('updateStaredChannels')
+        })
     },
-    unstarChannel () {
-      client.unstarChannel(this.$store.state.currentChannel.channelId)
-      .then(() => {
-        this.$store.dispatch('updateStaredChannels')
-      })
+    unstarChannel() {
+      client
+        .unstarChannel(this.$store.state.currentChannel.channelId)
+        .then(() => {
+          this.$store.dispatch('updateStaredChannels')
+        })
     },
-    notifyChannel () {
-      client.changeNotifications(this.$store.state.currentChannel.channelId, {'on': [this.$store.state.me.userId]})
-      .then(() => {
-        this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
-        this.$store.dispatch('updateMyNotifiedChannels')
-      })
+    notifyChannel() {
+      client
+        .changeNotifications(this.$store.state.currentChannel.channelId, {
+          on: [this.$store.state.me.userId]
+        })
+        .then(() => {
+          this.$store.dispatch(
+            'getCurrentChannelNotifications',
+            this.$store.state.currentChannel.channelId
+          )
+          this.$store.dispatch('updateMyNotifiedChannels')
+        })
     },
-    unnotifyChannel () {
-      client.changeNotifications(this.$store.state.currentChannel.channelId, {'off': [this.$store.state.me.userId]})
-      .then(() => {
-        this.$store.dispatch('getCurrentChannelNotifications', this.$store.state.currentChannel.channelId)
-        this.$store.dispatch('updateMyNotifiedChannels')
-      })
+    unnotifyChannel() {
+      client
+        .changeNotifications(this.$store.state.currentChannel.channelId, {
+          off: [this.$store.state.me.userId]
+        })
+        .then(() => {
+          this.$store.dispatch(
+            'getCurrentChannelNotifications',
+            this.$store.state.currentChannel.channelId
+          )
+          this.$store.dispatch('updateMyNotifiedChannels')
+        })
     },
-    removeWidth () {
+    removeWidth() {
       this.$refs.titlebarInner.style.width = ''
     },
-    zeroWidth () {
+    zeroWidth() {
       this.$refs.titlebarInner.style.width = '0px'
     },
-    toggleSidebarOpens () {
+    toggleSidebarOpens() {
       if (this.isSidebarOpened) {
         this.$store.commit('closeSidebar')
       } else {
         this.$store.commit('openSidebar')
       }
     },
-    toggleTitlebarExpansion () {
+    toggleTitlebarExpansion() {
       if (this.isTitlebarExpanded) {
         this.$store.commit('contractTitlebar')
       } else {
         this.$store.commit('expandTitlebar')
       }
     },
-    listen: function (target, eventType, callback) {
+    listen: function(target, eventType, callback) {
       if (!this._eventRemovers) {
         this._eventRemovers = []
       }
       target.addEventListener(eventType, callback)
       this._eventRemovers.push({
-        remove: function () {
+        remove: function() {
           target.removeEventListener(eventType, callback)
         }
       })
     }
   },
   computed: {
-    ...mapGetters([
-      'deviceType',
-      'isSidebarOpened',
-      'isTitlebarExpanded'
-    ]),
-    isDirectMessage () {
-      return this.$store.state.currentChannel.parent === this.$store.state.directMessageId
+    ...mapGetters(['deviceType', 'isSidebarOpened', 'isTitlebarExpanded']),
+    isDirectMessage() {
+      return (
+        this.$store.state.currentChannel.parent ===
+        this.$store.state.directMessageId
+      )
     },
-    isNotificationForced () {
+    isNotificationForced() {
       return this.$store.state.currentChannel.force
     },
-    isNotified () {
-      return this.$store.getters.notificationsOnMembers.some(user => user.userId === this.$store.state.me.userId)
+    isNotified() {
+      return this.$store.getters.notificationsOnMembers.some(
+        user => user.userId === this.$store.state.me.userId
+      )
     },
-    isStared () {
+    isStared() {
       if (this.isDirectMessage) return false
-      if (this.$store.state.staredChannelMap[this.$store.state.currentChannel.channelId]) return true
+      if (
+        this.$store.state.staredChannelMap[
+          this.$store.state.currentChannel.channelId
+        ]
+      )
+        return true
       return false
     },
-    title () {
+    title() {
       if (this.$route.params.user) return `@${this.$route.params.user}`
       if (!this.$route.params.channel) return ''
       let ret = '#'
-      this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
-        ret += e.charAt(0) + '/'
-      })
+      this.$route.params.channel
+        .split('/')
+        .slice(0, -1)
+        .forEach(e => {
+          ret += e.charAt(0) + '/'
+        })
       ret += this.$store.state.currentChannel.name
       return ret
     },
-    topic () {
+    topic() {
       if (this.$route.params.user) return ''
       return this.$store.state.currentChannelTopic.text
     },
-    titlebarClass () {
+    titlebarClass() {
       return {
         'is-expanded': this.isTitlebarExpanded,
         'is-sidebar-opened': this.isSidebarOpened
       }
     },
-    titlebarExpandButtonStyle () {
+    titlebarExpandButtonStyle() {
       return {
         transform: `rotate(${this.isTitlebarExpanded ? 180 : 0}deg)`
       }
     }
   },
-  created: function () {
+  created: function() {
     this.$nextTick(() => {
-      this.listen(window, 'click', function (e) {
-        if (!this.$el.contains(e.target)) {
-          this.$store.commit('contractTitlebar')
-        }
-      }.bind(this))
+      this.listen(
+        window,
+        'click',
+        function(e) {
+          if (!this.$el.contains(e.target)) {
+            this.$store.commit('contractTitlebar')
+          }
+        }.bind(this)
+      )
     })
   },
-  destroyed: function () {
+  destroyed: function() {
     if (this._eventRemovers) {
-      this._eventRemovers.forEach(function (eventRemover) {
+      this._eventRemovers.forEach(function(eventRemover) {
         eventRemover.remove()
       })
     }

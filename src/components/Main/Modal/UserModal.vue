@@ -48,7 +48,7 @@ export default {
     IconProfileFill,
     IconDownDirection
   },
-  data () {
+  data() {
     return {
       expandProfile: false,
       activeExtraComponent: 'UserModalTags',
@@ -56,13 +56,12 @@ export default {
     }
   },
   methods: {
-    toggleExpandProfile () {
+    toggleExpandProfile() {
       this.expandProfile = !this.expandProfile
     },
     ...mapActions('modal', ['close'])
   },
-  computed: {
-  }
+  computed: {}
 }
 </script>
 
@@ -218,4 +217,3 @@ $profile-area-width: 400px
   @media (max-width: 900px)
     display: none
 </style>
-

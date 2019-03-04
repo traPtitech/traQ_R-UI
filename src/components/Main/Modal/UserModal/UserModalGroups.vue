@@ -25,9 +25,8 @@ export default {
     IconLocked,
     IconUnlocked
   },
-  data () {
-    return {
-    }
+  data() {
+    return {}
   },
   computed: {
     ...mapState('modal', ['data']),
@@ -36,7 +35,7 @@ export default {
     })
   },
   methods: {
-    openGroupModal (group) {
+    openGroupModal(group) {
       this.$store.dispatch('openGroupModal', group.groupId)
     }
   }

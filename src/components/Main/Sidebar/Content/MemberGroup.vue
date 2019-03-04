@@ -13,7 +13,7 @@
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 export default {
   name: 'MemberGroup',
-  data () {
+  data() {
     return {
       isOpen: false,
       height: 0
@@ -32,31 +32,34 @@ export default {
     MemberElement
   },
   computed: {
-    memberGroupClass () {
+    memberGroupClass() {
       return {
         'is-open': this.isOpen
       }
     },
-    filteredMembers () {
+    filteredMembers() {
       return this.members
         .map(userId => this.$store.state.memberMap[userId])
         .filter(m => !m.suspended)
         .filter(m => {
-          return this.caseIgnoreFilterText.test(m.displayName) || this.caseIgnoreFilterText.test(m.name)
+          return (
+            this.caseIgnoreFilterText.test(m.displayName) ||
+            this.caseIgnoreFilterText.test(m.name)
+          )
         })
     },
-    caseIgnoreFilterText () {
+    caseIgnoreFilterText() {
       return new RegExp(this.filterText, 'i')
     }
   },
   methods: {
-    removeHeight () {
+    removeHeight() {
       this.$refs.list.style.height = ''
     },
-    zeroHeight () {
+    zeroHeight() {
       this.$refs.list.style.height = '0'
     },
-    toggle () {
+    toggle() {
       this.isOpen = !this.isOpen
       this.$store.dispatch('updateUserListOpen', {
         groupId: this.groupId,
@@ -66,7 +69,7 @@ export default {
   },
   watch: {
     isOpen: {
-      handler () {
+      handler() {
         this.$nextTick(() => {
           this.height = this.$refs.listWrap.clientHeight
           this.$refs.list.style.height = this.height + 'px'
@@ -74,7 +77,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     if (this.$store.state.openUserLists.hasOwnProperty(this.groupId)) {
       this.isOpen = this.$store.state.openUserLists[this.groupId]
     } else {

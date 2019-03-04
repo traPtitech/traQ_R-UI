@@ -23,18 +23,20 @@ export default {
     }
   },
   computed: {
-    notificationToggleClass () {
+    notificationToggleClass() {
       return this.$store.state.filterSubscribedActivity ? 'filter-enabled' : ''
     },
-    notificationIconColor () {
-      return this.$store.state.filterSubscribedActivity ? 'var(--primary-color)' : 'white'
+    notificationIconColor() {
+      return this.$store.state.filterSubscribedActivity
+        ? 'var(--primary-color)'
+        : 'white'
     }
   },
   methods: {
-    refresh () {
+    refresh() {
       this.$emit('refreshClick')
     },
-    toggleNotification () {
+    toggleNotification() {
       this.$emit('filterToggle')
     }
   }
@@ -66,4 +68,3 @@ export default {
   .fa-icon
     color: $primary-color
 </style>
-

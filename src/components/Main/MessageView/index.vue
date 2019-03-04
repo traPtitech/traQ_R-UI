@@ -12,7 +12,9 @@ export default {
   name: 'MessageView',
   components: {
     MessageContainer,
-    MessageInput: window.asyncLoadComponents(import('@/components/Main/MessageView/MessageInput'))
+    MessageInput: window.asyncLoadComponents(
+      import('@/components/Main/MessageView/MessageInput')
+    )
   }
 }
 </script>
@@ -30,5 +32,4 @@ export default {
     height: 100%
 
 .message-view-input-wrap
-
 </style>

@@ -44,8 +44,15 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
-import {encodeByte, isImage, isGif, isSvg, isVideo, isAudio} from '@/bin/utils.js'
+import { mapGetters } from 'vuex'
+import {
+  encodeByte,
+  isImage,
+  isGif,
+  isSvg,
+  isVideo,
+  isAudio
+} from '@/bin/utils.js'
 import IconAttach from '@/components/Icon/IconAttach'
 
 export default {
@@ -56,7 +63,7 @@ export default {
       required: true
     }
   },
-  components: {IconAttach},
+  components: { IconAttach },
   computed: {
     ...mapGetters(['fileUrl'])
   },
@@ -67,10 +74,10 @@ export default {
     isSvg,
     isVideo,
     isAudio,
-    onAttachedImageClick (file) {
+    onAttachedImageClick(file) {
       this.$store.dispatch('openFileModal', file)
     },
-    backgroundImageStyle (url) {
+    backgroundImageStyle(url) {
       return {
         backgroundImage: `url(${url})`
       }
@@ -157,5 +164,4 @@ export default {
     radius: 6px
   padding: 8px 12px 8px
   background-color: var(--background-color)
-
 </style>

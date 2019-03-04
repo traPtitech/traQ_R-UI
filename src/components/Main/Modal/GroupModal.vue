@@ -28,17 +28,20 @@ export default {
     IconBack
   },
   methods: {
-    closeModal () {
+    closeModal() {
       this.$store.dispatch('modal/close')
     },
-    backToUserModal () {
-      this.$store.dispatch('openUserModal', this.$store.state.modal.lastUser.userId)
+    backToUserModal() {
+      this.$store.dispatch(
+        'openUserModal',
+        this.$store.state.modal.lastUser.userId
+      )
     }
   },
   computed: {
     ...mapState('modal', ['data']),
     ...mapState(['memberMap']),
-    members () {
+    members() {
       return this.data.members.map(memberId => this.memberMap[memberId])
     }
   }

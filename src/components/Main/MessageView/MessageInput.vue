@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import autosize from 'autosize'
 import client from '@/bin/client'
 import { isImage } from '@/bin/utils'
@@ -73,7 +73,7 @@ export default {
     IconFile,
     IconClose
   },
-  data () {
+  data() {
     return {
       focused: false,
       // postStatus: {'default', 'processing', 'succeeded', 'failed'}
@@ -92,7 +92,7 @@ export default {
       uploadProgressSum: 0
     }
   },
-  created () {
+  created() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'setFiles') {
         console.log(state.files)
@@ -103,15 +103,15 @@ export default {
   },
   methods: {
     isImage,
-    inputFocus () {
+    inputFocus() {
       this.focused = true
       this.$store.commit('setEditing', true)
     },
-    inputBlur () {
+    inputBlur() {
       this.focused = false
       this.$store.commit('setEditing', false)
     },
-    submit () {
+    submit() {
       if (this.postLock || (this.inputText === '' && this.files.length === 0)) {
         return
       }
@@ -131,7 +131,7 @@ export default {
         this.postMessage()
       }
     },
-    postMessage () {
+    postMessage() {
       this.postStatus = 'processing'
       let nowChannel = this.$store.state.currentChannel
       let message = this.inputText
@@ -188,7 +188,7 @@ export default {
           this.postLock = false
         })
     },
-    replaceUser (message) {
+    replaceUser(message) {
       return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
         const user = this.$store.getters.getUserByName(name)
         if (user) {
@@ -198,7 +198,7 @@ export default {
         }
       })
     },
-    replaceChannel (message) {
+    replaceChannel(message) {
       return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
@@ -211,7 +211,7 @@ export default {
         }
       })
     },
-    replaceGroup (message) {
+    replaceGroup(message) {
       return message.replace(
         /^"@([\S]+)|(?:@([\S]+))/g,
         (match, userId, content) => {
@@ -227,13 +227,13 @@ export default {
         }
       )
     },
-    clearKey () {
+    clearKey() {
       this.key = {
         type: '',
         keyword: ''
       }
     },
-    keydown (event) {
+    keydown(event) {
       if (this.postStatus === 'processing') {
         event.returnValue = false
         return
@@ -315,19 +315,17 @@ export default {
         })
       }
     },
-    onmouseover (index) {
+    onmouseover(index) {
       this.suggestMode = true
       this.suggestIndex = index
     },
-    replaceSuggest (index) {
+    replaceSuggest(index) {
       this.suggestMode = false
       this.suggestIndex = 0
       const messageInput = document.getElementById('messageInput')
       const startIndex = messageInput.selectionStart
       const replaceSuffix = this.inputText.substr(startIndex)
-      const prefixes = this.inputText
-        .substr(0, startIndex)
-        .split(this.key.type)
+      const prefixes = this.inputText.substr(0, startIndex).split(this.key.type)
       const lastSize = prefixes.pop().length + this.key.type.length
       let replacePrefix = prefixes[0]
       for (let i = 1; i < prefixes.length; i++) {
@@ -347,17 +345,17 @@ export default {
         type: ''
       }
     },
-    addFiles (event) {
+    addFiles(event) {
       for (let i = 0; i < event.target.files.length; i++) {
         this.addFile(event.target.files[i])
       }
     },
-    dropFile (files) {
+    dropFile(files) {
       for (let i = 0; i < files.length; i++) {
         this.addFile(files[i])
       }
     },
-    addFile (file) {
+    addFile(file) {
       if (file.size > 30 * 1000 * 1000) {
         window.alert('ファイルサイズが大きすぎます')
         return
@@ -374,13 +372,13 @@ export default {
         reader.readAsDataURL(file)
       }
     },
-    removeFile (id) {
+    removeFile(id) {
       this.files.splice(id, 1)
     },
-    clickUploadButton () {
+    clickUploadButton() {
       this.uploadElem.click()
     },
-    uploadFiles () {
+    uploadFiles() {
       this.postStatus = 'processing'
       this.uploadedIds = new Array(this.files.length)
       this.uploadProgressSum = 0
@@ -408,11 +406,11 @@ export default {
         })
       )
     },
-    showStampPicker () {
+    showStampPicker() {
       this.$store.commit('setStampPickerModeAsInput')
       this.$store.commit('setStampPickerActive', !this.stampPickerActive)
     },
-    pasteImage (event) {
+    pasteImage(event) {
       const items = event.clipboardData.items
       for (let i = 0; i < items.length; i++) {
         const item = items[i]
@@ -424,24 +422,24 @@ export default {
   computed: {
     ...mapGetters(['stampPickerActive']),
     inputText: {
-      get () {
+      get() {
         return this.$store.state.pickerModal.inputText
       },
-      set (text) {
+      set(text) {
         this.$store.commit('setInputText', text)
       }
     },
-    suggests () {
+    suggests() {
       if (this.key.type === '') {
         return []
       }
       return suggest(this.key, this.limit)
     },
-    uploadProgress () {
+    uploadProgress() {
       if (this.uploadedIds.length === 0) return 0
       return this.uploadProgressSum / this.uploadedIds.length
     },
-    channelTitle () {
+    channelTitle() {
       if (this.$route.params.user) return `@${this.$route.params.user}`
       if (!this.$route.params.channel) return ''
       let ret = '#'
@@ -454,38 +452,38 @@ export default {
       ret += this.$store.state.currentChannel.name
       return ret
     },
-    placeholder () {
+    placeholder() {
       return `Message ${this.channelTitle}`
     },
-    hasFile () {
+    hasFile() {
       return this.files.length > 0
     },
-    isEmptyMessage () {
+    isEmptyMessage() {
       return this.inputText.length === 0
     },
-    sendButtonStyle () {
+    sendButtonStyle() {
       return {
         opacity: this.hasFile || !this.isEmptyMessage ? 1 : 0.4
       }
     },
-    me () {
+    me() {
       return this.$store.state.me
     },
-    typingUsers () {
+    typingUsers() {
       return this.$store.state.heartbeatStatus.userStatuses
         .filter(user => user.userId !== this.me.userId)
         .filter(user => user.status === 'editing')
     },
-    isAnyoneTyping () {
+    isAnyoneTyping() {
       return this.typingUsers.length > 0
     }
   },
   watch: {
-    files (newFiles) {
+    files(newFiles) {
       this.isOpened = !(newFiles.length === 0 && this.inputText === '')
     }
   },
-  mounted () {
+  mounted() {
     autosize(document.getElementById('message-input-text-area'))
     this.messageInput = document.getElementById('message-input-text-area')
     this.uploadElem = document.getElementById('upload')
@@ -659,5 +657,4 @@ $message-input-button-height-pc: 40px - 2px
   &-leave-to
     transform: translateY(0)
     opacity: 0
-
 </style>

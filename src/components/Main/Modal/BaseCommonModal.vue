@@ -41,9 +41,12 @@ export default {
   },
   methods: {
     ...mapActions('modal', ['close']),
-    handleHeaderClick () {
+    handleHeaderClick() {
       if (this.enableBack) {
-        this.$store.dispatch('openUserModal', this.$store.state.modal.lastUser.userId)
+        this.$store.dispatch(
+          'openUserModal',
+          this.$store.state.modal.lastUser.userId
+        )
       }
     }
   }

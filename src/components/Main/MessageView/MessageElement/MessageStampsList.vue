@@ -48,17 +48,15 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       isExpanded: false
     }
   },
-  components: {IconDownDirection},
+  components: { IconDownDirection },
   computed: {
-    ...mapGetters([
-      'fileUrl'
-    ]),
-    stamps () {
+    ...mapGetters(['fileUrl']),
+    stamps() {
       const map = {}
       if (!this.stampList) {
         return []
@@ -78,49 +76,59 @@ export default {
             fileId: '',
             stampId: stamp.stampId,
             name: '',
-            user: [{
-              userId: stamp.userId,
-              count: stamp.count
-            }],
+            user: [
+              {
+                userId: stamp.userId,
+                count: stamp.count
+              }
+            ],
             sum: stamp.count,
             createdAt: stamp.createdAt
           }
           if (this.$store.state.stampMap[stamp.stampId]) {
-            map[stamp.stampId].fileId = this.$store.state.stampMap[stamp.stampId].fileId
-            map[stamp.stampId].name = this.$store.state.stampMap[stamp.stampId].name
+            map[stamp.stampId].fileId = this.$store.state.stampMap[
+              stamp.stampId
+            ].fileId
+            map[stamp.stampId].name = this.$store.state.stampMap[
+              stamp.stampId
+            ].name
           }
         }
       })
       Object.keys(map).forEach(key => {
         map[key].title = `:${map[key].name}: from`
         map[key].user.forEach(user => {
-          map[key].title += ` ${this.$store.state.memberMap[user.userId].name}(${user.count})`
+          map[key].title += ` ${
+            this.$store.state.memberMap[user.userId].name
+          }(${user.count})`
         })
       })
       const stamps = Object.values(map)
       stamps.sort((lhs, rhs) => {
-        return new Date(lhs.createdAt).getTime() - new Date(rhs.createdAt).getTime()
+        return (
+          new Date(lhs.createdAt).getTime() - new Date(rhs.createdAt).getTime()
+        )
       })
       return stamps
     },
-    hasStamp () {
+    hasStamp() {
       return this.stamps.length > 0
     }
   },
   methods: {
-    toggleStamp (stampId) {
+    toggleStamp(stampId) {
       if (this.isContainSelfStamp(stampId)) {
         client.unstampMessage(this.messageId, stampId)
       } else {
         client.stampMessage(this.messageId, stampId)
       }
     },
-    isContainSelfStamp (stampId) {
+    isContainSelfStamp(stampId) {
       return this.stamps
-        .find(e => e.stampId === stampId).user
-          .find(e => e.userId === this.$store.state.me.userId)
+        .find(e => e.stampId === stampId)
+        .user.find(e => e.userId === this.$store.state.me.userId)
     },
-    toggleExpand () {
+    toggleExpand() {
       this.isExpanded = !this.isExpanded
     }
   }
@@ -242,8 +250,4 @@ export default {
 .stamps-info-users
   display: inline-flex
   align-items: center
-
 </style>
-
-
-

@@ -24,10 +24,10 @@ export default {
   },
   computed: {
     channelView: {
-      get () {
+      get() {
         return this.$store.getters.channelView
       },
-      set (mode) {
+      set(mode) {
         this.$store.commit('setChannelView', mode)
       }
     }

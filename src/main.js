@@ -14,14 +14,13 @@ Vue.use(VueClipboard)
 
 window.asyncLoadComponents = component => {
   return () => {
-    return component
-      .then(data => {
-        if (process.env.NODE_ENV) {
-          console.log('w:async load component:', data.default.name)
-        }
-        store.commit('loadEndComponent')
-        return data
-      })
+    return component.then(data => {
+      if (process.env.NODE_ENV) {
+        console.log('w:async load component:', data.default.name)
+      }
+      store.commit('loadEndComponent')
+      return data
+    })
   }
 }
 

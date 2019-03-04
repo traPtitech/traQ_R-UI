@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapState('modal', ['data']),
     ...mapGetters(['fileUrl']),
-    imageStyle () {
+    imageStyle() {
       return {
         backgroundImage: `url(${this.fileUrl(this.data.fileId)})`
       }
@@ -50,5 +50,4 @@ export default {
     size: contain
     repeat: no-repeat
     position: center
-
 </style>

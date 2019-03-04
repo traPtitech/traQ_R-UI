@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'SlimMemberElement',
@@ -20,21 +20,21 @@ export default {
   },
   computed: {
     ...mapGetters(['fileUrl']),
-    userId () {
+    userId() {
       return this.member.userId
     },
-    userIconSrc () {
+    userIconSrc() {
       return this.fileUrl(this.$store.state.memberMap[this.userId].iconFileId)
     },
-    userName () {
+    userName() {
       return this.getUserName(this.userId)
     }
   },
   methods: {
-    openUserModal () {
+    openUserModal() {
       this.$store.dispatch('openUserModal', this.userId)
     },
-    getUserName (userId) {
+    getUserName(userId) {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
@@ -69,5 +69,4 @@ export default {
 .slim-member-element-username
   margin:
     left: 6px
-
 </style>

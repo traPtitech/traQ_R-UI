@@ -32,7 +32,7 @@ export default {
     SettingInput,
     IconPlus
   },
-  data () {
+  data() {
     return {
       channelName: '',
       state: 'default'
@@ -42,15 +42,21 @@ export default {
     ...mapState('modal', ['data'])
   },
   methods: {
-    createChannel () {
+    createChannel() {
       this.state = 'processing'
-      client.makeChannel('public', [], this.channelName, this.$store.state.currentChannel.channelId)
-      .then(() => {
-        this.state = 'successed'
-      })
-      .catch(() => {
-        this.state = 'failed'
-      })
+      client
+        .makeChannel(
+          'public',
+          [],
+          this.channelName,
+          this.$store.state.currentChannel.channelId
+        )
+        .then(() => {
+          this.state = 'successed'
+        })
+        .catch(() => {
+          this.state = 'failed'
+        })
     }
   }
 }

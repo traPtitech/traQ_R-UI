@@ -14,7 +14,9 @@ export default {
     isActive: state => !!state.name,
     currentUserTagsSorted: state => {
       const current = state.currentUserTags
-      return current.filter(tag => !tag.editable).concat(current.filter(tag => tag.editable))
+      return current
+        .filter(tag => !tag.editable)
+        .concat(current.filter(tag => tag.editable))
     },
     currentTagUsersSorted: state => {
       return state.currentTagUserIds
@@ -22,53 +24,53 @@ export default {
     currentUserGroupsSorted: (state, _, rootState) => {
       const currentIds = state.currentUserGroupIds
       const current = currentIds.map(id => rootState.groupMap[id])
-      return current.filter(group => group.type === 'grade').concat(current.filter(group => group.type !== 'grade'))
+      return current
+        .filter(group => group.type === 'grade')
+        .concat(current.filter(group => group.type !== 'grade'))
     }
   },
   mutations: {
-    setModalName (state, name) {
+    setModalName(state, name) {
       state.name = name
     },
-    setModalData (state, data) {
+    setModalData(state, data) {
       state.data = data
     },
-    setLastUser (state, user) {
+    setLastUser(state, user) {
       state.lastUser = user
     },
-    setCurrentUserTags (state, tags) {
+    setCurrentUserTags(state, tags) {
       tags = tags || []
       state.currentUserTags = tags
     },
-    setCurrentTagUserIds (state, users) {
+    setCurrentTagUserIds(state, users) {
       users = users || []
       state.currentTagUserIds = users
     },
-    setCurrentUserGroupIds (state, groups) {
+    setCurrentUserGroupIds(state, groups) {
       groups = groups || []
       state.currentUserGroupIds = groups
     }
   },
   actions: {
-    updateCurrentUserTags ({state, commit}) {
-      return client.getUserTags(state.data.userId)
-      .then(res => {
+    updateCurrentUserTags({ state, commit }) {
+      return client.getUserTags(state.data.userId).then(res => {
         commit('setCurrentUserTags', res.data)
       })
     },
-    updateCurrentUserGroupIds ({state, commit}) {
-      return client.getUserGroups(state.data.userId)
-      .then(res => {
+    updateCurrentUserGroupIds({ state, commit }) {
+      return client.getUserGroups(state.data.userId).then(res => {
         commit('setCurrentUserGroupIds', res.data)
       })
     },
-    updateCurrentTagUserIds ({state, commit}) {
+    updateCurrentTagUserIds({ state, commit }) {
       return client.getTag(state.data.tagId).then(res => {
         commit('setCurrentTagUserIds', res.data.users)
       })
     },
     openUserModal: {
       root: true,
-      handler ({state, rootState, commit, dispatch}, userId) {
+      handler({ state, rootState, commit, dispatch }, userId) {
         if (/#/.test(rootState.memberMap[userId].name)) return
         if (rootState.memberMap[userId].accountStatus === 0) return
         dispatch('open', {
@@ -83,7 +85,7 @@ export default {
     },
     openGroupModal: {
       root: true,
-      handler ({state, rootState, commit, dispatch}, groupId) {
+      handler({ state, rootState, commit, dispatch }, groupId) {
         dispatch('open', {
           name: 'GroupModal',
           data: rootState.groupMap[groupId]
@@ -92,7 +94,7 @@ export default {
     },
     openTagModal: {
       root: true,
-      handler ({state, rootState, commit, dispatch}, tag) {
+      handler({ state, rootState, commit, dispatch }, tag) {
         dispatch('open', {
           name: 'TagModal',
           data: tag
@@ -102,32 +104,32 @@ export default {
     },
     openFileModal: {
       root: true,
-      handler ({state, rootState, commit, dispatch}, data) {
+      handler({ state, rootState, commit, dispatch }, data) {
         dispatch('open', { name: 'FileModal', data })
       }
     },
     openChannelCreateModal: {
       root: true,
-      handler ({state, rootState, commit, dispatch}) {
+      handler({ state, rootState, commit, dispatch }) {
         dispatch('open', { name: 'ChannelCreateModal' })
       }
     },
     openChannelNotificationModal: {
       root: true,
-      handler ({state, rootState, commit, dispatch}) {
+      handler({ state, rootState, commit, dispatch }) {
         dispatch('open', { name: 'ChannelNotificationModal' })
       }
     },
     openPinnedModal: {
       root: true,
-      handler ({state, rootState, commit, dispatch}, message) {
+      handler({ state, rootState, commit, dispatch }, message) {
         dispatch('open', {
           name: 'PinnedModal',
           data: message
         })
       }
     },
-    open ({state, commit}, {name, data}) {
+    open({ state, commit }, { name, data }) {
       if (state.name === 'UserModal') {
         // Transition from user modal
         commit('setLastUser', state.data)
@@ -135,7 +137,7 @@ export default {
       commit('setModalName', name)
       commit('setModalData', data)
     },
-    close ({commit}) {
+    close({ commit }) {
       commit('setModalName', null)
       commit('setLastUser', null)
       commit('setModalData', null)

@@ -1,4 +1,3 @@
-
 export const encodeByte = byte => {
   const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
   let rank = 0
@@ -17,12 +16,49 @@ export const encodeByte = byte => {
 export const displayDateTime = (createdAt, updatedAt) => {
   const d = new Date(createdAt)
   if (createdAt === updatedAt) {
-    return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ':' + d.getSeconds().toString().padStart(2, '0')
+    return (
+      d
+        .getHours()
+        .toString()
+        .padStart(2, '0') +
+      ':' +
+      d
+        .getMinutes()
+        .toString()
+        .padStart(2, '0') +
+      ':' +
+      d
+        .getSeconds()
+        .toString()
+        .padStart(2, '0')
+    )
   } else {
     const u = new Date(updatedAt)
-    let result = u.getHours().toString().padStart(2, '0') + ':' + u.getMinutes().toString().padStart(2, '0') + ':' + u.getSeconds().toString().padStart(2, '0')
+    let result =
+      u
+        .getHours()
+        .toString()
+        .padStart(2, '0') +
+      ':' +
+      u
+        .getMinutes()
+        .toString()
+        .padStart(2, '0') +
+      ':' +
+      u
+        .getSeconds()
+        .toString()
+        .padStart(2, '0')
     if (d.getDate() !== u.getDate() || d.getMonth() !== u.getMonth()) {
-      result = (u.getMonth() + 1).toString().padStart(2, '0') + '/' + u.getDate().toString().padStart(2, '0') + ' ' + result
+      result =
+        (u.getMonth() + 1).toString().padStart(2, '0') +
+        '/' +
+        u
+          .getDate()
+          .toString()
+          .padStart(2, '0') +
+        ' ' +
+        result
     }
     if (d.getFullYear() !== u.getFullYear()) {
       result = u.getFullYear().toString() + '/' + result
@@ -51,10 +87,14 @@ export const isAudio = mime => {
   return mime.split('/')[0] === 'audio'
 }
 
-function isFile (text) {
+function isFile(text) {
   try {
     const data = JSON.parse(text)
-    if (data['type'] === 'file' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
+    if (
+      data['type'] === 'file' &&
+      typeof data['id'] === 'string' &&
+      typeof data['raw'] === 'string'
+    ) {
       return true
     } else {
       return false
@@ -63,10 +103,14 @@ function isFile (text) {
     return false
   }
 }
-function isMessage (text) {
+function isMessage(text) {
   try {
     const data = JSON.parse(text)
-    if (data['type'] === 'message' && typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
+    if (
+      data['type'] === 'message' &&
+      typeof data['id'] === 'string' &&
+      typeof data['raw'] === 'string'
+    ) {
       return true
     } else {
       return false
@@ -87,7 +131,10 @@ export const detectFiles = text => {
         isString ^= true
       } else if (!isString && text[i] === '}') {
         isInside = false
-        if (isFile(text.substr(startIndex + 1, i - startIndex)) || isMessage(text.substr(startIndex + 1, i - startIndex))) {
+        if (
+          isFile(text.substr(startIndex + 1, i - startIndex)) ||
+          isMessage(text.substr(startIndex + 1, i - startIndex))
+        ) {
           ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
         } else {
           i = startIndex + 1
