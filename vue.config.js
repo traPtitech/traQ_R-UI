@@ -18,9 +18,9 @@ module.exports = {
     }
   },
   pwa: {
-    name: 'My App',
-    themeColor: '#4DBA87',
-    msTileColor: '#000000',
+    name: 'traQ',
+    themeColor: '#ffffff',
+    msTileColor: '#ffffff',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
 
