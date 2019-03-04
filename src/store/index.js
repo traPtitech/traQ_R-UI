@@ -16,19 +16,27 @@ const loadGeneralData = (dataName, webLoad, commit) => {
     commit(`set${dataName}Data`, res.data)
     db.write('generalData', { type: dataName, data: res.data })
   })
-  return Promise.race([
-    db
+  const getFromDB = db
       .read('generalData', dataName)
       .then(data => {
         if (!loaded && data) {
           commit(`set${dataName}Data`, data)
+        } else {
+          throw new Error('No data exists')
         }
       })
       .catch(async () => {
         await fetch
-      }),
-    fetch
-  ])
+      })
+
+  if ('navigator' in window && 'onLine' in window.navigator && !window.navigator.onLine) {
+    return Promise.race([getFromDB])
+  } else {
+    return Promise.race([
+      getFromDB,
+      fetch
+    ])
+  }
 }
 
 const stringSortGen = key => (lhs, rhs) => {
