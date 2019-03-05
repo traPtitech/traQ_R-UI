@@ -1,6 +1,6 @@
-function dfs (channel, root) {
+function dfs(channel, root) {
   channel.channelName = root + channel.name
-  channel.children.forEach(function (elem) {
+  channel.children.forEach(function(elem) {
     dfs(elem, channel.channelName + '/')
   })
 }
@@ -31,10 +31,10 @@ sorted array
   }
 ]
  */
-export default function ChannelParse (channels) {
+export default function ChannelParse(channels) {
   let pool = {}
   let root = ''
-  channels.forEach(function (channel) {
+  channels.forEach(function(channel) {
     pool[channel.channelId] = {
       channelId: channel.channelId,
       name: channel.name,
@@ -44,18 +44,18 @@ export default function ChannelParse (channels) {
       parent: channel.parent
     }
   })
-  Object.keys(pool).forEach(function (id) {
+  Object.keys(pool).forEach(function(id) {
     if (pool[id].channelId === '') return
     pool[pool[id].parent].children.push(pool[id])
   })
-  Object.keys(pool).forEach(function (id) {
-    pool[pool[id].parent].children.sort(function (lhs, rhs) {
+  Object.keys(pool).forEach(function(id) {
+    pool[pool[id].parent].children.sort(function(lhs, rhs) {
       if (lhs.name < rhs.name) return -1
       if (lhs.name > rhs.name) return 1
       return 0
     })
   })
-  pool[root].children.forEach(function (elem) {
+  pool[root].children.forEach(function(elem) {
     dfs(elem, '')
   })
   return pool[root].children

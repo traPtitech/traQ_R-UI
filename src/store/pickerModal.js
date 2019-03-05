@@ -9,42 +9,42 @@ export default {
     stampPickerModel: null
   },
   getters: {
-    stampPickerActive (state) {
+    stampPickerActive(state) {
       return state.stampPickerActive
     },
-    stampPickerModel (state) {
+    stampPickerModel(state) {
       return state.stampPickerModel
     }
   },
   mutations: {
-    setInputText (state, text) {
+    setInputText(state, text) {
       state.inputText = text
     },
-    setStampPickerModel (state, model) {
+    setStampPickerModel(state, model) {
       state.stampPickerModel = model
     },
-    setStampPickerActive (state, isActive) {
+    setStampPickerActive(state, isActive) {
       state.stampPickerActive = isActive
     },
-    setStampPickerModeAsMessage (state) {
+    setStampPickerModeAsMessage(state) {
       state.stampPickerMode = 'message'
     },
-    setStampPickerModeAsInput (state) {
+    setStampPickerModeAsInput(state) {
       state.stampPickerMode = 'input'
     },
-    addStampToInputText (state, stampName) {
+    addStampToInputText(state, stampName) {
       state.inputText += `:${stampName}:`
     }
   },
   actions: {
-    addStamp ({state, commit, dispatch}, stamp) {
+    addStamp({ state, commit, dispatch }, stamp) {
       if (state.stampPickerMode === 'message') {
         dispatch('addStampToMessage', stamp.id)
       } else {
         commit('addStampToInputText', stamp.name)
       }
     },
-    addStampToMessage ({state}, stampId) {
+    addStampToMessage({ state }, stampId) {
       client.stampMessage(state.stampPickerModel.messageId, stampId)
     }
   }

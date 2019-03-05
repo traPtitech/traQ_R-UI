@@ -3,9 +3,8 @@ let on = {}
 let listeningEventList = {}
 let source = null
 
-const baseURL = process.env.NODE_ENV === 'development'
-  ? 'https://traq-dev.tokyotech.org'
-  : ''
+const baseURL =
+  process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : ''
 
 if (process.env.NODE_ENV === 'development') {
   window.sseCheck = () => {
@@ -34,12 +33,14 @@ const callFunction = (eventName, json) => {
 }
 
 const sse = {
-  startListen (cb) {
+  startListen(cb) {
     if (source) {
       source.close()
       source = null
     }
-    source = new EventSource(baseURL + '/api/1.0/notification', {withCredentials: true})
+    source = new EventSource(baseURL + '/api/1.0/notification', {
+      withCredentials: true
+    })
     source.onopen = cb
     Object.keys(listeningEventList).forEach(eventName => {
       source.addEventListener(eventName, data => {
@@ -48,16 +49,16 @@ const sse = {
       })
     })
   },
-  stopListen () {
+  stopListen() {
     source.close()
     source = null
     listeningEventList = {}
   },
-  isListening () {
+  isListening() {
     console.log(source)
     return !!source && source.readyState < 2
   },
-  on (eventName, cb) {
+  on(eventName, cb) {
     if (!listeningEventList[eventName]) {
       source.addEventListener(eventName, data => {
         const json = JSON.parse(data.data)
@@ -70,7 +71,7 @@ const sse = {
     }
     on[eventName].push(cb)
   },
-  onOnce (eventName, cb) {
+  onOnce(eventName, cb) {
     if (!listeningEventList[eventName]) {
       source.addEventListener(eventName, data => {
         const json = JSON.parse(data)
@@ -83,7 +84,7 @@ const sse = {
     }
     once[eventName].push(cb)
   },
-  resetEventListener () {
+  resetEventListener() {
     listeningEventList = {}
     once = {}
     on = {}

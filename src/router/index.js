@@ -6,14 +6,13 @@ Vue.use(Router)
 
 const asyncLoadComponents = component => {
   return () => {
-    return component
-      .then(data => {
-        if (process.env.NODE_ENV) {
-          console.log('async load component:', data.default.name)
-        }
-        store.commit('loadEndComponent')
-        return data
-      })
+    return component.then(data => {
+      if (process.env.NODE_ENV) {
+        console.log('async load component:', data.default.name)
+      }
+      store.commit('loadEndComponent')
+      return data
+    })
   }
 }
 
@@ -95,9 +94,17 @@ router.beforeEach(async (to, from, next) => {
   // ここ以下はログインしている
   if (to.path === '/login' || to.path === '/') {
     if (store.state.openMode === 'particular') {
-      next(`/channels/${store.getters.getChannelPathById(store.state.openChannelId)}`)
+      next(
+        `/channels/${store.getters.getChannelPathById(
+          store.state.openChannelId
+        )}`
+      )
     } else if (store.state.openMode === 'lastOpen') {
-      next(`/channels/${store.getters.getChannelPathById(store.state.lastChannelId)}`)
+      next(
+        `/channels/${store.getters.getChannelPathById(
+          store.state.lastChannelId
+        )}`
+      )
     } else {
       next('/channels/general')
     }
@@ -115,12 +122,16 @@ router.beforeEach(async (to, from, next) => {
       }
       let channelId = nextUser.userId
       if (nextUser.userId === store.state.me.userId) {
-        const channel = store.getters.getDirectMessageChannels.find(c => c.member.length === 1)
+        const channel = store.getters.getDirectMessageChannels.find(
+          c => c.member.length === 1
+        )
         if (channel) {
           channelId = channel.channelId
         }
       } else {
-        const channel = store.getters.getDirectMessageChannels.find(c => c.member.some(userId => userId === nextUser.userId))
+        const channel = store.getters.getDirectMessageChannels.find(c =>
+          c.member.some(userId => userId === nextUser.userId)
+        )
         if (channel) {
           channelId = channel.channelId
         }
@@ -170,7 +181,7 @@ router.beforeEach(async (to, from, next) => {
   store.commit('loadEnd')
 })
 
-window.changeChannel = (channelPath) => {
+window.changeChannel = channelPath => {
   router.push(`/channels/${channelPath}`)
 }
 
