@@ -32,7 +32,7 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging()
 
-messaging.setBackgroundMessageHandler(function (payload) {
+messaging.setBackgroundMessageHandler(async payload => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload)
   // Customize notification here
   const notificationTitle = payload.data.title || 'traQ'
