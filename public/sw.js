@@ -29,3 +29,35 @@ workbox.routing.registerRoute(
 )
 
 workbox.precaching.precacheAndRoute(self.__precacheManifest)
+
+const openDB = () => {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('traQ-R', 1)
+    req.onsuccess = event => {
+      resolve(req.result)
+    }
+
+    req.onerror = reject
+  })
+}
+
+const getMeData = () => {
+  return openDB().then(db => {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction('generalData', 'readonly')
+      const store = transaction.objectStore('generalData')
+      const req = store.get('me')
+      req.onsuccess = () => resolve(req.result)
+      req.onerror = reject
+    })
+  })
+}
+
+self.addEventListener('fetch', event => {
+  if (!navigator.onLine && event.request.url.match(/\/api\/1.0\/users\/me/)) {
+    return event.respondWith(async () => {
+      const me = getMeData()
+      new Response(JSON.stringify(me), {headers:{'Content-Type': 'application/json'}})
+    })
+  }
+})
