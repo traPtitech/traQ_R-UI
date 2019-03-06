@@ -1,5 +1,16 @@
 workbox.skipWaiting()
 workbox.clientsClaim()
+workbox.routing.registerNavigationRoute(
+  workbox.precaching.getCacheKeyForURL('/index.html'), {
+    whitelist: [
+      new RegExp('/channels/'),
+      new RegExp('/users/')
+    ],
+    blacklist: [
+      new RegExp('/pipeline')
+    ]
+  }
+)
 
 // ファイルAPIのキャッシュ設定
 workbox.routing.registerRoute(
@@ -54,10 +65,13 @@ const getMeData = () => {
 }
 
 self.addEventListener('fetch', event => {
-  if (!navigator.onLine && event.request.url.match(/\/api\/1.0\/users\/me/)) {
-    return event.respondWith(async () => {
-      const me = getMeData()
-      new Response(JSON.stringify(me), {headers:{'Content-Type': 'application/json'}})
-    })
+  if (!navigator.onLine) {
+    if (event.request.url.match(/\/api\/1.0\/users\/me/)) {
+      return event.respondWith(async () => {
+        const me = getMeData()
+        new Response(JSON.stringify(me), {headers:{'Content-Type': 'application/json'}})
+      })
+    }
   }
+  return
 })
