@@ -85,7 +85,7 @@ $profile-area-width: 400px
   left: 0
   padding: 1rem
   display: flex
-  justify-content: end
+  justify-content: flex-end
 .user-modal-close
   opacity: 0.3
   margin-left: auto

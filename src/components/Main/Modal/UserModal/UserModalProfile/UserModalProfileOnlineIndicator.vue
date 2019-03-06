@@ -34,7 +34,7 @@ export default {
 <style lang="sass">
 .user-modal-online-status
   display: flex
-  align-items: start
+  align-items: flex-start
 
 .user-modal-online-indicator
   width: 10px

@@ -232,7 +232,7 @@ $topic-height: 14px
   display: flex
   flex-grow: 1
   min-width: 0
-  justify-content: start
+  justify-content: flex-start
   align-items: center
   height: 100%
 

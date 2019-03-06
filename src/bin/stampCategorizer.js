@@ -1,6 +1,6 @@
 import stampCategorized from '@/bin/unicode_emojis.json'
 
-export default function (stampData) {
+export default function(stampData) {
   const categorized = new Array(stampCategorized.length + 1)
   categorized[0] = {
     category: 'traq',
