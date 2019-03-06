@@ -110,7 +110,8 @@ const store = new Vuex.Store({
     windowWidth: 0,
     windowHeight: 0,
     filterSubscribedActivity: true,
-    activeMessageContextMenu: ''
+    activeMessageContextMenu: '',
+    isOnline: true
   },
   mutations: {
     openSidebar(state) {
@@ -474,6 +475,9 @@ const store = new Vuex.Store({
     },
     setActiveMessageContextMenu(state, messageId) {
       state.activeMessageContextMenu = messageId
+    },
+    changeNetwork(state, condition) {
+      state.isOnline = condition
     }
   },
   getters: {

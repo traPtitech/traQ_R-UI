@@ -42,6 +42,16 @@ export default {
           regisration.update()
         })
     }
+
+    if ('navigator' in window && 'onLine' in window.navigator) {
+      this.$store.commit('changeNetwork', window.navigator.onLine)
+    }
+    window.addEventListener('offline', () => {
+      this.$store.commit('changeNetwork', false)
+    })
+    window.addEventListener('online', () => {
+      this.$store.commit('changeNetwork', true)
+    })
   },
   methods: {
     handleResizeWindow () {
