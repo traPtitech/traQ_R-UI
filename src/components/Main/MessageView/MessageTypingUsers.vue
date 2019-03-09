@@ -4,7 +4,7 @@
       .message-typing-users-user(v-for="user in typingUsers" :key="user.userId")
         div.message-typing-users-user-icon(:style="userIconBackground(user.userId)")
     .message-typing-users-text
-      | is typing
+      | {{text}}
 </template>
 
 <script>
@@ -26,7 +26,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['fileUrl'])
+    ...mapGetters(['fileUrl']),
+    text () {
+      if (this.typingUsers.length <= 1) {
+        return 'is typing'
+      } else {
+        return 'are typing'
+      }
+    }
   }
 }
 </script>
