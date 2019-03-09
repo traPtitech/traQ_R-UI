@@ -1,5 +1,18 @@
 workbox.skipWaiting()
 workbox.clientsClaim()
+
+const messageBgSync = new workbox.backgroundSync.Plugin('messageBgSyncQue', {
+  maxRetentionTime: 24 * 60 // Retry for max of 24 Hours
+});
+
+workbox.routing.registerRoute(
+  /\/api\/1.0\/channels\/.*\/messages$/,
+  new workbox.strategies.NetworkOnly({
+    plugins: [messageBgSync]
+  }),
+  'POST'
+);
+
 workbox.routing.registerNavigationRoute(
   '/index.html', {
     whitelist: [
