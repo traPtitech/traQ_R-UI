@@ -691,6 +691,9 @@ const store = new Vuex.Store({
     filteringUser(state) {
       return users =>
         users.filter(userId => state.memberData[userId].accountStatus !== 0)
+    },
+    sortByUserId(state) {
+      return userIds => userIds.map(userId => state.memberMap[userId]).sort(stringSortGen('name')).map(user => user.userId)
     }
   },
   actions: {

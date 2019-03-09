@@ -42,7 +42,7 @@ export default {
     }),
     ...mapState(['memberMap']),
     users () {
-      return this.userIds
+      return this.$store.getters.sortByUserId(this.userIds)
         .filter(userId => this.memberMap[userId] && this.memberMap[userId].accountStatus !== 0)
         .map(userId => this.memberMap[userId])
     }
