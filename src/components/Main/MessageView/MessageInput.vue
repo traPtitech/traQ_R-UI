@@ -202,10 +202,7 @@ export default {
       return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
-          return `!{"type": "channel", "raw": "${match.replace(
-            /_/g,
-            '\\_'
-          )}", "id": "${channel.channelId}"}`
+          return `!{"type": "channel", "raw": "${match}", "id": "${channel.channelId}"}`
         } else {
           return match
         }
@@ -239,6 +236,15 @@ export default {
         return
       }
       this.postStatus = 'default'
+      if (
+        event.key === 'Enter' &&
+        (event.ctrlKey || event.metaKey || event.shiftKey)
+      ) {
+        this.submit()
+        event.returnValue = false
+      }
+
+      /*
       if (this.suggests.length === 0) {
         this.suggestMode = false
         this.suggestIndex = 0
@@ -314,6 +320,7 @@ export default {
           })
         })
       }
+      */
     },
     onmouseover (index) {
       this.suggestMode = true
