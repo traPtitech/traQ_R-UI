@@ -39,7 +39,7 @@ export default {
     ...mapState('modal', ['data']),
     ...mapState(['memberMap']),
     members () {
-      return this.data.members.map(memberId => this.memberMap[memberId])
+      return this.$store.getters.sortByUserId(this.data.members).map(memberId => this.memberMap[memberId])
     }
   }
 }

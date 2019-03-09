@@ -38,12 +38,10 @@ export default {
       }
     },
     filteredMembers () {
-      return this.members
+      return this.$store.getters.sortByUserId(this.members)
         .map(userId => this.$store.state.memberMap[userId])
         .filter(m => !m.suspended)
-        .filter(m => {
-          return this.caseIgnoreFilterText.test(m.displayName) || this.caseIgnoreFilterText.test(m.name)
-        })
+        .filter(m => this.caseIgnoreFilterText.test(m.displayName) || this.caseIgnoreFilterText.test(m.name))
     },
     caseIgnoreFilterText () {
       return new RegExp(this.filterText, 'i')
