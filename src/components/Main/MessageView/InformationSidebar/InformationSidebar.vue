@@ -96,9 +96,11 @@ export default {
       return this.$store.state.currentChannelTopic.text
     },
     pinnedMessages() {
-      return this.$store.state.currentChannelPinnedMessages.sort((a, b) => {
-        return new Date(a.dateTime) - new Date(b.dateTime)
-      })
+      return [...this.$store.state.currentChannelPinnedMessages].sort(
+        (a, b) => {
+          return new Date(a.dateTime) - new Date(b.dateTime)
+        }
+      )
     },
     hasPinnedMessage() {
       return this.pinnedMessages.length > 0

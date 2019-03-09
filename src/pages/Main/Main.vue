@@ -319,10 +319,10 @@ export default {
         this.$store.dispatch('updateCurrentUserTags')
       }
     },
-    userGroupUpdated(data) {
+    userGroupUpdated() {
       this.$store.dispatch('updateGroups')
     },
-    notify(title, options, channelName) {
+    notify(title, options) {
       if (window.Notification) {
         if (Notification.permission === 'granted') {
           // eslint-disable-next-line no-new
@@ -343,7 +343,7 @@ export default {
       this.swipeEvent.x = event.touches.item(0).clientX
       this.swipeEvent.y = event.touches.item(0).clientY
     },
-    swipeEnd(event) {
+    swipeEnd() {
       this.swipeEvent.isActive = false
     }
   },

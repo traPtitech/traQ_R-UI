@@ -23,7 +23,7 @@ export default {
     }
   },
   methods: {
-    dragover(event) {},
+    dragover() {},
     dropFile(event) {
       if (process.env.NODE_ENV === 'development') {
         console.info('file drop event', event)
@@ -43,7 +43,7 @@ export default {
       this.isTouchActive = false
       this.$emit('swipeEnd', event)
     },
-    click(event) {
+    click() {
       // console.log(event)
     }
   }

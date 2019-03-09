@@ -37,7 +37,11 @@ export default {
     UserModalProfileInfoExpanded
   },
   props: {
-    expanded: false
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   computed: {
     ...mapState('modal', ['data']),

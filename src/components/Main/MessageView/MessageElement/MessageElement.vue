@@ -151,7 +151,7 @@ export default {
             return client
               .getFileMeta(e.id)
               .then(res => res.data)
-              .catch(e => {
+              .catch(() => {
                 return {
                   fileId: '',
                   name: 'not found',
@@ -172,7 +172,7 @@ export default {
             return client
               .getMessage(e.id)
               .then(res => res.data)
-              .catch(e => null)
+              .catch(() => null)
           })
       )).filter(e => e)
       this.rendered = true
@@ -207,7 +207,7 @@ export default {
         })
       }
     },
-    grade(userId) {
+    grade() {
       return this.$store.getters.gradeByUserMap[this.model.userId]
     },
     statusBadge(userId) {

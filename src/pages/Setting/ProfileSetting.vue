@@ -161,7 +161,7 @@ export default {
           this.state = 'successed'
           this.$store.dispatch('whoAmI')
         })
-        .catch(e => {
+        .catch(() => {
           this.state = 'failed'
           this.error = '失敗しました'
         })
@@ -203,7 +203,7 @@ export default {
           this.$store.dispatch('whoAmI')
           this.$store.dispatch('updateMembers')
         })
-        .catch(e => {
+        .catch(() => {
           this.state = 'failed'
           this.error = '失敗しました'
         })

@@ -26,7 +26,11 @@ function dateParse(date) {
 }
 export default {
   props: {
-    detailed: false
+    detailed: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   computed: {
     ...mapState('modal', ['data']),
