@@ -1,5 +1,5 @@
 <template functional>
-  <p class="setting-description" :class="{'setting-warning': props.warning}">
+  <p class="setting-description" :class="{ 'setting-warning': props.warning }">
     <slot></slot>
   </p>
 </template>

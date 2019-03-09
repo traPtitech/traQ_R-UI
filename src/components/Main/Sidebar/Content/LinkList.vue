@@ -84,7 +84,7 @@ export default {
     display: flex
     align-items: center
     color: $text-light-color
-    
+
 .link-icon
   font-size: 1.5em
   width: 30px

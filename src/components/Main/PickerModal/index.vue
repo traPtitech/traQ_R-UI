@@ -8,46 +8,49 @@ import StampPicker from './StampPicker'
 
 export default {
   name: 'PickerModal',
-  data () {
-    return {
-    }
+  data() {
+    return {}
   },
   components: {
     StampPicker
   },
   computed: {
-    active () {
+    active() {
       return this.$store.getters.stampPickerActive
     }
   },
   methods: {
-    deactive () {
+    deactive() {
       this.$store.commit('setStampPickerActive', false)
     },
-    listen: function (target, eventType, callback) {
+    listen: function(target, eventType, callback) {
       if (!this._eventRemovers) {
         this._eventRemovers = []
       }
       target.addEventListener(eventType, callback)
       this._eventRemovers.push({
-        remove: function () {
+        remove: function() {
           target.removeEventListener(eventType, callback)
         }
       })
     }
   },
-  created: function () {
+  created: function() {
     this.$nextTick(() => {
-      this.listen(window, 'click', function (e) {
-        if (!this.$el.contains(e.target)) {
-          this.deactive()
-        }
-      }.bind(this))
+      this.listen(
+        window,
+        'click',
+        function(e) {
+          if (!this.$el.contains(e.target)) {
+            this.deactive()
+          }
+        }.bind(this)
+      )
     })
   },
-  destroyed: function () {
+  destroyed: function() {
     if (this._eventRemovers) {
-      this._eventRemovers.forEach(function (eventRemover) {
+      this._eventRemovers.forEach(function(eventRemover) {
         eventRemover.remove()
       })
     }

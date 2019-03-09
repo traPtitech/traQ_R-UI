@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import md from '@/bin/markdown-it'
 
 export default {
@@ -31,21 +31,25 @@ export default {
   },
   methods: {
     ...mapActions(['openUserModal']),
-    userIconBackground (userId) {
+    userIconBackground(userId) {
       return {
-        backgroundImage: `url(${this.fileUrl(this.userDetail(userId).iconFileId)})`
+        backgroundImage: `url(${this.fileUrl(
+          this.userDetail(userId).iconFileId
+        )})`
       }
     },
-    userDetail (userId) {
+    userDetail(userId) {
       return this.$store.state.memberMap[userId]
     },
-    mark (text) {
+    mark(text) {
       return {
-        template: `<div class="message-content markdown-body" v-pre>${md.render(text)}</div>`,
+        template: `<div class="message-content markdown-body" v-pre>${md.render(
+          text
+        )}</div>`,
         props: this.$options.props
       }
     },
-    parentChannel (parentChannelId) {
+    parentChannel(parentChannelId) {
       const channel = this.$store.state.channelMap[parentChannelId]
       if (!channel) {
         return {
@@ -66,7 +70,9 @@ export default {
         }
       } else {
         return {
-          to: `/channels/${this.$store.getters.getChannelPathById(parentChannelId)}`,
+          to: `/channels/${this.$store.getters.getChannelPathById(
+            parentChannelId
+          )}`,
           name: `#${this.$store.getters.getChannelPathById(parentChannelId)}`
         }
       }
@@ -113,5 +119,4 @@ export default {
     size: 0.8em
   margin:
     top: 12px
-
 </style>

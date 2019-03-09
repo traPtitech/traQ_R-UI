@@ -58,33 +58,39 @@ export default {
     IconWrench,
     IconStamp
   },
-  data () {
+  data() {
     return { active: 0, windowWidth: 0 }
   },
   methods: {
-    onResize () {
+    onResize() {
       this.windowWidth = window.innerWidth
     },
-    back () {
-      if (this.$store.state.currentChannel.parent === this.$store.state.directMessageId) {
+    back() {
+      if (
+        this.$store.state.currentChannel.parent ===
+        this.$store.state.directMessageId
+      ) {
         this.$router.push(`/users/${this.$store.state.currentChannel.name}`)
       } else if (this.$store.state.currentChannel['channelId']) {
-        this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.$store.state.currentChannel.channelId)}`)
+        this.$router.push(
+          `/channels/${this.$store.getters.getChannelPathById(
+            this.$store.state.currentChannel.channelId
+          )}`
+        )
       } else {
         this.$router.push('/channels/random')
       }
     }
   },
-  mounted () {
+  mounted() {
     window.addEventListener('resize', this.onResize)
     this.onResize()
   },
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
   }
 }
 </script>
-
 
 <style lang="sass">
 $header-height: 3rem
@@ -197,6 +203,6 @@ $header-height: 3rem
 
 .fade-enter-active, .fade-leave-active
   transition: opacity .1s
-.fade-enter, .fade-leave-to 
+.fade-enter, .fade-leave-to
   opacity: 0
 </style>

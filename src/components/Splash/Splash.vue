@@ -8,7 +8,7 @@ import IconLogo from '@/components/Icon/IconLogo'
 
 export default {
   name: 'Splash',
-  components: {IconLogo}
+  components: { IconLogo }
 }
 </script>
 

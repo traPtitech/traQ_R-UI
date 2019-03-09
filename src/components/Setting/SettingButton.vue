@@ -6,7 +6,7 @@
 <script>
 export default {
   name: 'settingButton',
-  data () {
+  data() {
     return {
       settingText: ''
     }
@@ -23,4 +23,3 @@ export default {
   border-radius: 4px
   cursor: pointer
 </style>
-

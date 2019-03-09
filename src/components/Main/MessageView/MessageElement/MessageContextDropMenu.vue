@@ -32,49 +32,55 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'getMyId', 'activeMessageContextMenu'
-    ]),
-    isDirectMessage () {
-      if (this.$store.state.currentChannel.channelId === this.$store.state.directMessageId) return true
+    ...mapGetters(['getMyId', 'activeMessageContextMenu']),
+    isDirectMessage() {
+      if (
+        this.$store.state.currentChannel.channelId ===
+        this.$store.state.directMessageId
+      )
+        return true
       if (this.$store.state.currentChannel.member) return true
       return false
     },
-    pinned () {
+    pinned() {
       return this.$store.getters.isPinned(this.messageId)
     }
   },
   methods: {
-    listen: function (target, eventType, callback) {
+    listen: function(target, eventType, callback) {
       if (!this._eventRemovers) {
         this._eventRemovers = []
       }
       target.addEventListener(eventType, callback)
       this._eventRemovers.push({
-        remove: function () {
+        remove: function() {
           target.removeEventListener(eventType, callback)
         }
       })
     }
   },
-  created: function () {
+  created: function() {
     this.$nextTick(() => {
-      this.listen(window, 'click', function (e) {
-        if (!this.$el.contains(e.target)) {
-          this.$emit('deactive')
-        }
-      }.bind(this))
+      this.listen(
+        window,
+        'click',
+        function(e) {
+          if (!this.$el.contains(e.target)) {
+            this.$emit('deactive')
+          }
+        }.bind(this)
+      )
     })
   },
-  destroyed: function () {
+  destroyed: function() {
     if (this._eventRemovers) {
-      this._eventRemovers.forEach(function (eventRemover) {
+      this._eventRemovers.forEach(function(eventRemover) {
         eventRemover.remove()
       })
     }
   },
   watch: {
-    activeMessageContextMenu (newMessageId) {
+    activeMessageContextMenu(newMessageId) {
       if (newMessageId !== this.messageId) {
         this.$emit('deactive')
       }
@@ -102,9 +108,8 @@ export default {
 
     &:hover
       background: var(--background-hover-color)
-  
+
     &:last-child
       margin:
         bottom: 0
-
 </style>

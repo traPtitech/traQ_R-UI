@@ -40,7 +40,7 @@ export default {
     SettingInput,
     SettingButton
   },
-  data () {
+  data() {
     return {
       state: 'default',
       done: '',
@@ -49,34 +49,46 @@ export default {
     }
   },
   computed: {
-    isBrowserSettingChanged () {
+    isBrowserSettingChanged() {
       if (!this.isChannelNameValid) {
         return false
       }
-      return this.openMode !== this.$store.state.openMode || this.openChannelName !== this.$store.getters.getChannelPathById(this.$store.state.openChannelId)
+      return (
+        this.openMode !== this.$store.state.openMode ||
+        this.openChannelName !==
+          this.$store.getters.getChannelPathById(
+            this.$store.state.openChannelId
+          )
+      )
     },
-    isChannelNameValid () {
+    isChannelNameValid() {
       return this.$store.getters.getChannelByName(this.openChannelName)
     }
   },
   methods: {
-    deleteSessions () {
-      if (window.confirm('ログイン中のセッションを全て破棄します。（実行するとログアウトされます）')) {
+    deleteSessions() {
+      if (
+        window.confirm(
+          'ログイン中のセッションを全て破棄します。（実行するとログアウトされます）'
+        )
+      ) {
         client.deleteSessions().then(() => {
           this.$store.commit('setMe', null)
           this.$router.push('/login')
         })
       }
     },
-    updateBrowserSetting () {
+    updateBrowserSetting() {
       this.$store.dispatch('updateOpenMode', this.openMode)
       const channel = this.$store.getters.getChannelByName(this.openChannelName)
       this.$store.dispatch('updateOpenChannelId', channel.channelId)
     }
   },
-  mounted () {
+  mounted() {
     this.openMode = this.$store.state.openMode
-    this.openChannelName = this.$store.getters.getChannelPathById(this.$store.state.openChannelId)
+    this.openChannelName = this.$store.getters.getChannelPathById(
+      this.$store.state.openChannelId
+    )
   }
 }
 </script>

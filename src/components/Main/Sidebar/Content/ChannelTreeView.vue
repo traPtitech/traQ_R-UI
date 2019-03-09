@@ -17,27 +17,25 @@ export default {
     }
   },
   computed: {
-    channels () {
+    channels() {
       return this.$store.getters.childrenChannels('')
     },
-    filteredChannels () {
-      return this.allChannels
-        .filter(c => {
-          return this.caseIgnoreFilterText.test(c.name)
-        })
+    filteredChannels() {
+      return this.allChannels.filter(c => {
+        return this.caseIgnoreFilterText.test(c.name)
+      })
     },
-    caseIgnoreFilterText () {
+    caseIgnoreFilterText() {
       return new RegExp(this.filterText, 'i')
     },
-    allChannels () {
+    allChannels() {
       return this.$store.getters.allChannels
     }
   },
   components: {
-    'ChannelElement': ChannelElement
+    ChannelElement: ChannelElement
   }
 }
 </script>
 
-<style lang="sass">
-</style>
+<style lang="sass"></style>

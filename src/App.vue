@@ -6,13 +6,13 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import Splash from '@/components/Splash/Splash'
 import Favicon from '@/components/Util/Favicon'
 
 export default {
   name: 'app',
-  metaInfo () {
+  metaInfo() {
     return {
       title: 'Welcome',
       titleTemplate: '%s | traQ',
@@ -28,15 +28,16 @@ export default {
     Splash,
     Favicon
   },
-  data () {
+  data() {
     return {
       splashDisplayed: false
     }
   },
-  created () {
+  created() {
     console.log('REVISION:' + process.env.REVISION)
     if (process.env.NODE_ENV === 'production' && navigator.serviceWorker) {
-      navigator.serviceWorker.register('/sw.js', {scope: '/'})
+      navigator.serviceWorker
+        .register('/sw.js', { scope: '/' })
         .then(regisration => {
           console.log('Service Worker Registered!')
           regisration.update()
@@ -44,35 +45,36 @@ export default {
     }
   },
   methods: {
-    handleResizeWindow () {
+    handleResizeWindow() {
       this.$store.commit('setWindowSize', {
         windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight})
+        windowHeight: window.innerHeight
+      })
     }
   },
   computed: {
     ...mapGetters(['windowWidth', 'windowHeight']),
-    vh () {
+    vh() {
       return this.windowHeight * 0.01
     },
-    isLoading () {
+    isLoading() {
       return !(this.$store.state.loaded && this.$store.state.loadedComponent)
     },
-    appStyles () {
+    appStyles() {
       return {
         '--vh': `${this.vh}px`
       }
     },
-    appClasses () {
+    appClasses() {
       return {
         'app-loaded': !this.isLoading
       }
     },
-    themeColor () {
+    themeColor() {
       return this.$store.state.theme === 'light' ? '#0D67EA' : '#232C36'
     }
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       this.handleResizeWindow()
     })

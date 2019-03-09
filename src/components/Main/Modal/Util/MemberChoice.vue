@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MemberChoice',
@@ -20,26 +20,26 @@ export default {
   },
   computed: {
     ...mapGetters(['fileUrl']),
-    userId () {
+    userId() {
       return this.member.userId
     },
-    userIconBackground () {
+    userIconBackground() {
       return {
         backgroundImage: `url(${this.fileUrl(this.userDetail.iconFileId)})`
       }
     },
-    userDetail () {
+    userDetail() {
       return this.$store.state.memberMap[this.userId]
     },
-    userName () {
+    userName() {
       return this.getUserName(this.userId)
     }
   },
   methods: {
-    openUserModal () {
+    openUserModal() {
       this.$store.dispatch('openUserModal', this.userId)
     },
-    getUserName (userId) {
+    getUserName(userId) {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
@@ -78,5 +78,4 @@ export default {
 .member-choice-username
   margin:
     left: 6px
-
 </style>

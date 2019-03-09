@@ -13,7 +13,7 @@ import FilterInput from '@/components/Util/FilterInput'
 
 export default {
   name: 'MemberList',
-  data () {
+  data() {
     return {
       filterText: ''
     }
@@ -22,13 +22,10 @@ export default {
     MemberGroup,
     FilterInput
   },
-  methods: {
-  },
+  methods: {},
   computed: {
-    ...mapGetters([
-      'sortedGrades', 'memberData'
-    ]),
-    bots () {
+    ...mapGetters(['sortedGrades', 'memberData']),
+    bots() {
       return this.memberData.filter(user => user.bot).map(user => user.userId)
     }
   }

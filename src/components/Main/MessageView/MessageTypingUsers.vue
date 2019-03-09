@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MessageEditingUsers',
@@ -16,18 +16,20 @@ export default {
     typingUsers: Array
   },
   methods: {
-    userIconBackground (userId) {
+    userIconBackground(userId) {
       return {
-        backgroundImage: `url(${this.fileUrl(this.userDetail(userId).iconFileId)})`
+        backgroundImage: `url(${this.fileUrl(
+          this.userDetail(userId).iconFileId
+        )})`
       }
     },
-    userDetail (userId) {
+    userDetail(userId) {
       return this.$store.state.memberMap[userId]
     }
   },
   computed: {
     ...mapGetters(['fileUrl']),
-    text () {
+    text() {
       if (this.typingUsers.length <= 1) {
         return 'is typing'
       } else {
@@ -91,5 +93,4 @@ export default {
     opacity: 0
   &-leave-active
     position: absolute
-
 </style>

@@ -16,25 +16,22 @@ export default {
     }
   },
   computed: {
-    channels () {
+    channels() {
       return this.$store.getters.getStaredChannels
     },
-    filteredChannels () {
-      return this.channels
-        .filter(c => {
-          return this.caseIgnoreFilterText.test(c.name)
-        })
+    filteredChannels() {
+      return this.channels.filter(c => {
+        return this.caseIgnoreFilterText.test(c.name)
+      })
     },
-    caseIgnoreFilterText () {
+    caseIgnoreFilterText() {
       return new RegExp(this.filterText, 'i')
     }
   },
   components: {
-    'ChannelElement': ChannelElement
+    ChannelElement: ChannelElement
   }
 }
 </script>
 
-<style lang="sass">
-</style>
-
+<style lang="sass"></style>

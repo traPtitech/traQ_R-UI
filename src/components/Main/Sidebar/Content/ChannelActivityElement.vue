@@ -29,42 +29,51 @@ export default {
     model: Object
   },
   methods: {
-    channelLink () {
+    channelLink() {
       this.$store.commit('closeSidebar')
       this.$store.commit('contractTitlebar')
-      this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.parentChannelId)}`)
+      this.$router.push(
+        `/channels/${this.$store.getters.getChannelPathById(
+          this.model.parentChannelId
+        )}`
+      )
     }
   },
   computed: {
-    channelName () {
+    channelName() {
       return this.$store.state.channelMap[this.model.parentChannelId].name
     },
-    authorName () {
+    authorName() {
       return this.$store.state.memberMap[this.model.userId].name
     },
-    unreadNum () {
-      return this.$store.getters.getChannelUnreadMessageNum(this.model.parentChannelId)
+    unreadNum() {
+      return this.$store.getters.getChannelUnreadMessageNum(
+        this.model.parentChannelId
+      )
     },
-    isWatched () {
-      return this.$store.state.currentChannel.channelId === this.model.parentChannelId
+    isWatched() {
+      return (
+        this.$store.state.currentChannel.channelId ===
+        this.model.parentChannelId
+      )
     },
-    channelBeforeClass () {
+    channelBeforeClass() {
       return { 'has-unread': this.unreadNum > 0 }
     },
-    parsed () {
+    parsed() {
       const parsed = md.parseInline(this.model.content)
       return parsed[0].children
     },
-    attachments () {
+    attachments() {
       return detectFiles(this.model.content)
     },
-    hasMessage () {
+    hasMessage() {
       return this.attachments.filter(a => a.type === 'message').length > 0
     },
-    hasFile () {
+    hasFile() {
       return this.attachments.filter(a => a.type === 'file').length > 0
     },
-    sanitizedMessage () {
+    sanitizedMessage() {
       const parsed = md.parseInline(this.model.content)
       const tokens = parsed[0].children
       const message = []

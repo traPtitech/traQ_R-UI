@@ -20,11 +20,15 @@ export default {
   },
   components: {
     SidebarTabMenu,
-    Content: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content')),
+    Content: window.asyncLoadComponents(
+      import('@/components/Main/Sidebar/Content')
+    ),
     Footer,
-    ChannelListTabSwitcher: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelListTabSwitcher'))
+    ChannelListTabSwitcher: window.asyncLoadComponents(
+      import('@/components/Main/Sidebar/Content/ChannelListTabSwitcher')
+    )
   },
-  data () {
+  data() {
     return {
       isActive: false,
       swipeThresholdX: 50,
@@ -33,71 +37,73 @@ export default {
   },
   computed: {
     ...mapGetters(['deviceType']),
-    menuContent () {
+    menuContent() {
       return this.$store.state.menuContent
     },
-    sidebarClass () {
+    sidebarClass() {
       return {
         'is-sidebar-opened': this.isSidebarOpened,
-        'drop-shadow': this.deviceType === 'pc' || (this.isSidebarOpened && this.deviceType === 'sp'),
+        'drop-shadow':
+          this.deviceType === 'pc' ||
+          (this.isSidebarOpened && this.deviceType === 'sp'),
         'is-swipe-active': this.isSwipeActive
       }
     },
-    sidebarStyle () {
+    sidebarStyle() {
       if (this.deviceType === 'pc') {
         return {}
       }
       if (this.isOpenSwipeActive && !this.isSidebarOpened) {
         return {
-          'transform': `translateX(${this.openSwipedX - this.sidebarWidth}px)`,
-          'transition': 'none'
+          transform: `translateX(${this.openSwipedX - this.sidebarWidth}px)`,
+          transition: 'none'
         }
       } else if (this.isCloseSwipeActive && this.isSidebarOpened) {
         const translateX = this.closeSwipedX < 10 ? 0 : this.closeSwipedX * -1
         return {
-          'transform': `translateX(${translateX}px)`,
-          'transition': 'none'
+          transform: `translateX(${translateX}px)`,
+          transition: 'none'
         }
       } else {
         return {}
       }
     },
-    isSwipeActive () {
+    isSwipeActive() {
       return this.swipeEvent.isActive && this.deviceType === 'sp'
     },
-    isOpenSwipeActive () {
+    isOpenSwipeActive() {
       return this.isSwipeActive && this.swipeEvent.startX < this.swipeThresholdX
     },
-    isCloseSwipeActive () {
+    isCloseSwipeActive() {
       return this.isSwipeActive && this.swipeEvent.startX < this.sidebarWidth
     },
-    openSwipedX () {
-      return Math.min(this.swipeEvent.x - this.swipeEvent.startX, this.sidebarWidth)
+    openSwipedX() {
+      return Math.min(
+        this.swipeEvent.x - this.swipeEvent.startX,
+        this.sidebarWidth
+      )
     },
-    closeSwipedX () {
+    closeSwipedX() {
       return Math.max(this.swipeEvent.startX - this.swipeEvent.x, 0)
     },
-    ...mapGetters([
-      'deviceType',
-      'isSidebarOpened'
-    ])
+    ...mapGetters(['deviceType', 'isSidebarOpened'])
   },
   methods: {
-    close () {
+    close() {
       this.$store.commit('closeSidebar')
       this.$store.commit('contractTitlebar')
     },
-    open () {
+    open() {
       this.$store.commit('openSidebar')
     }
   },
   watch: {
-    isOpenSwipeActive (newVar, oldVar) {
+    isOpenSwipeActive(newVar, oldVar) {
       if (!newVar && oldVar && this.openSwipedX > this.sidebarWidth / 4) {
         this.open()
       }
     },
-    isCloseSwipeActive (newVar, oldVar) {
+    isCloseSwipeActive(newVar, oldVar) {
       if (!newVar && oldVar && this.closeSwipedX > this.sidebarWidth / 4) {
         this.close()
       }

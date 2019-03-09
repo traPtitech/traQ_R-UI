@@ -17,41 +17,43 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       height: 0
     }
   },
   computed: {
-    userId () {
+    userId() {
       return this.message.userId
     },
-    userName () {
+    userName() {
       return this.getUserName(this.userId)
     },
-    content () {
+    content() {
       return this.message.content
     },
-    renderedContent () {
+    renderedContent() {
       return {
-        template: `<div class="slim-message-content markdown-body" v-pre>${md.render(this.content)}</div>`
+        template: `<div class="slim-message-content markdown-body" v-pre>${md.render(
+          this.content
+        )}</div>`
       }
     },
-    isOverflow () {
+    isOverflow() {
       return this.height >= 110
     }
   },
   methods: {
-    getUserName (userId) {
+    getUserName(userId) {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
     },
-    openModal () {
+    openModal() {
       this.$store.dispatch('openPinnedModal', this.message)
     }
   },
-  mounted () {
+  mounted() {
     this.height = this.$el.offsetHeight
   }
 }
@@ -66,7 +68,7 @@ export default {
   &:nth-child(n+2)
     margin:
       top: 12px
-  
+
   border:
     width: 1px
     style: solid
@@ -96,6 +98,4 @@ export default {
 
   code
     white-space: pre-wrap
-
 </style>
-

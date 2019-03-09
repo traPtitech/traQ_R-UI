@@ -11,7 +11,7 @@ import 'cropperjs/dist/cropper.css'
 
 export default {
   name: 'ImageCropper',
-  data () {
+  data() {
     return {
       cropper: null,
       value: null,
@@ -34,46 +34,58 @@ export default {
     }
   },
   computed: {
-    mime () {
+    mime() {
       const start = this.imageData.indexOf(':') + 1
       const end = this.imageData.indexOf(';') - start
       return this.imageData.substr(start, end)
     }
   },
   watch: {
-    imageData () {
+    imageData() {
       if (this.cropper) {
         this.cropper.replace(this.imageData)
       }
     }
   },
-  mounted () {
+  mounted() {
     const image = this.$el.querySelector('.image-cropper-raw-image')
     if (this.mime === 'image/gif') {
       this.cropperNote = 'GIFは切り抜きできません'
-      this.cropper = new Cropper(image, Object.assign({
-        // スタンプ編集用の設定
-        viewMode: 3,
-        aspectRatio: 1,
-        autoCropArea: 1,
-        dragMode: 'none',
-        cropBoxMovable: false,
-        cropBoxResizable: false,
-        toggleDragModeOnDblclick: false
-      }, this.options))
+      this.cropper = new Cropper(
+        image,
+        Object.assign(
+          {
+            // スタンプ編集用の設定
+            viewMode: 3,
+            aspectRatio: 1,
+            autoCropArea: 1,
+            dragMode: 'none',
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            toggleDragModeOnDblclick: false
+          },
+          this.options
+        )
+      )
     } else {
-      this.cropper = new Cropper(image, Object.assign({
-        // スタンプ編集用の設定
-        viewMode: 3,
-        aspectRatio: 1,
-        autoCropArea: 1,
-        dragMode: 'move',
-        cropend: () => {
-          this.cropper.getCroppedCanvas().toBlob(blob => {
-            this.$emit('input', blob)
-          }, this.mime)
-        }
-      }, this.options))
+      this.cropper = new Cropper(
+        image,
+        Object.assign(
+          {
+            // スタンプ編集用の設定
+            viewMode: 3,
+            aspectRatio: 1,
+            autoCropArea: 1,
+            dragMode: 'move',
+            cropend: () => {
+              this.cropper.getCroppedCanvas().toBlob(blob => {
+                this.$emit('input', blob)
+              }, this.mime)
+            }
+          },
+          this.options
+        )
+      )
     }
   }
 }

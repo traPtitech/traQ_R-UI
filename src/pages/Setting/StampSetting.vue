@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import client from '@/bin/client'
 import StampEditor from '@/components/Setting/StampEditor'
 import SettingTitle from '@/components/Setting/SettingTitle'
@@ -71,7 +71,7 @@ export default {
     IconClose,
     IconEdit
   },
-  data () {
+  data() {
     return {
       stampFile: null,
       stampName: '',
@@ -80,65 +80,71 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'fileUrl', 'getMyId'
-    ]),
-    stamps () {
+    ...mapGetters(['fileUrl', 'getMyId']),
+    stamps() {
       return this.$store.state.stampCategolized[0].stamps
     },
-    takenStampNames () {
+    takenStampNames() {
       return this.stamps.map(s => s.name)
     },
-    hasNameTaken () {
+    hasNameTaken() {
       return this.takenStampNames.includes(this.stampName)
     },
-    canNewStampBeRegistered () {
+    canNewStampBeRegistered() {
       return this.stampFile && this.stampName.length > 0 && !this.hasNameTaken
     },
-    stampIdsCreatedByMe () {
-      return this.stamps.filter(s => s.creatorId === this.getMyId).map(s => s.id)
+    stampIdsCreatedByMe() {
+      return this.stamps
+        .filter(s => s.creatorId === this.getMyId)
+        .map(s => s.id)
     }
   },
   methods: {
-    async addStamp () {
+    async addStamp() {
       await client.addStamp(this.stampName, this.stampFile)
       this.stampFile = null
       this.stampName = ''
       this.$store.dispatch('updateStamps')
     },
-    async deleteStamp (stampId) {
+    async deleteStamp(stampId) {
       await client.deleteStamp(stampId)
       this.$store.dispatch('updateStamps')
     },
-    stampItemStyle (fileId) {
+    stampItemStyle(fileId) {
       return `background-image: url(${this.fileUrl(fileId)})`
     },
-    creatorName (creatorId) {
+    creatorName(creatorId) {
       return this.$store.state.memberMap[creatorId].name
     },
-    isStampCreatedByMe (stampId) {
+    isStampCreatedByMe(stampId) {
       return this.stampIdsCreatedByMe.includes(stampId)
     },
-    showStampEditor (stampId) {
-      return this.isStampCreatedByMe(stampId) && this.stampIdToEdit === stampId && this.stampAction
+    showStampEditor(stampId) {
+      return (
+        this.isStampCreatedByMe(stampId) &&
+        this.stampIdToEdit === stampId &&
+        this.stampAction
+      )
     },
-    toggleEdit (stampId) {
+    toggleEdit(stampId) {
       this.stampIdToEdit = stampId
       this.stampAction = 'edit'
     },
-    toggleDelete (stampId) {
+    toggleDelete(stampId) {
       this.stampIdToEdit = stampId
       this.stampAction = 'delete'
     },
-    closeAction (stampId) {
+    closeAction(stampId) {
       if (stampId === this.stampIdToEdit) return
       this.stampIdToEdit = ''
       this.stampAction = ''
     }
   },
-  mounted () {
+  mounted() {
     this.openMode = this.$store.state.openMode
-    this.openChannelName = this.$store.getters.getChannelPathById(this.$store.state.openChannelId)
+    this.openChannelName = this.$store.getters.getChannelPathById(
+      this.$store.state.openChannelId
+    )
   }
 }
 </script>
@@ -206,5 +212,4 @@ export default {
 
 .stamp-delete-button
   margin: 1rem 0
-
 </style>

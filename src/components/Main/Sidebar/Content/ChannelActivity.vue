@@ -18,14 +18,13 @@ export default {
     ChannelActivityElement,
     IconLandscapeUnderConstruction
   },
-  props: {
-  },
+  props: {},
   computed: {
-//     messages () {
-//       return this.$store.state.channelRecentMessages
-//         .filter(message => !!this.$store.state.channelMap[message.parentChannelId] &&
-//                            !this.$store.state.channelMap[message.parentChannelId].dm)
-//     }
+    //     messages () {
+    //       return this.$store.state.channelRecentMessages
+    //         .filter(message => !!this.$store.state.channelMap[message.parentChannelId] &&
+    //                            !this.$store.state.channelMap[message.parentChannelId].dm)
+    //     }
   }
 }
 </script>

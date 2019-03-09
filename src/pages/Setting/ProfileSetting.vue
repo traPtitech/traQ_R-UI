@@ -50,12 +50,12 @@ export default {
     SettingFileInput,
     SettingButton
   },
-  data () {
+  data() {
     return {
       state: 'default',
-      encodedFile: null,  // base64エンコードされた選択中のファイル
-      croppedBlob: null,  // 切り抜かれた画像のBlob
-      croppedBlobEncoded: null,  // 切り抜かれた画像のData URL
+      encodedFile: null, // base64エンコードされた選択中のファイル
+      croppedBlob: null, // 切り抜かれた画像のBlob
+      croppedBlobEncoded: null, // 切り抜かれた画像のData URL
       done: '',
       displayName: '',
       twitterId: '',
@@ -66,16 +66,18 @@ export default {
     }
   },
   computed: {
-    icon () {
+    icon() {
       return this.croppedBlob || this.rawIconFile
     },
-    iconSrc () {
+    iconSrc() {
       return this.croppedBlobEncoded || this.iconFileId
     },
-    iconFileId () {
-      return `${this.$store.state.baseURL}/api/1.0/files/${this.$store.state.me.iconFileId}`
+    iconFileId() {
+      return `${this.$store.state.baseURL}/api/1.0/files/${
+        this.$store.state.me.iconFileId
+      }`
     },
-    isChanged () {
+    isChanged() {
       if (this.icon) return true
       if (this.displayName !== this.$store.state.me.displayName) return true
       if (this.twitterId !== this.$store.state.me.twitterId) return true
@@ -83,23 +85,26 @@ export default {
       if (this.checkNewPassword !== '') return true
       return false
     },
-    needPass () {
+    needPass() {
       if (this.newPassword !== '') return true
       if (this.checkNewPassword !== '') return true
       return false
     }
   },
   methods: {
-    onFileLoad (dataUrl) {
+    onFileLoad(dataUrl) {
       this.encodedFile = dataUrl
     },
-    async submitWithCertification () {
+    async submitWithCertification() {
       if (this.state === 'processing') {
         return
       }
       this.done = ''
       this.state = 'processing'
-      if (this.newPassword !== '' && this.newPassword !== this.checkNewPassword) {
+      if (
+        this.newPassword !== '' &&
+        this.newPassword !== this.checkNewPassword
+      ) {
         this.state = 'failed'
         this.error = '新しいパスワードと確認用が異なります'
         return
@@ -111,46 +116,57 @@ export default {
       }
       if (this.newPassword.length < 10 || this.newPassword.length > 32) {
         this.state = 'failed'
-        this.error = '新しいパスワードは10文字以上32文字以下でなければなりません'
+        this.error =
+          '新しいパスワードは10文字以上32文字以下でなければなりません'
         return
       }
       const tasks = []
       if (this.icon) {
-        tasks.push(client.changeIcon(this.icon).then(() => {
-          this.done += 'アイコン '
-        }))
+        tasks.push(
+          client.changeIcon(this.icon).then(() => {
+            this.done += 'アイコン '
+          })
+        )
         this.rawIconFile = null
         this.encodedFile = null
         this.croppedBlob = null
         this.croppedBlobEncoded = null
       }
       if (this.displayName !== this.$store.state.me.displayName) {
-        tasks.push(client.changeDisplayName(this.displayName).then(() => {
-          this.done += '表示名 '
-        }))
+        tasks.push(
+          client.changeDisplayName(this.displayName).then(() => {
+            this.done += '表示名 '
+          })
+        )
       }
       if (this.twitterId !== this.$store.state.me.twitterId) {
-        tasks.push(client.changeTwitterId(this.twitterId).then(() => {
-          this.done += 'Twitter ID '
-        }))
+        tasks.push(
+          client.changeTwitterId(this.twitterId).then(() => {
+            this.done += 'Twitter ID '
+          })
+        )
       }
       if (this.newPassword !== '') {
-        tasks.push(client.changePassword(this.oldPassword, this.newPassword).then(() => {
-          this.done += 'パスワード '
-        }))
+        tasks.push(
+          client.changePassword(this.oldPassword, this.newPassword).then(() => {
+            this.done += 'パスワード '
+          })
+        )
       }
-      return Promise.all(tasks).then(() => {
-        this.oldPassword = ''
-        this.newPassword = ''
-        this.checkNewPassword = ''
-        this.state = 'successed'
-        this.$store.dispatch('whoAmI')
-      }).catch(e => {
-        this.state = 'failed'
-        this.error = '失敗しました'
-      })
+      return Promise.all(tasks)
+        .then(() => {
+          this.oldPassword = ''
+          this.newPassword = ''
+          this.checkNewPassword = ''
+          this.state = 'successed'
+          this.$store.dispatch('whoAmI')
+        })
+        .catch(e => {
+          this.state = 'failed'
+          this.error = '失敗しました'
+        })
     },
-    async submit () {
+    async submit() {
       if (this.state === 'processing') {
         return
       }
@@ -158,35 +174,43 @@ export default {
       this.state = 'processing'
       const tasks = []
       if (this.icon) {
-        tasks.push(client.changeIcon(this.icon).then(() => {
-          this.done += 'アイコン '
-        }))
+        tasks.push(
+          client.changeIcon(this.icon).then(() => {
+            this.done += 'アイコン '
+          })
+        )
         this.rawIconFile = null
         this.encodedFile = null
         this.croppedBlob = null
       }
       if (this.displayName !== this.$store.state.me.displayName) {
-        tasks.push(client.changeDisplayName(this.displayName).then(() => {
-          this.done += '表示名 '
-        }))
+        tasks.push(
+          client.changeDisplayName(this.displayName).then(() => {
+            this.done += '表示名 '
+          })
+        )
       }
       if (this.twitterId !== this.$store.state.me.twitterId) {
-        tasks.push(client.changeTwitterId(this.twitterId).then(() => {
-          this.done += 'Twitter ID '
-        }))
+        tasks.push(
+          client.changeTwitterId(this.twitterId).then(() => {
+            this.done += 'Twitter ID '
+          })
+        )
       }
-      return Promise.all(tasks).then(() => {
-        this.state = 'successed'
-        this.$store.dispatch('whoAmI')
-        this.$store.dispatch('updateMembers')
-      }).catch(e => {
-        this.state = 'failed'
-        this.error = '失敗しました'
-      })
+      return Promise.all(tasks)
+        .then(() => {
+          this.state = 'successed'
+          this.$store.dispatch('whoAmI')
+          this.$store.dispatch('updateMembers')
+        })
+        .catch(e => {
+          this.state = 'failed'
+          this.error = '失敗しました'
+        })
     }
   },
   watch: {
-    croppedBlob () {
+    croppedBlob() {
       const reader = new FileReader()
       reader.onload = e => {
         this.croppedBlobEncoded = e.target.result
@@ -194,7 +218,7 @@ export default {
       reader.readAsDataURL(this.croppedBlob)
     }
   },
-  mounted () {
+  mounted() {
     this.displayName = this.$store.state.me.displayName
     this.twitterId = this.$store.state.me.twitterId
   }

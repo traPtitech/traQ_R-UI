@@ -28,18 +28,23 @@ export default {
     IconBack
   },
   methods: {
-    closeModal () {
+    closeModal() {
       this.$store.dispatch('modal/close')
     },
-    backToUserModal () {
-      this.$store.dispatch('openUserModal', this.$store.state.modal.lastUser.userId)
+    backToUserModal() {
+      this.$store.dispatch(
+        'openUserModal',
+        this.$store.state.modal.lastUser.userId
+      )
     }
   },
   computed: {
     ...mapState('modal', ['data']),
     ...mapState(['memberMap']),
-    members () {
-      return this.$store.getters.sortByUserId(this.data.members).map(memberId => this.memberMap[memberId])
+    members() {
+      return this.$store.getters
+        .sortByUserId(this.data.members)
+        .map(memberId => this.memberMap[memberId])
     }
   }
 }
