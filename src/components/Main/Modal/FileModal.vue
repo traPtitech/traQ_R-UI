@@ -1,8 +1,8 @@
 <template lang="pug">
 base-common-modal(:title="`FILE: ${data.name}`" small)
   icon-file(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
-  .file-modal-wrapper
-    .file-modal-image(:style="imageStyle")
+  .image-viewer-container
+    image-viewer(:url="fileUrl(data.fileId)")
 
 </template>
 
@@ -10,6 +10,7 @@ base-common-modal(:title="`FILE: ${data.name}`" small)
 import { mapState, mapActions, mapGetters } from 'vuex'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
+import ImageViewer from '@/components/Main/Modal/Util/ImageViewer'
 import IconFile from '@/components/Icon/IconFile'
 
 export default {
@@ -17,7 +18,8 @@ export default {
   components: {
     BaseCommonModal,
     MemberElement,
-    IconFile
+    IconFile,
+    ImageViewer
   },
   methods: {
     ...mapActions({
@@ -26,28 +28,13 @@ export default {
   },
   computed: {
     ...mapState('modal', ['data']),
-    ...mapGetters(['fileUrl']),
-    imageStyle() {
-      return {
-        backgroundImage: `url(${this.fileUrl(this.data.fileId)})`
-      }
-    }
+    ...mapGetters(['fileUrl'])
   }
 }
 </script>
 
 <style lang="sass">
-.file-modal-wrapper
+.image-viewer-container
   height: calc(80vh - 6rem)
-  display: flex
-  justify-content: center
-  align-items: center
-
-.file-modal-image
   width: 100%
-  height: 100%
-  background:
-    size: contain
-    repeat: no-repeat
-    position: center
 </style>
