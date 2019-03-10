@@ -7,7 +7,7 @@ content.content-wrap.is-scroll
       .new-message-partition(v-if="new Date(message.createdAt) - updateDate === 0")
         span
           | 新規メッセージ
-      MessageElement(:model="message" :isFirstView="isFirstView" @rendered="messageRendered")
+      message-element(:model="message" :isFirstView="isFirstView" @rendered="messageRendered")
     .message-loading.flex-center(v-if="messageLoading")
       | loading
     .message-no-more-message(v-if="noMoreMessage")
@@ -16,6 +16,7 @@ content.content-wrap.is-scroll
 
 <script>
 import MessageElement from './MessageElement/MessageElement'
+import { debounce } from 'debounce'
 
 export default {
   name: 'MessageContainer',
@@ -32,58 +33,59 @@ export default {
   created() {
     this.$store.commit('loadEndComponent')
   },
-  async mounted () {
+  async mounted() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'addMessages') {
-        if (state.messages[state.messages.length - 1].userId === state.me.userId) {
+        if (
+          state.messages[state.messages.length - 1].userId === state.me.userId
+        ) {
           this.$el.scrollTop = this.$el.scrollHeight
         }
       }
     })
   },
   methods: {
-    loadMessages () {
+    loadMessages() {
       this.messageLoading = true
       this.noMoreMessage = false
-      this.$store.dispatch('getMessages')
-        .then(res => {
-          console.log('getMessages:', res)
-          if (!res) {
-            this.noMoreMessage = true
-          }
-          this.messageLoading = false
-          this.scrollToBottom()
-          this.$el.scrollTop += 300
-          this.isFirstView = false
-        })
+      this.$store.dispatch('getMessages').then(res => {
+        console.log('getMessages:', res)
+        if (!res) {
+          this.noMoreMessage = true
+        }
+        this.messageLoading = false
+        this.scrollToBottom()
+        this.$el.scrollTop += 300
+        this.isFirstView = false
+      })
     },
     date(datetime) {
       const d = new Date(datetime)
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
     },
-    messageRendered () {
+    messageRendered() {
       this.$nextTick(() => {
         this.scrollToBottom()
       })
     },
-    scrollToBottom () {
+    scrollToBottom() {
       if (!this.isFirstView) return
       this.$el.scrollTop = this.$el.scrollHeight
     }
   },
   computed: {
-    currentChannel () {
+    currentChannel() {
       return this.$store.state.currentChannel
     },
     updateDate() {
       return this.$store.getters.getCurrentChannelUpdateDate
     },
-    messages () {
+    messages() {
       return this.$store.state.messages.slice().reverse()
     }
   },
   watch: {
-    currentChannel () {
+    currentChannel() {
       this.messageLoading = false
       this.noMoreMessage = false
       this.isFirstView = true
@@ -180,5 +182,4 @@ export default {
 .message-loading
   width: 100%
   height: 100px
-
 </style>
