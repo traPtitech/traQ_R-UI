@@ -1,8 +1,7 @@
 <template lang="pug">
   .message-view
     message-container
-    .message-view-input-wrap
-      message-input
+    message-input
 </template>
 
 <script>

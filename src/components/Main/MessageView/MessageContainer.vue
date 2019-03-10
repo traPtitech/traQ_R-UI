@@ -16,7 +16,6 @@ content.content-wrap.is-scroll
 
 <script>
 import MessageElement from './MessageElement/MessageElement'
-import { debounce } from 'debounce'
 
 export default {
   name: 'MessageContainer',
