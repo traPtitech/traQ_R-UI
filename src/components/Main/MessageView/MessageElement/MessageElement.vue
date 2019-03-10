@@ -78,8 +78,7 @@ import IconPen from '@/components/Icon/IconPen'
 export default {
   name: 'MessageElement',
   props: {
-    model: Object,
-    isFirstView: Boolean
+    model: Object
   },
   components: {
     MessageAttachedMessages,
@@ -190,11 +189,9 @@ export default {
       )).filter(e => e)
       this.isRendered = true
 
-      if (!this.isFirstView) return
       this.$nextTick(() => {
         this.$emit('rendered')
       })
-      // this.$el.parentElement.parentElement.parentElement.scrollTop += this.$el.parentElement.scrollHeight
     },
     render () {
       this.renderedBody = {
@@ -505,7 +502,7 @@ export default {
   height: 40px
   background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
     size: 400% 100%
-  animation: dummy-gradient 15s ease infinite
+  // animation: dummy-gradient 15s ease infinite
   border-radius: 100%
 
 .message-dummy-detail-wrap
@@ -521,7 +518,7 @@ export default {
   margin-left: 10px
   background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
     size: 400% 100%
-  animation: dummy-gradient 15s ease infinite
+  // animation: dummy-gradient 15s ease infinite
 
 .message-dummy-detail-etc
   opacity: 0.6
@@ -531,7 +528,7 @@ export default {
   margin-left: 10px
   background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
     size: 400% 100%
-  animation: dummy-gradient 15s ease infinite
+  // animation: dummy-gradient 15s ease infinite
 
 .message-dummy-content-wrap
   grid-area: contents
@@ -546,7 +543,7 @@ export default {
     left: 10px
   background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
     size: 400% 100%
-  animation: dummy-gradient 15s ease infinite
+  // animation: dummy-gradient 15s ease infinite
 
 .message-dummy-content-attached
   opacity: 0.6
@@ -558,7 +555,7 @@ export default {
     left: 10px
   background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
     size: 400% 100%
-  animation: dummy-gradient 15s ease infinite
+  // animation: dummy-gradient 15s ease infinite
 
 @keyframes dummy-gradient
 	0%

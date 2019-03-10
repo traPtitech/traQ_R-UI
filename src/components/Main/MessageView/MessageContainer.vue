@@ -1,5 +1,5 @@
 <template lang="pug">
-content.content-wrap.is-scroll
+content.content-wrap.is-scroll(@scroll="scrollHandle")
   .message-list
     .message-item(v-for="(message, index) in messages" :key="message.messageId")
       time.date-partition(v-if="index === messages.length - 1 || date(messages[index + 1].createdAt) !== date(message.createdAt)")
@@ -7,9 +7,9 @@ content.content-wrap.is-scroll
       .new-message-partition(v-if="new Date(message.createdAt) - updateDate === 0")
         span
           | 新規メッセージ
-      message-element(:model="message" :isFirstView="isFirstView" @rendered="messageRendered")
-    .message-loading.flex-center(v-if="messageLoading")
-      | loading
+      message-element(:model="message" @rendered="messageRendered")
+    //- .message-loading.flex-center(v-if="messageLoading")
+    //-   | loading
     .message-no-more-message(v-if="noMoreMessage")
       | これ以上メッセージはありません
 </template>
@@ -23,7 +23,8 @@ export default {
     return {
       messageLoading: false,
       noMoreMessage: false,
-      isFirstView: true
+      isFirstView: true,
+      savedScrollPosition: 0
     }
   },
   components: {
@@ -38,13 +39,27 @@ export default {
         if (
           state.messages[state.messages.length - 1].userId === state.me.userId
         ) {
+          //自分がメッセージ投稿時
           this.$el.scrollTop = this.$el.scrollHeight
         }
       }
     })
   },
   methods: {
+    scrollHandle () {
+      if (this.messageLoading) {
+        this.savedScrollPosition = this.$el.scrollHeight - this.$el.scrollTop
+        return
+      }
+      if (this.noMoreMessage) {
+        return
+      }
+      if (this.$el.scrollTop <= 600) {
+        this.loadMessages()
+      }
+    },
     loadMessages() {
+      this.savedScrollPosition = this.$el.scrollHeight - this.$el.scrollTop
       this.messageLoading = true
       this.noMoreMessage = false
       this.$store.dispatch('getMessages').then(res => {
@@ -54,7 +69,6 @@ export default {
         }
         this.messageLoading = false
         this.scrollToBottom()
-        this.$el.scrollTop += 300
         this.isFirstView = false
       })
     },
@@ -68,8 +82,16 @@ export default {
       })
     },
     scrollToBottom() {
-      if (!this.isFirstView) return
-      this.$el.scrollTop = this.$el.scrollHeight
+      if (!this.isFirstView) {
+        this.$el.scrollTop = this.$el.scrollHeight - this.savedScrollPosition
+        this.$el.scrollTo({
+          top: this.$el.scrollHeight - this.savedScrollPosition,
+          left: 0,
+          behavior: 'smooth'
+        })
+      } else {
+        this.$el.scrollTop = this.$el.scrollHeight
+      }
     }
   },
   computed: {
@@ -180,5 +202,7 @@ export default {
 
 .message-loading
   width: 100%
-  height: 100px
+  height: 30px
+
+
 </style>
