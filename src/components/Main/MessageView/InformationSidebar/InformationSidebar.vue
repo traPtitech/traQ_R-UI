@@ -57,8 +57,16 @@ import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 
 export default {
   name: 'InformationSidebar',
-  components: {IconClose, IconTopic, IconPin, IconEdit, SlimMessageElement, SlimMemberElement, MemberElement},
-  data () {
+  components: {
+    IconClose,
+    IconTopic,
+    IconPin,
+    IconEdit,
+    SlimMessageElement,
+    SlimMemberElement,
+    MemberElement
+  },
+  data() {
     return {
       isOpened: false,
       isNotFirst: false,
@@ -68,35 +76,36 @@ export default {
     }
   },
   computed: {
-    route () {
+    route() {
       return this.$route
     },
-    isUserDM () {
+    isUserDM() {
       return this.$route.params.user !== undefined
     },
-    isChannel () {
+    isChannel() {
       return this.$route.params.channel !== undefined
     },
-    onlineUsersNumber () {
+    onlineUsersNumber() {
       return this.$store.state.heartbeatStatus.userStatuses.length
     },
-    onlineUsers () {
+    onlineUsers() {
       return this.$store.state.heartbeatStatus.userStatuses
     },
-    topic () {
+    topic() {
       if (this.$route.params.user) return ''
       return this.$store.state.currentChannelTopic.text
     },
-    pinnedMessages () {
-      return this.$store.state.currentChannelPinnedMessages
-        .sort((a, b) => {
+    pinnedMessages() {
+      return [...this.$store.state.currentChannelPinnedMessages].sort(
+        (a, b) => {
           return new Date(a.dateTime) - new Date(b.dateTime)
-        })
+        }
+      )
     },
-    hasPinnedMessage () {
+    hasPinnedMessage() {
       return this.pinnedMessages.length > 0
     },
-    sidebarClass () {
+    sidebarClass() {
       return {
         'is-opened': this.isOpened,
         'is-closed': this.isNotFirst && !this.isOpened
@@ -104,65 +113,69 @@ export default {
     }
   },
   methods: {
-    openSidebar () {
+    openSidebar() {
       this.isOpened = true
     },
-    closeSidebar () {
+    closeSidebar() {
       this.isOpened = false
       this.isNotFirst = true
       this.isScrolled = false
     },
-    handleScroll () {
+    handleScroll() {
       if (this.$refs.scroller.scrollTop > 0) {
         this.isScrolled = true
       } else {
         this.isScrolled = false
       }
     },
-    toggleTopicEdit () {
+    toggleTopicEdit() {
       this.isTopicEditing = !this.isTopicEditing
     },
-    async updateTopic () {
+    async updateTopic() {
       await this.$store.dispatch('updateCurrentChannelTopic', this.newTopic)
       this.isTopicEditing = false
     },
-    listen: function (target, eventType, callback) {
+    listen: function(target, eventType, callback) {
       if (!this._eventRemovers) {
         this._eventRemovers = []
       }
       target.addEventListener(eventType, callback)
       this._eventRemovers.push({
-        remove: function () {
+        remove: function() {
           target.removeEventListener(eventType, callback)
         }
       })
     }
   },
-  created: function () {
+  created: function() {
     this.$nextTick(() => {
-      this.listen(window, 'click', function (e) {
-        if (!this.$el.contains(e.target)) {
-          this.isOpened = false
-        }
-      }.bind(this))
+      this.listen(
+        window,
+        'click',
+        function(e) {
+          if (!this.$el.contains(e.target)) {
+            this.isOpened = false
+          }
+        }.bind(this)
+      )
     })
   },
-  destroyed: function () {
+  destroyed: function() {
     if (this._eventRemovers) {
-      this._eventRemovers.forEach(function (eventRemover) {
+      this._eventRemovers.forEach(function(eventRemover) {
         eventRemover.remove()
       })
     }
   },
   watch: {
-    route () {
+    route() {
       this.isTopicEditing = false
     },
-    topic () {
+    topic() {
       this.newTopic = this.topic
     }
   },
-  mounted () {
+  mounted() {
     this.newTopic = this.topic
   }
 }
@@ -191,7 +204,7 @@ export default {
       duration: .4s
       delay: 0s
       timing-function: ease-in
-    
+
   &.is-opened
     cursor: auto
     +mq(pc)
@@ -205,7 +218,7 @@ export default {
       delay: 0s
       timing-function: ease
       fill-mode: forwards
-  
+
   +mq(pc)
     right: 0
     top: 0
@@ -335,7 +348,7 @@ export default {
       right: 12px
     margin:
       left: auto
-    // cursor: pointer 
+    // cursor: pointer
 
 .online-information-container
   display: flex
@@ -354,7 +367,7 @@ export default {
 
 .separator-line
   position: relative
-  
+
   &:before
     content: ''
     position: absolute
@@ -402,4 +415,3 @@ export default {
   box-sizing: border-box
   width: 100%
 </style>
-

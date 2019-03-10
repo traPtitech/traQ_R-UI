@@ -16,15 +16,15 @@
 export default {
   name: 'ActionDetector',
   props: ['onDragStyle'],
-  data () {
+  data() {
     return {
       style: '',
       isTouchActive: false
     }
   },
   methods: {
-    dragover (event) {},
-    dropFile (event) {
+    dragover() {},
+    dropFile(event) {
       if (process.env.NODE_ENV === 'development') {
         console.info('file drop event', event)
       }
@@ -32,18 +32,18 @@ export default {
         this.$emit('dropFile', event.dataTransfer.files)
       }
     },
-    start (event) {
+    start(event) {
       this.isTouchActive = true
       this.$emit('swipeStart', event)
     },
-    move (event) {
+    move(event) {
       this.$emit('swipeMoving', event)
     },
-    end (event) {
+    end(event) {
       this.isTouchActive = false
       this.$emit('swipeEnd', event)
     },
-    click (event) {
+    click() {
       // console.log(event)
     }
   }

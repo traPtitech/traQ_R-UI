@@ -45,7 +45,7 @@ export default {
     IconLocked,
     IconUnlocked
   },
-  data () {
+  data() {
     return {
       tagInput: ''
     }
@@ -55,56 +55,59 @@ export default {
     ...mapGetters('modal', {
       tags: 'currentUserTagsSorted'
     }),
-    hasAuth () {
+    hasAuth() {
       if (this.data) {
         return this.data.name === this.$store.state.me.name
       }
       return false
     },
-    detailInputIconStyle () {
+    detailInputIconStyle() {
       return {
         color: this.tagInput.length > 0 ? 'gray' : 'lightgray'
       }
     }
   },
   methods: {
-    openTagModal (tag) {
+    openTagModal(tag) {
       this.$store.dispatch('openTagModal', tag)
     },
-    onInputChange (event) {
-      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey || event.shiftKey)) {
+    onInputChange(event) {
+      if (
+        event.key === 'Enter' &&
+        (event.ctrlKey || event.metaKey || event.shiftKey)
+      ) {
         this.addTag()
         event.returnValue = false
       }
     },
-    addTag () {
+    addTag() {
       console.log(this.tagInput)
       if (this.tagInput === '') {
         return
       }
-      client.addUserTag(this.data.userId, this.tagInput)
-      .then(() => {
+      client.addUserTag(this.data.userId, this.tagInput).then(() => {
         this.tagInput = ''
         this.$store.dispatch('modal/updateCurrentUserTags')
       })
     },
-    eraseTag (id) {
-      client.deleteUserTag(this.data.userId, this.tags[id].tagId)
-      .then(() => {
+    eraseTag(id) {
+      client.deleteUserTag(this.data.userId, this.tags[id].tagId).then(() => {
         this.$store.dispatch('modal/updateCurrentUserTags')
       })
     },
-    lockTag (id) {
-      client.changeLockUserTag(this.data.userId, this.tags[id].tagId, true)
-      .then(() => {
-        this.$store.dispatch('modal/updateCurrentUserTags')
-      })
+    lockTag(id) {
+      client
+        .changeLockUserTag(this.data.userId, this.tags[id].tagId, true)
+        .then(() => {
+          this.$store.dispatch('modal/updateCurrentUserTags')
+        })
     },
-    unlockTag (id) {
-      client.changeLockUserTag(this.data.userId, this.tags[id].tagId, false)
-      .then(() => {
-        this.$store.dispatch('modal/updateCurrentUserTags')
-      })
+    unlockTag(id) {
+      client
+        .changeLockUserTag(this.data.userId, this.tags[id].tagId, false)
+        .then(() => {
+          this.$store.dispatch('modal/updateCurrentUserTags')
+        })
     }
   }
 }

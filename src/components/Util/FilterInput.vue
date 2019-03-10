@@ -30,13 +30,13 @@ export default {
       defualt: false
     }
   },
-  data () {
+  data() {
     return {
       filterText: ''
     }
   },
   methods: {
-    reset () {
+    reset() {
       this.filterText = ''
       this.$emit('inputFilter', '')
     }
@@ -60,7 +60,7 @@ input.filter-input
   background: rgba(255,255,255,0.2)
   color: $text-light-color
   box-sizing: border-box
-  
+
   &::placeholder
     color: $text-light-color
     opacity: 0.8
@@ -73,6 +73,4 @@ input.filter-input
   right: 10px
   top: 50%
   transform: translateY(-50%)
-
 </style>
-

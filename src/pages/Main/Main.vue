@@ -24,12 +24,12 @@ import Sidebar from '@/components/Main/Sidebar/Sidebar'
 
 export default {
   name: 'Main',
-  metaInfo () {
+  metaInfo() {
     return {
       title: this.title
     }
   },
-  data () {
+  data() {
     return {
       heartbeat: null,
       swipeEvent: {
@@ -43,15 +43,21 @@ export default {
     }
   },
   components: {
-    Titlebar: window.asyncLoadComponents(import('@/components/Main/MessageView/Titlebar')),
-    ChannelInformation: window.asyncLoadComponents(import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')),
-    PickerModal: window.asyncLoadComponents(import('@/components/Main/PickerModal')),
+    Titlebar: window.asyncLoadComponents(
+      import('@/components/Main/MessageView/Titlebar')
+    ),
+    ChannelInformation: window.asyncLoadComponents(
+      import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')
+    ),
+    PickerModal: window.asyncLoadComponents(
+      import('@/components/Main/PickerModal')
+    ),
     Sidebar,
     MessageView,
     Modal: window.asyncLoadComponents(import('@/components/Main/Modal')),
     ActionDetector
   },
-  async created () {
+  async created() {
     if (!this.$route.params.channel) {
       if (!this.$route.params.user) {
         this.$router.push('/channels/general')
@@ -67,16 +73,19 @@ export default {
         })
       }
       const messaging = window.firebase.messaging()
-      messaging.requestPermission()
+      messaging
+        .requestPermission()
         .then(() => {
           console.log('permission granted')
-          messaging.getToken()
-            .then(currentToken => {
-              client.registerDevice(currentToken)
-            })
+          messaging.getToken().then(currentToken => {
+            client.registerDevice(currentToken)
+          })
 
           messaging.onMessage(payload => {
-            const notification = this.notify(payload.data.title || 'traQ', payload.data)
+            const notification = this.notify(
+              payload.data.title || 'traQ',
+              payload.data
+            )
             if (notification) {
               notification.onclick = () => {
                 window.focus()
@@ -90,10 +99,9 @@ export default {
         })
 
       messaging.onTokenRefresh(() => {
-        messaging.getToken()
-          .then(currentToken => {
-            client.registerDevice(currentToken)
-          })
+        messaging.getToken().then(currentToken => {
+          client.registerDevice(currentToken)
+        })
       })
     }
 
@@ -138,40 +146,87 @@ export default {
       sse.resetEventListener()
       sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
       sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
-      sse.on('USER_TAGS_UPDATED', (data) => this.userTagsUpdated(data))
-      sse.on('USER_GROUP_UPDATED', (data) => this.userGroupUpdated(data))
-      sse.on('USER_ICON_UPDATED', (data) => this.userIconUpdated(data))
-      sse.on('USER_ONLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: true}))
-      sse.on('USER_OFFLINE', (data) => this.$store.dispatch('updateUserOnline', {userId: data.id, isOnline: false}))
-      sse.on('CHANNEL_CREATED', (data) => this.$store.dispatch('addChannel', data.id))
-      sse.on('CHANNEL_DELETED', (data) => this.$store.dispatch('deleteChannel', data.id))
-      sse.on('CHANNEL_UPDATED', (data) => this.channelUpdated(data.id))
-      sse.on('CHANNEL_STARED', () => this.$store.dispatch('updateStaredChannels'))
-      sse.on('CHANNEL_UNSTARED', () => this.$store.dispatch('updateStaredChannels'))
-      sse.on('CHANNEL_VISIBILITY_CHANGED', () => this.$store.dispatch('updateChannels'))
+      sse.on('USER_TAGS_UPDATED', data => this.userTagsUpdated(data))
+      sse.on('USER_GROUP_UPDATED', data => this.userGroupUpdated(data))
+      sse.on('USER_ICON_UPDATED', data => this.userIconUpdated(data))
+      sse.on('USER_ONLINE', data =>
+        this.$store.dispatch('updateUserOnline', {
+          userId: data.id,
+          isOnline: true
+        })
+      )
+      sse.on('USER_OFFLINE', data =>
+        this.$store.dispatch('updateUserOnline', {
+          userId: data.id,
+          isOnline: false
+        })
+      )
+      sse.on('CHANNEL_CREATED', data =>
+        this.$store.dispatch('addChannel', data.id)
+      )
+      sse.on('CHANNEL_DELETED', data =>
+        this.$store.dispatch('deleteChannel', data.id)
+      )
+      sse.on('CHANNEL_UPDATED', data => this.channelUpdated(data.id))
+      sse.on('CHANNEL_STARED', () =>
+        this.$store.dispatch('updateStaredChannels')
+      )
+      sse.on('CHANNEL_UNSTARED', () =>
+        this.$store.dispatch('updateStaredChannels')
+      )
+      sse.on('CHANNEL_VISIBILITY_CHANGED', () =>
+        this.$store.dispatch('updateChannels')
+      )
       sse.on('MESSAGE_CREATED', this.messageCreated)
       sse.on('MESSAGE_UPDATED', this.messageUpdated)
       sse.on('MESSAGE_DELETED', this.messageDeleted)
       sse.on('MESSAGE_READ', () => this.$store.dispatch('updateUnreadMessages'))
-      sse.on('MESSAGE_STAMPED', (data) => this.$store.commit('updateMessageStamp', data))
-      sse.on('MESSAGE_UNSTAMPED', (data) => this.$store.commit('deleteMessageStamp', data))
-      sse.on('MESSAGE_PINNED', () => this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
-      sse.on('MESSAGE_UNPINNED', () => this.$store.dispatch('getCurrentChannelPinnedMessages', this.$store.state.currentChannel.channelId))
-      sse.on('MESSAGE_CLIPPED', () => this.$store.dispatch('updateClipedMessages'))
-      sse.on('MESSAGE_UNCLIPPED', () => this.$store.dispatch('updateClipedMessages'))
-      sse.on('STAMP_CREATED', (data) => this.$store.dispatch('addStamp', data.id))
+      sse.on('MESSAGE_STAMPED', data =>
+        this.$store.commit('updateMessageStamp', data)
+      )
+      sse.on('MESSAGE_UNSTAMPED', data =>
+        this.$store.commit('deleteMessageStamp', data)
+      )
+      sse.on('MESSAGE_PINNED', () =>
+        this.$store.dispatch(
+          'getCurrentChannelPinnedMessages',
+          this.$store.state.currentChannel.channelId
+        )
+      )
+      sse.on('MESSAGE_UNPINNED', () =>
+        this.$store.dispatch(
+          'getCurrentChannelPinnedMessages',
+          this.$store.state.currentChannel.channelId
+        )
+      )
+      sse.on('MESSAGE_CLIPPED', () =>
+        this.$store.dispatch('updateClipedMessages')
+      )
+      sse.on('MESSAGE_UNCLIPPED', () =>
+        this.$store.dispatch('updateClipedMessages')
+      )
+      sse.on('STAMP_CREATED', data => this.$store.dispatch('addStamp', data.id))
       sse.on('STAMP_DELETED', () => this.$store.dispatch('updateStamps'))
       sse.on('TRAQ_UPDATED', () => location.reload(true))
     }
 
     this.heartbeat = setInterval(() => {
       if (this.$store.state.channelId !== this.$store.state.directMessageId) {
-        client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
-        .then(res => {
-          this.$store.commit('updateHeartbeatStatus', res.data)
-        })
+        client
+          .postHeartbeat(
+            this.getStatus(),
+            this.$store.state.currentChannel.channelId
+          )
+          .then(res => {
+            this.$store.commit('updateHeartbeatStatus', res.data)
+          })
       } else {
-        this.$store.commit('updateHeartbeatStatus', {userStatuses: [{userId: this.$store.state.me.userId, status: 'none'}], channelId: ''})
+        this.$store.commit('updateHeartbeatStatus', {
+          userStatuses: [
+            { userId: this.$store.state.me.userId, status: 'none' }
+          ],
+          channelId: ''
+        })
       }
     }, 3000)
 
@@ -182,12 +237,12 @@ export default {
     await this.$nextTick()
     container.scrollTop = container.scrollHeight
   },
-  beforeDestroy () {
+  beforeDestroy() {
     sse.stopListen()
     clearInterval(this.heartbeat)
   },
   methods: {
-    getStatus () {
+    getStatus() {
       if (this.$store.state.editing) {
         this.nowStatus = 'editing'
       } else if (document.hasFocus()) {
@@ -197,65 +252,77 @@ export default {
       }
       return this.nowStatus
     },
-    messageCreated (data) {
-      client.getMessage(data.id)
-        .then(async res => {
-          let channel = this.$store.state.channelMap[res.data.parentChannelId]
-          if (!channel) {
-            channel = (await client.getChannelInfo(res.data.parentChannelId)).data
-          }
-          if (channel.dm && this.$store.state.memberMap[this.$store.state.currentChannel.channelId]) {
-            if (channel.member.some(userId => userId === this.$store.state.currentChannel.channelId)) {
-              this.$store.commit('addMessages', res.data)
-              if (document.hasFocus()) {
-                client.readMessages([res.data.messageId])
-              }
+    messageCreated(data) {
+      client.getMessage(data.id).then(async res => {
+        let channel = this.$store.state.channelMap[res.data.parentChannelId]
+        if (!channel) {
+          channel = (await client.getChannelInfo(res.data.parentChannelId)).data
+        }
+        if (
+          channel.dm &&
+          this.$store.state.memberMap[
+            this.$store.state.currentChannel.channelId
+          ]
+        ) {
+          if (
+            channel.member.some(
+              userId => userId === this.$store.state.currentChannel.channelId
+            )
+          ) {
+            this.$store.commit('addMessages', res.data)
+            if (document.hasFocus()) {
+              client.readMessages([res.data.messageId])
             }
-          } else {
-            if (channel.channelId === this.$store.state.currentChannel.channelId) {
-              this.$store.commit('addMessages', res.data)
-              if (document.hasFocus()) {
-                client.readMessages([res.data.messageId])
-              }
+          }
+        } else {
+          if (
+            channel.channelId === this.$store.state.currentChannel.channelId
+          ) {
+            this.$store.commit('addMessages', res.data)
+            if (document.hasFocus()) {
+              client.readMessages([res.data.messageId])
             }
           }
-          this.$store.dispatch('updateUnreadMessages')
-          this.$store.dispatch('updateChannelActivity')
-        })
+        }
+        this.$store.dispatch('updateUnreadMessages')
+        this.$store.dispatch('updateChannelActivity')
+      })
     },
-    messageUpdated (data) {
-      client.getMessage(data.id)
-        .then(res => {
-          this.$store.commit('updateMessage', res.data)
-        })
+    messageUpdated(data) {
+      client.getMessage(data.id).then(res => {
+        this.$store.commit('updateMessage', res.data)
+      })
       this.$store.dispatch('checkPinnedMessage', data.id)
     },
-    messageDeleted (data) {
+    messageDeleted(data) {
       this.$store.commit('deleteMessage', data.id)
       this.$store.dispatch('checkPinnedMessage', data.id)
     },
-    channelUpdated (channelId) {
+    channelUpdated(channelId) {
       if (this.$store.state.currentChannel.channelId === channelId) {
         this.$store.dispatch('getCurrentChannelTopic', channelId)
       }
       this.$store.dispatch('updateChannel', channelId)
     },
-    userIconUpdated (data) {
+    userIconUpdated(data) {
       console.log(data)
       if (data.id === this.$store.state.me.userId) {
         this.$store.dispatch('whoAmI')
       }
       this.$store.dispatch('updateMembers')
     },
-    userTagsUpdated (data) {
-      if (this.$store.state.userModal && data.id === this.$store.state.userModal.userId) {
+    userTagsUpdated(data) {
+      if (
+        this.$store.state.userModal &&
+        data.id === this.$store.state.userModal.userId
+      ) {
         this.$store.dispatch('updateCurrentUserTags')
       }
     },
-    userGroupUpdated (data) {
+    userGroupUpdated() {
       this.$store.dispatch('updateGroups')
     },
-    notify (title, options, channelName) {
+    notify(title, options) {
       if (window.Notification) {
         if (Notification.permission === 'granted') {
           // eslint-disable-next-line no-new
@@ -264,47 +331,61 @@ export default {
       }
       return null
     },
-    dropFile (files) {
+    dropFile(files) {
       this.$store.commit('setFiles', files)
     },
-    swipeStart (event) {
+    swipeStart(event) {
       this.swipeEvent.startX = event.touches.item(0).clientX
       this.swipeEvent.startY = event.touches.item(0).clientY
     },
-    swipeMoving (event) {
+    swipeMoving(event) {
       this.swipeEvent.isActive = true
       this.swipeEvent.x = event.touches.item(0).clientX
       this.swipeEvent.y = event.touches.item(0).clientY
     },
-    swipeEnd (event) {
+    swipeEnd() {
       this.swipeEvent.isActive = false
     }
   },
   watch: {
-    '$route.params.channel': function () {
-      client.postHeartbeat(this.getStatus(), this.$store.state.currentChannel.channelId)
+    '$route.params.channel': function() {
+      client
+        .postHeartbeat(
+          this.getStatus(),
+          this.$store.state.currentChannel.channelId
+        )
         .then(res => {
           this.$store.commit('updateHeartbeatStatus', res.data)
         })
     },
-    nowStatus (newStatus) {
+    nowStatus(newStatus) {
       if (newStatus === 'none') {
         return
       }
-      if (this.$store.getters.getChannelUnreadMessageNum(this.$store.state.currentChannel.channelId) > 0) {
-        this.$store.dispatch('readMessages', this.$store.state.currentChannel.channelId)
+      if (
+        this.$store.getters.getChannelUnreadMessageNum(
+          this.$store.state.currentChannel.channelId
+        ) > 0
+      ) {
+        this.$store.dispatch(
+          'readMessages',
+          this.$store.state.currentChannel.channelId
+        )
       }
     }
   },
   computed: {
     ...mapState('modal', ['name']),
-    title () {
+    title() {
       if (this.$route.params.user) return `@${this.$route.params.user}`
       if (!this.$route.params.channel) return ''
       let ret = '#'
-      this.$route.params.channel.split('/').slice(0, -1).forEach(e => {
-        ret += e.charAt(0) + '/'
-      })
+      this.$route.params.channel
+        .split('/')
+        .slice(0, -1)
+        .forEach(e => {
+          ret += e.charAt(0) + '/'
+        })
       ret += this.$store.state.currentChannel.name
       return ret
     }

@@ -5,7 +5,7 @@ input(@input="handleInput" :value="value" :placeholder="placeholder")
 <script>
 export default {
   name: 'DebouncedInput',
-  data () {
+  data() {
     return {
       timerId: null
     }
@@ -29,7 +29,7 @@ export default {
     }
   },
   methods: {
-    handleInput (event) {
+    handleInput(event) {
       if (!this.enableDebounceOnEmptyInput && event.target.value === '') {
         this.$emit('input', event.target.value)
         return
@@ -43,5 +43,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

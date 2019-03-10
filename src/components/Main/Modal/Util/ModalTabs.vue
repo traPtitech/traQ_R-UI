@@ -12,7 +12,7 @@
 <script>
 export default {
   name: 'ModalTabs',
-  data () {
+  data() {
     return {
       value: this.options[0]
     }
@@ -21,19 +21,19 @@ export default {
     options: Array
   },
   methods: {
-    handleClick (option) {
+    handleClick(option) {
       this.value = option
       this.$emit('input', option)
     }
   },
   computed: {
-    activeIndex () {
+    activeIndex() {
       return this.options.indexOf(this.value)
     },
-    indicatorStyle () {
+    indicatorStyle() {
       return {
-        width: `${100 / (this.options.length)}%`,
-        left: `${100 / (this.options.length) * this.activeIndex}%`
+        width: `${100 / this.options.length}%`,
+        left: `${(100 / this.options.length) * this.activeIndex}%`
       }
     }
   }

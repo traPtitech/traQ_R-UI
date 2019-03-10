@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import DebouncedInput from '@/components/Util/DebouncedInput'
 import IconSearch from '@/components/Icon/IconSearch'
 import IconClock from '@/components/Icon/IconClock'
@@ -69,10 +69,9 @@ import IconRegional from '@/components/Icon/IconRegional'
 
 export default {
   name: 'StampPicker',
-  props: {
-  },
-  components: {DebouncedInput, IconSearch},
-  data () {
+  props: {},
+  components: { DebouncedInput, IconSearch },
+  data() {
     return {
       search: '',
       defaultString: 'スタンプを検索',
@@ -80,29 +79,39 @@ export default {
       currentCategoryIndex: 0,
       stampContainerTransitionName: 'slide-right',
       doFilter: false,
-      categoryIcons: [IconClock, IconLogo, IconSmile, IconDogFace, IconHamburger, IconSoccerBall, IconAirPlane, IconLightBulb, IconHeart, IconFlag, IconRegional]
+      categoryIcons: [
+        IconClock,
+        IconLogo,
+        IconSmile,
+        IconDogFace,
+        IconHamburger,
+        IconSoccerBall,
+        IconAirPlane,
+        IconLightBulb,
+        IconHeart,
+        IconFlag,
+        IconRegional
+      ]
     }
   },
   computed: {
-    ...mapGetters([
-      'fileUrl'
-    ]),
-    active () {
+    ...mapGetters(['fileUrl']),
+    active() {
       return this.$store.getters.stampPickerActive
     },
-    model () {
+    model() {
       return this.$store.getters.stampPickerModel
     },
-    stampCategolized () {
+    stampCategolized() {
       return [this.stampHistory].concat(this.$store.state.stampCategolized)
     },
-    stampHistory () {
+    stampHistory() {
       return {
         category: 'history',
         stamps: this.$store.getters.stampHistory
       }
     },
-    filteredStamps () {
+    filteredStamps() {
       if (this.search.length === 1) {
         return this.stampCategolized
           .slice(1, this.stampCategolized.length)
@@ -119,28 +128,29 @@ export default {
     }
   },
   methods: {
-    addStamp (stamp) {
+    addStamp(stamp) {
       this.$store.dispatch('addStamp', stamp)
     },
-    stamps (index) {
+    stamps(index) {
       return this.stampCategolized[index].stamps
     },
-    hoverStamp (name) {
+    hoverStamp(name) {
       this.searchPlaceHolder = name
     },
-    categoryIcon (categoryIndex) {
+    categoryIcon(categoryIndex) {
       return this.categoryIcons[categoryIndex]
     },
-    stampItemStyle (fileId) {
+    stampItemStyle(fileId) {
       return `background-image: url(${this.fileUrl(fileId)})`
     }
   },
   watch: {
-    currentCategoryIndex (newIndex, oldIndex) {
-      this.stampContainerTransitionName = newIndex > oldIndex ? 'slide-right' : 'slide-left'
+    currentCategoryIndex(newIndex, oldIndex) {
+      this.stampContainerTransitionName =
+        newIndex > oldIndex ? 'slide-right' : 'slide-left'
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('getStampHistory')
   }
 }
@@ -174,7 +184,7 @@ export default {
     right: 30px
     bottom: 5px
   background: var(--setting-background-color)
-  
+
 .stamp-picker-search-icon
   display: inline-flex
   align-items: center
@@ -193,7 +203,7 @@ export default {
 .stamp-category-item
   width: 25px
   height: 40px
-  padding: 
+  padding:
     top: 2px
     right: 2px
     left: 2px
@@ -301,6 +311,4 @@ export default {
 //   &-leave-to
 //     transform: translateX(-10px)
 //     opacity: 0
-
 </style>
-

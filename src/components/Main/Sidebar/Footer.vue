@@ -21,7 +21,7 @@ export default {
     IconCrescentFill
   },
   methods: {
-    changeTheme () {
+    changeTheme() {
       if (this.theme === 'light') {
         this.$store.dispatch('updateTheme', 'dark')
       } else {
@@ -30,7 +30,7 @@ export default {
     }
   },
   computed: {
-    theme () {
+    theme() {
       return this.$store.state.theme
     }
   }

@@ -8,7 +8,7 @@
 <script>
 export default {
   name: 'settingFileInput',
-  data () {
+  data() {
     return {
       settingText: ''
     }
@@ -32,11 +32,11 @@ export default {
     }
   },
   methods: {
-    reset () {
+    reset() {
       this.settingText = ''
       this.$emit('inputsetting', '')
     },
-    onChange (event) {
+    onChange(event) {
       const file = event.target.files[0]
       if (this.maxSize && file.size > this.maxSize) {
         window.alert('ファイルサイズが大きすぎます')
@@ -70,4 +70,3 @@ export default {
 .setting-file-name
   margin-top: 0.5rem
 </style>
-

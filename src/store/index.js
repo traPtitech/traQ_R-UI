@@ -693,7 +693,11 @@ const store = new Vuex.Store({
         users.filter(userId => state.memberData[userId].accountStatus !== 0)
     },
     sortByUserId(state) {
-      return userIds => userIds.map(userId => state.memberMap[userId]).sort(stringSortGen('name')).map(user => user.userId)
+      return userIds =>
+        userIds
+          .map(userId => state.memberMap[userId])
+          .sort(stringSortGen('name'))
+          .map(user => user.userId)
     }
   },
   actions: {

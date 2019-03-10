@@ -10,21 +10,31 @@
 <script>
 import { mapState } from 'vuex'
 
-function paddingNumber (n, k) {
+function paddingNumber(n, k) {
   let ret = `${n}`
   for (let i = 0; i < k; i++) ret = '0' + ret
   return ret.slice(-k)
 }
-function dateParse (date) {
-  return `${date.getFullYear()}/${paddingNumber(date.getMonth() + 1, 2)}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(date.getHours(), 2)}:${paddingNumber(date.getMinutes(), 2)}`
+function dateParse(date) {
+  return `${date.getFullYear()}/${paddingNumber(
+    date.getMonth() + 1,
+    2
+  )}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(
+    date.getHours(),
+    2
+  )}:${paddingNumber(date.getMinutes(), 2)}`
 }
 export default {
   props: {
-    detailed: false
+    detailed: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   computed: {
     ...mapState('modal', ['data']),
-    lastOnline () {
+    lastOnline() {
       return dateParse(new Date(this.data.lastOnline))
     }
   }

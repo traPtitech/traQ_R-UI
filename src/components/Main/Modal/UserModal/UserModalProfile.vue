@@ -14,13 +14,19 @@ import UserModalProfileImage from '@/components/Main/Modal/UserModal/UserModalPr
 import UserModalProfileInfo from '@/components/Main/Modal/UserModal/UserModalProfile/UserModalProfileInfo'
 import UserModalProfileInfoExpanded from '@/components/Main/Modal/UserModal/UserModalProfile/UserModalProfileInfoExpanded'
 
-function paddingNumber (n, k) {
+function paddingNumber(n, k) {
   let ret = `${n}`
   for (let i = 0; i < k; i++) ret = '0' + ret
   return ret.slice(-k)
 }
-function dateParse (date) {
-  return `${date.getFullYear()}/${paddingNumber(date.getMonth(), 2)}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(date.getHours(), 2)}:${paddingNumber(date.getMinutes(), 2)}`
+function dateParse(date) {
+  return `${date.getFullYear()}/${paddingNumber(
+    date.getMonth(),
+    2
+  )}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(
+    date.getHours(),
+    2
+  )}:${paddingNumber(date.getMinutes(), 2)}`
 }
 
 export default {
@@ -31,37 +37,50 @@ export default {
     UserModalProfileInfoExpanded
   },
   props: {
-    expanded: false
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   computed: {
     ...mapState('modal', ['data']),
     ...mapGetters('modal', {
       tags: 'currentUserTagsSorted'
     }),
-    wikiUserPageUrl () {
+    wikiUserPageUrl() {
       return `https://wiki.trapti.tech/user/${this.data.name}`
     },
-    twitterProfileUrl () {
-      return this.data.twitterId !== '' ? `https://twitter.com/${this.data.twitterId}` : null
+    twitterProfileUrl() {
+      return this.data.twitterId !== ''
+        ? `https://twitter.com/${this.data.twitterId}`
+        : null
     },
-    twitterLinkStyle () {
+    twitterLinkStyle() {
       return {
-        color: this.twitterProfileUrl ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.5)'
+        color: this.twitterProfileUrl
+          ? 'rgba(255, 255, 255, 1.0)'
+          : 'rgba(255, 255, 255, 0.5)'
       }
     },
-    lastOnline () {
+    lastOnline() {
       return dateParse(new Date(this.data.lastOnline))
     },
-    directMessageChannel () {
+    directMessageChannel() {
       if (this.data.userId === this.$store.state.me.userId) {
-        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.length === 1)
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel => channel.member && channel.member.length === 1
+        )
       } else {
-        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.data.userId))
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel =>
+            channel.member &&
+            channel.member.some(userId => userId === this.data.userId)
+        )
       }
     }
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>
 
@@ -98,6 +117,4 @@ export default {
 
   +mq(sp)
     flex-direction: column
-
-
 </style>

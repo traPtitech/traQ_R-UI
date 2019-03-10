@@ -17,33 +17,49 @@ export default {
     IconEnverope
   },
   props: {
-    expanded: false
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   computed: {
     ...mapState('modal', ['data']),
     ...mapGetters('modal', {
       tags: 'currentUserTagsSorted'
     }),
-    directMessageChannel () {
+    directMessageChannel() {
       if (this.data.userId === this.$store.state.me.userId) {
-        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.length === 1)
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel => channel.member && channel.member.length === 1
+        )
       } else {
-        return this.$store.getters.getDirectMessageChannels.find(channel => channel.member && channel.member.some(userId => userId === this.data.userId))
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel =>
+            channel.member &&
+            channel.member.some(userId => userId === this.data.userId)
+        )
       }
     },
-    hasUnreadMessages () {
+    hasUnreadMessages() {
       if (this.directMessageChannel) {
-        return this.$store.getters.getChannelUnreadMessageNum(this.directMessageChannel.channelId) > 0
+        return (
+          this.$store.getters.getChannelUnreadMessageNum(
+            this.directMessageChannel.channelId
+          ) > 0
+        )
       } else {
         return false
       }
     },
-    profileImgStyle () {
+    profileImgStyle() {
       return {
-        backgroundImage: `url(${this.$store.state.baseURL}/api/1.0/users/${this.data.userId}/icon)`
+        backgroundImage: `url(${this.$store.state.baseURL}/api/1.0/users/${
+          this.data.userId
+        }/icon)`
       }
     },
-    onlineIndicatorStyle () {
+    onlineIndicatorStyle() {
       if (this.data.isOnline) {
         return {
           backgroundColor: '#27ae60'
@@ -56,11 +72,11 @@ export default {
     }
   },
   methods: {
-    closeModal () {
+    closeModal() {
       this.$store.dispatch('modal/close')
       this.expandProfile = false
     },
-    openDirectMessage () {
+    openDirectMessage() {
       this.$router.push(`/users/${this.data.name}`)
       this.closeModal()
     }

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import client from '@/bin/client'
 import ImageCropper from '@/components/Setting/ImageCropper'
 import SettingInput from '@/components/Setting/SettingInput'
@@ -35,12 +35,12 @@ export default {
     SettingButton,
     SettingDescription
   },
-  data () {
+  data() {
     return {
       rawStampFile: null,
       stampName: '',
-      encodedFile: null,  // base64エンコードされた選択中のファイル
-      croppedBlob: null   // 切り抜かれた画像のBlob
+      encodedFile: null, // base64エンコードされた選択中のファイル
+      croppedBlob: null // 切り抜かれた画像のBlob
     }
   },
   props: {
@@ -50,45 +50,49 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'fileUrl', 'getMyId'
-    ]),
-    stampFile () {
+    ...mapGetters(['fileUrl', 'getMyId']),
+    stampFile() {
       return this.croppedBlob || this.rawStampFile
     },
-    stamps () {
+    stamps() {
       return this.$store.state.stampCategolized[0].stamps
     },
-    takenStampNames () {
+    takenStampNames() {
       return this.stamps.map(s => s.name)
     },
-    hasNameTaken () {
+    hasNameTaken() {
       return this.takenStampNames.includes(this.stampName)
     },
-    canPerformOperation () {
+    canPerformOperation() {
       // 追加/更新を表示するか
-      return (this.model && this.canStampBeUpdated) ||
+      return (
+        (this.model && this.canStampBeUpdated) ||
         (!this.model && this.canNewStampBeRegistered)
+      )
     },
-    canNewStampBeRegistered () {
+    canNewStampBeRegistered() {
       return this.stampFile && this.stampName.length > 0 && !this.hasNameTaken
     },
-    canStampBeUpdated () {
+    canStampBeUpdated() {
       return this.stampFile
     },
-    stampIdsCreatedByMe () {
-      return this.stamps.filter(s => s.creatorId === this.getMyId).map(s => s.id)
+    stampIdsCreatedByMe() {
+      return this.stamps
+        .filter(s => s.creatorId === this.getMyId)
+        .map(s => s.id)
     },
-    showNameTakenError () {
+    showNameTakenError() {
       // 名前が使われてると表示するか
-      return this.hasNameTaken && (!this.model || this.stampName !== this.model.name)
+      return (
+        this.hasNameTaken && (!this.model || this.stampName !== this.model.name)
+      )
     }
   },
   methods: {
-    onFileLoad (dataUrl) {
+    onFileLoad(dataUrl) {
       this.encodedFile = dataUrl
     },
-    async perform () {
+    async perform() {
       if (this.model) {
         await this.updateStamp()
       } else {
@@ -100,25 +104,30 @@ export default {
       this.encodedFile = null
       this.croppedBlob = null
     },
-    async updateStamp () {
+    async updateStamp() {
       await client.fixStamp(this.model.id, '', this.stampFile)
     },
-    async addStamp () {
+    async addStamp() {
       await client.addStamp(this.stampName, this.stampFile)
     },
-    stampItemStyle (fileId) {
+    stampItemStyle(fileId) {
       return `background-image: url(${this.fileUrl(fileId)})`
     },
-    creatorName (creatorId) {
+    creatorName(creatorId) {
       return this.$store.state.memberMap[creatorId].name
     },
-    showStampEditor (stampId) {
-      return this.stampIdsCreatedByMe.includes(stampId) && this.stampIdToEdit === stampId
+    showStampEditor(stampId) {
+      return (
+        this.stampIdsCreatedByMe.includes(stampId) &&
+        this.stampIdToEdit === stampId
+      )
     }
   },
-  mounted () {
+  mounted() {
     this.openMode = this.$store.state.openMode
-    this.openChannelName = this.$store.getters.getChannelPathById(this.$store.state.openChannelId)
+    this.openChannelName = this.$store.getters.getChannelPathById(
+      this.$store.state.openChannelId
+    )
   }
 }
 </script>

@@ -50,7 +50,7 @@ export default {
 .user-modal-profile-info-name-contaner
   display: flex
 .user-modal-profile-info-area--online-indicator
-  margin-right: 0.5rem 
+  margin-right: 0.5rem
 
 .user-modal-profile-info-display-name
   +mq(pc)
@@ -59,5 +59,4 @@ export default {
     font-size: 1.2rem
   font-weight: 600
   margin: 0.2rem 0
-
 </style>

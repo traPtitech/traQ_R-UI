@@ -24,7 +24,7 @@ div
 import client from '@/bin/client'
 export default {
   name: 'Register',
-  data () {
+  data() {
     return {
       name: '',
       password: '',
@@ -32,7 +32,7 @@ export default {
     }
   },
   methods: {
-    register () {
+    register() {
       if (this.password !== this.confirmPassword) {
         alert('パスワードが異なります！')
       }
@@ -65,7 +65,4 @@ export default {
 
 .register-label
   width: 160px;
-
-
 </style>
-

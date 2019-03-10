@@ -22,64 +22,75 @@ export default {
   props: {
     model: Object
   },
-  data () {
+  data() {
     return {
       height: '0'
     }
   },
   methods: {
-    toggle () {
-      this.$store.dispatch('updateChannelOpen', {channelId: this.model.channelId, isOpen: !this.isOpened})
+    toggle() {
+      this.$store.dispatch('updateChannelOpen', {
+        channelId: this.model.channelId,
+        isOpen: !this.isOpened
+      })
     },
-    channelLink () {
+    channelLink() {
       this.$store.commit('closeSidebar')
       this.$store.commit('contractTitlebar')
-      this.$router.push(`/channels/${this.$store.getters.getChannelPathById(this.model.channelId)}`)
+      this.$router.push(
+        `/channels/${this.$store.getters.getChannelPathById(
+          this.model.channelId
+        )}`
+      )
     },
-    removeHeight () {
+    removeHeight() {
       this.$refs.children.style.height = ''
     },
-    zeroHeight () {
+    zeroHeight() {
       this.$refs.children.style.height = '0'
     }
   },
   computed: {
-    isParent () {
+    isParent() {
       return this.model.children && this.model.children.length > 0
     },
-    isWatched () {
+    isWatched() {
       return this.$store.state.currentChannel.channelId === this.model.channelId
     },
-    unreadNum () {
-      return this.$store.getters.getChannelUnreadMessageNum(this.model.channelId)
+    unreadNum() {
+      return this.$store.getters.getChannelUnreadMessageNum(
+        this.model.channelId
+      )
     },
-    unreadSum () {
-      return this.$store.getters.getChannelUnreadMessageSum(this.model.channelId)
+    unreadSum() {
+      return this.$store.getters.getChannelUnreadMessageSum(
+        this.model.channelId
+      )
     },
-    isOpened () {
+    isOpened() {
       return this.$store.state.openChannels[this.model.channelId]
     },
-    channelBeforeClass () {
+    channelBeforeClass() {
       return {
         'has-unread': this.unreadNum > 0,
-        'has-unread-child': !this.isOpened && (this.unreadSum - this.unreadNum) > 0,
+        'has-unread-child':
+          !this.isOpened && this.unreadSum - this.unreadNum > 0,
         'channel-notified': this.isNotified
       }
     },
-    children () {
+    children() {
       if (!this.model.children) return []
-      return this.model.children
-        .map(c => {
-          return this.$store.state.channelMap[c]
-        })
+      return this.model.children.map(c => {
+        return this.$store.state.channelMap[c]
+      })
     },
-    isNotified () {
+    isNotified() {
       return this.$store.state.myNotifiedChannelSet.has(this.model.channelId)
     }
   },
   watch: {
     isOpened: {
-      handler () {
+      handler() {
         this.$nextTick(() => {
           this.height = this.$refs.childrenWrap.clientHeight
           this.$refs.children.style.height = this.height + 'px'

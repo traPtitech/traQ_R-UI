@@ -69,14 +69,14 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import client from '@/bin/client'
 import IconLogo from '@/components/Icon/IconLogo'
 import IconLogotraP from '@/components/Icon/IconLogotraP'
 
 export default {
   name: 'login',
-  data () {
+  data() {
     return {
       name: '',
       pass: '',
@@ -90,10 +90,11 @@ export default {
     }
   },
   components: {
-    IconLogo, IconLogotraP
+    IconLogo,
+    IconLogotraP
   },
   methods: {
-    loginPost: function () {
+    loginPost: function() {
       this.status = 'processing'
       client
         .login(this.name, this.pass)
@@ -117,9 +118,10 @@ export default {
   },
   computed: {
     ...mapGetters(['deviceType']),
-    redirect () {
+    redirect() {
       return this.$route.query.redirect
-        ? `/pipeline?redirect=${encodeURIComponent(this.$route.query.redirect)}` : '/pipeline'
+        ? `/pipeline?redirect=${encodeURIComponent(this.$route.query.redirect)}`
+        : '/pipeline'
     }
   }
 }
@@ -143,10 +145,10 @@ export default {
     right: 0
     background: var(--primary-color)
     z-index: -1
-  
+
   .icon-logo
     width: 30vw
-    margin: 
+    margin:
       left: auto
       right: auto
 
@@ -178,7 +180,7 @@ export default {
 
   .input-wrap
     position: relative
-    
+
   .login-input
     width: 100%
     margin:
@@ -352,5 +354,4 @@ export default {
       top: auto
       bottom: 20px
     width: 150px
-
 </style>

@@ -36,18 +36,20 @@ export default {
       data: 'data',
       tags: 'currentUserTags'
     }),
-    grade () {
+    grade() {
       return this.$store.getters.gradeByUserMap[this.data.userId].name
     },
-    twitterId () {
+    twitterId() {
       return this.data.twitterId !== '' ? this.data.twitterId : '-'
     },
-    twitterUrl () {
-      return this.data.twitterId !== '' ? `https://twitter.com/${this.data.twitterId}` : ''
+    twitterUrl() {
+      return this.data.twitterId !== ''
+        ? `https://twitter.com/${this.data.twitterId}`
+        : ''
     }
   },
   methods: {
-    onTwitterLinkClicked (event) {
+    onTwitterLinkClicked(event) {
       if (!this.data.twitterId) event.preventDefault()
     }
   }

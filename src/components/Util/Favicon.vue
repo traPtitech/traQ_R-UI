@@ -4,14 +4,14 @@
 <script>
 export default {
   name: 'favicon',
-  data () {
+  data() {
     return {
       canvas: null,
       img: null,
       ctx: null
     }
   },
-  created () {
+  created() {
     this.canvas = document.createElement('canvas')
     this.canvas.width = 32
     this.canvas.height = 32
@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-    updateFavicon () {
+    updateFavicon() {
       this.ctx.drawImage(this.img, 0, 0, 32, 32)
       if (Object.keys(this.$store.state.unreadMessages).length > 0) {
         this.ctx.font = "bold 10px 'ヒラギノ角ゴ ProN W3'"
@@ -41,10 +41,9 @@ export default {
     }
   },
   watch: {
-    '$store.state.unreadMessages': function () {
+    '$store.state.unreadMessages': function() {
       this.updateFavicon()
     }
   }
 }
 </script>
-

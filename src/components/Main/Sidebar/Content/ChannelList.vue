@@ -14,13 +14,13 @@ div.channel-list
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import ChannelTreeView from '@/components/Main/Sidebar/Content/ChannelTreeView'
 import FilterInput from '@/components/Util/FilterInput'
 
 export default {
   name: 'ChannelList',
-  data () {
+  data() {
     return {
       filterText: '',
       filterSubscribed: true,
@@ -30,19 +30,25 @@ export default {
   components: {
     ChannelTreeView,
     FilterInput,
-    ChannelStared: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelStared')),
-    ChannelActivity: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelActivity')),
-    ChannelActivityControlls: window.asyncLoadComponents(import('@/components/Main/Sidebar/Content/ChannelActivityControlls'))
+    ChannelStared: window.asyncLoadComponents(
+      import('@/components/Main/Sidebar/Content/ChannelStared')
+    ),
+    ChannelActivity: window.asyncLoadComponents(
+      import('@/components/Main/Sidebar/Content/ChannelActivity')
+    ),
+    ChannelActivityControlls: window.asyncLoadComponents(
+      import('@/components/Main/Sidebar/Content/ChannelActivityControlls')
+    )
   },
   methods: {
-    async refresh () {
+    async refresh() {
       if (this.isLoading) return
       this.isLoading = true
       await this.$nextTick()
       await this.$store.dispatch('updateChannelActivity')
       this.isLoading = false
     },
-    toggleNotification () {
+    toggleNotification() {
       const filter = this.$store.state.filterSubscribedActivity
       this.$store.dispatch('updateFilterSubscribedActivity', !filter)
       this.refresh()
@@ -59,7 +65,7 @@ export default {
   user-select: none
   padding:
     bottom: 60px
-    
+
 .channel-list-action-area-wrapper
   width: 80%
   padding:

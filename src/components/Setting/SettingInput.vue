@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'settingInput',
-  data () {
+  data() {
     return {
       settingText: ''
     }
@@ -27,7 +27,7 @@ export default {
     }
   },
   methods: {
-    reset () {
+    reset() {
       this.settingText = ''
       this.$emit('inputsetting', '')
     }
@@ -57,6 +57,4 @@ input.setting-input
   &::placeholder
     color: $text-light-color
     opacity: 0.8
-
 </style>
-
