@@ -1,22 +1,25 @@
 <template lang="pug">
 .image-viewer-wrapper(
-  @wheel.prevent="handleWheel"
-  @mousemove="handleTouchMove"
-  @touchmove="handleTouchMove"
+  @wheel.prevent="handleZoom"
+  @mousemove="handlePan"
+  @touchmove="handlePan"
   @mousedown="handleTouchStart"
   @touchstart="handleTouchStart"
   @mouseup="handleTouchEnd"
   @touchend="handleTouchEnd"
 )
-  .image-viewer-image(:style="imageStyle")
+  .image-viewer-image(
+    :class="imageClass"
+    :style="imageStyle"
+  )
 
 </template>
 
 <script>
-const throttleInterval = 20
+const throttleInterval = 10
 export default {
   name: 'ImageViewer',
-  data () {
+  data() {
     return {
       lastPanTime: Date.now() - throttleInterval,
       lastTouchPosX: 0,
@@ -24,8 +27,12 @@ export default {
       scale: 1,
       viewerWidth: 0,
       viewerHeight: 0,
-      viewerX: 0,
-      viewerY: 0,
+      translateX: 0,
+      translateY: 0,
+      pivotX: 0,
+      pivotY: 0,
+      viewerPivotX: 0,
+      viewerPivotY: 0,
       isPanning: false
     }
   },
@@ -36,54 +43,101 @@ export default {
     }
   },
   methods: {
-    handleWheel (event) {
-      const scaleFactor = event.ctrlKey ? 30 : 100
-      const oldScale = this.scale
-      const newScale = Math.max(this.scale - event.deltaY / scaleFactor, 1)
-      this.viewerX += event.layerX * (1 / oldScale - 1 / newScale)
-      this.viewerY += event.layerY * (1 / oldScale - 1 / newScale)
-      this.scale = newScale
+    updatePivot(layerX, layerY) {
+      const newPivotX =
+        (-this.translateX + layerX - this.pivotX) / this.scale + this.pivotX
+      const newPivotY =
+        (-this.translateY + layerY - this.pivotY) / this.scale + this.pivotY
+      this.translateX = layerX - newPivotX
+      this.translateY = layerY - newPivotY
+      this.pivotX = newPivotX
+      this.pivotY = newPivotY
     },
-    handleTouchMove (event) {
+    handleZoom(event) {
+      if (this.scale <= 1 && event.deltaY > 0) {
+        this.scale = 1
+        this.$nextTick(() => {
+          this.translateX = 0
+          this.translateY = 0
+          this.pivotX = 0
+          this.pivotY = 0
+        })
+        return
+      }
+
+      // for macOS' trackpad
+      const scaleFactor = event.ctrlKey ? 30 : 100
+      // Magic number festival!
+      this.scale = Math.max(
+        Math.min(this.scale * (1 - event.deltaY / scaleFactor), 20),
+        1
+      )
+
+      if (
+        this.viewerPivotX !== event.layerX ||
+        this.viewerPivotY !== event.layerY
+      ) {
+        this.viewerPivotX = event.layerX
+        this.viewerPivotY = event.layerY
+        this.updatePivot(event.layerX, event.layerY)
+      }
+    },
+    handlePan(event) {
       const now = Date.now()
       if (!this.isPanning || now - this.lastPanTime < throttleInterval) {
         return
       }
       this.lastPanTime = now
-      this.viewerX += -(event.layerX - this.lastTouchPosX)
-      this.viewerY += -(event.layerY - this.lastTouchPosY)
+      this.translateX += event.layerX - this.lastTouchPosX
+      this.translateY += event.layerY - this.lastTouchPosY
+      this.lastTouchPosX = event.layerX
+      this.lastTouchPosY = event.layerY
     },
-    handleTouchStart (event) {
+    handleTouchStart(event) {
       this.isPanning = true
       this.lastTouchPosX = event.layerX
       this.lastTouchPosY = event.layerY
     },
-    handleTouchEnd () {
+    handleTouchEnd() {
       this.isPanning = false
       this.lastTouchPosX = 0
       this.lastTouchPosY = 0
+      if (this.scale <= 1) {
+        this.$nextTick(() => {
+          this.translateX = 0
+          this.translateY = 0
+          this.pivotX = 0
+          this.pivotY = 0
+        })
+      }
     }
   },
   computed: {
-    imageStyle () {
+    imageStyle() {
       return {
         backgroundImage: `url(${this.url})`,
         transform: `
           scale(${this.scale})
           translate(${this.translate})
         `,
-//         transformOrigin: this.transformOrigin
+        transformOrigin: this.transformOrigin
       }
     },
-    translate () {
-      return `${-this.viewerX}px,
-              ${-this.viewerY}px`
+    translate() {
+      return `${this.translateX}px,
+              ${this.translateY}px`
     },
-    transformOrigin () {
-      return `${this.pivotX}px ${this.pivotY}px`
+    transformOrigin() {
+      return `${this.pivotX + this.translateX}px
+              ${this.pivotY + this.translateY}px`
+    },
+    imageClass() {
+      return {
+        'image-viewer-scale-deault': this.scale <= 1 && !this.isPanning
+      }
     }
   },
-  mounted () {
+  mounted() {
     const clientRect = this.$el.getBoundingClientRect()
     this.viewerWidth = clientRect.width
     this.viewerHeight = clientRect.height
@@ -107,4 +161,7 @@ export default {
     size: contain
     repeat: no-repeat
     position: center
+
+.image-viewer-scale-deault
+  transition: transform 0.2s ease
 </style>
