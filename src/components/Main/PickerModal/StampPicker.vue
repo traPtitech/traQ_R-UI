@@ -8,37 +8,39 @@
       tag="div"
       :name="stampContainerTransitionName"
       @mouseleave="searchPlaceHolder=defaultString")
-        div.stamp-picker-body-container(
-          v-if="search.length === 0" 
-          v-for="(category, idx) in stampCategolized" 
-          v-show="idx==currentCategoryIndex" 
-          :key="category.category")
-          p.stamp-picker-category-name
-            | {{category.category}}
-          div.stamp-picker-body-inner-wrapper
-            div.stamp-picker-stamp-item-wrapper.flex-center(
-              v-for="stamp in stamps(idx)"
-              @click="addStamp(stamp)" 
-              @mouseover="hoverStamp(stamp.name)")
-              div.stamp-picker-stamp-item( 
-                :style="stampItemStyle(stamp.fileId)" 
-                :title="`:${stamp.name}:`")
-            div.stamp-picker-stamp-item-dummy(v-for="i in 20")
-        div.stamp-picker-body-container(
-          v-else
-          key="filtered")
-          p.stamp-picker-category-name
-            | 検索結果
-          div.stamp-picker-body-inner-wrapper
-            div.stamp-picker-stamp-item-wrapper.flex-center(
-              :key="stamp.id"
-              v-for="stamp in filteredStamps" 
-              @click="addStamp(stamp)" 
-              @mouseover="hoverStamp(stamp.name)")
-              div.stamp-picker-stamp-item( 
-                :style="stampItemStyle(stamp.fileId)" 
-                :title="`:${stamp.name}:`")
-            div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
+        template(
+          v-if="search.length === 0" )
+          div.stamp-picker-body-container(
+            v-for="(category, idx) in stampCategolized" 
+            v-show="idx==currentCategoryIndex" 
+            :key="category.category")
+            p.stamp-picker-category-name
+              | {{category.category}}
+            div.stamp-picker-body-inner-wrapper
+              div.stamp-picker-stamp-item-wrapper.flex-center(
+                v-for="stamp in stamps(idx)"
+                @click="addStamp(stamp)" 
+                @mouseover="hoverStamp(stamp.name)")
+                div.stamp-picker-stamp-item( 
+                  :style="stampItemStyle(stamp.fileId)" 
+                  :title="`:${stamp.name}:`")
+              div.stamp-picker-stamp-item-dummy(v-for="i in 20")
+        template(
+          v-else)
+          div.stamp-picker-body-container(
+            key="filtered")
+            p.stamp-picker-category-name
+              | 検索結果
+            div.stamp-picker-body-inner-wrapper
+              div.stamp-picker-stamp-item-wrapper.flex-center(
+                :key="stamp.id"
+                v-for="stamp in filteredStamps" 
+                @click="addStamp(stamp)" 
+                @mouseover="hoverStamp(stamp.name)")
+                div.stamp-picker-stamp-item( 
+                  :style="stampItemStyle(stamp.fileId)" 
+                  :title="`:${stamp.name}:`")
+              div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
     div.stamp-picker-footer
         div.stamp-category-wrap
           div.stamp-category-item.flex-center(
