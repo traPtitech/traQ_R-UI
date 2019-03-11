@@ -16,19 +16,26 @@ const loadGeneralData = (dataName, webLoad, commit) => {
     commit(`set${dataName}Data`, res.data)
     db.write('generalData', { type: dataName, data: res.data })
   })
-  return Promise.race([
-    db
+  const getFromDB = db
       .read('generalData', dataName)
       .then(data => {
         if (!loaded && data) {
           commit(`set${dataName}Data`, data)
+        } else {
+          throw new Error('No data exists')
         }
       })
       .catch(async () => {
         await fetch
-      }),
-    fetch
-  ])
+      })
+  if ('navigator' in window && 'onLine' in window.navigator && !window.navigator.onLine) {
+    return Promise.race([getFromDB])
+  } else {
+    return Promise.race([
+      getFromDB,
+      fetch
+    ])
+  }
 }
 
 const stringSortGen = key => (lhs, rhs) => {
@@ -103,7 +110,8 @@ const store = new Vuex.Store({
     windowWidth: 0,
     windowHeight: 0,
     filterSubscribedActivity: true,
-    activeMessageContextMenu: ''
+    activeMessageContextMenu: '',
+    isOnline: true
   },
   mutations: {
     openSidebar(state) {
@@ -120,6 +128,7 @@ const store = new Vuex.Store({
     },
     setMe(state, me) {
       state.me = me
+      db.write('generalData', {type: 'me', data: me})
     },
     setChannelData(state, newChannelData) {
       newChannelData.sort(stringSortGen('name'))
@@ -466,6 +475,9 @@ const store = new Vuex.Store({
     },
     setActiveMessageContextMenu(state, messageId) {
       state.activeMessageContextMenu = messageId
+    },
+    changeNetwork(state, condition) {
+      state.isOnline = condition
     }
   },
   getters: {
