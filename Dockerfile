@@ -2,10 +2,12 @@
 FROM node:10.10.0-alpine as build
 WORKDIR /app
 RUN apk add --no-cache git
+RUN apk add --no-cache gzip
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
+RUN gzip -9 -kf dist/js/*.js dist/css/*.css
 
 # 本番環境
 FROM nginx:1.15.3-alpine
