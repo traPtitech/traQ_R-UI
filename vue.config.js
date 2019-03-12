@@ -18,7 +18,7 @@ module.exports = {
         'vue$': 'vue/dist/vue.esm.js'
       }
     },
-    plugins:[
+    plugins: process.env.NODE_ENV === 'production' ? [
 			new CompressionPlugin({
 				filename: '[path].br[query]',
 				algorithm: 'brotliCompress',
@@ -27,7 +27,7 @@ module.exports = {
 				minRatio: 1,
 				deleteOriginalAssets: false
 			})
-    ]
+    ]:[]
   },
   pwa: {
     name: 'traQ',

@@ -50,8 +50,7 @@ export default {
     scrollHandle() {
       if (this.messageLoading) {
         this.savedScrollPosition = this.$el.scrollHeight - this.$el.scrollTop
-        if (this.$el.scrollTop <= 10)
-          this.$el.scrollTop += 1
+        if (this.$el.scrollTop <= 10) this.$el.scrollTop += 1
         return
       }
       if (this.noMoreMessage) {
@@ -65,8 +64,7 @@ export default {
       this.messageLoading = true
       this.noMoreMessage = false
       this.savedScrollPosition = this.$el.scrollHeight - this.$el.scrollTop
-      if (this.$el.scrollTop <= 10)
-        this.$el.scrollTop += 1
+      if (this.$el.scrollTop <= 10) this.$el.scrollTop += 1
       this.$store.dispatch('getMessages').then(res => {
         console.log('getMessages:', res)
         if (!res) {

@@ -154,7 +154,7 @@ export default {
     clipMessage() {
       client.clipMessage('', this.model.messageId)
     },
-    async getAttachments () {
+    async getAttachments() {
       this.attachedData = detectFiles(this.model.content)
       this.files = await Promise.all(
         this.attachedData
@@ -193,7 +193,7 @@ export default {
         this.$emit('rendered')
       })
     },
-    render () {
+    render() {
       this.renderedBody = {
         template: `
           <div class="message-content markdown-body" v-pre>
@@ -236,7 +236,7 @@ export default {
         )
       }
     },
-    attachedMessageRendered () {
+    attachedMessageRendered() {
       this.$emit('rendered')
     }
   },
@@ -256,7 +256,7 @@ export default {
     isBot() {
       return this.userDetail.bot
     },
-    pinned () {
+    pinned() {
       return this.$store.getters.isPinned(this.model.messageId)
     },
     isEdited() {
@@ -285,7 +285,7 @@ export default {
       return this.$store.state.memberMap[this.pinDetail.userId].name
     }
   },
-  mounted () {
+  mounted() {
     this.render()
     this.getAttachments()
   }
@@ -564,5 +564,4 @@ export default {
 		background-position: 100% 50%
 	100%
 		background-position: 0% 50%
-
 </style>
