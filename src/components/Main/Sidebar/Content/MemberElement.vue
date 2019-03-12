@@ -1,7 +1,7 @@
 <template lang="pug">
 div.member-element(:class="{'is-watched': isWatched}")
   div.member-element-icon-container(v-on:click="openUserModal")
-    div.member-element-icon(:style="iconImg" :class="iconClass")
+    div.member-element-icon(:style="iconStyle" v-lazy:background-image="userIconSrc" :class="iconClass")
     div.member-element-online-indicator(v-if="!model.bot && model.isOnline" :style="borderStyle")
   div.member-name-container(@click="openDMChannel")
     p.member-display-name.text-ellipsis
@@ -67,9 +67,8 @@ export default {
         'member-element-dm-indicator': this.unreadMessagesNum > 0
       }
     },
-    iconImg() {
+    iconStyle() {
       return {
-        backgroundImage: `url(${this.userIconSrc})`,
         borderColor: this.backgroundColor
       }
     },

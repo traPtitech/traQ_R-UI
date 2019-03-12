@@ -4,7 +4,7 @@
     .login-page-inner-wrap-pc
       .login-left-box
         div
-          icon-logo(:size="134" color="white")
+          icon-logo(size="134" color="white")
         p.login-welcome
           | Welcome to traQ
       .login-right-box

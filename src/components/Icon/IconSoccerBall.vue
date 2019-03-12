@@ -152,7 +152,7 @@ export default {
   name: 'IconSoccerBall',
   props: {
     size: {
-      type: Number,
+      type: String,
       default: 16
     },
     color: {

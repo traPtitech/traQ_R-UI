@@ -21,7 +21,7 @@ export default {
   name: 'IconRegional',
   props: {
     size: {
-      type: Number,
+      type: String,
       default: 16
     },
     color: {

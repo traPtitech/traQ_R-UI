@@ -10,7 +10,7 @@
       .setting-menu.drop-shadow
         .setting-title-container
           .setting-traq-logo
-            IconLogo(color="white" :size="22")
+            IconLogo(color="white" size="22")
           | SETTINGS
         ul.setting-page-list
           li.setting-page-list-item(:class="{active: active === 0}" @click="active = 0")
