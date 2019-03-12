@@ -1,0 +1,11 @@
+:80
+gzip
+log stdout
+header / Access-Control-Allow-Origin  *
+
+root /usr/share/caddy/html
+
+rewrite {
+	regexp .*
+	to {path} /
+}
