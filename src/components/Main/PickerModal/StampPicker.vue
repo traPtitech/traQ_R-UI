@@ -22,7 +22,7 @@
                 @click="addStamp(stamp)" 
                 @mouseover="hoverStamp(stamp.name)")
                 div.stamp-picker-stamp-item( 
-                  :style="stampItemStyle(stamp.fileId)" 
+                  v-lazy:background-image="fileUrl(stamp.fileId)"
                   :title="`:${stamp.name}:`")
               div.stamp-picker-stamp-item-dummy(v-for="i in 20")
         template(
@@ -141,9 +141,6 @@ export default {
     },
     categoryIcon(categoryIndex) {
       return this.categoryIcons[categoryIndex]
-    },
-    stampItemStyle(fileId) {
-      return `background-image: url(${this.fileUrl(fileId)})`
     }
   },
   watch: {
