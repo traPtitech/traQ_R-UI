@@ -183,6 +183,9 @@ export default {
   width: 20px
   height: 20px
   line-height: 1px //for safari
+  padding:
+    top: 0
+    bottom: 1px
   color: $text-light-color
   margin: 0 0 0 10px
   font-weight: bold

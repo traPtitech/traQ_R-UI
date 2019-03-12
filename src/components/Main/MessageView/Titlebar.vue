@@ -286,7 +286,7 @@ $topic-height: 14px
 .channel-name
   max-width: 100%
   font-size: 25px
-  line-height: 30px
+  line-height: 35px
   font-weight: bold
   text-align: left
   margin: 0
@@ -302,6 +302,8 @@ $topic-height: 14px
 
 .channel-topic-text
   font-size: 13px
+  margin:
+    bottom: 6px
   height: 0
   overflow: hidden
   +mq(sp)
