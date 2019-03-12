@@ -1,6 +1,48 @@
 version: 2.1
 
+commands:
+  restore_module:
+    steps:
+      - restore_cache:
+        keys:
+          - node_modules-{{ checksum "package-lock.json" }}
+
 jobs:
+  module-install:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - run:
+          name: module install
+          when: always
+          command: npm ci
+      - save_cache:
+          key: node_modules-{{ checksum "package-lock.json" }}
+          when: always
+          paths:
+            - $CIRCLE_WORKING_DIRECTORY/node_modules
+
+  lint:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - restore_module
+      - run:
+          name: lint
+          command: npm run lint
+
+  build:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+      - restore_module
+      - run:
+          name: build
+          command: npm run build --morden
+
   build-image:
     machine: true
     steps:
@@ -32,17 +74,6 @@ jobs:
               docker tag trap/traq-ui:$IMAGE_TAG trap/traq-ui:release
               docker push trap/traq-ui:release
             fi
-  build:
-    docker:
-      - image: circleci/node:latest
-    steps:
-      - checkout
-      - run:
-          name: module install
-          command: npm ci
-      - run:
-          name: build
-          command: npm run build
   deploy-prod:
     machine: true
     steps:
@@ -60,7 +91,13 @@ workflows:
   version: 2
   main:
     jobs:
+      - module-install
+      - lint:
+        requires:
+          - module-install
       - build
+        requires:
+          - module-install
       - build-image:
           filters:
             branches:
