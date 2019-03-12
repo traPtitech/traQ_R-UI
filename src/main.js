@@ -6,11 +6,13 @@ import VueClipboard from 'vue-clipboard2'
 import App from './App'
 import store from './store'
 import router from './router'
+import VueLazyload from 'vue-lazyload'
 
 Vue.config.productionTip = false
 
 Vue.use(Meta)
 Vue.use(VueClipboard)
+Vue.use(VueLazyload)
 
 window.asyncLoadComponents = component => {
   return () => {
