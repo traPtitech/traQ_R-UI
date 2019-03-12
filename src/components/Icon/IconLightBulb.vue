@@ -90,7 +90,7 @@ export default {
   name: 'IconLightBulb',
   props: {
     size: {
-      type: Number,
+      type: String,
       default: 16
     },
     color: {

@@ -1,6 +1,6 @@
 <template lang="pug">
   div.splash.flex-center
-    icon-logo(:size="100")
+    icon-logo(size="100")
 </template>
 
 <script>
@@ -21,7 +21,7 @@ export default {
   height: 100%
   background-color: #0D67EA
   background-color: var(--primary-color)
-  z-index: 1000000
+  z-index: 9999
   animation: logo-fade-in .4s ease
   transition: background-color .6s ease
 

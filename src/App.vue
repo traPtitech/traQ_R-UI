@@ -1,7 +1,7 @@
 <template lang="pug">
 #app(:data-theme="$store.getters.theme" :style="appStyles" :class="appClasses")
-  Favicon
   Splash(v-if="isLoading")
+  Favicon
   router-view
 </template>
 
@@ -98,16 +98,21 @@ export default {
 @import "~@/styles/global.sass"
 #app
   position: fixed
-  top: 0;
-  right: 0;
+  top: 0
+  right: 0
   width: 100%
   height: 100%
-  font-family: 'Mplus 1p','メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
+  font-family: 'Noto Sans JP','メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   color: var(--text-color)
+  background-color: #0D67EA
   background: var(--background-color)
+
+  & + .initial-splash
+    z-index: -1
 
 .app-loaded + .initial-splash
   display: none
+
 </style>

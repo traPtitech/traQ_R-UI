@@ -1,26 +1,25 @@
 <template lang="pug">
   .message-view
     message-container
-    .message-view-input-wrap
-      message-input
+    message-input
 </template>
 
 <script>
 import MessageContainer from '@/components/Main/MessageView/MessageContainer'
+import MessageInput from '@/components/Main/MessageView/MessageInput'
 
 export default {
   name: 'MessageView',
   components: {
     MessageContainer,
-    MessageInput: window.asyncLoadComponents(
-      import('@/components/Main/MessageView/MessageInput')
-    )
+    MessageInput
   }
 }
 </script>
 
 <style lang="sass">
 .message-view
+  position: relative
   +mq(pc)
     flex-grow: 1
     display: flex
@@ -31,5 +30,4 @@ export default {
     flex-flow: column
     height: 100%
 
-.message-view-input-wrap
 </style>

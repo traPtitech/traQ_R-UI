@@ -32,7 +32,7 @@
         :placeholder="placeholder"
         v-model="inputText"
         @focus="inputFocus"
-        @blur="inputBlur" 
+        @blur="inputBlur"
         @keydown="keydown"
         @click="clearKey"
         @paste="pasteImage"
@@ -507,6 +507,8 @@ $message-input-button-height-pc: 40px - 2px
 
 .message-input
   background-color: var(--background-color)
+  margin:
+    top: auto
   +mq(pc)
     flex-shrink: 0
     min-height: 50px
