@@ -1,6 +1,6 @@
 <template lang="pug">
-content.content-wrap.is-scroll(@scroll="scrollHandle")
-  .message-list
+content.content-wrap.is-scroll(@scroll.passive="scrollHandle")
+  .message-list(:class="scrollerClass")
     .message-item(v-for="(message, index) in messages" :key="message.messageId")
       time.date-partition(v-if="index === messages.length - 1 || date(messages[index + 1].createdAt) !== date(message.createdAt)")
         | {{date(message.createdAt)}}
@@ -24,6 +24,7 @@ export default {
       messageLoading: false,
       noMoreMessage: false,
       isFirstView: true,
+      isFixed: false,
       savedScrollPosition: 0
     }
   },
@@ -46,9 +47,11 @@ export default {
     })
   },
   methods: {
-    scrollHandle () {
+    scrollHandle() {
       if (this.messageLoading) {
         this.savedScrollPosition = this.$el.scrollHeight - this.$el.scrollTop
+        if (this.$el.scrollTop <= 10)
+          this.$el.scrollTop += 1
         return
       }
       if (this.noMoreMessage) {
@@ -59,9 +62,11 @@ export default {
       }
     },
     loadMessages() {
-      this.savedScrollPosition = this.$el.scrollHeight - this.$el.scrollTop
       this.messageLoading = true
       this.noMoreMessage = false
+      this.savedScrollPosition = this.$el.scrollHeight - this.$el.scrollTop
+      if (this.$el.scrollTop <= 10)
+        this.$el.scrollTop += 1
       this.$store.dispatch('getMessages').then(res => {
         console.log('getMessages:', res)
         if (!res) {
@@ -84,11 +89,6 @@ export default {
     scrollToBottom() {
       if (!this.isFirstView) {
         this.$el.scrollTop = this.$el.scrollHeight - this.savedScrollPosition
-        this.$el.scrollTo({
-          top: this.$el.scrollHeight - this.savedScrollPosition,
-          left: 0,
-          behavior: 'smooth'
-        })
       } else {
         this.$el.scrollTop = this.$el.scrollHeight
       }
@@ -103,6 +103,11 @@ export default {
     },
     messages() {
       return this.$store.state.messages.slice().reverse()
+    },
+    scrollerClass() {
+      return {
+        'is-fixed': this.isFixed
+      }
     }
   },
   watch: {
@@ -118,11 +123,26 @@ export default {
 <style lang="sass">
 .content-wrap
   display: block
+  position: relative
   background-color: $background-color
+  width: 100%
   height: 100%
   overflow-x: hidden
   overflow-y: scroll
   min-width: 0
+
+.message-list
+  display: flex
+  flex-direction: column-reverse
+  width: 100%
+  padding:
+    top: 60px
+    right: 0
+    left: 0
+    bottom: 30px
+
+  &.is-fixed
+    width: auto
 
 .message-no-more-message
   margin: 15px 0
@@ -190,19 +210,7 @@ export default {
     top: 50%
     right: 15px
 
-.message-list
-  position: relative
-  display: flex
-  flex-direction: column-reverse
-  padding:
-    top: 60px
-    right: 0
-    left: 0
-    bottom: 30px
-
 .message-loading
   width: 100%
   height: 30px
-
-
 </style>

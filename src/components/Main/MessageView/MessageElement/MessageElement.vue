@@ -1,5 +1,5 @@
 <template lang="pug">
-.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned':pinned}")
+article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned':pinned}")
   template(v-if="!isRendered")
     .message-dummy-user-icon-wrap
       .message-dummy-user-icon

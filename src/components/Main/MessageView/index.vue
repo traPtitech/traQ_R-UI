@@ -19,6 +19,7 @@ export default {
 
 <style lang="sass">
 .message-view
+  position: relative
   +mq(pc)
     flex-grow: 1
     display: flex
@@ -29,5 +30,4 @@ export default {
     flex-flow: column
     height: 100%
 
-.message-view-input-wrap
 </style>
