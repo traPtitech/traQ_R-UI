@@ -17,24 +17,25 @@ const loadGeneralData = (dataName, webLoad, commit) => {
     db.write('generalData', { type: dataName, data: res.data })
   })
   const getFromDB = db
-      .read('generalData', dataName)
-      .then(data => {
-        if (!loaded && data) {
-          commit(`set${dataName}Data`, data)
-        } else {
-          throw new Error('No data exists')
-        }
-      })
-      .catch(async () => {
-        await fetch
-      })
-  if ('navigator' in window && 'onLine' in window.navigator && !window.navigator.onLine) {
+    .read('generalData', dataName)
+    .then(data => {
+      if (!loaded && data) {
+        commit(`set${dataName}Data`, data)
+      } else {
+        throw new Error('No data exists')
+      }
+    })
+    .catch(async () => {
+      await fetch
+    })
+  if (
+    'navigator' in window &&
+    'onLine' in window.navigator &&
+    !window.navigator.onLine
+  ) {
     return Promise.race([getFromDB])
   } else {
-    return Promise.race([
-      getFromDB,
-      fetch
-    ])
+    return Promise.race([getFromDB, fetch])
   }
 }
 
@@ -128,7 +129,7 @@ const store = new Vuex.Store({
     },
     setMe(state, me) {
       state.me = me
-      db.write('generalData', {type: 'me', data: me})
+      db.write('generalData', { type: 'me', data: me })
     },
     setChannelData(state, newChannelData) {
       newChannelData.sort(stringSortGen('name'))

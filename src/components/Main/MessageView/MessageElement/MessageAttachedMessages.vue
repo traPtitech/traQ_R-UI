@@ -26,12 +26,12 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       renderedBodies: []
     }
   },
-  mounted () {
+  mounted() {
     this.renderedBodies = this.messages.map(m => this.mark(m.content))
     this.$emit('rendered')
   },

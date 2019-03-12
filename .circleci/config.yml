@@ -11,8 +11,8 @@ commands:
   restore_module:
     steps:
       - restore_cache:
-        keys:
-          - node_modules-{{ checksum "package-lock.json" }}
+          keys:
+            - node_modules-{{ checksum "package-lock.json" }}
 
 jobs:
   module-install:

@@ -29,5 +29,4 @@ export default {
     display: flex
     flex-flow: column
     height: 100%
-
 </style>

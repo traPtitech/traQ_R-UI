@@ -114,5 +114,4 @@ export default {
 
 .app-loaded + .initial-splash
   display: none
-
 </style>
