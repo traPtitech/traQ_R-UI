@@ -1,5 +1,12 @@
 version: 2.1
 
+executors:
+  default:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/workspace
+
+
 commands:
   restore_module:
     steps:
@@ -9,8 +16,7 @@ commands:
 
 jobs:
   module-install:
-    docker:
-      - image: circleci/node:latest
+    executor: default
     steps:
       - checkout
       - run:
@@ -21,11 +27,10 @@ jobs:
           key: node_modules-{{ checksum "package-lock.json" }}
           when: always
           paths:
-            - $CIRCLE_WORKING_DIRECTORY/node_modules
+            - ~/workspace/node_modules
 
   lint:
-    docker:
-      - image: circleci/node:latest
+    executor: default
     steps:
       - checkout
       - restore_module
@@ -34,8 +39,7 @@ jobs:
           command: npm run lint
 
   build:
-    docker:
-      - image: circleci/node:latest
+    executor: default
     steps:
       - checkout
       - restore_module
@@ -93,11 +97,11 @@ workflows:
     jobs:
       - module-install
       - lint:
-        requires:
-          - module-install
-      - build
-        requires:
-          - module-install
+          requires:
+            - module-install
+      - build:
+          requires:
+            - module-install
       - build-image:
           filters:
             branches:
