@@ -5,6 +5,8 @@ header / Access-Control-Allow-Origin  *
 
 root /usr/share/caddy/html
 
+header /sw.js Cache-Control "max-age=0"
+
 rewrite {
 	regexp .*
 	to {path} /
