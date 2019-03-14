@@ -3,9 +3,9 @@
   @wheel.prevent="handleWheel"
   @mousemove.prevent="pan($event.layerX, $event.layerY)"
   @touchmove.prevent="handleTouchMove"
-  @mousedown.prevent="handleTouchStart"
+  @mousedown.prevent="handleMouseDown"
   @touchstart.prevent="handleTouchStart"
-  @mouseup.prevent="handleTouchEnd"
+  @mouseup.prevent="handleMouseUp"
   @touchend.prevent="handleTouchEnd"
 )
   .image-viewer-image(
@@ -143,12 +143,10 @@ export default {
     },
     handleTouchStart(event) {
       this.isPanning = true
-      const [x, y] = event.touches
-        ? this.touchClientPosMean(event.touches)
-        : [event.layerX, event.layerY]
+      const [x, y] = this.touchClientPosMean(event.touches)
       this.lastTouchPosX = x || 0
       this.lastTouchPosY = y || 0
-      if (event.touches && event.touches.length == 2) {
+      if (event.touches.length == 2) {
         this.lastTouchDistance = this.touchDistance(event.touches) || 0
       }
     },
@@ -157,6 +155,24 @@ export default {
       this.lastTouchPosX = 0
       this.lastTouchPosY = 0
       this.lastTouchDistance = 0
+      if (this.scale <= 1) {
+        this.$nextTick(() => {
+          this.translateX = 0
+          this.translateY = 0
+          this.pivotX = 0
+          this.pivotY = 0
+        })
+      }
+    },
+    handleMouseDown() {
+      this.isPanning = true
+      this.lastTouchPosX = event.layerX || 0
+      this.lastTouchPosY = event.layerY || 0
+    },
+    handleMouseUp() {
+      this.isPanning = false
+      this.lastTouchPosX = 0
+      this.lastTouchPosY = 0
       if (this.scale <= 1) {
         this.$nextTick(() => {
           this.translateX = 0
