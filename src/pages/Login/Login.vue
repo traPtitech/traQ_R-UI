@@ -1,7 +1,5 @@
 <template lang="pug">
 .login-page
-  // [FIXME] delete
-  ImageViewer(url="http://anihonetwallpaper.com/image/2016/02/28820_Gochiusa_Android.jpg")
   template(v-if="deviceType === 'pc'")
     .login-page-inner-wrap-pc
       .login-left-box
@@ -75,7 +73,6 @@ import { mapGetters } from 'vuex'
 import client from '@/bin/client'
 import IconLogo from '@/components/Icon/IconLogo'
 import IconLogotraP from '@/components/Icon/IconLogotraP'
-import ImageViewer from '@/components/Main/Modal/Util/ImageViewer' // [FIXME] delete
 
 export default {
   name: 'login',
@@ -93,7 +90,6 @@ export default {
     }
   },
   components: {
-    ImageViewer, // [FIXME] delete
     IconLogo,
     IconLogotraP
   },
