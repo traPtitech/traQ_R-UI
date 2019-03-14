@@ -1,8 +1,8 @@
 <template lang="pug">
 .image-viewer-wrapper(
-  @wheel.prevent="handleZoom"
-  @mousemove="handlePan"
-  @touchmove="handlePan"
+  @wheel.prevent="handleWheel"
+  @mousemove="pan($event.layerX, $event.layerY)"
+  @touchmove="handleTouchMove"
   @mousedown="handleTouchStart"
   @touchstart="handleTouchStart"
   @mouseup="handleTouchEnd"
@@ -24,7 +24,10 @@ export default {
       lastPanTime: Date.now() - throttleInterval,
       lastTouchPosX: 0,
       lastTouchPosY: 0,
+      lastTouchDistance: 0,
       scale: 1,
+      viewerClientX: 0,
+      viewerClientY: 0,
       viewerWidth: 0,
       viewerHeight: 0,
       translateX: 0,
@@ -53,55 +56,107 @@ export default {
       this.pivotX = newPivotX
       this.pivotY = newPivotY
     },
-    handleZoom(event) {
-      if (this.scale <= 1 && event.deltaY > 0) {
-        this.scale = 1
-        this.$nextTick(() => {
-          this.translateX = 0
-          this.translateY = 0
-          this.pivotX = 0
-          this.pivotY = 0
-        })
-        return
-      }
-
-      // for macOS' trackpad
-      const scaleFactor = event.ctrlKey ? 30 : 100
-      // Magic number festival!
-      this.scale = Math.max(
-        Math.min(this.scale * (1 - event.deltaY / scaleFactor), 20),
-        1
-      )
-
-      if (
-        this.viewerPivotX !== event.layerX ||
-        this.viewerPivotY !== event.layerY
-      ) {
-        this.viewerPivotX = event.layerX
-        this.viewerPivotY = event.layerY
-        this.updatePivot(event.layerX, event.layerY)
-      }
+    touchClientPosMean(touches) {
+      return Array.from(touches)
+        .map(t => [t.clientX, t.clientY])
+        .reduce((acc, cur) => [acc[0] + cur[0], acc[1] + cur[1]])
+        .map(p => p / touches.length)
     },
-    handlePan(event) {
-      const now = Date.now()
-      if (!this.isPanning || now - this.lastPanTime < throttleInterval) {
-        return
+    touchDistance(touches) {
+      return Math.sqrt(
+        (touches[0].clientX - touches[1].clientX) ** 2 +
+          (touches[0].clientY - touches[1].clientY) ** 2
+      )
+    },
+    transformPoint(x, y) {
+      const px = this.pivotX + this.translateX
+      const py = this.pivotY + this.translateY
+      const tx = (x + this.translateX - px) * this.scale + px
+      const ty = (y + this.translateY - py) * this.scale + py
+      return [tx, ty]
+    },
+    zoom(layerX, layerY, deltaY, scaleFactor) {
+      requestAnimationFrame(() => {
+        if (this.scale <= 1 && deltaY > 0) {
+          this.scale = 1
+          this.$nextTick(() => {
+            this.translateX = 0
+            this.translateY = 0
+            this.pivotX = 0
+            this.pivotY = 0
+            this.viewerPivotX = 0
+            this.viewerPivotY = 0
+          })
+          return
+        }
+
+        // for macOS' trackpad
+        // Magic number festival!
+        this.scale = Math.max(
+          Math.min(this.scale * (1 - deltaY / scaleFactor), 20),
+          1
+        )
+
+        if (this.viewerPivotX !== layerX || this.viewerPivotY !== layerY) {
+          this.viewerPivotX = layerX
+          this.viewerPivotY = layerY
+          this.updatePivot(layerX, layerY)
+        }
+      })
+    },
+    handleWheel(event) {
+      const scaleFactor = event.ctrlKey ? 30 : 100
+      this.zoom(event.layerX, event.layerY, event.deltaY, scaleFactor)
+    },
+    pan(layerX, layerY) {
+      requestAnimationFrame(() => {
+        const now = Date.now()
+        if (!this.isPanning || now - this.lastPanTime < throttleInterval) {
+          return
+        }
+        this.lastPanTime = now
+        this.translateX += layerX - this.lastTouchPosX
+        this.translateY += layerY - this.lastTouchPosY
+        this.lastTouchPosX = layerX || 0
+        this.lastTouchPosY = layerY || 0
+      })
+    },
+    handleTouchMove(event) {
+      if (event.touches.length === 1) {
+        this.pan(
+          event.touches[0].clientX - this.viewerClientX,
+          event.touches[0].clientY - this.viewerClientY
+        )
       }
-      this.lastPanTime = now
-      this.translateX += event.layerX - this.lastTouchPosX
-      this.translateY += event.layerY - this.lastTouchPosY
-      this.lastTouchPosX = event.layerX
-      this.lastTouchPosY = event.layerY
+      if (event.touches.length === 2) {
+        const [cx, cy] = this.touchClientPosMean(event.touches)
+        const dist = this.touchDistance(event.touches)
+        this.pan(cx - this.viewerClientX, cy - this.viewerClientY)
+        this.zoom(
+          cx - this.viewerClientX,
+          cy - this.viewerClientY,
+          dist - this.lastTouchDistance,
+          1
+        )
+        this.lastTouchDistance = dist
+      }
     },
     handleTouchStart(event) {
       this.isPanning = true
-      this.lastTouchPosX = event.layerX
-      this.lastTouchPosY = event.layerY
+      const [x, y] = event.touches
+        ? this.touchClientPosMean(event.touches)
+        : [event.layerX, event.layerY]
+      this.lastTouchPosX = x || 0
+      this.lastTouchPosY = y || 0
+      if (event.touches && event.touches.length == 2) {
+        this.lastTouchDistance = this.touchDistance(event.touches) || 0
+      }
     },
     handleTouchEnd() {
       this.isPanning = false
       this.lastTouchPosX = 0
       this.lastTouchPosY = 0
+      this.lastTouchDistance = 0
       if (this.scale <= 1) {
         this.$nextTick(() => {
           this.translateX = 0
@@ -110,6 +165,11 @@ export default {
           this.pivotY = 0
         })
       }
+    },
+    handleWindowResize() {
+      const clientRect = this.$el.getBoundingClientRect()
+      this.viewerWidth = clientRect.width
+      this.viewerHeight = clientRect.height
     }
   },
   computed: {
@@ -138,9 +198,11 @@ export default {
     }
   },
   mounted() {
-    const clientRect = this.$el.getBoundingClientRect()
-    this.viewerWidth = clientRect.width
-    this.viewerHeight = clientRect.height
+    this.handleWindowResize()
+    window.addEventListener('resize', this.handleWindowResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleWindowResize)
   }
 }
 </script>
@@ -157,6 +219,7 @@ export default {
 .image-viewer-image
   width: 100%
   height: 100%
+  will-change: transform
   background:
     size: contain
     repeat: no-repeat
