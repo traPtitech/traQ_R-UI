@@ -1,12 +1,12 @@
 <template lang="pug">
 .image-viewer-wrapper(
   @wheel.prevent="handleWheel"
-  @mousemove="pan($event.layerX, $event.layerY)"
-  @touchmove="handleTouchMove"
-  @mousedown="handleTouchStart"
-  @touchstart="handleTouchStart"
-  @mouseup="handleTouchEnd"
-  @touchend="handleTouchEnd"
+  @mousemove.prevent="pan($event.layerX, $event.layerY)"
+  @touchmove.prevent="handleTouchMove"
+  @mousedown.prevent="handleTouchStart"
+  @touchstart.prevent="handleTouchStart"
+  @mouseup.prevent="handleTouchEnd"
+  @touchend.prevent="handleTouchEnd"
 )
   .image-viewer-image(
     :class="imageClass"
