@@ -75,9 +75,9 @@ export default {
       const ty = (y + this.translateY - py) * this.scale + py
       return [tx, ty]
     },
-    zoom(layerX, layerY, deltaY, scaleFactor) {
+    zoom(layerX, layerY, scale, isScrollDown) {
       requestAnimationFrame(() => {
-        if (this.scale <= 1 && deltaY > 0) {
+        if (this.scale <= 1 && isScrollDown) {
           this.scale = 1
           this.$nextTick(() => {
             this.translateX = 0
@@ -92,10 +92,7 @@ export default {
 
         // for macOS' trackpad
         // Magic number festival!
-        this.scale = Math.max(
-          Math.min(this.scale * (1 - deltaY / scaleFactor), 20),
-          1
-        )
+        this.scale = Math.max(Math.min(this.scale * scale, 20), 1)
 
         if (this.viewerPivotX !== layerX || this.viewerPivotY !== layerY) {
           this.viewerPivotX = layerX
@@ -106,7 +103,12 @@ export default {
     },
     handleWheel(event) {
       const scaleFactor = event.ctrlKey ? 30 : 100
-      this.zoom(event.layerX, event.layerY, event.deltaY, scaleFactor)
+      this.zoom(
+        event.layerX,
+        event.layerY,
+        1 - event.deltaY / scaleFactor,
+        event.deltaY > 0
+      )
     },
     pan(layerX, layerY) {
       requestAnimationFrame(() => {
@@ -135,8 +137,8 @@ export default {
         this.zoom(
           cx - this.viewerClientX,
           cy - this.viewerClientY,
-          dist - this.lastTouchDistance,
-          1
+          dist / this.lastTouchDistance,
+          dist < this.lastTouchDistance
         )
         this.lastTouchDistance = dist
       }
