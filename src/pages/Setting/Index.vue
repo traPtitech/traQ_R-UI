@@ -15,15 +15,15 @@
         ul.setting-page-list
           li.setting-page-list-item(:class="{active: active === 0}" @click="active = 0")
             .setting-page-list-item-icon
-              IconProfile(color="white" :size="22")
+              IconProfile(color="white" size="22")
             | プロフィール設定
           li.setting-page-list-item(:class="{active: active === 1}" @click="active = 1")
             .setting-page-list-item-icon
-              IconWrench(color="white" :size="22")
+              IconWrench(color="white" size="22")
             | ブラウザ設定
           li.setting-page-list-item(:class="{active: active === 2}" @click="active = 2")
             .setting-page-list-item-icon
-              IconStamp(color="white" :size="22")
+              IconStamp(color="white" size="22")
             | スタンプ設定
       .setting-page-container(v-if="windowWidth >= 750")
         transition(name="fade" mode="out-in")

@@ -6,27 +6,27 @@
   .message-input-body
     .message-input-buttons-wrapper
       .message-input-button.flex-center(@click="clickUploadButton")
-        icon-upload(:size="24" color="var(--tertiary-color-on-bg)")
+        icon-upload(size="24" color="var(--tertiary-color-on-bg)")
       .message-input-button.flex-center(@click.stop="showStampPicker")
-        icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
+        icon-stamp(size="24" color="var(--tertiary-color-on-bg)")
       //- .message-input-button.flex-center
-      //-   icon-hash(:size="22" color="var(--tertiary-color-on-bg)")
+      //-   icon-hash(size="22" color="var(--tertiary-color-on-bg)")
       //- .message-input-button.flex-center
-      //-   icon-profile(:size="24" color="var(--tertiary-color-on-bg)")
+      //-   icon-profile(size="24" color="var(--tertiary-color-on-bg)")
     .message-input-files-wrapper.is-scroll(v-if="hasFile")
       .message-input-file(v-for="(file, index) in files")
         .message-input-file-thumbnail(
           v-if="file.thumbnail"
           :style="{backgroundImage: `url(${file.thumbnail})`}")
         .message-input-file-icon.flex-center(v-else)
-          icon-file(:size="24" color="var(--tertiary-color-on-bg)")
+          icon-file(size="24" color="var(--tertiary-color-on-bg)")
         span.message-input-file-name.text-ellipsis
           | {{ file.file.name }}
         .message-input-file-close-button(@click="removeFile(index)")
-          icon-close(:size="18" color="var(--tertiary-color-on-bg)")
+          icon-close(size="18" color="var(--tertiary-color-on-bg)")
     .message-input-text-area-wrapper
       .message-input-button.flex-center(@click="clickUploadButton")
-        icon-upload(:size="24" color="var(--tertiary-color-on-bg)")
+        icon-upload(size="24" color="var(--tertiary-color-on-bg)")
       textarea#message-input-text-area.input-reset(
         rows="1"
         :placeholder="placeholder"
@@ -38,11 +38,11 @@
         @paste="pasteImage"
         ref="inputArea")
       .message-input-button.flex-center(@click.stop="showStampPicker")
-        icon-stamp(:size="24" color="var(--tertiary-color-on-bg)")
+        icon-stamp(size="24" color="var(--tertiary-color-on-bg)")
       .message-input-send-button.flex-center(
         @click="submit"
         :style="sendButtonStyle")
-        icon-send(:size="24" color="var(--tertiary-color-on-bg)")
+        icon-send(size="24" color="var(--tertiary-color-on-bg)")
   //-   p.suggest-element(v-for="(suggest, id) in suggests" @click="replaceSuggest(id)" @mouseover="onmouseover(id)" :style="(suggestMode && suggestIndex === id) ? 'background-color: rgb(255, 255, 0);' : ''" v-html="suggest.html")
 </template>
 

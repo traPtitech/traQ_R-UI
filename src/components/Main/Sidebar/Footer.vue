@@ -7,7 +7,7 @@ div.footer
       IconCrescent(v-if="theme === 'light'")
       IconCrescentFill(v-else)
     li.menu-button.setting(@click="$router.push('/setting')")
-      IconGear(:size="16")
+      IconGear(size="16")
 </template>
 
 <script>

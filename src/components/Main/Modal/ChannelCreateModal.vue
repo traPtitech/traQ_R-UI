@@ -1,6 +1,6 @@
 <template lang="pug">
 base-common-modal(title="CREATE" tiny)
-  icon-plus(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+  icon-plus(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .channel-create-modal
     h2.channel-create-description 子チャンネルを作成する
     .channel-create-input-wrap

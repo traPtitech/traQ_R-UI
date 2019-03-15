@@ -5,8 +5,8 @@ base-common-modal(:title="`GROUP: ${data.name}`"
   .group-modal-go-back(v-if="$store.state.modal.lastUser"
                        slot="header-icon"
                        @click="backToUserModal")
-    icon-back(color="var(--primary-color-on-bg)" :size="16")
-  icon-profile-fill(v-else color="var(--primary-color-on-bg)" slot="header-icon" :size="22")
+    icon-back(color="var(--primary-color-on-bg)" size="16")
+  icon-profile-fill(v-else color="var(--primary-color-on-bg)" slot="header-icon" size="22")
   .group-modal
     .group-user-list.is-scroll
       member-element.group-user-element(v-for="member in members" :model="member" :key="member.userId" backgroundColor="var(--background-color)")

@@ -31,7 +31,7 @@
           :href="`${fileUrl(file.fileId)}?dl=1`" 
           :download="file.name")
           div.attached-file-info-icon-wrap
-            icon-attach(:size="24" color="var(--tertiary-color-on-bg)")
+            icon-attach(size="24" color="var(--tertiary-color-on-bg)")
           div
             p.attached-file-name.break-text
               | {{file.name}}

@@ -1,6 +1,6 @@
 <template lang="pug">
 base-common-modal(:title="`FILE: ${data.name}`" small)
-  icon-file(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+  icon-file(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .image-viewer-container
     image-viewer(:url="fileUrl(data.fileId)")
 

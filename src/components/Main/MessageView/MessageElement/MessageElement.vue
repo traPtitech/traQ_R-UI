@@ -30,12 +30,12 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
         .message-display-date-time
           | {{displayDateTime}}
         .message-edited-icon(v-if="isEdited")
-          icon-pen(:size="12" color="var(--text-color)")
+          icon-pen(size="12" color="var(--text-color)")
       ul.message-buttons-wrap
         li(@click.stop="showStampPicker")
-          icon-stamp-plus(:size="20" color="var(--text-color)")
+          icon-stamp-plus(size="20" color="var(--text-color)")
         li.message-button-drop-menu(@click.stop="activeDropMenu")
-          icon-dots(:size="18" color="var(--text-color)")
+          icon-dots(size="18" color="var(--text-color)")
     .message-contents-wrap
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")

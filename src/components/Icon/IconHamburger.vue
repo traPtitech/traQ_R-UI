@@ -66,7 +66,7 @@ export default {
   props: {
     size: {
       type: String,
-      default: 16
+      default: '16'
     },
     color: {
       type: String,

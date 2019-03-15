@@ -28,9 +28,9 @@
               | by {{ creatorName(stamp.creatorId) }}
           .stamp-setting-registerd-stamp-action-icon(v-if="isStampCreatedByMe(stamp.id)")
             .stamp-action-icon(@click="toggleEdit(stamp.id)")
-              IconEdit(color="var(--text-color)" :size="18")
+              IconEdit(color="var(--text-color)" size="18")
             // .stamp-action-icon(@click="toggleDelete(stamp.id)")
-            //   IconClose(color="var(--text-color)" :size="18")
+            //   IconClose(color="var(--text-color)" size="18")
         .stamp-action-container(v-if="showStampEditor(stamp.id)")
           .stamp-editor-wrap(v-if="stampAction === 'edit'")
             .stamp-editor-title

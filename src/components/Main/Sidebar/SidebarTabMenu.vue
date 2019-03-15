@@ -4,21 +4,21 @@ nav.sidebar-tab-menu
     li.sidebar-menu-button.flex-center.channels(
       @click="navClicked('Channels')" 
       :class="{'menu-active':menuContent==='Channels'}")
-      icon-hash(:size="20")
+      icon-hash(size="20")
       .sidebar-tab-menu-unread-indicator(v-if="channelsUnreadNum > 0")
     li.sidebar-menu-button.flex-center.members(
       @click="navClicked('Members')" 
       :class="{'menu-active':menuContent==='Members'}")
-      icon-profile-fill(:size="20")
+      icon-profile-fill(size="20")
       .sidebar-tab-menu-unread-indicator(v-if="usersUnreadNum > 0")
     li.sidebar-menu-button.flex-center.clips(
       @click="navClicked('Clips')" 
       :class="{'menu-active':menuContent==='Clips'}")
-      icon-attach(:size="20")
+      icon-attach(size="20")
     li.sidebar-menu-button.flex-center.links(
       @click="navClicked('Links')" 
       :class="{'menu-active':menuContent==='Links'}")
-      icon-tool-box(:size="20")
+      icon-tool-box(size="20")
 </template>
 
 <script>

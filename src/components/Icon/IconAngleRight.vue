@@ -18,8 +18,8 @@ export default {
   name: 'IconAngleRight',
   props: {
     size: {
-      type: Number,
-      default: 16
+      type: String,
+      default: '16'
     },
     color: {
       type: String,

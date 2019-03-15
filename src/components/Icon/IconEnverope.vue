@@ -20,8 +20,8 @@ export default {
   name: 'IconEnverope',
   props: {
     size: {
-      // Use no type check to prevent a warning in UserProfileImage
-      default: 16
+      type: String,
+      default: '16'
     },
     color: {
       type: String,
