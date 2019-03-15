@@ -10,27 +10,27 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
           | {{topic}}
     .titlebar-expand-button(v-if="!isDirectMessage" @click="toggleTitlebarExpansion")
       div(:style="titlebarExpandButtonStyle")
-        icon-down-direction(:size="32")
+        icon-down-direction(size="32")
   .titlebar-expand.drop-shadow
     .titlebar-menu-button-wrap
       .titlebar-menu-button(v-show="!isDirectMessage && isNotificationForced")
-        icon-notification-fill(:size="24" color="rgba(255,255,255,0.5)")
+        icon-notification-fill(size="24" color="rgba(255,255,255,0.5)")
       .titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && !isNotified" @click="notifyChannel")
-        icon-notification(:size="24")
+        icon-notification(size="24")
       .titlebar-menu-button(v-show="!isDirectMessage && !isNotificationForced && isNotified" @click="unnotifyChannel")
-        icon-notification-fill(:size="24")
+        icon-notification-fill(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && !isStared" @click="starChannel")
-        icon-star(:size="24")
+        icon-star(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
-        icon-star-fill(:size="24")
+        icon-star-fill(size="24")
     .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
       .menu-icon
-        icon-notification-fill(:size="24")
+        icon-notification-fill(size="24")
       span
         | チャンネル通知設定
     .titlebar-menu-item(v-show="!isDirectMessage" @click="$store.dispatch('openChannelCreateModal')")
       .menu-icon
-        icon-plus(:size="24")
+        icon-plus(size="24")
       span
         | チャンネル作成
 </template>

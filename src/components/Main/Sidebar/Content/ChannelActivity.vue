@@ -1,7 +1,7 @@
 <template lang="pug">
 .channel-activity
   .channel-activity-under-construction(title="あのねあのね！")
-    IconLandscapeUnderConstruction(:size="128")
+    IconLandscapeUnderConstruction(size="128")
     .channel-activity-under-construction-text
       | この先まだ工事中なんです
 //  div.activity-channels

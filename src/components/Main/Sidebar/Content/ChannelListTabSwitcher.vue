@@ -2,13 +2,13 @@
   .channel-tab-switcher-wrap.drop-shadow
     .channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
       .channel-tab-switcher-item-icon.flex-center
-        IconHash(:size="16")
+        IconHash(size="16")
     .channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
       .channel-tab-switcher-item-icon.flex-center
-        IconStarFill(:size="18")
+        IconStarFill(size="18")
     .channel-tab-switcher-item(@click="channelView = 'activity'" :class="{selected: channelView === 'activity'}")
       .channel-tab-switcher-item-icon.flex-center
-        IconLightning(:size="18")
+        IconLightning(size="18")
 </template>
 
 <script>

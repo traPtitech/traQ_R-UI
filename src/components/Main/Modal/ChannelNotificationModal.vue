@@ -1,6 +1,6 @@
 <template lang="pug">
 base-common-modal(title="NOTIFICATIONS" small)
-  icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+  icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .channel-notification-modal
     .notifications-item
       h2 ONにしてる人
@@ -11,7 +11,7 @@ base-common-modal(title="NOTIFICATIONS" small)
                          :member="member"
                          :key="member.userId")
       .notifications-empty(v-else)
-        IconLandscapeNight(:size="64" color="lightgray")
+        IconLandscapeNight(size="64" color="lightgray")
         | 通知がONの人はいません
     .notifications-item
       h2 OFFにしてる人
@@ -22,7 +22,7 @@ base-common-modal(title="NOTIFICATIONS" small)
                          :member="member"
                          :key="member.userId")
       .notifications-empty(v-else)
-        IconLandscapeDay(:size="64" color="lightgray")
+        IconLandscapeDay(size="64" color="lightgray")
         | 通知がOFFの人はいません
 </template>
 

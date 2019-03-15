@@ -5,8 +5,8 @@ base-common-modal(:title="`TAG: ${data.tag}`"
   .tag-modal-go-back(v-if="$store.state.modal.lastUser"
                      slot="header-icon"
                      @click="backToUserModal")
-    icon-back(color="var(--primary-color-on-bg)" :size="16")
-  icon-tag(v-else color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+    icon-back(color="var(--primary-color-on-bg)" size="16")
+  icon-tag(v-else color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .tag-modal
     .tag-user-list
       member-element.tag-user-element(v-for="member in users" :model="member" :key="member.userId" backgroundColor="var(--background-color)")

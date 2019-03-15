@@ -1,7 +1,7 @@
 <template lang="pug">
 .clip-list
   .clip-list-under-construction(title="あのねあのね！")
-    IconLandscapeUnderConstruction(:size="128")
+    IconLandscapeUnderConstruction(size="128")
     .clip-list-under-construction-text
       | この先まだ工事中なんです
 </template>

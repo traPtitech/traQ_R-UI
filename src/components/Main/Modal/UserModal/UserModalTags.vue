@@ -3,28 +3,28 @@
   .user-modal-tags-container.is-scroll
     .user-modal-tag-element(v-for="(tag, index) in tags" :key="tag.tagId")
       .user-modal-tag-icon
-        IconTag(:size="16" color="gray")
+        IconTag(size="16" color="gray")
       .user-modal-tag-body(@click="openTagModal(tag)")
         | {{tag.tag}}
       .user-modal-tag-status-icon(v-if="tag.editable")
         .user-modal-icon-wrap(@click="lockTag(index)" v-show="hasAuth && !tag.isLocked" role="button")
-          IconUnlocked(:size="16" color="gray")
+          IconUnlocked(size="16" color="gray")
         .user-modal-icon-wrap(@click="eraseTag(index)" v-show="!tag.isLocked" role="button")
-          IconClose(:size="16" color="gray")
+          IconClose(size="16" color="gray")
         .user-modal-icon-wrap(@click="unlockTag(index)" v-show="hasAuth && tag.isLocked" role="button")
-          IconLocked(:size="16" color="gray")
+          IconLocked(size="16" color="gray")
         .user-modal-icon-wrap(v-show="!hasAuth && tag.isLocked")
-          IconLocked.non-clickable(:size="16" color="gray")
+          IconLocked.non-clickable(size="16" color="gray")
   .user-modal-tags-input-container
     .user-modal-tags-icon
-      IconTag(:size="16" color="gray" :style="detailInputIconStyle")
+      IconTag(size="16" color="gray" :style="detailInputIconStyle")
     input.user-modal-tags-input.input-reset(
       v-model="tagInput"
       @keydown="onInputChange"
       placeholder="タグを追加……"
     )
     .user-modal-tags-icon(@click="addTag" role="button")
-      IconPlus(:size="16" color="gray" :style="detailInputIconStyle")
+      IconPlus(size="16" color="gray" :style="detailInputIconStyle")
 </template>
 
 <script>

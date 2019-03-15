@@ -16,7 +16,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
         div.information-sidebar-content-item.separator-line(v-if="isChannel")
           div.information-sidebar-content-header
-            icon-topic(:size="24")
+            icon-topic(size="24")
             span
               | TOPIC
             div.indormation-sidebar-topic-edit-button(:class="{'topic-edit-cancel': isTopicEditing}" @click="toggleTopicEdit")
@@ -35,7 +35,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
               | 設定されていません
         div.information-sidebar-content-item.separator-line(v-if="hasPinnedMessage")
           div.information-sidebar-content-header
-            icon-pin(:size="24")
+            icon-pin(size="24")
             span
               | PINNED
           div.information-sidebar-content-body

@@ -1,6 +1,6 @@
 <template lang="pug">
 base-common-modal(title="PINNED" small)
-  icon-pin(color="var(--primary-color-on-bg)" slot="header-icon" :size="24")
+  icon-pin(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .message-item
     message-element(:model="data")
 </template>

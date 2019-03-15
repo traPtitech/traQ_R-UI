@@ -3,7 +3,7 @@
   .user-modal-groups-container.is-scroll
     .user-modal-group-element(v-for="(group, index) in groups" :key="group.groupId")
       .user-modal-icon--gray.user-modal-group-icon
-        IconProfileFill(:size="16" color="gray")
+        IconProfileFill(size="16" color="gray")
       .user-modal-group-body(@click="openGroupModal(group)")
         | {{group.name}}
 </template>

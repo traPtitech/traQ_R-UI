@@ -4,21 +4,21 @@
   .user-modal-area--profile(@click="toggleExpandProfile")
     .user-modal-close-wrap
       .user-modal-close(@click="close")
-        icon-close(color="white" :size="16")
+        icon-close(color="white" size="16")
     .user-modal-expand-wrap
       .user-modal-expand
-        icon-down-direction(color="white" :size="22")
+        icon-down-direction(color="white" size="22")
     user-modal-profile(:expanded="expandProfile")
   // タグなど
   .user-modal-area--extra
     .user-modal-tabs-container
       modal-tabs(v-model="activeExtraComponent" :options="extraComponents")
         template(slot="UserModalTags")
-          IconTag(:size="20" color="var(--primary-color-on-bg)")
+          IconTag(size="20" color="var(--primary-color-on-bg)")
           .user-modal-tabs-pane-text
             | TAGS
         template(slot="UserModalGroups")
-          IconProfileFill(:size="20" color="var(--primary-color-on-bg)")
+          IconProfileFill(size="20" color="var(--primary-color-on-bg)")
           .user-modal-tabs-pane-text
             | GROUPS
     keep-alive

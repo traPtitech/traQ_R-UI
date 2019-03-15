@@ -22,8 +22,8 @@ export default {
   name: 'IconWrench',
   props: {
     size: {
-      type: Number,
-      default: 16
+      type: String,
+      default: '16'
     },
     color: {
       type: String,
