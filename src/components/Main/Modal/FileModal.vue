@@ -1,8 +1,9 @@
 <template lang="pug">
-base-common-modal(:title="`FILE: ${data.name}`" small)
-  icon-file(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
-  .image-viewer-container
-    image-viewer(:url="fileUrl(data.fileId)")
+.file-modal
+  .file-modal-header-wrap(@click="close")
+    .file-modal-close(@click="close")
+      icon-close(color="white" size="16")
+  image-viewer.file-modal-image-viewer(:url="fileUrl(data.fileId)")
 
 </template>
 
@@ -11,19 +12,19 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import ImageViewer from '@/components/Main/Modal/Util/ImageViewer'
-import IconFile from '@/components/Icon/IconFile'
+import IconClose from '@/components/Icon/IconClose'
 
 export default {
   name: 'FileModal',
   components: {
     BaseCommonModal,
     MemberElement,
-    IconFile,
+    IconClose,
     ImageViewer
   },
   methods: {
     ...mapActions({
-      closeModal: 'modal/close'
+      close: 'modal/close'
     })
   },
   computed: {
@@ -34,7 +35,35 @@ export default {
 </script>
 
 <style lang="sass">
-.image-viewer-container
-  height: calc(80vh - 6rem)
+// override
+.modal-overlay
+  background: rgba(0, 0, 0, 0.8) !important
+.file-modal.modal
+  background: #222222
+  width: 100vw
+  height: 100vh
+  max-width: 60rem
+  overflow: hidden
+  @media (max-width: 60rem)
+    border-radius: 0
+.file-modal-header-wrap
+  position: absolute
+  display: flex
+  justify-content: flex-end
+  align-items: center
+  +mq(pc)
+    padding: 0 2rem
+  +mq(sp)
+    padding: 0 1rem
+  height: 3rem
   width: 100%
+  background: linear-gradient(0deg, transparent, #222222)
+  z-index: 1
+.file-modal-close
+  display: flex
+  justify-content: center
+  align-items: center
+  height: 2rem
+  width: 2rem
+  cursor: pointer
 </style>
