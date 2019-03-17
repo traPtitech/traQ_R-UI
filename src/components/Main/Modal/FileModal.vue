@@ -30,18 +30,22 @@ export default {
   computed: {
     ...mapState('modal', ['data']),
     ...mapGetters(['fileUrl'])
+  },
+  mounted() {
+    this.$emit('opacityChange', 0.7)
+  },
+  beforeDestroy() {
+    this.$emit('opacityChange', -1)
   }
 }
 </script>
 
 <style lang="sass">
 // override
-.modal-overlay
-  background: rgba(0, 0, 0, 0.8) !important
 .file-modal.modal
   background: #222222
   width: 100vw
-  height: 100vh
+  height: 100%
   max-width: 60rem
   overflow: hidden
   @media (max-width: 60rem)

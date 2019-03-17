@@ -1,6 +1,6 @@
 <template lang="pug">
-div.modal-overlay(v-if="isActive" @click.self="close")
-  component.modal(:is="name")
+div.modal-overlay(v-if="isActive" :style="overlayStyle" @click.self="close")
+  component.modal(:is="name" @opacityChange="handleOpacityChange")
 </template>
 
 <script>
@@ -24,12 +24,26 @@ export default {
     ChannelCreateModal,
     ChannelNotificationModal
   },
+  data() {
+    return {
+      overlayOpacity: 0.2,
+      defaultOverlayOpacity: 0.2
+    }
+  },
   computed: {
     ...mapState('modal', ['name']),
-    ...mapGetters('modal', ['isActive'])
+    ...mapGetters('modal', ['isActive']),
+    overlayStyle() {
+      return {
+        background: `rgba(0, 0, 0, ${this.overlayOpacity})`
+      }
+    }
   },
   methods: {
-    ...mapActions('modal', ['close'])
+    ...mapActions('modal', ['close']),
+    handleOpacityChange(opacity) {
+      this.overlayOpacity = opacity >= 0 ? opacity : this.defaultOverlayOpacity
+    }
   }
 }
 </script>
@@ -56,7 +70,6 @@ export default {
   justify-content: center
   align-items: center
   cursor: auto
-  background-color: rgba(0, 0, 0, 0.2)
   animation: fadeIn .2s ease
 
 @keyframes fadeIn
