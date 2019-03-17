@@ -36,7 +36,8 @@ export default {
       pivotY: 0,
       viewerPivotX: 0,
       viewerPivotY: 0,
-      isPanning: false
+      isPanning: false,
+      toResetPosition: false
     }
   },
   props: {
@@ -101,15 +102,6 @@ export default {
         }
       })
     },
-    handleWheel(event) {
-      const scaleFactor = event.ctrlKey ? 30 : 100
-      this.zoom(
-        event.layerX,
-        event.layerY,
-        1 - event.deltaY / scaleFactor,
-        event.deltaY > 0
-      )
-    },
     pan(layerX, layerY) {
       requestAnimationFrame(() => {
         const now = Date.now()
@@ -122,6 +114,30 @@ export default {
         this.lastTouchPosX = layerX || 0
         this.lastTouchPosY = layerY || 0
       })
+    },
+    boundaryAdjust() {
+      const boundaryCheck = this.cornerEdgeDistance
+      if (boundaryCheck.top > 0) {
+        this.translateY -= boundaryCheck.top
+      }
+      if (boundaryCheck.right < 0) {
+        this.translateX -= boundaryCheck.right
+      }
+      if (boundaryCheck.bottom < 0) {
+        this.translateY -= boundaryCheck.bottom
+      }
+      if (boundaryCheck.left > 0) {
+        this.translateX -= boundaryCheck.left
+      }
+    },
+    handleWheel(event) {
+      const scaleFactor = event.ctrlKey ? 30 : 100
+      this.zoom(
+        event.layerX,
+        event.layerY,
+        1 - event.deltaY / scaleFactor,
+        event.deltaY > 0
+      )
     },
     handleTouchMove(event) {
       if (event.touches.length === 1) {
@@ -157,14 +173,7 @@ export default {
       this.lastTouchPosX = 0
       this.lastTouchPosY = 0
       this.lastTouchDistance = 0
-      if (this.scale <= 1) {
-        this.$nextTick(() => {
-          this.translateX = 0
-          this.translateY = 0
-          this.pivotX = 0
-          this.pivotY = 0
-        })
-      }
+      this.boundaryAdjust()
     },
     handleMouseDown() {
       this.isPanning = true
@@ -175,14 +184,7 @@ export default {
       this.isPanning = false
       this.lastTouchPosX = 0
       this.lastTouchPosY = 0
-      if (this.scale <= 1) {
-        this.$nextTick(() => {
-          this.translateX = 0
-          this.translateY = 0
-          this.pivotX = 0
-          this.pivotY = 0
-        })
-      }
+      this.boundaryAdjust()
     },
     handleWindowResize() {
       const clientRect = this.$el.getBoundingClientRect()
@@ -191,6 +193,19 @@ export default {
     }
   },
   computed: {
+    cornerEdgeDistance() {
+      const [left, top] = this.transformPoint(0, 0)
+      const [right, bottom] = this.transformPoint(
+        this.viewerWidth,
+        this.viewerHeight
+      )
+      return {
+        top: top,
+        right: right - this.viewerWidth,
+        bottom: bottom - this.viewerHeight,
+        left: left
+      }
+    },
     imageStyle() {
       return {
         backgroundImage: `url(${this.url})`,
@@ -211,7 +226,7 @@ export default {
     },
     imageClass() {
       return {
-        'image-viewer-scale-deault': this.scale <= 1 && !this.isPanning
+        'image-viewer-position-reset': !this.isPanning
       }
     }
   },
@@ -243,6 +258,6 @@ export default {
     repeat: no-repeat
     position: center
 
-.image-viewer-scale-deault
+.image-viewer-position-reset
   transition: transform 0.2s ease
 </style>
