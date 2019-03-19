@@ -1,6 +1,6 @@
 :80
 gzip
-log stdout
+log / stdout "time:{when}	host:{host}	method:{method}	uri:{uri}	proto:{proto}	remote:{remote}	scheme:{scheme}	status:{status}	size:{size}	latency:{latency}	referer:{>Referer}	ua:{>User-Agent}	real_ip:{>X-Real-IP}"
 header / Access-Control-Allow-Origin  *
 
 root /usr/share/caddy/html
