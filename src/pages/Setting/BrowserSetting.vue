@@ -4,6 +4,10 @@
     | ブラウザ設定
   SettingItem
     SettingItemTitle
+      | アカウント
+    SettingButton(@click="logout")
+      | ログアウト
+    SettingItemTitle
       | 全セッション破棄
     SettingButton(@click="deleteSessions")
       | 破棄
@@ -82,6 +86,12 @@ export default {
       this.$store.dispatch('updateOpenMode', this.openMode)
       const channel = this.$store.getters.getChannelByName(this.openChannelName)
       this.$store.dispatch('updateOpenChannelId', channel.channelId)
+    },
+    logout() {
+      client.logout().then(() => {
+        this.$store.commit('setMe', null)
+        this.$router.push({ path: '/' })
+      })
     }
   },
   mounted() {

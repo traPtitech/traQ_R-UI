@@ -73,14 +73,17 @@ export default {
       return this.croppedBlobEncoded || this.iconFileId
     },
     iconFileId() {
+      if (!this.$store.state.me) {
+        return ''
+      }
       return `${this.$store.state.baseURL}/api/1.0/files/${
         this.$store.state.me.iconFileId
       }`
     },
     isChanged() {
       if (this.icon) return true
-      if (this.displayName !== this.$store.state.me.displayName) return true
-      if (this.twitterId !== this.$store.state.me.twitterId) return true
+      if (this.$store.state.me && this.displayName !== this.$store.state.me.displayName) return true
+      if (this.$store.state.me && this.twitterId !== this.$store.state.me.twitterId) return true
       if (this.newPassword !== '') return true
       if (this.checkNewPassword !== '') return true
       return false
@@ -132,14 +135,14 @@ export default {
         this.croppedBlob = null
         this.croppedBlobEncoded = null
       }
-      if (this.displayName !== this.$store.state.me.displayName) {
+      if (this.$store.state.me && this.displayName !== this.$store.state.me.displayName) {
         tasks.push(
           client.changeDisplayName(this.displayName).then(() => {
             this.done += '表示名 '
           })
         )
       }
-      if (this.twitterId !== this.$store.state.me.twitterId) {
+      if (this.$store.state.me && this.twitterId !== this.$store.state.me.twitterId) {
         tasks.push(
           client.changeTwitterId(this.twitterId).then(() => {
             this.done += 'Twitter ID '
@@ -183,14 +186,14 @@ export default {
         this.encodedFile = null
         this.croppedBlob = null
       }
-      if (this.displayName !== this.$store.state.me.displayName) {
+      if (this.$store.state.me && this.displayName !== this.$store.state.me.displayName) {
         tasks.push(
           client.changeDisplayName(this.displayName).then(() => {
             this.done += '表示名 '
           })
         )
       }
-      if (this.twitterId !== this.$store.state.me.twitterId) {
+      if (this.$store.state.me && this.twitterId !== this.$store.state.me.twitterId) {
         tasks.push(
           client.changeTwitterId(this.twitterId).then(() => {
             this.done += 'Twitter ID '
