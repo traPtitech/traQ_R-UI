@@ -24,6 +24,11 @@ const router = new Router({
       component: asyncLoadComponents(import('@/pages/Login/Login'))
     },
     {
+      path: '/consent',
+      name: 'Consent',
+      component: asyncLoadComponents(import('@/pages/Consent/Consent'))
+    },
+    {
       path: '/setting',
       name: 'Setting',
       component: asyncLoadComponents(import('@/pages/Setting/Index'))
