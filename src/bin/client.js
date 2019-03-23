@@ -530,6 +530,11 @@ const client = {
   },
   getUserGroups(userId) {
     return axios.get(`/api/1.0/users/${userId}/groups`)
+  },
+
+  // Tag: client
+  getClient(clientId) {
+    return axios.get(`/api/1.0/clients/${clientId}`)
   }
 }
 
