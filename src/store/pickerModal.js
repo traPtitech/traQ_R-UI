@@ -37,7 +37,7 @@ export default {
     }
   },
   actions: {
-    addStamp({ state, commit, dispatch }, stamp) {
+    execStamp({ state, commit, dispatch }, stamp) {
       if (state.stampPickerMode === 'message') {
         dispatch('addStampToMessage', stamp.id)
       } else {
