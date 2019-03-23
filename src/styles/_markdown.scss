@@ -1,4 +1,6 @@
 .markdown-body {
+  font-family: 'メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif;
+
   code {
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
       monospace;
@@ -51,7 +53,7 @@
 		list-style-type: disc;
     word-wrap: break-all;
 	}
-	
+
 	li li {
 		list-style-type: circle;
 		margin-left: 2em;

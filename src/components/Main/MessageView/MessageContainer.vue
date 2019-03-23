@@ -79,14 +79,15 @@ export default {
       const d = new Date(datetime)
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
     },
-    messageRendered() {
+    messageRendered(value) {
       this.$nextTick(() => {
-        this.scrollToBottom()
+        this.scrollToBottom(value)
       })
     },
-    scrollToBottom() {
+    scrollToBottom(value) {
       if (!this.isFirstView) {
-        this.$el.scrollTop = this.$el.scrollHeight - this.savedScrollPosition
+        this.$el.scrollTop += value
+        // this.$el.scrollTop = this.$el.scrollHeight - this.savedScrollPosition
       } else {
         this.$el.scrollTop = this.$el.scrollHeight
       }

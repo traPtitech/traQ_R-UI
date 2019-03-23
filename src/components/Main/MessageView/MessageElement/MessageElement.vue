@@ -190,7 +190,7 @@ export default {
       this.isRendered = true
 
       this.$nextTick(() => {
-        this.$emit('rendered')
+        this.$emit('rendered', this.$el.scrollHeight)
       })
     },
     render() {
@@ -237,7 +237,7 @@ export default {
       }
     },
     attachedMessageRendered() {
-      this.$emit('rendered')
+      // this.$emit('rendered')
     }
   },
   computed: {
