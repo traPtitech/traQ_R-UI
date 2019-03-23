@@ -105,7 +105,6 @@ export default {
     isImage,
     inputFocus() {
       this.focused = true
-      this.$store.commit('setEditing', true)
     },
     inputBlur() {
       this.focused = false
@@ -490,6 +489,9 @@ export default {
   watch: {
     files(newFiles) {
       this.isOpened = !(newFiles.length === 0 && this.inputText === '')
+    },
+    inputText(newText) {
+      this.$store.commit('setEditing', this.focused && newText.length > 0)
     }
   },
   mounted() {
