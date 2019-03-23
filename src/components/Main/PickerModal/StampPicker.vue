@@ -19,7 +19,7 @@
             div.stamp-picker-body-inner-wrapper
               div.stamp-picker-stamp-item-wrapper.flex-center(
                 v-for="stamp in stamps(idx)"
-                @click="addStamp(stamp)" 
+                @click="addStamp(stamp)"
                 @mouseover="hoverStamp(stamp.name)")
                 div.stamp-picker-stamp-item( 
                   v-lazy:background-image="fileUrl(stamp.fileId)"
@@ -35,7 +35,7 @@
               div.stamp-picker-stamp-item-wrapper.flex-center(
                 :key="stamp.id"
                 v-for="stamp in filteredStamps" 
-                @click="addStamp(stamp)" 
+                @click="addStamp(stamp)"
                 @mouseover="hoverStamp(stamp.name)")
                 div.stamp-picker-stamp-item( 
                   :style="stampItemStyle(stamp.fileId)" 
@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     addStamp(stamp) {
-      this.$store.dispatch('addStamp', stamp)
+      this.$store.dispatch('execStamp', stamp)
     },
     stamps(index) {
       return this.stampCategolized[index].stamps
