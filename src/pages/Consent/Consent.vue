@@ -11,7 +11,7 @@ div
       | クライアント製作者: {{ userDisplayName(clientInfo.creatorId) }}
       br
       | 要求スコープ: {{ scope }}
-      form(method="post" action="https://traq-dev.tokyotech.org/api/1.0/oauth2/authorize/decide")
+      form(method="post" action="/api/1.0/oauth2/authorize/decide")
         button(type="submit" name="submit" value="approve") 承認
         button(type="submit" name="submit" value="deny") 拒否
     template(v-else)
