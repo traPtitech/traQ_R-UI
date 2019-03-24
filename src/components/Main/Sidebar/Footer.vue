@@ -1,7 +1,7 @@
 <template lang="pug">
 div.footer
   span.version-text
-    | traQ R 2.0.1
+    | traQ R {{ version }}
   ul.footer-button-wrap
     li.menu-button.theme(@click="changeTheme")
       IconCrescent(v-if="theme === 'light'")
@@ -11,6 +11,7 @@ div.footer
 </template>
 
 <script>
+import version from '@/version'
 import IconGear from '@/components/Icon/IconGear'
 import IconCrescent from '@/components/Icon/IconCrescent'
 import IconCrescentFill from '@/components/Icon/IconCrescentFill'
@@ -32,6 +33,9 @@ export default {
   computed: {
     theme() {
       return this.$store.state.theme
+    },
+    version() {
+      return version
     }
   }
 }
