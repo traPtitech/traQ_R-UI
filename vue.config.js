@@ -1,4 +1,5 @@
 const CompressionPlugin = require('compression-webpack-plugin')
+const webpack = require('webpack')
 
 module.exports = {
   publicPath: "/",
@@ -26,8 +27,15 @@ module.exports = {
 				compressionOptions: { level: 11  },
 				minRatio: 1,
 				deleteOriginalAssets: false
-			})
-    ]:[]
+			}),
+      new webpack.DefinePlugin({
+        __VERSION__: JSON.stringify(require("./package.json").version)
+      })
+    ]:[
+      new webpack.DefinePlugin({
+        __VERSION__: JSON.stringify("local")
+      })
+    ]
   },
   pwa: {
     name: 'traQ',
