@@ -285,6 +285,12 @@ export default {
       return this.$store.state.memberMap[this.pinDetail.userId].name
     }
   },
+  watch: {
+    model() {
+      this.render()
+      this.getAttachments()
+    }
+  },
   mounted() {
     this.render()
     this.getAttachments()
