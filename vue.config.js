@@ -51,5 +51,12 @@ module.exports = {
       swSrc: 'public/sw.js',
       swDest: 'sw.js'
     }
+  },
+  devServer: {
+    proxy: {
+      '^/api': {
+        target: 'https://traq-dev.tokyotech.org'
+      }
+    }
   }
 }
