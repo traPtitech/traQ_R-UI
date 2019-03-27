@@ -404,6 +404,9 @@ export default {
   display: flex
   flex-flow: column
 
+.message-content > p:not(:last-child)
+  magin-bottom: 1em
+
 .message-text-wrap
   margin: 0 0 0 10px
   padding: 5px 0 0
