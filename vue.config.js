@@ -1,5 +1,7 @@
 const CompressionPlugin = require('compression-webpack-plugin')
 const webpack = require('webpack')
+const https = require('https')
+const keepAliveAgent = new https.Agent({ keepAlive: true })
 
 module.exports = {
   publicPath: "/",
@@ -50,6 +52,15 @@ module.exports = {
       // swSrc is required in InjectManifest mode.
       swSrc: 'public/sw.js',
       swDest: 'sw.js'
+    }
+  },
+  devServer: {
+    proxy: {
+      '^/api': {
+        target: 'https://traq-dev.tokyotech.org',
+        changeOrigin: true,
+        agent: keepAliveAgent
+      }
     }
   }
 }
