@@ -900,7 +900,8 @@ const store = new Vuex.Store({
         dispatch('loadTheme'),
         dispatch('loadOpenChannels'),
         dispatch('loadFilterSubscribedActivity'),
-        dispatch('loadOpenUserLists')
+        dispatch('loadOpenUserLists'),
+        dispatch('loadChannelView')
       ])
     },
     loadOpenMode({ commit, dispatch }) {
@@ -1038,6 +1039,20 @@ const store = new Vuex.Store({
       return client.readMessages(channelId).then(() => {
         dispatch('updateUnreadMessages')
       })
+    },
+    updateChannelView({ commit }, mode) {
+      commit('setChannelView', mode)
+      return db.write('browserSetting', { type: 'channelView', data: mode })
+    },
+    loadChannelView({ commit, dispatch }) {
+      return db
+        .read('browserSetting', 'channelView')
+        .then(data => {
+          commit('setChannelView', data)
+        })
+        .catch(async () => {
+          await dispatch('updateChannelView', 'tree')
+        })
     }
   }
 })
