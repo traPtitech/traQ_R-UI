@@ -28,7 +28,7 @@ export default {
         return this.$store.getters.channelView
       },
       set(mode) {
-        this.$store.commit('setChannelView', mode)
+        this.$store.dispatch('updateChannelView', mode)
       }
     }
   }
