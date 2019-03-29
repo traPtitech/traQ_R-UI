@@ -110,9 +110,6 @@ export default {
     async addStamp() {
       await client.addStamp(this.stampName, this.stampFile)
     },
-    stampItemStyle(fileId) {
-      return `background-image: url(${this.fileUrl(fileId)})`
-    },
     creatorName(creatorId) {
       return this.$store.state.memberMap[creatorId].name
     },
