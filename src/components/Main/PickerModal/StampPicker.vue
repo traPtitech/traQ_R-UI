@@ -139,6 +139,9 @@ export default {
     hoverStamp(name) {
       this.searchPlaceHolder = name
     },
+    stampItemStyle(fileId) {
+      return `background-image: url(${this.fileUrl(fileId)})`
+    },
     categoryIcon(categoryIndex) {
       return this.categoryIcons[categoryIndex]
     }
