@@ -28,6 +28,16 @@ const md = new MarkdownIt({
   highlight: highlight
 })
 
+md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
+  for (var max = this.lineMax; from < max; from++) {
+    if (this.bMarks[from] + this.tShift[from] < this.eMarks[from]) {
+      break
+    }
+    this.push('hardbreak', 'br', 0)
+  }
+  return from
+}
+
 md.use(MarkdownItMark)
 md.use(myPlugin)
 md.use(
