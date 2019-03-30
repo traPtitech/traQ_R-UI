@@ -1,15 +1,15 @@
 <template lang="pug">
 .filter-input-container
-  DebouncedInput.input-reset.filter-input(
+  debounced-input.input-reset.filter-input(
     v-if="useDebounce"
-    placeholder="検索" 
-    v-model="filterText" 
-    @input="$emit('inputFilter', filterText)")
+    :placeholder="placeholder"
+    :value="filterText"
+    @input="handleInput")
   input.input-reset.filter-input(
     v-else
-    placeholder="検索" 
-    v-model="filterText" 
-    @input="$emit('inputFilter', filterText)")
+    :placeholder="placeholder"
+    :value="filterText"
+    @input="handleInput")
   .filter-input-reset(v-if="filterText !== ''" @click="reset")
     icon-close(color="white")
 </template>
@@ -24,21 +24,30 @@ export default {
     DebouncedInput,
     IconClose
   },
+  model: {
+    prop: 'filterText',
+    event: 'input'
+  },
   props: {
     useDebounce: {
       type: Boolean,
-      defualt: false
-    }
-  },
-  data() {
-    return {
-      filterText: ''
+      default: false
+    },
+    filterText: {
+      type: String,
+      requried: true
+    },
+    placeholder: {
+      type: String,
+      default: '検索'
     }
   },
   methods: {
+    handleInput(event) {
+      this.$emit('input', event)
+    },
     reset() {
-      this.filterText = ''
-      this.$emit('inputFilter', '')
+      this.$emit('input', '')
     }
   }
 }
@@ -60,6 +69,10 @@ input.filter-input
   background: rgba(255,255,255,0.2)
   color: $text-light-color
   box-sizing: border-box
+  transition: background .2s ease
+
+  &:hover
+    background: rgba(255,255,255,0.3)
 
   &::placeholder
     color: $text-light-color
