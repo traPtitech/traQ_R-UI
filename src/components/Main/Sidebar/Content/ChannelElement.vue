@@ -9,11 +9,17 @@
         | #
     p.channel-box-name
       | {{model.name}}
-  .channel-children(ref="children" v-if="model.children")
-    transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
-      div(ref="childrenWrap" v-show="isOpened")
-        div(v-for="child in children")
-          ChannelElement(:model="child")
+  transition-group.channel-children(
+    tag="div"
+    ref="children"
+    v-if="model.children"
+    name="list-complete"
+    @after-enter="removeHeight"
+    @after-leave="zeroHeight")
+    .channel-children-space(v-show="isOpened" @click="toggle" key="space")
+    .channel-children-container(ref="childrenWrap" v-show="isOpened" key="container")
+      div(v-for="child in children")
+        ChannelElement(:model="child")
 </template>
 
 <script>
@@ -150,6 +156,7 @@ export default {
     z-index: 2
 
 .channel-children
+  display: flex
   position: relative
   padding: 0 0 0 0
   transition: all .2s ease
@@ -163,10 +170,23 @@ export default {
     height: 0
     background: $text-light-color
     transition: height .2s ease
-  .channel-opened + &
-    padding-left: 20px
+  // .channel-opened + &
+    // padding-left: 20px
   .channel-opened + &:before
     height: calc( 100% - 5px )
+
+.channel-children-space
+  cursor: pointer
+  width: 20px
+  min-height: 100%
+  flex-shrink: 0
+
+  &:hover
+    background: rgba(0,0,0,0.1)
+
+.channel-children-container
+  flex-grow: 1
+  min-width: 0
 
 .channel-before-wrap
   height: 34px
@@ -230,6 +250,7 @@ export default {
     top: -3px
     border-radius: 100%
     background: $notification-color
+
 .channel-toggle
   border: solid 1px $text-light-color
   border-radius: 5px
@@ -246,6 +267,9 @@ export default {
     background: $primary-color
     color: $text-light-color
     border-color: $primary-color
+  &:hover
+    opacity: 0.8
+
 .list-complete-enter-active, .list-complete-leave-active
   transition: all .2s ease
 .list-complete-enter, .list-complete-leave-to
