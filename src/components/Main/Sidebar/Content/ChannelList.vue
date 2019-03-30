@@ -97,4 +97,14 @@ export default {
     margin:
       left: 4px
       bottom: 2px
+
+.channel-empty-message
+  display: flex
+  justify-content: center
+  padding:
+    top: 6px
+    right: 12px
+    left: 12px
+  color: $text-light-color
+  opacity: 0.5
 </style>

@@ -85,7 +85,7 @@ const store = new Vuex.Store({
     mutedChannels: [],
     mutedChannelMap: {},
     messages: [],
-    currentChannelTopic: {},
+    channelTopicMap: {},
     currentChannelPinnedMessages: [],
     currentChannelNotifications: [],
     myNotifiedChannels: [],
@@ -292,8 +292,8 @@ const store = new Vuex.Store({
     updateHeartbeatStatus(state, data) {
       state.heartbeatStatus = data
     },
-    setCurrentChannelTopic(state, data) {
-      state.currentChannelTopic = data
+    setChannelTopic(state, { data, channelId }) {
+      Vue.set(state.channelTopicMap, channelId, data)
     },
     setCurrentChannelPinnedMessages(state, data) {
       state.currentChannelPinnedMessages = data
@@ -482,6 +482,9 @@ const store = new Vuex.Store({
     }
   },
   getters: {
+    channelTopic(state) {
+      return channelId => state.channelTopicMap[channelId] || ''
+    },
     activeMessageContextMenu(state) {
       return state.activeMessageContextMenu
     },
@@ -808,9 +811,9 @@ const store = new Vuex.Store({
     updateMutedChannels({ commit }) {
       return loadGeneralData('MutedChannels', client.getMutedChannels, commit)
     },
-    getCurrentChannelTopic({ commit }, channelId) {
+    getChannelTopic({ commit }, channelId) {
       return client.getChannelTopic(channelId).then(res => {
-        commit('setCurrentChannelTopic', res.data)
+        commit('setChannelTopic', { data: res.data.text, channelId })
       })
     },
     getCurrentChannelPinnedMessages({ commit }, channelId) {
@@ -1016,7 +1019,7 @@ const store = new Vuex.Store({
     async updateCurrentChannelTopic({ state, dispatch }, text) {
       const channelId = state.currentChannel.channelId
       await client.changeChannelTopic(channelId, text)
-      await dispatch('getCurrentChannelTopic', channelId)
+      await dispatch('getChannelTopic', channelId)
     },
     updateFilterSubscribedActivity({ commit }, filter) {
       commit('setFilterSubscribedActivity', filter)

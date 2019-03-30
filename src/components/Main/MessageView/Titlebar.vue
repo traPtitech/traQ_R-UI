@@ -62,41 +62,37 @@ export default {
   },
   methods: {
     starChannel() {
-      client
-        .starChannel(this.$store.state.currentChannel.channelId)
-        .then(() => {
-          this.$store.dispatch('updateStaredChannels')
-        })
+      client.starChannel(this.currentChannelId).then(() => {
+        this.$store.dispatch('updateStaredChannels')
+      })
     },
     unstarChannel() {
-      client
-        .unstarChannel(this.$store.state.currentChannel.channelId)
-        .then(() => {
-          this.$store.dispatch('updateStaredChannels')
-        })
+      client.unstarChannel(this.currentChannelId).then(() => {
+        this.$store.dispatch('updateStaredChannels')
+      })
     },
     notifyChannel() {
       client
-        .changeNotifications(this.$store.state.currentChannel.channelId, {
+        .changeNotifications(this.currentChannelId, {
           on: [this.$store.state.me.userId]
         })
         .then(() => {
           this.$store.dispatch(
             'getCurrentChannelNotifications',
-            this.$store.state.currentChannel.channelId
+            this.currentChannelId
           )
           this.$store.dispatch('updateMyNotifiedChannels')
         })
     },
     unnotifyChannel() {
       client
-        .changeNotifications(this.$store.state.currentChannel.channelId, {
+        .changeNotifications(this.currentChannelId, {
           off: [this.$store.state.me.userId]
         })
         .then(() => {
           this.$store.dispatch(
             'getCurrentChannelNotifications',
-            this.$store.state.currentChannel.channelId
+            this.currentChannelId
           )
           this.$store.dispatch('updateMyNotifiedChannels')
         })
@@ -135,6 +131,9 @@ export default {
   },
   computed: {
     ...mapGetters(['deviceType', 'isSidebarOpened', 'isTitlebarExpanded']),
+    currentChannelId() {
+      return this.$store.state.currentChannel.channelId
+    },
     isDirectMessage() {
       return (
         this.$store.state.currentChannel.parent ===
@@ -151,12 +150,7 @@ export default {
     },
     isStared() {
       if (this.isDirectMessage) return false
-      if (
-        this.$store.state.staredChannelMap[
-          this.$store.state.currentChannel.channelId
-        ]
-      )
-        return true
+      if (this.$store.state.staredChannelMap[this.currentChannelId]) return true
       return false
     },
     title() {
@@ -174,7 +168,7 @@ export default {
     },
     topic() {
       if (this.$route.params.user) return ''
-      return this.$store.state.currentChannelTopic.text
+      return this.$store.getters.channelTopic(this.currentChannelId)
     },
     titlebarClass() {
       return {
