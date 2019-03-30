@@ -1,8 +1,8 @@
 <template lang="pug">
 action-detector(
   @dropFile = "dropFile"
-  @swipeStart = "swipeStart" 
-  @swipeMoving = "swipeMoving" 
+  @swipeStart = "swipeStart"
+  @swipeMoving = "swipeMoving"
   @swipeEnd = "swipeEnd"
   :onDragStyle = "'{background-color: #fff;}'")
   picker-modal
@@ -300,7 +300,7 @@ export default {
     },
     channelUpdated(channelId) {
       if (this.$store.state.currentChannel.channelId === channelId) {
-        this.$store.dispatch('getCurrentChannelTopic', channelId)
+        this.$store.dispatch('getChannelTopic', channelId)
       }
       this.$store.dispatch('updateChannel', channelId)
     },

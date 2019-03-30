@@ -1,15 +1,15 @@
 <template lang="pug">
-div.channel-wrap(v-if="model.visibility")
-  div.channel-box(@click="channelLink" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
-    div.channel-before-wrap(v-if="isParent" @click.stop="toggle")
-      div.channel-toggle.channel-before(:class="channelBeforeClass")
+.channel-wrap(v-if="model.visibility")
+  .channel-box(@click="channelLink" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
+    .channel-before-wrap(v-if="isParent" @click.stop="toggle")
+      .channel-toggle.channel-before(:class="channelBeforeClass")
         | #
-    div.channel-before-wrap(v-else)
-      div.channel-before(:class="channelBeforeClass")
+    .channel-before-wrap(v-else)
+      .channel-before(:class="channelBeforeClass")
         | #
     p.channel-box-name
       | {{model.name}}
-  div.channel-children(ref="children" v-if="model.children")
+  .channel-children(ref="children" v-if="model.children")
     transition(name="list-complete" @after-enter="removeHeight" @after-leave="zeroHeight")
       div(ref="childrenWrap" v-show="isOpened")
         div(v-for="child in children")
@@ -104,6 +104,7 @@ export default {
 <style lang="sass">
 .channel-wrap
   display: block
+
 .channel-box
   display: flex
   position: relative
@@ -115,6 +116,7 @@ export default {
     background: rgba(0,0,0,0.1)
   &.channel-watched
     background: white
+
 .channel-box-name
   position: relative
   color: $text-light-color
@@ -146,6 +148,7 @@ export default {
     background-color: black
     border-radius: 100%
     z-index: 2
+
 .channel-children
   position: relative
   padding: 0 0 0 0
@@ -164,17 +167,14 @@ export default {
     padding-left: 20px
   .channel-opened + &:before
     height: calc( 100% - 5px )
-.channel-status-wrap
-  width: 50px
-  display: flex
-.channel-notification
-  flex: 1
+
 .channel-before-wrap
   height: 34px
   display: flex
   align-items: center
   padding:
     right: 8px
+
 .channel-before
   position: relative
   display: flex

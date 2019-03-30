@@ -163,15 +163,11 @@ export default {
   font-size: 0.9rem
   overflow: hidden
   text-overflow: ellipsis
+
 .channel-recent-message-author
-  font-weight: bold;
+  font-weight: bold
   margin-right: 1rem
 
-.channel-status-wrap
-  width: 50px
-  display: flex
-.channel-notification
-  flex: 1
 .channel-toggle
   border: solid 1px $text-light-color
   border-radius: 5px

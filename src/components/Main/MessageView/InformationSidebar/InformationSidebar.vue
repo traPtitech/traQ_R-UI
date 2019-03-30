@@ -91,9 +91,12 @@ export default {
     onlineUsers() {
       return this.$store.state.heartbeatStatus.userStatuses
     },
+    currentChannelId() {
+      return this.$store.state.currentChannel.channelId
+    },
     topic() {
       if (this.$route.params.user) return ''
-      return this.$store.state.currentChannelTopic.text
+      return this.$store.getters.channelTopic(this.currentChannelId)
     },
     pinnedMessages() {
       return [...this.$store.state.currentChannelPinnedMessages].sort(
