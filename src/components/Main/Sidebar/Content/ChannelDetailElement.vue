@@ -7,7 +7,7 @@
     p.channel-detail-element-box-name
       | {{fullChannelName}}
   .channel-detail-element-topic-wrapper(v-if="hasTopic")
-    .channel-detail-element-topic-icon
+    .channel-detail-element-topic-icon.flex-center
       icon-topic(size="18" :color="iconColor")
     p.channel-detail-element-topic.text-ellipsis
       | {{topic}}
