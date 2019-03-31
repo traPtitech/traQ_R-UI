@@ -1,9 +1,10 @@
 <template lang="pug">
-div.member-element(:class="{'is-watched': isWatched}")
-  div.member-element-icon-container(v-on:click="openUserModal")
-    div.member-element-icon(:style="iconStyle" v-lazy:background-image="userIconSrc" :class="iconClass")
-    div.member-element-online-indicator(v-if="!model.bot && model.isOnline" :style="borderStyle")
-  div.member-name-container(@click="openDMChannel")
+.member-element(:class="{'is-watched': isWatched}")
+  .member-element-icon-container(@click="openUserModal")
+    .member-element-icon(:style="iconStyle" v-lazy:background-image="userIconSrc")
+    .member-element-unread-indicator(v-if="unreadMessagesNum > 0" :style="borderStyle")
+    .member-element-online-indicator(v-if="!model.bot && model.isOnline" :style="borderStyle")
+  .member-name-container(@click="openDMChannel")
     p.member-display-name.text-ellipsis
       | {{model.displayName}}
     p.member-name.text-ellipsis
@@ -37,35 +38,11 @@ export default {
   },
   computed: {
     ...mapGetters(['fileUrl']),
-    directMessageChannel() {
-      if (this.model.userId === this.$store.state.me.userId) {
-        return this.$store.getters.getDirectMessageChannels.find(
-          channel => channel.member && channel.member.length === 1
-        )
-      } else {
-        return this.$store.getters.getDirectMessageChannels.find(
-          channel =>
-            channel.member &&
-            channel.member.some(userId => userId === this.model.userId)
-        )
-      }
-    },
     userIconSrc() {
       return this.fileUrl(this.model.iconFileId)
     },
     unreadMessagesNum() {
-      if (this.directMessageChannel) {
-        return this.$store.getters.getChannelUnreadMessageNum(
-          this.directMessageChannel.channelId
-        )
-      } else {
-        return 0
-      }
-    },
-    iconClass() {
-      return {
-        'member-element-dm-indicator': this.unreadMessagesNum > 0
-      }
+      return this.model.unread
     },
     iconStyle() {
       return {
@@ -125,13 +102,20 @@ export default {
       radius: 100%
       style: none
 
-.member-element-dm-indicator
-  box-sizing: border-box
+.member-element-unread-indicator
+  position: absolute
+  width: 12px
+  height: 12px
+  right: 0px
+  top: -1px
   border:
-    width: 2px
+    radius: 100%
     style: solid
-    // color: var(--primary-color)
-  box-shadow: 0 0 0 3px $notification-color
+    width: 2px
+  background: $notification-color
+
+  .member-element:hover &
+    border-color: var(--primary-color-hovered) !important
 
 .member-element-online-indicator
   position: absolute
@@ -144,6 +128,9 @@ export default {
     style: solid
     width: 2px
   background: $online-color
+
+  .member-element:hover &
+    border-color: var(--primary-color-hovered) !important
 
 .member-display-name
   .is-watched &

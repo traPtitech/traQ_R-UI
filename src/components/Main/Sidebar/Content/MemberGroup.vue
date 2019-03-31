@@ -6,7 +6,10 @@
     div.member-group-list(ref="list")
       transition(name="simple" @after-enter="removeHeight" @after-leave="zeroHeight")
         div(ref="listWrap" v-show="isOpen")
-          member-element(v-for="member in filteredMembers" :model="member" :key="member.userId")
+          template(v-if="filterUnread")
+            member-element(v-for="member in filteredUnreadMembers" :model="member" :key="member.userId")
+          template(v-else)
+            member-element(v-for="member in filteredMembers" :model="member" :key="member.userId")
 </template>
 
 <script>
@@ -26,6 +29,10 @@ export default {
     filterText: {
       type: String,
       default: ''
+    },
+    filterUnread: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -41,12 +48,18 @@ export default {
       return this.$store.getters
         .sortByUserId(this.members)
         .map(userId => this.$store.state.memberMap[userId])
+        .map(u => {
+          return { ...u, unread: this.unreadMessagesNum(u.userId) }
+        })
         .filter(m => !m.suspended)
         .filter(
           m =>
             this.caseIgnoreFilterText.test(m.displayName) ||
             this.caseIgnoreFilterText.test(m.name)
         )
+    },
+    filteredUnreadMembers() {
+      return this.filteredMembers.filter(u => u.unread > 0)
     },
     caseIgnoreFilterText() {
       return new RegExp(this.filterText, 'i')
@@ -65,6 +78,27 @@ export default {
         groupId: this.groupId,
         isOpen: this.isOpen
       })
+    },
+    directMessageChannel(userId) {
+      if (userId === this.$store.state.me.userId) {
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel => channel.member && channel.member.length === 1
+        )
+      } else {
+        return this.$store.getters.getDirectMessageChannels.find(
+          channel =>
+            channel.member && channel.member.some(userId => userId === userId)
+        )
+      }
+    },
+    unreadMessagesNum(userId) {
+      if (this.directMessageChannel(userId)) {
+        return this.$store.getters.getChannelUnreadMessageNum(
+          this.directMessageChannel(userId).channelId
+        )
+      } else {
+        return 0
+      }
     }
   },
   watch: {
