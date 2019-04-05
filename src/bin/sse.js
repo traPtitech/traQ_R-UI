@@ -3,9 +3,6 @@ let on = {}
 let listeningEventList = {}
 let source = null
 
-const baseURL =
-  process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : ''
-
 if (process.env.NODE_ENV === 'development') {
   window.sseCheck = () => {
     console.log(source)
@@ -38,7 +35,7 @@ const sse = {
       source.close()
       source = null
     }
-    source = new EventSource(baseURL + '/api/1.0/notification', {
+    source = new EventSource('/api/1.0/notification', {
       withCredentials: true
     })
     source.onopen = cb
