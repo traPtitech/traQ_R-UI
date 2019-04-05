@@ -87,7 +87,8 @@ export default {
       } else {
         return this.$store.getters.getDirectMessageChannels.find(
           channel =>
-            channel.member && channel.member.some(userId => userId === userId)
+            channel.member &&
+            channel.member.some(dmUserId => dmUserId === userId)
         )
       }
     },
