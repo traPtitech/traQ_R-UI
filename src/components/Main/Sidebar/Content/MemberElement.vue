@@ -114,7 +114,7 @@ export default {
     width: 2px
   background: $notification-color
 
-  .member-element:hover &
+  .member-element:hover(:not(.is-watched)) &
     border-color: var(--primary-color-hovered) !important
 
 .member-element-online-indicator
@@ -129,7 +129,7 @@ export default {
     width: 2px
   background: $online-color
 
-  .member-element:hover &
+  .member-element:hover(:not(.is-watched)) &
     border-color: var(--primary-color-hovered) !important
 
 .member-display-name
