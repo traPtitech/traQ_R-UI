@@ -73,7 +73,9 @@ export default {
       return this.$store.getters.getChannelUnreadMessageSum('')
     },
     usersUnreadNum() {
-      return this.$store.getters.getUnreadDirectMessagesSum
+      return this.$store.getters.getChannelUnreadMessageSum(
+        this.$store.state.directMessageId
+      )
     }
   }
 }
