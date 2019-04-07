@@ -597,10 +597,7 @@ const store = new Vuex.Store({
         if (!state.channelMap[channelId].children) {
           return sum
         }
-        state.channelMap[channelId].children.forEach(child => {
-          sum += getters.getChannelUnreadMessageSum(child)
-        })
-        return sum
+        return state.channelMap[channelId].children.filter(child => child.channelId !== state.directMessageId).map(child => getters.getChannelUnreadMessageSum(child)).reduce((a, b) => a + b, sum)
       }
     },
     getUnreadMessageNum(state, getters) {
