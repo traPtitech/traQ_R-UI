@@ -1,5 +1,5 @@
 <template lang="pug">
-article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned':pinned}")
+article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned':pinned, 'message-embedded':embeddedView}")
   template(v-if="!isRendered")
     .message-dummy-user-icon-wrap
       .message-dummy-user-icon
@@ -31,7 +31,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
           | {{displayDateTime}}
         .message-edited-icon(v-if="isEdited")
           icon-pen(size="12" color="var(--text-color)")
-      ul.message-buttons-wrap
+      ul.message-buttons-wrap(v-if="!embeddedView")
         li(@click.stop="showStampPicker")
           icon-stamp-plus(size="20" color="var(--text-color)")
         li.message-button-drop-menu(@click.stop="activeDropMenu")
@@ -45,9 +45,9 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
             | Edit
-      message-attached-messages(v-if="hasAttachedMessage" :messages="messages" @rendered="attachedMessageRendered")
-      message-attached-files(v-if="hasAttachedFile" :files="files")
-      message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
+      message-attached-messages(v-if="hasAttachedMessage && showAttachments" :messages="messages" @rendered="attachedMessageRendered")
+      message-attached-files(v-if="hasAttachedFile && showAttachments" :files="files" @attachedImageClick="handleAttachedImageClick")
+      message-stamps-list(v-if="!embeddedView" :stampList="model.stampList" :messageId="model.messageId")
     .message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
       message-context-drop-menu(:userId="model.userId"
         :messageId="model.messageId"
@@ -78,7 +78,15 @@ import IconPen from '@/components/Icon/IconPen'
 export default {
   name: 'MessageElement',
   props: {
-    model: Object
+    model: Object,
+    showAttachments: {
+      type: Boolean,
+      default: true
+    },
+    embeddedView: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
     MessageAttachedMessages,
@@ -235,6 +243,12 @@ export default {
           this.grade(this.model.userId).groupId
         )
       }
+    },
+    handleAttachedImageClick(file) {
+      this.$store.dispatch('openFileModal', {
+        message: this.model,
+        file
+      })
     },
     attachedMessageRendered() {
       // this.$emit('rendered')
@@ -565,6 +579,14 @@ export default {
   background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
     size: 400% 100%
   // animation: dummy-gradient 15s ease infinite
+
+.message-embedded
+  &:hover, &.message-pinned
+    background: none
+  .message-buttons-wrap, .message-context-menu-on-pc
+    display: none
+  &:hover .message-date
+    display: flex
 
 @keyframes dummy-gradient
 	0%

@@ -75,7 +75,7 @@ export default {
     isVideo,
     isAudio,
     onAttachedImageClick(file) {
-      this.$store.dispatch('openFileModal', file)
+      this.$emit('attachedImageClick', file)
     },
     backgroundImageStyle(url) {
       return {

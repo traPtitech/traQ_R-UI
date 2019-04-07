@@ -3,7 +3,9 @@
   .file-modal-header-wrap(@click="close")
     .file-modal-close(@click="close")
       icon-close(color="white" size="16")
-  image-viewer.file-modal-image-viewer(:url="fileUrl(data.fileId)")
+  image-viewer.file-modal-image-viewer(:url="fileUrl(data.file.fileId)")
+  .file-modal-message
+    message-element(v-if="data.message" :model="data.message" :showAttachments="false" :embeddedView="true")
 
 </template>
 
@@ -13,6 +15,7 @@ import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import ImageViewer from '@/components/Main/Modal/Util/ImageViewer'
 import IconClose from '@/components/Icon/IconClose'
+import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 
 export default {
   name: 'FileModal',
@@ -20,7 +23,8 @@ export default {
     BaseCommonModal,
     MemberElement,
     IconClose,
-    ImageViewer
+    ImageViewer,
+    MessageElement
   },
   methods: {
     ...mapActions({
@@ -70,4 +74,16 @@ export default {
   height: 2rem
   width: 2rem
   cursor: pointer
+.file-modal-message
+  position: absolute
+  bottom: 0
+  width: 100%
+  padding:
+    top: 1.5rem
+    bottom: 1rem
+    left: 1rem
+    right: 1rem
+  background: linear-gradient(180deg, transparent, #222222)
+  .message, .message-user-name
+    color: white
 </style>
