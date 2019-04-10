@@ -1,5 +1,5 @@
 <template lang="pug">
-div.links-list-wrap.is-scroll
+div.links-list-wrap
   ul.links-list
     li
       a(href="https://trap.jp" target="_blank")
@@ -79,8 +79,6 @@ export default {
 <style lang="sass">
 .links-list-wrap
   padding: 0 0 15px
-  height: 100%
-  overflow-y: scroll
 
 .links-list
   padding-top: 15px
