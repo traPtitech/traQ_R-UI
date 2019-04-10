@@ -6,7 +6,7 @@ div.links-list-wrap.is-scroll
         div.link-icon.flex-center
           IconLogotraP(size="20")
         p.link-title
-          | traP公式サイト
+          | Official Website
     li
       a(href="https://wiki.trapti.tech" target="_blank")
         div.link-icon.flex-center
@@ -30,7 +30,7 @@ div.links-list-wrap.is-scroll
         div.link-icon.flex-center
           IconLogoGitea(size="24")
         p.link-title
-          | Gitea
+          | Git
     li
       a(href="https://showcase.trapti.tech" target="_blank")
         div.link-icon.flex-center
@@ -42,7 +42,13 @@ div.links-list-wrap.is-scroll
         div.link-icon.flex-center
           IconLogoHackMD(size="20")
         p.link-title
-          | Hackmd
+          | HackMD
+    li
+      a(href="http://anke-to.sysad.trap.show/" target="_blank")
+        div.link-icon.flex-center
+          IconLogoAnketo(size="20")
+        p.link-title
+          | anke-to
 </template>
 
 <script>
@@ -53,6 +59,8 @@ import IconLogoHackMD from '@/components/Icon/IconLogoHackMD'
 import IconLogoNextCloud from '@/components/Icon/IconLogoNextCloud'
 import IconLogoShowcase from '@/components/Icon/IconLogoShowcase'
 import IconLogotraP from '@/components/Icon/IconLogotraP'
+import IconLogoAnketo from '@/components/Icon/IconLogoAnketo'
+
 export default {
   name: 'LinkList',
   components: {
@@ -62,7 +70,8 @@ export default {
     IconLogoHackMD,
     IconLogoNextCloud,
     IconLogoShowcase,
-    IconLogotraP
+    IconLogotraP,
+    IconLogoAnketo
   }
 }
 </script>
