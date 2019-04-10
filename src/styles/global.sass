@@ -54,6 +54,42 @@ input
 .is-scroll
   -webkit-overflow-scrolling: touch
 
+  &::-webkit-scrollbar
+    width: $scrollbar-width
+
+  &::-webkit-scrollbar-track
+
+    &:hover
+      background: transparent
+
+  &::-webkit-scrollbar-thumb
+    background: var(--primary-color-transparent)
+    transition: background .3s
+    border-radius: $scrollbar-width
+
+    &:hover
+      background: var(--primary-color-on-bg)
+
+  &.white
+
+    &::-webkit-scrollbar
+      width: $scrollbar-width
+
+    &::-webkit-scrollbar-track
+
+      &:hover
+        background: transparent
+
+    &::-webkit-scrollbar-thumb
+      background: #{rgba(white, 0.3)}
+      transition: background .3s
+      border-radius: $scrollbar-width
+      outline: 1px solid slategrey
+      opacity: 0.3
+
+      &:hover
+        background: white
+
 body
   overscroll-behavior-y: none
   overflow: hidden
