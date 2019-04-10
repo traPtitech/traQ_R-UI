@@ -1,5 +1,5 @@
 <template lang="pug">
-div.sidebar-content.is-scroll(ref="sidebarContent")
+div.sidebar-content.is-scroll.white(ref="sidebarContent")
   keep-alive
     component(:is="componentMap[menuContent]")
 </template>
