@@ -164,7 +164,6 @@ export default {
   position: relative
   padding: 0 0 0 0
   transition: all .2s ease
-  will-change: height, padding
 
   &:before
     display: block
@@ -181,6 +180,7 @@ export default {
 
 .channel-children-wrapper
   transition: height .2s ease
+  will-change: height
 
 .channel-children-space
   cursor: pointer
