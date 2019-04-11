@@ -49,6 +49,12 @@ div.links-list-wrap
           IconLogoAnketo(size="20")
         p.link-title
           | anke-to
+    li
+      a(href="https://bot-console.trap.jp" target="_blank")
+        div.link-icon.flex-center
+          IconLogoBotConsole(size="20")
+        p.link-title
+          | BOT Console
 </template>
 
 <script>
@@ -60,6 +66,7 @@ import IconLogoNextCloud from '@/components/Icon/IconLogoNextCloud'
 import IconLogoShowcase from '@/components/Icon/IconLogoShowcase'
 import IconLogotraP from '@/components/Icon/IconLogotraP'
 import IconLogoAnketo from '@/components/Icon/IconLogoAnketo'
+import IconLogoBotConsole from '@/components/Icon/IconLogoBotConsole'
 
 export default {
   name: 'LinkList',
@@ -71,7 +78,8 @@ export default {
     IconLogoNextCloud,
     IconLogoShowcase,
     IconLogotraP,
-    IconLogoAnketo
+    IconLogoAnketo,
+    IconLogoBotConsole
   }
 }
 </script>
