@@ -9,17 +9,17 @@
         | #
     p.channel-box-name
       | {{model.name}}
-  transition-group.channel-children(
-    tag="div"
-    ref="children"
-    v-if="model.children"
-    name="list-complete"
-    @after-enter="removeHeight"
-    @after-leave="zeroHeight")
-    .channel-children-space(v-show="isOpened" @click="toggle" key="space")
-    .channel-children-container(ref="childrenWrap" v-show="isOpened" key="container")
-      div(v-for="child in children")
-        ChannelElement(:model="child")
+  .channel-children-wrapper(ref="children")
+    transition-group.channel-children(
+      tag="div"
+      v-if="model.children"
+      name="list-complete"
+      @after-enter="removeHeight"
+      @after-leave="zeroHeight")
+      .channel-children-space(v-show="isOpened" @click="toggle" key="space")
+      .channel-children-container(ref="childrenContainer" v-show="isOpened" key="container")
+        div(v-for="child in children")
+          ChannelElement(:model="child")
 </template>
 
 <script>
@@ -32,6 +32,9 @@ export default {
     return {
       height: '0'
     }
+  },
+  mounted() {
+    console.log(this.$refs.children)
   },
   methods: {
     toggle() {
@@ -50,6 +53,7 @@ export default {
       )
     },
     removeHeight() {
+      // 子チャンネルの高さに合わせるため
       this.$refs.children.style.height = ''
     },
     zeroHeight() {
@@ -98,7 +102,7 @@ export default {
     isOpened: {
       handler() {
         this.$nextTick(() => {
-          this.height = this.$refs.childrenWrap.clientHeight
+          this.height = this.$refs.childrenContainer.clientHeight
           this.$refs.children.style.height = this.height + 'px'
         })
       }
@@ -160,7 +164,7 @@ export default {
   position: relative
   padding: 0 0 0 0
   transition: all .2s ease
-  will-change: height, padding
+
   &:before
     display: block
     content: ''
@@ -170,16 +174,24 @@ export default {
     height: 0
     background: $text-light-color
     transition: height .2s ease
-  // .channel-opened + &
-    // padding-left: 20px
-  .channel-opened + &:before
+
+  .channel-opened + .channel-children-wrapper>&:before
     height: calc( 100% - 5px )
+
+.channel-children-wrapper
+  transition: height .2s ease
+  will-change: height
 
 .channel-children-space
   cursor: pointer
   width: 20px
   min-height: 100%
   flex-shrink: 0
+  // border:
+  //   right:
+  //     style: solid
+  //     width: 1px
+  //     color: $text-light-color
 
   &:hover
     background: rgba(0,0,0,0.1)
