@@ -60,6 +60,13 @@ export default {
         windowWidth: window.innerWidth,
         windowHeight: window.innerHeight
       })
+    },
+    toggleTheme(mql) {
+      if (mql.matches) {
+        this.$store.dispatch('updateTheme', 'dark')
+      } else {
+        this.$store.dispatch('updateTheme', 'light')
+      }
     }
   },
   computed: {
@@ -87,6 +94,8 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.handleResizeWindow()
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)')
+      isDark.addListener(this.toggleTheme)
     })
     window.addEventListener('resize', this.handleResizeWindow)
     window.addEventListener('orientationchange', this.handleResizeWindow)
