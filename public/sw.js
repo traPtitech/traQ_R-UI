@@ -1,16 +1,10 @@
+/* eslint-disable */
 workbox.skipWaiting()
 workbox.clientsClaim()
-workbox.routing.registerNavigationRoute(
-  '/index.html', {
-    whitelist: [
-      new RegExp('/channels/'),
-      new RegExp('/users/')
-    ],
-    blacklist: [
-      new RegExp('/pipeline')
-    ]
-  }
-)
+workbox.routing.registerNavigationRoute('/index.html', {
+  whitelist: [new RegExp('/channels/'), new RegExp('/users/')],
+  blacklist: [new RegExp('/pipeline')]
+})
 
 // ファイルAPIのキャッシュ設定
 workbox.routing.registerRoute(
@@ -70,9 +64,11 @@ self.addEventListener('fetch', event => {
       return event.respondWith(async () => {
         const me = getMeData()
         if (me === null) {
-          return new Response(JSON.stringify(me), {headers:{'Content-Type': 'application/json'}})
+          return new Response(JSON.stringify(me), {
+            headers: { 'Content-Type': 'application/json' }
+          })
         } else {
-          return new Response('', {status: 403})
+          return new Response('', { status: 403 })
         }
       })
     }
@@ -85,14 +81,18 @@ self.addEventListener('push', async event => {
   const channelID = payload.data.tag.substr(2)
 
   if (payload.data.path.startsWith('/channels')) {
-    await fetch(`/api/1.0/channels/${channelID}/messages?limit=20&offset=0`).then(res => res.json())
+    await fetch(`/api/1.0/channels/${channelID}/messages?limit=20&offset=0`)
+      .then(res => res.json())
       .then(data => {
         return new Promise((resolve, reject) => {
           openDB().then(db => {
             console.log(db)
             const transaction = db.transaction('channelMessages', 'readwrite')
             const store = transaction.objectStore('channelMessages')
-            const req = store.put({channelId: channelID, data: data.reverse()})
+            const req = store.put({
+              channelId: channelID,
+              data: data.reverse()
+            })
 
             req.onsuccess = resolve
             req.onerror = reject
@@ -101,13 +101,17 @@ self.addEventListener('push', async event => {
       })
       .catch(console.error)
   } else {
-    await fetch(`/api/1.0/users/${channelID}/messages?limit=20&offset=0`).then(res => res.json())
+    await fetch(`/api/1.0/users/${channelID}/messages?limit=20&offset=0`)
+      .then(res => res.json())
       .then(data => {
         return new Promise((resolve, reject) => {
           openDB().then(db => {
             const transaction = db.transaction('channelMessages', 'readwrite')
             const store = transaction.objectStore('channelMessages')
-            const req = store.put({channelId: channelID, data: data.reverse()})
+            const req = store.put({
+              channelId: channelID,
+              data: data.reverse()
+            })
 
             req.onsuccess = resolve
             req.onerror = reject
@@ -118,3 +122,54 @@ self.addEventListener('push', async event => {
   }
 })
 
+self.addEventListener('notificationclick', event => {
+  event.notification.close()
+  event.waitUntil(
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then(clientsArr => {
+        if (clientsArr.length > 0) {
+          return clientsArr[0].focus().then(function(client) {
+            const data = {
+              type: 'navigate',
+              to: event.notification.data.path
+            }
+            return client.postMessage(data)
+          })
+        } else {
+          return clients.openWindow(event.notification.data.path)
+        }
+      })
+  )
+})
+// Give the service worker access to Firebase Messaging.
+// Note that you can only use Firebase Messaging here, other Firebase libraries
+// are not available in the service worker.
+importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js')
+importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js')
+
+// Initialize the Firebase app in the service worker by passing in the
+// messagingSenderId.
+firebase.initializeApp({
+  messagingSenderId: '993645413001'
+})
+
+// Retrieve an instance of Firebase Messaging so that it can handle background
+// messages.
+const messaging = firebase.messaging()
+
+messaging.setBackgroundMessageHandler(async payload => {
+  console.log(
+    '[firebase-messaging-sw.js] Received background message ',
+    payload
+  )
+  // Customize notification here
+  const notificationTitle = payload.data.title || 'traQ'
+  const notificationOptions = payload.data
+  notificationOptions.data = payload.data
+
+  return self.registration.showNotification(
+    notificationTitle,
+    notificationOptions
+  )
+})
