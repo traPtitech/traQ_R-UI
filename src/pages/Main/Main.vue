@@ -156,7 +156,7 @@ export default {
         this.$store.dispatch('getMessages', true)
       })
       sse.resetEventListener()
-      sse.on('USER_JOINED', () => this.$store.dispatch('updateMembers'))
+      sse.on('USER_JOINED', () => this.userJoined())
       sse.on('USER_LEFT', () => this.$store.dispatch('updateMembers'))
       sse.on('USER_TAGS_UPDATED', data => this.userTagsUpdated(data))
       sse.on('USER_GROUP_UPDATED', data => this.userGroupUpdated(data))
@@ -357,6 +357,10 @@ export default {
     },
     swipeEnd() {
       this.swipeEvent.isActive = false
+    },
+    userJoined() {
+      this.$store.dispatch('updateMembers')
+      this.$store.dispatch('updateWebhooks')
     }
   },
   watch: {

@@ -10,7 +10,7 @@
       | リンクをコピー
     //- li(@click="clipMessae")
     //-   | クリップ
-    li(v-if="userId === getMyId" @click="$emit('delete')")
+    li(v-if="isEditable(userId)" @click="$emit('delete')")
       | 削除
     li(@click="$emit('report')")
       | 報告
@@ -57,6 +57,12 @@ export default {
           target.removeEventListener(eventType, callback)
         }
       })
+    },
+    isEditable(userId) {
+      return (
+        userId === this.getMyId ||
+        this.$store.getters.getWebhookUserIds.some(id => id === userId)
+      )
     }
   },
   created: function() {

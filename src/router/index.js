@@ -92,7 +92,8 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('updateUnreadMessages'),
       store.dispatch('updateGroups'),
       store.dispatch('updateChannelActivity'),
-      store.dispatch('updateMyNotifiedChannels')
+      store.dispatch('updateMyNotifiedChannels'),
+      store.dispatch('updateWebhooks')
     ])
   }
 

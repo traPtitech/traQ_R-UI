@@ -114,7 +114,8 @@ const store = new Vuex.Store({
     activeMessageContextMenu: '',
     isOnline: true,
     filterText: '',
-    isUnreadFiltered: false
+    isUnreadFiltered: false,
+    webhooks: []
   },
   mutations: {
     openSidebar(state) {
@@ -487,6 +488,9 @@ const store = new Vuex.Store({
     },
     setIsUnreadFiltered(state, isUnreadFiltered) {
       state.isUnreadFiltered = isUnreadFiltered
+    },
+    setWebhooks(state, webhooks) {
+      state.webhooks = webhooks
     }
   },
   getters: {
@@ -728,6 +732,9 @@ const store = new Vuex.Store({
     },
     isUnreadFiltered(state) {
       return state.isUnreadFiltered
+    },
+    getWebhookUserIds(state) {
+      return state.webhooks.map(w => w.botUserId)
     }
   },
   actions: {
@@ -803,6 +810,9 @@ const store = new Vuex.Store({
       client.getStampHistory().then(res => {
         commit('setStampHistory', res.data)
       })
+    },
+    updateWebhooks({ commit }) {
+      client.getWebhooks().then(res => commit('setWebhooks', res.data))
     },
     addStamp({ commit, state }, stampId) {
       return client.getStampDetail(stampId).then(res => {
