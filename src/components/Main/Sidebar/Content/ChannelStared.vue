@@ -1,6 +1,6 @@
 <template lang="pug">
 .stared-channels
-  template(v-if="filterUnread")
+  template(v-if="isUnreadFiltered")
     channel-detail-element(v-for="channel in filteredUnreadChannels" :key="channel.channelId" :model="channel")
     .channel-empty-message(v-if="filteredUnreadChannels.length === 0")
       | 未読はありません
@@ -25,18 +25,12 @@ export default {
     ChannelElement,
     ChannelDetailElement
   },
-  props: {
-    filterText: {
-      type: String,
-      default: ''
-    },
-    filterUnread: {
-      type: Boolean,
-      default: false
-    }
-  },
   computed: {
-    ...mapGetters(['getChannelUnreadMessageNum']),
+    ...mapGetters([
+      'getChannelUnreadMessageNum',
+      'filterText',
+      'isUnreadFiltered'
+    ]),
     channels() {
       return this.$store.getters.getStaredChannels
     },

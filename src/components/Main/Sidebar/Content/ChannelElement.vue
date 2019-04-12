@@ -33,9 +33,6 @@ export default {
       height: '0'
     }
   },
-  mounted() {
-    console.log(this.$refs.children)
-  },
   methods: {
     toggle() {
       this.$store.dispatch('updateChannelOpen', {

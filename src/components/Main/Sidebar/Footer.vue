@@ -1,5 +1,5 @@
 <template lang="pug">
-div.footer
+.footer
   span.version-text
     | traQ R {{ version }}
   ul.footer-button-wrap
@@ -43,6 +43,7 @@ export default {
 
 <style lang="sass">
 .footer
+  position: relative
   height: $footer-height
   width: 100%
   background: $secondary-color

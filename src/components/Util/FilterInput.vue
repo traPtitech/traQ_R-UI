@@ -57,6 +57,7 @@ export default {
 .filter-input-container
   position: relative
   width: 100%
+  transition: box-shadow .5s ease
 
 input.filter-input
   max-width: 100%
@@ -66,13 +67,15 @@ input.filter-input
     left: 10px
     bottom: 4px
   border-radius: 4px
-  background: rgba(255,255,255,0.2)
+  background:
+    color: var(--white-on-primary)
   color: $text-light-color
   box-sizing: border-box
   transition: background .2s ease
 
   &:hover
-    background: rgba(255,255,255,0.3)
+    background:
+      color: var(--white-on-primary-hovered)
 
   &::placeholder
     color: $text-light-color
