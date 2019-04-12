@@ -35,15 +35,6 @@ export default {
   },
   created() {
     console.log('REVISION:' + process.env.REVISION)
-    if (process.env.NODE_ENV === 'production' && navigator.serviceWorker) {
-      navigator.serviceWorker
-        .register('/sw.js', { scope: '/' })
-        .then(regisration => {
-          console.log('Service Worker Registered!')
-          regisration.update()
-        })
-    }
-
     if ('navigator' in window && 'onLine' in window.navigator) {
       this.$store.commit('changeNetwork', window.navigator.onLine)
     }

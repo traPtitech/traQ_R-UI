@@ -72,36 +72,56 @@ export default {
           }
         })
       }
-      const messaging = window.firebase.messaging()
-      messaging
-        .requestPermission()
-        .then(() => {
-          console.log('permission granted')
-          messaging.getToken().then(currentToken => {
-            client.registerDevice(currentToken)
-          })
+    }
 
-          messaging.onMessage(payload => {
-            const notification = this.notify(
-              payload.data.title || 'traQ',
-              payload.data
-            )
-            if (notification) {
-              notification.onclick = () => {
-                window.focus()
-                this.$router.push(payload.data.path)
-              }
-            }
+    if (
+      process.env.NODE_ENV === 'production' &&
+      'navigator' in window &&
+      'serviceWorker' in window.navigator
+    ) {
+      navigator.serviceWorker
+        .register('/sw.js', { scope: '/' })
+        .then(regisration => {
+          console.log('Service Worker Registered!')
+          regisration.update()
+          const messaging = window.firebase.messaging()
+          messaging.useServiceWorker(regisration)
+          messaging
+            .requestPermission()
+            .then(() => {
+              console.log('permission granted')
+              messaging.getToken().then(currentToken => {
+                client.registerDevice(currentToken)
+              })
+
+              messaging.onMessage(payload => {
+                const notification = this.notify(
+                  payload.data.title || 'traQ',
+                  payload.data
+                )
+                if (notification) {
+                  notification.onclick = () => {
+                    window.focus()
+                    this.$router.push(payload.data.path)
+                  }
+                }
+              })
+            })
+            .catch(() => {
+              console.error('permission denied')
+            })
+
+          messaging.onTokenRefresh(() => {
+            messaging.getToken().then(currentToken => {
+              client.registerDevice(currentToken)
+            })
           })
         })
-        .catch(() => {
-          console.error('permission denied')
-        })
 
-      messaging.onTokenRefresh(() => {
-        messaging.getToken().then(currentToken => {
-          client.registerDevice(currentToken)
-        })
+      window.navigator.serviceWorker.addEventListener('message', data => {
+        if (data.data.type === 'navigate') {
+          this.$router.push(data.data.to)
+        }
       })
     }
 
@@ -118,14 +138,6 @@ export default {
         console.log('register:' + token)
         client.registerDevice(token)
       }
-    }
-
-    if ('navigator' in window && 'serviceWorker' in window.navigator) {
-      window.navigator.serviceWorker.addEventListener('message', data => {
-        if (data.data.type === 'navigate') {
-          this.$router.push(data.data.to)
-        }
-      })
     }
 
     window.onfocus = () => {
