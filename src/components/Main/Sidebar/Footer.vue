@@ -3,6 +3,9 @@
   span.version-text
     | traQ R {{ version }}
   ul.footer-button-wrap
+    li.menu-button
+      a(href="https://wiki.trapti.tech/general/traQ-R" target="_blank")
+        IconHelp
     li.menu-button.theme(@click="changeTheme")
       IconCrescent(v-if="theme === 'light'")
       IconCrescentFill(v-else)
@@ -15,11 +18,14 @@ import version from '@/version'
 import IconGear from '@/components/Icon/IconGear'
 import IconCrescent from '@/components/Icon/IconCrescent'
 import IconCrescentFill from '@/components/Icon/IconCrescentFill'
+import IconHelp from '@/components/Icon/IconHelp'
+
 export default {
   components: {
     IconGear,
     IconCrescent,
-    IconCrescentFill
+    IconCrescentFill,
+    IconHelp
   },
   methods: {
     changeTheme() {
