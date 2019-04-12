@@ -1,6 +1,6 @@
 <template lang="pug">
 .sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
-  sidebar-tab-menu
+  sidebar-tab-menu(@scrollToTop="scrollToTop")
   .menu-content-wrapper
     .filter-and-toggle-wrapper(v-if="['Channels', 'Members'].includes(menuContent) && channelView !== 'activity'")
       transition(name="filter-slide-up")
@@ -11,8 +11,11 @@
           :isUnreadFiltered="isUnreadFiltered"
           @change="$store.commit('setIsUnreadFiltered', $event)"
           :hasDropShadow="filterHasDropShadow")
-    Content(@scroll="scrollHandler")
-    channel-list-tab-switcher(v-if="menuContent === 'Channels'")
+    // Content(@scroll="scrollHandler")
+    .sidebar-content.is-scroll.white(ref="sidebarContent" @scroll="scrollHandler")
+      keep-alive
+        component(:is="componentMap[menuContent]")
+    channel-list-tab-switcher(v-if="menuContent === 'Channels'" @scrollToTop="scrollToTop")
   Footer
   .sidebar-overlay(draggable="false" @click="close" v-if="isSidebarOpened")
 </template>
@@ -22,6 +25,7 @@ import { mapGetters } from 'vuex'
 import SidebarTabMenu from '@/components/Main/Sidebar/SidebarTabMenu'
 import Footer from '@/components/Main/Sidebar/Footer'
 import FilterAndToggle from '@/components/Util/FilterAndToggle'
+import ChannelList from '@/components/Main/Sidebar/Content/ChannelList'
 
 export default {
   name: 'Sidebar',
@@ -48,7 +52,30 @@ export default {
       isScrollToTop: false,
       lockFilter: false,
       currentMenuContent: 'Channels',
-      currentChannelView: 'tree'
+      currentChannelView: 'tree',
+      scrollTopMap: {
+        Channels: {
+          tree: 0,
+          stared: 0,
+          activity: 0
+        },
+        Members: 0,
+        Clips: 0,
+        Links: 0
+      },
+      componentMap: {
+        Channels: ChannelList,
+        Members: window.asyncLoadComponents(
+          import('@/components/Main/Sidebar/Content/MemberList')
+        ),
+        Clips: window.asyncLoadComponents(
+          import('@/components/Main/Sidebar/Content/ClipList')
+        ),
+        Links: window.asyncLoadComponents(
+          import('@/components/Main/Sidebar/Content/LinkList')
+        )
+      },
+      currentTabComponentName: 'Channels'
     }
   },
   computed: {
@@ -130,8 +157,14 @@ export default {
     open() {
       this.$store.commit('openSidebar')
     },
-    scrollHandler(scrollTop) {
-      this.contentScrollTop = scrollTop
+    scrollHandler() {
+      this.contentScrollTop = this.$refs.sidebarContent.scrollTop
+    },
+    scrollToTop() {
+      this.$refs.sidebarContent.scrollTo({
+        behavior: 'smooth',
+        top: 0
+      })
     }
   },
   watch: {
@@ -152,14 +185,30 @@ export default {
         this.isScrollToTop = false
       }
     },
-    menuContent(newVar) {
+    menuContent(newv, oldv) {
+      if (oldv === 'Channels') {
+        this.scrollTopMap[oldv][this.channelView] = this.contentScrollTop
+      } else {
+        this.scrollTopMap[oldv] = this.contentScrollTop
+      }
       this.$nextTick(() => {
-        this.currentMenuContent = newVar
+        this.currentMenuContent = newv
+        if (newv === 'Channels') {
+          this.$refs.sidebarContent.scrollTop = this.scrollTopMap[newv][
+            this.channelView
+          ]
+        } else {
+          this.$refs.sidebarContent.scrollTop = this.scrollTopMap[newv]
+        }
       })
     },
-    channelView(newVar) {
+    channelView(newv, oldv) {
+      this.scrollTopMap[this.menuContent][oldv] = this.contentScrollTop
       this.$nextTick(() => {
-        this.currentChannelView = newVar
+        this.currentChannelView = newv
+        this.$refs.sidebarContent.scrollTop = this.scrollTopMap[
+          this.menuContent
+        ][newv]
       })
     }
   }
@@ -232,4 +281,8 @@ export default {
     transform: translateY(-200%)
   &-leave-active
     position: absolute
+
+.sidebar-content
+  height: 100%
+  overflow-y: scroll
 </style>

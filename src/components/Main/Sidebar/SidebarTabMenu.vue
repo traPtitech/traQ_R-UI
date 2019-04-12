@@ -2,21 +2,21 @@
 nav.sidebar-tab-menu
   ul
     li.sidebar-menu-button.flex-center.channels(
-      @click="navClicked('Channels')" 
+      @click="navClicked('Channels')"
       :class="{'menu-active':menuContent==='Channels'}")
       icon-hash(size="20")
       .sidebar-tab-menu-unread-indicator(v-if="channelsUnreadNum > 0")
     li.sidebar-menu-button.flex-center.members(
-      @click="navClicked('Members')" 
+      @click="navClicked('Members')"
       :class="{'menu-active':menuContent==='Members'}")
       icon-profile-fill(size="20")
       .sidebar-tab-menu-unread-indicator(v-if="usersUnreadNum > 0")
     li.sidebar-menu-button.flex-center.clips(
-      @click="navClicked('Clips')" 
+      @click="navClicked('Clips')"
       :class="{'menu-active':menuContent==='Clips'}")
       icon-attach(size="20")
     li.sidebar-menu-button.flex-center.links(
-      @click="navClicked('Links')" 
+      @click="navClicked('Links')"
       :class="{'menu-active':menuContent==='Links'}")
       icon-tool-box(size="20")
 </template>
@@ -42,18 +42,30 @@ export default {
     }
   },
   methods: {
-    navClicked: function(n) {
+    navClicked(n) {
       switch (n) {
         case 'Channels':
+          if (this.menuContent === 'Channels') {
+            this.$emit('scrollToTop')
+          }
           this.$store.commit('changeMenuContent', 'Channels')
           break
         case 'Members':
+          if (this.menuContent === 'Members') {
+            this.$emit('scrollToTop')
+          }
           this.$store.commit('changeMenuContent', 'Members')
           break
         case 'Clips':
+          if (this.menuContent === 'Clips') {
+            this.$emit('scrollToTop')
+          }
           this.$store.commit('changeMenuContent', 'Clips')
           break
         case 'Links':
+          if (this.menuContent === 'Links') {
+            this.$emit('scrollToTop')
+          }
           this.$store.commit('changeMenuContent', 'Links')
           break
         default:
@@ -97,7 +109,7 @@ export default {
   color: rgba(255, 255, 255, 0.6)
   font-size: 1.3em
   &:hover
-    color: white
+    background: rgba(0,0,0,0.1)
   &.menu-active
     background: $primary-color
     color: white
