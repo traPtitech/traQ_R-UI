@@ -535,6 +535,11 @@ const client = {
   // Tag: client
   getClient(clientId) {
     return axios.get(`/api/1.0/clients/${clientId}`)
+  },
+
+  // Tag: Webhook
+  getWebhooks() {
+    return axios.get(`/api/1.0/webhooks`)
   }
 }
 

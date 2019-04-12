@@ -112,7 +112,8 @@ const store = new Vuex.Store({
     windowHeight: 0,
     filterSubscribedActivity: true,
     activeMessageContextMenu: '',
-    isOnline: true
+    isOnline: true,
+    webhooks: []
   },
   mutations: {
     openSidebar(state) {
@@ -479,6 +480,9 @@ const store = new Vuex.Store({
     },
     changeNetwork(state, condition) {
       state.isOnline = condition
+    },
+    setWebhooks(state, webhooks) {
+      state.webhooks = webhooks
     }
   },
   getters: {
@@ -714,6 +718,9 @@ const store = new Vuex.Store({
           .map(userId => state.memberMap[userId])
           .sort(stringSortGen('name'))
           .map(user => user.userId)
+    },
+    getWebhookUserIds(state) {
+      return state.webhooks.map(w => w.botUserId)
     }
   },
   actions: {
@@ -789,6 +796,9 @@ const store = new Vuex.Store({
       client.getStampHistory().then(res => {
         commit('setStampHistory', res.data)
       })
+    },
+    updateWebhooks({ commit }) {
+      client.getWebhooks().then(res => commit('setWebhooks', res.data))
     },
     addStamp({ commit, state }, stampId) {
       return client.getStampDetail(stampId).then(res => {
