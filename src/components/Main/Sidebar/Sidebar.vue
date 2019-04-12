@@ -1,17 +1,31 @@
 <template lang="pug">
-div.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
-  sidebar-tab-menu
-  div.menu-content-wrapper
-    Content
-    channel-list-tab-switcher(v-if="menuContent === 'Channels'")
+.sidebar(:class="sidebarClass" :style="sidebarStyle" ref="sidebar")
+  sidebar-tab-menu(@scrollToTop="scrollToTop")
+  .menu-content-wrapper
+    .filter-and-toggle-wrapper(v-if="['Channels', 'Members'].includes(menuContent) && channelView !== 'activity'")
+      transition(name="filter-slide-up")
+        filter-and-toggle(
+          v-if="isFilterVisible"
+          :filterText="filterText"
+          @input="$store.commit('setFilterText', $event)"
+          :isUnreadFiltered="isUnreadFiltered"
+          @change="$store.commit('setIsUnreadFiltered', $event)"
+          :hasDropShadow="filterHasDropShadow")
+    // Content(@scroll="scrollHandler")
+    .sidebar-content.is-scroll.white(ref="sidebarContent" @scroll="scrollHandler")
+      keep-alive
+        component(:is="componentMap[menuContent]")
+    channel-list-tab-switcher(v-if="menuContent === 'Channels'" @scrollToTop="scrollToTop")
   Footer
-  div.sidebar-overlay(draggable="false" @click="close" v-if="isSidebarOpened")
+  .sidebar-overlay(draggable="false" @click="close" v-if="isSidebarOpened")
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import SidebarTabMenu from '@/components/Main/Sidebar/SidebarTabMenu'
 import Footer from '@/components/Main/Sidebar/Footer'
-import { mapGetters } from 'vuex'
+import FilterAndToggle from '@/components/Util/FilterAndToggle'
+import ChannelList from '@/components/Main/Sidebar/Content/ChannelList'
 
 export default {
   name: 'Sidebar',
@@ -26,17 +40,52 @@ export default {
     Footer,
     ChannelListTabSwitcher: window.asyncLoadComponents(
       import('@/components/Main/Sidebar/Content/ChannelListTabSwitcher')
-    )
+    ),
+    FilterAndToggle
   },
   data() {
     return {
       isActive: false,
       swipeThresholdX: 50,
-      sidebarWidth: 260
+      sidebarWidth: 260,
+      contentScrollTop: 0,
+      isScrollToTop: false,
+      lockFilter: false,
+      currentMenuContent: 'Channels',
+      currentChannelView: 'tree',
+      scrollTopMap: {
+        Channels: {
+          tree: 0,
+          stared: 0,
+          activity: 0
+        },
+        Members: 0,
+        Clips: 0,
+        Links: 0
+      },
+      componentMap: {
+        Channels: ChannelList,
+        Members: window.asyncLoadComponents(
+          import('@/components/Main/Sidebar/Content/MemberList')
+        ),
+        Clips: window.asyncLoadComponents(
+          import('@/components/Main/Sidebar/Content/ClipList')
+        ),
+        Links: window.asyncLoadComponents(
+          import('@/components/Main/Sidebar/Content/LinkList')
+        )
+      },
+      currentTabComponentName: 'Channels'
     }
   },
   computed: {
-    ...mapGetters(['deviceType']),
+    ...mapGetters([
+      'deviceType',
+      'isSidebarOpened',
+      'channelView',
+      'filterText',
+      'isUnreadFiltered'
+    ]),
     menuContent() {
       return this.$store.state.menuContent
     },
@@ -86,7 +135,19 @@ export default {
     closeSwipedX() {
       return Math.max(this.swipeEvent.startX - this.swipeEvent.x, 0)
     },
-    ...mapGetters(['deviceType', 'isSidebarOpened'])
+    isFilterVisible() {
+      if (this.contentScrollTop < 20) return true
+      if (
+        this.currentMenuContent !== this.menuContent ||
+        this.currentChannelView !== this.channelView
+      ) {
+        return false
+      }
+      return this.isScrollToTop
+    },
+    filterHasDropShadow() {
+      return this.contentScrollTop > 20
+    }
   },
   methods: {
     close() {
@@ -95,6 +156,15 @@ export default {
     },
     open() {
       this.$store.commit('openSidebar')
+    },
+    scrollHandler() {
+      this.contentScrollTop = this.$refs.sidebarContent.scrollTop
+    },
+    scrollToTop() {
+      this.$refs.sidebarContent.scrollTo({
+        behavior: 'smooth',
+        top: 0
+      })
     }
   },
   watch: {
@@ -107,6 +177,39 @@ export default {
       if (!newVar && oldVar && this.closeSwipedX > this.sidebarWidth / 4) {
         this.close()
       }
+    },
+    contentScrollTop(newVar, oldVar) {
+      if (newVar < oldVar) {
+        this.isScrollToTop = true
+      } else {
+        this.isScrollToTop = false
+      }
+    },
+    menuContent(newv, oldv) {
+      if (oldv === 'Channels') {
+        this.scrollTopMap[oldv][this.channelView] = this.contentScrollTop
+      } else {
+        this.scrollTopMap[oldv] = this.contentScrollTop
+      }
+      this.$nextTick(() => {
+        this.currentMenuContent = newv
+        if (newv === 'Channels') {
+          this.$refs.sidebarContent.scrollTop = this.scrollTopMap[newv][
+            this.channelView
+          ]
+        } else {
+          this.$refs.sidebarContent.scrollTop = this.scrollTopMap[newv]
+        }
+      })
+    },
+    channelView(newv, oldv) {
+      this.scrollTopMap[this.menuContent][oldv] = this.contentScrollTop
+      this.$nextTick(() => {
+        this.currentChannelView = newv
+        this.$refs.sidebarContent.scrollTop = this.scrollTopMap[
+          this.menuContent
+        ][newv]
+      })
     }
   }
 }
@@ -158,4 +261,28 @@ export default {
   height: calc( 100% - #{$navigation-height} - #{$footer-height} )
   background-color: $primary-color
   position: relative
+  overflow: hidden
+
+.filter-and-toggle-wrapper
+  position: absolute
+  width: 80%
+  left: 0
+  right: 0
+  padding:
+    top: 20px
+  margin: auto
+  z-index: $sidebar-index + 10
+
+.filter-slide-up
+  &-enter-active, &-leave-active
+    transition: all .5s ease
+    transform: translateY(0)
+  &-enter, &-leave-to
+    transform: translateY(-200%)
+  &-leave-active
+    position: absolute
+
+.sidebar-content
+  height: 100%
+  overflow-y: scroll
 </style>

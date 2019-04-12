@@ -35,14 +35,17 @@ export default {
 .toggle-button-body
   height: 32px
   width: 32px
-  background: rgba(255,255,255,0.2)
+  background:
+    color: var(--white-on-primary)
   border-radius: 4px
   cursor: pointer
-  transition: background .2s ease
+  transition: background .2s ease, box-shadow .5s ease
 
   &:hover
-    background: rgba(255,255,255,0.3)
+    background:
+      color: var(--white-on-primary-hovered)
 
   &.is-active
-    background: rgba(255,255,255,0.7)
+    background:
+      color: var(--white-on-primary-active)
 </style>

@@ -112,7 +112,9 @@ const store = new Vuex.Store({
     windowHeight: 0,
     filterSubscribedActivity: true,
     activeMessageContextMenu: '',
-    isOnline: true
+    isOnline: true,
+    filterText: '',
+    isUnreadFiltered: false
   },
   mutations: {
     openSidebar(state) {
@@ -479,6 +481,12 @@ const store = new Vuex.Store({
     },
     changeNetwork(state, condition) {
       state.isOnline = condition
+    },
+    setFilterText(state, filterText) {
+      state.filterText = filterText
+    },
+    setIsUnreadFiltered(state, isUnreadFiltered) {
+      state.isUnreadFiltered = isUnreadFiltered
     }
   },
   getters: {
@@ -714,6 +722,12 @@ const store = new Vuex.Store({
           .map(userId => state.memberMap[userId])
           .sort(stringSortGen('name'))
           .map(user => user.userId)
+    },
+    filterText(state) {
+      return state.filterText
+    },
+    isUnreadFiltered(state) {
+      return state.isUnreadFiltered
     }
   },
   actions: {

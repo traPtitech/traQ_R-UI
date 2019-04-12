@@ -1,12 +1,12 @@
 <template lang="pug">
   .channel-tab-switcher-wrap.drop-shadow
-    .channel-tab-switcher-item(@click="channelView = 'tree'" :class="{selected: channelView === 'tree'}")
+    .channel-tab-switcher-item(@click="tabClick('tree')" :class="{selected: channelView === 'tree'}")
       .channel-tab-switcher-item-icon.flex-center
         IconHash(size="16")
-    .channel-tab-switcher-item(@click="channelView = 'stared'" :class="{selected: channelView === 'stared'}")
+    .channel-tab-switcher-item(@click="tabClick('stared')" :class="{selected: channelView === 'stared'}")
       .channel-tab-switcher-item-icon.flex-center
         IconStarFill(size="18")
-    .channel-tab-switcher-item(@click="channelView = 'activity'" :class="{selected: channelView === 'activity'}")
+    .channel-tab-switcher-item(@click="tabClick('activity')" :class="{selected: channelView === 'activity'}")
       .channel-tab-switcher-item-icon.flex-center
         IconLightning(size="18")
 </template>
@@ -15,12 +15,37 @@
 import IconHash from '@/components/Icon/IconHash'
 import IconStarFill from '@/components/Icon/IconStarFill'
 import IconLightning from '@/components/Icon/IconLightning'
+
 export default {
   name: 'ChannelListTabSwitcher',
   components: {
     IconHash,
     IconStarFill,
     IconLightning
+  },
+  methods: {
+    tabClick(v) {
+      switch (v) {
+        case 'tree':
+          if (this.channelView === 'tree') {
+            this.$emit('scrollToTop')
+          }
+          this.channelView = 'tree'
+          break
+        case 'stared':
+          if (this.channelView === 'stared') {
+            this.$emit('scrollToTop')
+          }
+          this.channelView = 'stared'
+          break
+        case 'activity':
+          if (this.channelView === 'activity') {
+            this.$emit('scrollToTop')
+          }
+          this.channelView = 'activity'
+          break
+      }
+    }
   },
   computed: {
     channelView: {
