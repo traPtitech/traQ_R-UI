@@ -61,6 +61,7 @@ export default {
 
 input.filter-input
   max-width: 100%
+  height: 32px
   padding:
     top: 4px
     right: 20px
