@@ -1,46 +1,46 @@
 <template lang="pug">
-  div.message-files-wrap
-    div.message-file-wrap(v-for="file in files")
-      div.message-file-inner-wrap(v-if="file.fileId !== ''")
-        div(v-if="isGif(file.mime)")
-          img.attached-image(
-            :src="`${fileUrl(file.fileId)}/thumbnail`" 
-            :onClick="`this.src = '${fileUrl(file.fileId)}'`" 
-            :alt="file.name")
-        .attached-image(v-else-if="isSvg(file.mime)"
-          :style="backgroundImageStyle(`${fileUrl(file.fileId)}`)"
-          @click.prevent="onAttachedImageClick(file)")
-        .attached-image(
-          v-else-if="isImage(file.mime)" 
+.message-files-wrap
+  .message-file-wrap(v-for="file in files")
+    .message-file-inner-wrap(v-if="file.fileId !== ''")
+      div(v-if="isGif(file.mime)")
+        img.attached-gif-image(
+          :src="`${fileUrl(file.fileId)}/thumbnail`"
           @click.prevent="onAttachedImageClick(file)"
-          :style="backgroundImageStyle(`${fileUrl(file.fileId)}/thumbnail`)")
-        video.attached-video(
-          v-else-if="isVideo(file.mime)" 
-          :src="fileUrl(file.fileId)" 
-          :alt="file.name" 
-          preload="none" 
-          controls)
-        audio.attached-audio(
-          v-else-if="isAudio(file.mime)" 
-          :src="fileUrl(file.fileId)" 
-          :alt="file.name" 
-          preload="none" 
-          controls)
+          :alt="file.name")
+      .attached-image(v-else-if="isSvg(file.mime)"
+        :style="backgroundImageStyle(`${fileUrl(file.fileId)}`)"
+        @click.prevent="onAttachedImageClick(file)")
+      .attached-image(
+        v-else-if="isImage(file.mime)"
+        @click.prevent="onAttachedImageClick(file)"
+        :style="backgroundImageStyle(`${fileUrl(file.fileId)}/thumbnail`)")
+      video.attached-video(
+        v-else-if="isVideo(file.mime)"
+        :src="fileUrl(file.fileId)"
+        :alt="file.name"
+        preload="none"
+        controls)
+      audio.attached-audio(
+        v-else-if="isAudio(file.mime)"
+        :src="fileUrl(file.fileId)"
+        :alt="file.name"
+        preload="none"
+        controls)
 
-        a.attached-file-info(
-          :href="`${fileUrl(file.fileId)}?dl=1`" 
-          :download="file.name")
-          div.attached-file-info-icon-wrap
-            icon-attach(size="24" color="var(--tertiary-color-on-bg)")
-          div
-            p.attached-file-name.break-text
-              | {{file.name}}
-            p.attached-file-size
-              | {{encodeByte(file.size)}}
-      div(v-else)
-        div.attached-file-not-found
-          p
-            | File Not Found
+      a.attached-file-info(
+        :href="`${fileUrl(file.fileId)}?dl=1`"
+        :download="file.name")
+        div.attached-file-info-icon-wrap
+          icon-attach(size="24" color="var(--tertiary-color-on-bg)")
+        div
+          p.attached-file-name.break-text
+            | {{file.name}}
+          p.attached-file-size
+            | {{encodeByte(file.size)}}
+    div(v-else)
+      div.attached-file-not-found
+        p
+          | File Not Found
 </template>
 
 <script>
@@ -112,6 +112,20 @@ export default {
     position: center center
     repeat: no-repeat
   width: 250px
+  height: 150px
+  border:
+    color: var(--tertiary-color-on-bg)
+    style: solid
+    width: 1px
+    radius: 6px
+
+.attached-gif-image
+  cursor: pointer
+  background:
+    size: cover
+    position: center center
+    repeat: no-repeat
+  max-width: 250px
   height: 150px
   border:
     color: var(--tertiary-color-on-bg)
