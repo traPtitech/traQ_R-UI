@@ -636,6 +636,7 @@ $message-input-button-height-pc: 40px - 2px
   height: 100%
 
 #message-input-text-area
+  font-family: 'メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
   display: block
   background: none
   color: var(--text-color)
