@@ -3,7 +3,6 @@ import client from '@/bin/client'
 export default {
   namespaced: false,
   state: {
-    inputText: '',
     stampPickerActive: false,
     stampPickerMode: 'message',
     stampPickerModel: null
@@ -17,9 +16,6 @@ export default {
     }
   },
   mutations: {
-    setInputText(state, text) {
-      state.inputText = text
-    },
     setStampPickerModel(state, model) {
       state.stampPickerModel = model
     },
@@ -31,17 +27,17 @@ export default {
     },
     setStampPickerModeAsInput(state) {
       state.stampPickerMode = 'input'
-    },
-    addStampToInputText(state, stampName) {
-      state.inputText += `:${stampName}:`
     }
   },
   actions: {
-    execStamp({ state, commit, dispatch }, stamp) {
+    execStamp({ state, commit, dispatch, rootState }, stamp) {
       if (state.stampPickerMode === 'message') {
         dispatch('addStampToMessage', stamp.id)
       } else {
-        commit('addStampToInputText', stamp.name)
+        commit('messageInput/addStampToInputText', {
+          stampName: stamp.name,
+          channelId: rootState.currentChannel.channelId
+        })
       }
     },
     addStampToMessage({ state }, stampId) {

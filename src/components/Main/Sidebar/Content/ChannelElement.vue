@@ -1,12 +1,14 @@
 <template lang="pug">
 .channel-wrap(v-if="model.visibility")
-  .channel-box(@click="channelLink" v-bind:class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
+  .channel-box(@click="channelLink" :class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
     .channel-before-wrap(v-if="isParent" @click.stop="toggle")
       .channel-toggle.channel-before(:class="channelBeforeClass")
-        | #
+        icon-hash(v-if="!hasInputText" size="12" :color="toggleChannelHashColor")
+        icon-pen(v-else size="12" :color="toggleChannelHashColor")
     .channel-before-wrap(v-else)
       .channel-before(:class="channelBeforeClass")
-        | #
+        icon-hash(v-if="!hasInputText" size="12" :color="channelHashColor")
+        icon-pen(v-else size="12" :color="channelHashColor")
     p.channel-box-name
       | {{model.name}}
   .channel-children-wrapper(ref="children")
@@ -23,11 +25,15 @@
 </template>
 
 <script>
+import IconHash from '@/components/Icon/IconHash'
+import IconPen from '@/components/Icon/IconPen'
+
 export default {
   name: 'ChannelElement',
   props: {
     model: Object
   },
+  components: { IconHash, IconPen },
   data() {
     return {
       height: '0'
@@ -93,6 +99,33 @@ export default {
     },
     isNotified() {
       return this.$store.state.myNotifiedChannelSet.has(this.model.channelId)
+    },
+    toggleChannelHashColor() {
+      if (this.isOpened) {
+        if (this.isWatched) {
+          return 'white'
+        } else {
+          return 'var(--primary-color)'
+        }
+      } else {
+        if (this.isWatched) {
+          return 'var(--primary-color)'
+        } else {
+          return 'white'
+        }
+      }
+    },
+    channelHashColor() {
+      if (this.isWatched) {
+        return 'var(--primary-color)'
+      }
+      return 'white'
+    },
+    hasInputText() {
+      return (
+        this.$store.getters['messageInput/inputText'](this.model.channelId)
+          .length > 0
+      )
     }
   },
   watch: {
@@ -184,11 +217,6 @@ export default {
   width: 20px
   min-height: 100%
   flex-shrink: 0
-  // border:
-  //   right:
-  //     style: solid
-  //     width: 1px
-  //     color: $text-light-color
 
   &:hover
     background: rgba(0,0,0,0.1)
@@ -202,7 +230,7 @@ export default {
   display: flex
   align-items: center
   padding:
-    right: 8px
+    right: 6px
 
 .channel-before
   position: relative
@@ -211,13 +239,12 @@ export default {
   align-items: center
   width: 20px
   height: 20px
-  line-height: 1px //for safari
   padding:
     top: 0
     bottom: 1px
   color: $text-light-color
   margin: 0 0 0 10px
-  font-weight: bold
+
   .channel-watched &
     color: $primary-color
   &.channel-notified:not(.has-unread)::after
@@ -242,12 +269,12 @@ export default {
     border-radius: 100%
     background: $primary-color
   .channel-watched &.channel-notified:not(.has-unread)::before
-    background: white;
-    opacity: 1;
+    background: white
+    opacity: 1
   .channel-watched &.channel-notified:not(.has-unread)::after
-    background-color: $primary-color;
-    border: 2px solid white;
-    opacity: 0.3;
+    background-color: $primary-color
+    border: 2px solid white
+    opacity: 0.3
 
   &.has-unread::after
     content: ''

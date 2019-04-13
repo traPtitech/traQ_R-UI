@@ -5,6 +5,7 @@ import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import modal from './modal'
 import pickerModal from './pickerModal'
+import messageInput from './messageInput'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -54,7 +55,8 @@ const stringSortGen = key => (lhs, rhs) => {
 const store = new Vuex.Store({
   modules: {
     modal,
-    pickerModal
+    pickerModal,
+    messageInput
   },
   state: {
     loaded: false,
