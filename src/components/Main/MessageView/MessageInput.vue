@@ -429,12 +429,20 @@ export default {
   },
   computed: {
     ...mapGetters(['stampPickerActive']),
+    currentChannel() {
+      return this.$store.state.currentChannel
+    },
     inputText: {
       get() {
-        return this.$store.state.pickerModal.inputText
+        return this.$store.getters['messageInput/inputText'](
+          this.currentChannel.channelId
+        )
       },
-      set(text) {
-        this.$store.commit('setInputText', text)
+      set(inputText) {
+        this.$store.commit('messageInput/setInputText', {
+          inputText,
+          channelId: this.currentChannel.channelId
+        })
       }
     },
     suggests() {
