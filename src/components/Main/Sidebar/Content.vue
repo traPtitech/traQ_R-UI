@@ -34,8 +34,7 @@ export default {
         Links: window.asyncLoadComponents(
           import('@/components/Main/Sidebar/Content/LinkList')
         )
-      },
-      currentTabComponentName: 'Channels'
+      }
     }
   },
   computed: {
