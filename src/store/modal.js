@@ -108,6 +108,12 @@ export default {
         dispatch('open', { name: 'FileModal', data })
       }
     },
+    openTourModal: {
+      root: true,
+      handler({ dispatch }, data) {
+        dispatch('open', { name: 'TourModal', data })
+      }
+    },
     openChannelCreateModal: {
       root: true,
       handler({ dispatch }) {
