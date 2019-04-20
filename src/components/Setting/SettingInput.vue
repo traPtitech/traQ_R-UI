@@ -2,7 +2,7 @@
 .setting-input-container
   p {{ label }}
   .setting-input-box(@click="focusInput")
-    span.setting-input-prefix {{ prefix }}
+    span.setting-input-prefix(v-if="prefix") {{ prefix }}
     input.setting-input.input-reset(
       :type="text"
       :value="value"
@@ -54,6 +54,7 @@ export default {
   width: 100%
 
 .setting-input-box
+  display: inline-block
   max-width: 100%
   border-radius: 4px
   margin:
