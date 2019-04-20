@@ -351,7 +351,7 @@ export default {
 
 .message-user-info-wrap
   display: flex
-  align-items: center
+  align-items: baseline
   width: calc(100% - 110px)
 
 .message-user-name
@@ -360,8 +360,7 @@ export default {
   font-weight: bold
   text-align: left
   max-width: 60%
-  height: 20px
-  line-height: 20px
+  line-height: 1.4em
   overflow: hidden
   cursor: pointer
   flex-shrink: 0
@@ -385,6 +384,7 @@ export default {
   opacity: 0.6
   margin-left: 5px
   font-size: 0.8em
+  line-height: 1.4em
   max-width: 40%
 
 .message-date

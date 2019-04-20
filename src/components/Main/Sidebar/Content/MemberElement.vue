@@ -139,6 +139,7 @@ export default {
 .member-name
   font:
     size: 0.9em
+  line-height: 1.4em
   opacity: 0.6
 
   .is-watched &

@@ -69,4 +69,5 @@ export default {
 .slim-member-element-username
   margin:
     left: 6px
+  line-height: 1.4em
 </style>
