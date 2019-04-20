@@ -51,13 +51,7 @@ export default {
       }
     },
     fullChannelName() {
-      let name = this.model.name
-      let model = this.model
-      while (model.parent !== '') {
-        name = `${this.channelNameById(model.parent)}/${name}`
-        model = this.$store.state.channelMap[model.parent]
-      }
-      return name
+      return `#${this.$store.getters.getChannelPathById(this.model.channelId)}`
     },
     isWatched() {
       return this.$store.state.currentChannel.channelId === this.model.channelId

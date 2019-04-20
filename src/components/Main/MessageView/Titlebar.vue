@@ -32,7 +32,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       .menu-icon
         icon-plus(size="24")
       span
-        | チャンネル作成
+        | サブチャンネル作成
 </template>
 
 <script>
