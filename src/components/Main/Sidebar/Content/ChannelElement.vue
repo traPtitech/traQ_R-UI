@@ -3,11 +3,11 @@
   .channel-box(@click="channelLink" :class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
     .channel-before-wrap(v-if="isParent" @click.stop="toggle")
       .channel-toggle.channel-before(:class="channelBeforeClass")
-        icon-hash(v-if="!hasInputText" size="12" :color="toggleChannelHashColor")
+        icon-hash(v-if="!hasInputContent" size="12" :color="toggleChannelHashColor")
         icon-pen(v-else size="12" :color="toggleChannelHashColor")
     .channel-before-wrap(v-else)
       .channel-before(:class="channelBeforeClass")
-        icon-hash(v-if="!hasInputText" size="12" :color="channelHashColor")
+        icon-hash(v-if="!hasInputContent" size="12" :color="channelHashColor")
         icon-pen(v-else size="12" :color="channelHashColor")
     p.channel-box-name
       | {{model.name}}
@@ -120,6 +120,15 @@ export default {
         return 'var(--primary-color)'
       }
       return 'white'
+    },
+    hasInputContent() {
+      return this.hasInputText || this.hasInputFiles
+    },
+    hasInputFiles() {
+      return (
+        this.$store.getters['messageInput/inputFiles'](this.model.channelId)
+          .length > 0
+      )
     },
     hasInputText() {
       return (
