@@ -500,6 +500,11 @@ export default {
     },
     inputText(newText) {
       this.$store.commit('setEditing', this.focused && newText.length > 0)
+    },
+    currentChannel() {
+      this.$nextTick(() => {
+        autosize.update(this.messageInput)
+      })
     }
   },
   mounted() {
