@@ -79,7 +79,6 @@ export default {
       // postStatus: {'default', 'processing', 'succeeded', 'failed'}
       postStatus: 'default',
       postLock: false,
-      files: [],
       uploadedIds: [],
       messageInput: null,
       key: {
@@ -244,7 +243,6 @@ export default {
         this.submit()
         event.returnValue = false
       }
-
       /*
       if (this.suggests.length === 0) {
         this.suggestMode = false
@@ -368,17 +366,19 @@ export default {
         window.alert('ファイルサイズが大きすぎます')
         return
       }
-      this.files.push({
+      const files = this.files
+      files.push({
         file: file
       })
-      let index = this.files.length - 1
+      let index = files.length - 1
       if (isImage(file.type)) {
         let reader = new FileReader()
         reader.onload = e => {
-          this.$set(this.files[index], 'thumbnail', e.target.result)
+          this.$set(files[index], 'thumbnail', e.target.result)
         }
         reader.readAsDataURL(file)
       }
+      this.files = files
     },
     removeFile(id) {
       this.files.splice(id, 1)
@@ -445,6 +445,19 @@ export default {
         })
       }
     },
+    files: {
+      get() {
+        return this.$store.getters['messageInput/inputFiles'](
+          this.currentChannel.channelId
+        )
+      },
+      set(files) {
+        this.$store.commit('messageInput/setInputFiles', {
+          files,
+          channelId: this.currentChannel.channelId
+        })
+      }
+    },
     suggests() {
       if (this.key.type === '') {
         return []
@@ -495,9 +508,6 @@ export default {
     }
   },
   watch: {
-    files(newFiles) {
-      this.isOpened = !(newFiles.length === 0 && this.inputText === '')
-    },
     inputText(newText) {
       this.$store.commit('setEditing', this.focused && newText.length > 0)
     },
