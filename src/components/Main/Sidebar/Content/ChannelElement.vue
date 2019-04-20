@@ -167,14 +167,14 @@ export default {
     background: white
 
 .channel-box-name
+  display: inline-flex
+  align-items: center
   position: relative
   color: $text-light-color
   font-weight: bold
   flex: 1
   padding:
-    top: 8px
     right: 10px
-    bottom: 8px
     left: 2px
   text-align: left
   cursor: pointer

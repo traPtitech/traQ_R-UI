@@ -385,6 +385,7 @@ export default {
   opacity: 0.6
   margin-left: 5px
   font-size: 0.8em
+  line-height: 1.4em
   max-width: 40%
 
 .message-date

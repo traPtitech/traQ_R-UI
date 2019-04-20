@@ -206,7 +206,7 @@ export default {
 </script>
 
 <style lang="sass">
-$topic-height: 14px
+$topic-height: 18px
 
 .titlebar
   position: absolute
@@ -296,15 +296,19 @@ $topic-height: 14px
 
 .channel-topic-text
   font-size: 13px
+  line-height: 1.4em
   margin:
-    bottom: 6px
+    bottom: 2px
   height: 0
   overflow: hidden
+  transition: height .5s ease
+
   +mq(sp)
     display: none
-  transition: height .5s ease
+
   &.has-topic
     height: $topic-height
+
   &::before
     content: ''
     display: block
