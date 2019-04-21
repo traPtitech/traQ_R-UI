@@ -11,19 +11,19 @@
         .login-form
           .input-wrap
             input.input-reset.login-input(
-              v-model="name" 
-              name="name" 
-              type="text" 
-              placeholder="ID" 
-              required 
+              v-model="name"
+              name="name"
+              type="text"
+              placeholder="ID"
+              required
               :disabled="status === 'processing'"
               @keydown.enter="loginPost")
             input.input-reset.login-input(
-              v-model="pass" 
-              name="pass" 
-              type="password" 
-              placeholder="PASSWORD" 
-              required 
+              v-model="pass"
+              name="pass"
+              type="password"
+              placeholder="PASSWORD"
+              required
               :disabled="status === 'processing'"
               @keydown.enter="loginPost")
             p.login-failed-message(v-if="status === 'failed'")
@@ -44,19 +44,19 @@
       .login-form-wrap.drop-shadow
         .input-wrap
           input.input-reset.login-input(
-            v-model="name" 
-            name="name" 
-            type="text" 
-            placeholder="ID" 
-            required 
+            v-model="name"
+            name="name"
+            type="text"
+            placeholder="ID"
+            required
             :disabled="status === 'processing'"
             @keydown.enter="loginPost")
           input.input-reset.login-input(
-            v-model="pass" 
-            name="pass" 
-            type="password" 
-            placeholder="PASSWORD" 
-            required 
+            v-model="pass"
+            name="pass"
+            type="password"
+            placeholder="PASSWORD"
+            required
             :disabled="status === 'processing'"
             @keydown.enter="loginPost")
           p.login-failed-message(v-if="status === 'failed'")
@@ -135,7 +135,7 @@ export default {
 .login-page-inner-wrap-sp
   position: relative
   padding:
-    top: 15%
+    top: 50px
 
   .top-background
     position: absolute
@@ -148,6 +148,7 @@ export default {
 
   .icon-logo
     width: 30vw
+    max-width: 100px
     margin:
       left: auto
       right: auto
@@ -157,7 +158,7 @@ export default {
     text-align: center
     color: white
     margin:
-      top: 10%
+      top: 10px
     font:
       size: 1.2rem
       weight: bold
@@ -166,7 +167,7 @@ export default {
     width: 80%
     max-width: 300px
     margin:
-      top: 15%
+      top: 30px
       left: auto
       right: auto
     border:
