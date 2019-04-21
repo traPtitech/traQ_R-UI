@@ -51,7 +51,7 @@ export default {
       }
     },
     fullChannelName() {
-      return `#${this.$store.getters.getChannelPathById(this.model.channelId)}`
+      return this.$store.getters.getChannelPathById(this.model.channelId)
     },
     isWatched() {
       return this.$store.state.currentChannel.channelId === this.model.channelId
