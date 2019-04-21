@@ -1,7 +1,13 @@
 <template lang="pug">
 .setting-input-container
   p {{ label }}
-  input.setting-input.input-reset(:type="type" :value="value" @input="$emit('input', $event.target.value)")
+  .setting-input-box(@click="focusInput")
+    span.setting-input-prefix(v-if="prefix") {{ prefix }}
+    input.setting-input.input-reset(
+      :type="text"
+      :value="value"
+      ref="input"
+      @input="$emit('input', $event.target.value)")
 </template>
 
 <script>
@@ -14,6 +20,10 @@ export default {
   },
   props: {
     label: {
+      type: String,
+      default: ''
+    },
+    prefix: {
       type: String,
       default: ''
     },
@@ -30,6 +40,9 @@ export default {
     reset() {
       this.settingText = ''
       this.$emit('inputsetting', '')
+    },
+    focusInput() {
+      this.$refs.input.focus()
     }
   }
 }
@@ -40,18 +53,28 @@ export default {
   position: relative
   width: 100%
 
-input.setting-input
+.setting-input-box
+  display: inline-block
   max-width: 100%
+  border-radius: 4px
+  margin:
+    top: 1rem
+    bottom: 1.5rem
+  background-color: $setting-background-color
+
+.setting-input-prefix
+  padding:
+    left: 10px
+  font:
+    weight: bold
+
+input.setting-input
   padding:
     top: 4px
     right: 20px
     left: 10px
     bottom: 4px
-  margin:
-    top: 1rem
-    bottom: 1.5rem
-  border-radius: 4px
-  background-color: $setting-background-color
+  background-color: transparent
   color: $text-color
   box-sizing: border-box
   &::placeholder

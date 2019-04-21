@@ -57,7 +57,7 @@ export default {
   max-width: $modal-max-width
   +mq
     width: $modal-width--wide
-  height: $modal-height
+  max-height: $modal-height
   position: relative
   background-color: $background-color
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)

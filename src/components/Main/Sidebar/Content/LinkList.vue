@@ -90,14 +90,14 @@ export default {
 
 .links-list
   padding-top: 15px
-  li
-    padding: 5px 10px 5px 20px
-    &:hover
-      background-color: rgba(0,0,0,0.1)
+
   a
     display: flex
     align-items: center
     color: $text-light-color
+    padding: 5px 10px 5px 20px
+    &:hover
+      background-color: rgba(0,0,0,0.1)
 
 .link-icon
   font-size: 1.5em

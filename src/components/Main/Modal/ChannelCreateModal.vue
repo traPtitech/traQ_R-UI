@@ -2,9 +2,9 @@
 base-common-modal(title="CREATE" tiny)
   icon-plus(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .channel-create-modal
-    h2.channel-create-description 子チャンネルを作成する
+    h2.channel-create-description サブチャンネルを作成する
     .channel-create-input-wrap
-      setting-input(type="textarea" v-model="channelName")
+      setting-input(:prefix="`#${fullChannelName}/`" type="textarea" v-model="channelName")
     p.channel-create-status(v-if="state === 'failed'")
       | 失敗しました
     p.channel-create-status(v-if="state === 'successed'")
@@ -39,9 +39,20 @@ export default {
     }
   },
   computed: {
-    ...mapState('modal', ['data'])
+    ...mapState('modal', ['data']),
+    fullChannelName() {
+      return this.$store.getters.getChannelPathById(
+        this.currentChannel.channelId
+      )
+    },
+    currentChannel() {
+      return this.$store.state.currentChannel
+    }
   },
   methods: {
+    channelNameById(channelId) {
+      return this.$store.state.channelMap[channelId].name
+    },
     createChannel() {
       this.state = 'processing'
       client
