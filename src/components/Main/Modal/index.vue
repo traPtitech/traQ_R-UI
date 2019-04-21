@@ -10,6 +10,7 @@ import GroupModal from './GroupModal'
 import TagModal from './TagModal'
 import PinnedModal from './PinnedModal'
 import FileModal from './FileModal'
+import TourModal from './TourModal'
 import ChannelCreateModal from './ChannelCreateModal'
 import ChannelNotificationModal from './ChannelNotificationModal'
 
@@ -21,6 +22,7 @@ export default {
     TagModal,
     PinnedModal,
     FileModal,
+    TourModal,
     ChannelCreateModal,
     ChannelNotificationModal
   },

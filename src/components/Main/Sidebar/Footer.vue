@@ -3,6 +3,8 @@
   span.version-text
     | traQ R {{ version }}
   ul.footer-button-wrap
+    li.menu-button(@click.prevent="$store.dispatch('openTourModal')")
+      IconHelp
     li.menu-button
       a(href="https://wiki.trapti.tech/general/traQ-R" target="_blank")
         IconHelp
