@@ -54,7 +54,8 @@ export default {
   width: 100%
 
 .setting-input-box
-  display: inline-block
+  display: inline-flex
+  align-items: center
   max-width: 100%
   border-radius: 4px
   margin:
@@ -69,6 +70,7 @@ export default {
     weight: bold
 
 input.setting-input
+  min-width: 0
   padding:
     top: 4px
     right: 20px
