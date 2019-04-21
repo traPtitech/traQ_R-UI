@@ -26,8 +26,23 @@
         p
           | メッセージの右上から、リアクションをつけてみましょう！
   .tour-modal-footer
+    a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R")
+      .tour-link-icon
+        icon-book(color="var(--primary-color)")
+    .tour-link.tour-go-back(v-else @click="goToPrevPage")
+      .tour-link-icon
+        icon-back(color="var(--primary-color)" size="14")
+      | 戻る
     .tour-page-indicator
       .tour-page-indicator-dot(v-for="(_, i) in anims" :class="{'tour-indicator-active': i === page}" @click="goToPage(i)")
+    .tour-link.tour-go-next(v-if="page === anims.length - 1" @click="closeModal")
+      | OK!
+      .tour-link-icon
+        icon-check(color="var(--primary-color)" size="16")
+    .tour-link.tour-go-next(v-else @click="goToNextPage")
+      | 次へ
+      .tour-link-icon.tour-link-icon-go-next
+        icon-back(color="var(--primary-color)" size="14")
 </template>
 
 <script>
@@ -35,16 +50,20 @@ import { mapState } from 'vuex'
 import lottie from 'lottie-web'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
-import IconProfileFill from '@/components/Icon/IconProfileFill'
+import IconAngleRight from '@/components/Icon/IconAngleRight'
 import IconBack from '@/components/Icon/IconBack'
+import IconBook from '@/components/Icon/IconBook'
+import IconCheck from '@/components/Icon/IconCheck'
 
 export default {
   name: 'TourModal',
   components: {
     BaseCommonModal,
     MemberElement,
-    IconProfileFill,
-    IconBack
+    IconAngleRight,
+    IconBack,
+    IconBook,
+    IconCheck
   },
   data() {
     return {
@@ -53,8 +72,7 @@ export default {
       numLoadDone: 0,
       numAnims: 1,
       page: 0,
-      scrollertWidth: 0,
-      pageWidth: 0
+      mobileThreshould: 680
     }
   },
   computed: {
@@ -67,12 +85,18 @@ export default {
   },
   methods: {
     resizeAnimationContainer() {
-      const aspectRatio = 16 / 9
+      const isMobile = window.innerWidth < this.mobileThreshould
+      const aspectRatio = isMobile ? 1 : 16 / 9
       document.querySelectorAll('.tour-anim-container').forEach(e => {
         e.style.width = ''
         // preserve aspect ratio
         const rect = e.getBoundingClientRect()
-        e.style.width = `${rect.height * aspectRatio}px`
+        const normalizedHeight = rect.height * aspectRatio
+        if (normalizedHeight > rect.width) {
+          e.style.width = `${normalizedHeight}px`
+        } else {
+          e.style.height = `${rect.width / aspectRatio}px`
+        }
       })
     },
     closeModal() {
@@ -91,6 +115,12 @@ export default {
         return
       }
       this.$refs.scroller.scrollLeft = this.scrollerWidth * page
+    },
+    goToNextPage() {
+      this.goToPage((this.page + 1) % this.anims.length)
+    },
+    goToPrevPage() {
+      this.goToPage((this.page - 1) % this.anims.length)
     }
   },
   watch: {
@@ -110,27 +140,30 @@ export default {
   },
   async mounted() {
     this.resizeAnimationContainer()
+    const isMobile = window.innerWidth < this.mobileThreshould
+    const pathStr = i =>
+      `/static/onboarding${isMobile ? '_mobile_' : ''}${i}.json`
     this.anims.push(
       lottie.loadAnimation({
         container: this.$refs.container1,
         renderer: 'svg',
         loop: true,
         autoplay: false,
-        path: '/static/onboarding1.json'
+        path: pathStr(1)
       }),
       lottie.loadAnimation({
         container: this.$refs.container2,
         renderer: 'svg',
         loop: true,
         autoplay: false,
-        path: '/static/onboarding2.json'
+        path: pathStr(2)
       }),
       lottie.loadAnimation({
         container: this.$refs.container3,
         renderer: 'svg',
         loop: true,
         autoplay: false,
-        path: '/static/onboarding3.json'
+        path: pathStr(3)
       })
     )
     this.anims.forEach(a => {
@@ -162,8 +195,9 @@ export default {
   border-radius: $modal-border-radius
   max-width: 60rem
   width: 90vw
-  height: min-content
   padding: 1rem
+  +mq(sp)
+    width: 95vw
 
 .tour-modal-horozontal-scroller
   display: flex
@@ -171,6 +205,7 @@ export default {
   scroll-snap-type: x mandatory
   scroll-behavior: smooth
   scrollbar-width: none
+  -webkit-overflow-scrolling: touch
   &::-webkit-scrollbar
     display: none
 
@@ -182,31 +217,60 @@ export default {
   align-items: center
   flex-direction: column
   padding: 1rem
+  +mq(sp)
+    padding:
+      top: 0.5rem
+      bottom: 0.25rem
+      left: 1rem
+      right: 1rem
   overflow: scroll
   scroll-snap-align: start
 
 .tour-anim-container
   width: 100%
-  max-height: 30vw
-  flex-basis: 30vw
-  flex-shrink: 0
-  flex-grow: 0
+  max-height: 50vh
 
 .tour-description
   display: flex
   flex-direction: column
   align-items: center
   margin-top: 1rem
+  flex:
+    shrink: 0
+    grow: 0
   line-height: 1.6rem
-  text-align: center
+  +mq(sp)
+    margin-top: 0.5rem
+    font-size: 0.85rem
   h2
     color: $primary-color-on-bg
     margin: 0.5rem 0
+    font-size: 1.1rem
+    font-weight: bold
+    +mq(sp)
+      font-size: 1.05rem
 
 .tour-modal-footer
   display: flex
   width: 100%
-  justify-content: center
+  padding: 0 0.5rem
+  justify-content: space-between
+  align-items: center
+
+.tour-link
+  color: $primary-color-on-bg
+  &:link, &:hover, &:visited
+    color: $primary-color-on-bg
+  cursor: pointer
+  display: flex
+  align-items: center
+
+.tour-link-icon
+  margin: 0.5rem
+  transform: translateY(1px)
+
+.tour-link-icon-go-next
+  transform: translateY(1px) rotate(180deg)
 
 .tour-page-indicator
   display: flex
