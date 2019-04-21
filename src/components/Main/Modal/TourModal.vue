@@ -1,5 +1,5 @@
 <template lang="pug">
-base-common-modal.tour-modal(title="" :style="modalStyle")
+.tour-modal(:style="modalStyle")
   .tour-modal-horozontal-scroller(ref="scroller")
     .tour-container
       .tour-anim-container(ref="container1")
@@ -143,6 +143,12 @@ export default {
 <style lang="sass">
 .tour-modal
   transition: all 0.3s ease
+  background: $background-color
+  border-radius: $modal-border-radius
+  max-width: 60rem
+  width: 90vw
+  height: min-content
+  padding: 1rem
 .tour-modal-horozontal-scroller
   display: flex
   overflow: scroll
