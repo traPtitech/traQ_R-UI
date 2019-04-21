@@ -25,6 +25,9 @@
           | traQではリアクションでのコミュニケーションが活発です。
         p
           | メッセージの右上から、リアクションをつけてみましょう！
+  .tour-modal-footer
+    .tour-page-indicator
+      .tour-page-indicator-dot(v-for="(_, i) in anims" :class="{'tour-indicator-active': i === page}" @click="goToPage(i)")
 </template>
 
 <script>
@@ -49,7 +52,9 @@ export default {
       dataLoaded: false,
       numLoadDone: 0,
       numAnims: 1,
-      page: 0
+      page: 0,
+      scrollertWidth: 0,
+      pageWidth: 0
     }
   },
   computed: {
@@ -72,6 +77,20 @@ export default {
     },
     closeModal() {
       this.$store.dispatch('modal/close')
+    },
+    updatePage() {
+      const parent = this.$refs.scroller.getBoundingClientRect()
+      const page = this.$refs.container1.getBoundingClientRect()
+      this.scrollerWidth = parent.width
+
+      const pageOffset = parent.left - page.left + 16
+      this.page = Math.round(pageOffset / this.scrollerWidth)
+    },
+    goToPage(page) {
+      if (page < 0 || page >= this.anims.length) {
+        return
+      }
+      this.$refs.scroller.scrollLeft = this.scrollerWidth * page
     }
   },
   watch: {
@@ -111,7 +130,7 @@ export default {
         renderer: 'svg',
         loop: true,
         autoplay: false,
-        path: '/static/onboarding1.json'
+        path: '/static/onboarding3.json'
       })
     )
     this.anims.forEach(a => {
@@ -125,17 +144,13 @@ export default {
         }
       })
     })
-    this.$refs.scroller.addEventListener('scroll', event => {
-      const parent = event.target.getBoundingClientRect()
-      const page = this.$refs.container1.getBoundingClientRect()
-      const pageOffset = parent.left - page.left + 16
-      this.page = Math.round(pageOffset / parent.width)
-    })
-    window.addEventListerner('resize', this.resizeAnimationContainer)
+    this.$refs.scroller.addEventListener('scroll', this.updatePage)
+    window.addEventListener('resize', this.resizeAnimationContainer)
+    this.updatePage()
   },
   destroyed() {
     this.anims.forEach(a => a.destroy())
-    window.removeEventListerner('resize', this.resizeAnimationContainer)
+    window.removeEventListener('resize', this.resizeAnimationContainer)
   }
 }
 </script>
@@ -149,10 +164,16 @@ export default {
   width: 90vw
   height: min-content
   padding: 1rem
+
 .tour-modal-horozontal-scroller
   display: flex
   overflow: scroll
   scroll-snap-type: x mandatory
+  scroll-behavior: smooth
+  scrollbar-width: none
+  &::-webkit-scrollbar
+    display: none
+
 .tour-container
   width: 100%
   height: 100%
@@ -163,11 +184,14 @@ export default {
   padding: 1rem
   overflow: scroll
   scroll-snap-align: start
+
 .tour-anim-container
+  width: 100%
   max-height: 30vw
   flex-basis: 30vw
-  flex-shrink: 1
+  flex-shrink: 0
   flex-grow: 0
+
 .tour-description
   display: flex
   flex-direction: column
@@ -176,6 +200,25 @@ export default {
   line-height: 1.6rem
   text-align: center
   h2
-    color: $primary-color
+    color: $primary-color-on-bg
     margin: 0.5rem 0
+
+.tour-modal-footer
+  display: flex
+  width: 100%
+  justify-content: center
+
+.tour-page-indicator
+  display: flex
+  justify-content: space-between
+.tour-page-indicator-dot
+  width: 0.5rem
+  height: 0.5rem
+  border-radius: 50%
+  background-color: $primary-color-on-bg
+  opacity: 0.1
+  margin: 1rem
+  cursor: pointer
+.tour-indicator-active
+  opacity: 1
 </style>
