@@ -268,12 +268,10 @@ export default {
     font-size: 0.85rem
   h2
     color: $primary-color-on-bg
-    margin: 0.5rem 0
+    margin: 0.25rem 0
     font-size: 1.1rem
     font-weight: bold
-    margin-top: 0.5rem
     +mq(sp)
-      margin-top: 0.25rem
       font-size: 1.05rem
 
 .tour-modal-footer
