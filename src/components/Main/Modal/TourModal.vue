@@ -8,7 +8,9 @@
         p
           | このツアーではtraQの主な機能を説明します！
         p
-          | 左下のアイコンから詳しい使い方を見ることも出来ます。
+          | 左下の
+          icon-book(color="var(--text-color)" size="16")
+          | から詳しい使い方を見ることも出来ます。
     .tour-container
       .tour-anim-container(ref="container1")
       .tour-description
@@ -36,7 +38,8 @@
   .tour-modal-footer
     a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R" target="_blank")
       .tour-link-icon
-        icon-book(color="var(--primary-color)" size="18")
+        icon-book(color="var(--primary-color)" size="16")
+      | 詳細
     .tour-link.tour-go-back(v-else @click="goToPrevPage")
       .tour-link-icon
         icon-back(color="var(--primary-color)" size="14")
@@ -279,6 +282,7 @@ export default {
   width: 100%
   justify-content: space-between
   align-items: center
+  user-select: none
 
 .tour-link
   color: $primary-color-on-bg
