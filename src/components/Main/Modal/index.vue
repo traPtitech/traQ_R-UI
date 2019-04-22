@@ -55,12 +55,14 @@ export default {
   border-radius: $modal-border-radius
   width: $modal-width
   max-width: $modal-max-width
-  +mq
+  +mq(pc)
     width: $modal-width--wide
   max-height: $modal-height
   position: relative
   background-color: $background-color
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)
+  +mq(sp)
+    max-height: 90vh
 .modal-overlay
   z-index: $modal-index
   position: fixed

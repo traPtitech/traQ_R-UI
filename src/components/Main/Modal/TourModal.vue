@@ -26,7 +26,7 @@
         p
           | メッセージの右上から、リアクションをつけてみましょう！
   .tour-modal-footer
-    a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R")
+    a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R" target="_blank")
       .tour-link-icon
         icon-book(color="var(--primary-color)")
     .tour-link.tour-go-back(v-else @click="goToPrevPage")
@@ -199,6 +199,10 @@ export default {
   +mq(sp)
     width: 95vw
 
++mq(sp)
+  width: 95vw
+  max-height: 90vh
+
 .tour-modal-horozontal-scroller
   display: flex
   overflow: scroll
@@ -253,7 +257,6 @@ export default {
 .tour-modal-footer
   display: flex
   width: 100%
-  padding: 0 0.5rem
   justify-content: space-between
   align-items: center
 
@@ -264,10 +267,15 @@ export default {
   cursor: pointer
   display: flex
   align-items: center
+  +mq(sp)
+    // mod font size and icon size
+    font-size: 0.85rem
 
 .tour-link-icon
   margin: 0.5rem
   transform: translateY(1px)
+  +mq(sp)
+    transform: scale(0.85)
 
 .tour-link-icon-go-next
   transform: translateY(1px) rotate(180deg)
@@ -275,6 +283,9 @@ export default {
 .tour-page-indicator
   display: flex
   justify-content: space-between
+  +mq(sp)
+    // mod size
+    transform: scale(0.85)
 .tour-page-indicator-dot
   width: 0.5rem
   height: 0.5rem
