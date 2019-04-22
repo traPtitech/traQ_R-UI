@@ -22,6 +22,7 @@
   "dependencies": {
     "lottie-web": "^5.5.1",
     "register-service-worker": "^1.5.2",
+    "scroll-behavior-polyfill": "^2.0.7",
     "vue": "^2.6.9",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

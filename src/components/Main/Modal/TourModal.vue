@@ -1,6 +1,14 @@
 <template lang="pug">
 .tour-modal(:style="modalStyle")
-  .tour-modal-horozontal-scroller(ref="scroller")
+  .tour-modal-horizontal-scroller(ref="scroller" scroll-behavior="smooth" @scroll.capture)
+    .tour-container
+      .tour-anim-container(ref="container0")
+      .tour-description
+        h2 ようこそtraQへ！
+        p
+          | このツアーではtraQの主な機能を説明します！
+        p
+          | 左下のアイコンから詳しい使い方を見ることも出来ます。
     .tour-container
       .tour-anim-container(ref="container1")
       .tour-description
@@ -26,9 +34,9 @@
         p
           | メッセージの右上から、リアクションをつけてみましょう！
   .tour-modal-footer
-    a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R")
+    a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R" target="_blank")
       .tour-link-icon
-        icon-book(color="var(--primary-color)")
+        icon-book(color="var(--primary-color)" size="18")
     .tour-link.tour-go-back(v-else @click="goToPrevPage")
       .tour-link-icon
         icon-back(color="var(--primary-color)" size="14")
@@ -70,7 +78,7 @@ export default {
       anims: [],
       dataLoaded: false,
       numLoadDone: 0,
-      numAnims: 1,
+      numAnims: 4,
       page: 0,
       mobileThreshould: 680
     }
@@ -104,7 +112,7 @@ export default {
     },
     updatePage() {
       const parent = this.$refs.scroller.getBoundingClientRect()
-      const page = this.$refs.container1.getBoundingClientRect()
+      const page = this.$refs.container0.getBoundingClientRect()
       this.scrollerWidth = parent.width
 
       const pageOffset = parent.left - page.left + 16
@@ -139,11 +147,21 @@ export default {
     }
   },
   async mounted() {
+    if (!('scrollBehavior' in document.documentElement.style)) {
+      await import('scroll-behavior-polyfill')
+    }
     this.resizeAnimationContainer()
     const isMobile = window.innerWidth < this.mobileThreshould
     const pathStr = i =>
       `/static/onboarding${isMobile ? '_mobile_' : ''}${i}.json`
     this.anims.push(
+      lottie.loadAnimation({
+        container: this.$refs.container0,
+        renderer: 'svg',
+        loop: true,
+        autoplay: false,
+        path: pathStr(0)
+      }),
       lottie.loadAnimation({
         container: this.$refs.container1,
         renderer: 'svg',
@@ -199,7 +217,11 @@ export default {
   +mq(sp)
     width: 95vw
 
-.tour-modal-horozontal-scroller
++mq(sp)
+  width: 95vw
+  max-height: 90vh
+
+.tour-modal-horizontal-scroller
   display: flex
   overflow: scroll
   scroll-snap-type: x mandatory
@@ -216,13 +238,9 @@ export default {
   display: flex
   align-items: center
   flex-direction: column
-  padding: 1rem
+  padding-top: 0.5rem
   +mq(sp)
-    padding:
-      top: 0.5rem
-      bottom: 0.25rem
-      left: 1rem
-      right: 1rem
+    padding-top: 0.5rem
   overflow: scroll
   scroll-snap-align: start
 
@@ -234,17 +252,23 @@ export default {
   display: flex
   flex-direction: column
   align-items: center
+  padding: 1rem
   margin-top: 1rem
   flex:
     shrink: 0
     grow: 0
   line-height: 1.6rem
   +mq(sp)
+    padding:
+      top: 0.25rem
+      bottom: 0.25rem
+      left: 1rem
+      right: 1rem
     margin-top: 0.5rem
     font-size: 0.85rem
   h2
     color: $primary-color-on-bg
-    margin: 0.5rem 0
+    margin: 0.25rem 0
     font-size: 1.1rem
     font-weight: bold
     +mq(sp)
@@ -253,7 +277,6 @@ export default {
 .tour-modal-footer
   display: flex
   width: 100%
-  padding: 0 0.5rem
   justify-content: space-between
   align-items: center
 
@@ -264,10 +287,15 @@ export default {
   cursor: pointer
   display: flex
   align-items: center
+  +mq(sp)
+    // mod font size and icon size
+    font-size: 0.85rem
 
 .tour-link-icon
   margin: 0.5rem
   transform: translateY(1px)
+  +mq(sp)
+    transform: scale(0.85)
 
 .tour-link-icon-go-next
   transform: translateY(1px) rotate(180deg)
@@ -275,13 +303,16 @@ export default {
 .tour-page-indicator
   display: flex
   justify-content: space-between
+  +mq(sp)
+    // mod size
+    transform: scale(0.85)
 .tour-page-indicator-dot
   width: 0.5rem
   height: 0.5rem
   border-radius: 50%
   background-color: $primary-color-on-bg
   opacity: 0.1
-  margin: 1rem
+  margin: 0.75rem
   cursor: pointer
 .tour-indicator-active
   opacity: 1

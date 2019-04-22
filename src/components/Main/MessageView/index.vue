@@ -13,6 +13,11 @@ export default {
   components: {
     MessageContainer,
     MessageInput
+  },
+  mounted() {
+    if (Date.parse(this.$store.state.me.lastOnline) === 0) {
+      this.$store.dispatch('openTourModal')
+    }
   }
 }
 </script>
