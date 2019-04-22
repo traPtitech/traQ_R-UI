@@ -1,6 +1,6 @@
 <template lang="pug">
 .tour-modal(:style="modalStyle")
-  .tour-modal-horozontal-scroller(ref="scroller")
+  .tour-modal-horozontal-scroller(ref="scroller" scroll-behavior="smooth")
     .tour-container
       .tour-anim-container(ref="container1")
       .tour-description
@@ -139,6 +139,9 @@ export default {
     }
   },
   async mounted() {
+    if (!('scrollBehavior' in document.documentElement.style)) {
+      await import('scroll-behavior-polyfill')
+    }
     this.resizeAnimationContainer()
     const isMobile = window.innerWidth < this.mobileThreshould
     const pathStr = i =>
