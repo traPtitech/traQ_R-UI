@@ -2,6 +2,14 @@
 .tour-modal(:style="modalStyle")
   .tour-modal-horizontal-scroller(ref="scroller" scroll-behavior="smooth" @scroll.capture)
     .tour-container
+      .tour-anim-container(ref="container0")
+      .tour-description
+        h2 ようこそtraQへ！
+        p
+          | このツアーではtraQの主な機能を説明します！
+        p
+          | 左下のアイコンから詳しい使い方を見ることも出来ます。
+    .tour-container
       .tour-anim-container(ref="container1")
       .tour-description
         h2 チャンネル
@@ -70,7 +78,7 @@ export default {
       anims: [],
       dataLoaded: false,
       numLoadDone: 0,
-      numAnims: 1,
+      numAnims: 4,
       page: 0,
       mobileThreshould: 680
     }
@@ -104,7 +112,7 @@ export default {
     },
     updatePage() {
       const parent = this.$refs.scroller.getBoundingClientRect()
-      const page = this.$refs.container1.getBoundingClientRect()
+      const page = this.$refs.container0.getBoundingClientRect()
       this.scrollerWidth = parent.width
 
       const pageOffset = parent.left - page.left + 16
@@ -147,6 +155,13 @@ export default {
     const pathStr = i =>
       `/static/onboarding${isMobile ? '_mobile_' : ''}${i}.json`
     this.anims.push(
+      lottie.loadAnimation({
+        container: this.$refs.container0,
+        renderer: 'svg',
+        loop: true,
+        autoplay: false,
+        path: pathStr(0)
+      }),
       lottie.loadAnimation({
         container: this.$refs.container1,
         renderer: 'svg',
