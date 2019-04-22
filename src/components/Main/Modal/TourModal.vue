@@ -238,13 +238,9 @@ export default {
   display: flex
   align-items: center
   flex-direction: column
-  padding: 1rem
+  padding-top: 0.5rem
   +mq(sp)
-    padding:
-      top: 0.5rem
-      bottom: 0.25rem
-      left: 1rem
-      right: 1rem
+    padding-top: 0.5rem
   overflow: scroll
   scroll-snap-align: start
 
@@ -256,12 +252,18 @@ export default {
   display: flex
   flex-direction: column
   align-items: center
+  padding: 1rem
   margin-top: 1rem
   flex:
     shrink: 0
     grow: 0
   line-height: 1.6rem
   +mq(sp)
+    padding:
+      top: 0.25rem
+      bottom: 0.25rem
+      left: 1rem
+      right: 1rem
     margin-top: 0.5rem
     font-size: 0.85rem
   h2
@@ -269,7 +271,9 @@ export default {
     margin: 0.5rem 0
     font-size: 1.1rem
     font-weight: bold
+    margin-top: 0.5rem
     +mq(sp)
+      margin-top: 0.25rem
       font-size: 1.05rem
 
 .tour-modal-footer
@@ -310,7 +314,7 @@ export default {
   border-radius: 50%
   background-color: $primary-color-on-bg
   opacity: 0.1
-  margin: 1rem
+  margin: 0.75rem
   cursor: pointer
 .tour-indicator-active
   opacity: 1
