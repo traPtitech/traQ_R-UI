@@ -35,7 +35,7 @@
         a.login-trap-logo(href="https://trap.jp" target="_blank")
           img(src="@/assets/img/icon/traP_logo.svg")
   template(v-else)
-    .login-page-inner-wrap-sp
+    .login-page-inner-wrap-sp.is-scroll
       .top-background
       .icon-logo
         icon-logo(size="100%")
@@ -133,6 +133,8 @@ export default {
   height: 100%
 
 .login-page-inner-wrap-sp
+  height: 100%
+  overflow-y: scroll
   position: relative
   padding:
     top: 50px
@@ -237,7 +239,7 @@ export default {
   .login-trap-logo
     display: block
     margin:
-      top: 10%
+      top: 30px
       left: auto
       right: auto
     width: 150px
