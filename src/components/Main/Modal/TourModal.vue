@@ -1,6 +1,12 @@
 <template lang="pug">
 .tour-modal(:style="modalStyle")
-  .tour-modal-horizontal-scroller(ref="scroller" scroll-behavior="smooth" @scroll.capture)
+  .tour-modal-horizontal-scroller(
+    ref="scroller"
+    scroll-behavior="smooth"
+    @touchstart.stop.prevent
+    @touchmove.stop.prevent
+    @touchend.stop.prevent
+    )
     .tour-container
       .tour-anim-container(ref="container0")
       .tour-description
@@ -95,6 +101,9 @@ export default {
     }
   },
   methods: {
+    onTouchMove(event) {
+      console.log(event)
+    },
     resizeAnimationContainer() {
       const isMobile = window.innerWidth < this.mobileThreshould
       const aspectRatio = isMobile ? 1 : 16 / 9
