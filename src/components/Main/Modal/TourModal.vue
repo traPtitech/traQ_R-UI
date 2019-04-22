@@ -1,6 +1,6 @@
 <template lang="pug">
 .tour-modal(:style="modalStyle")
-  .tour-modal-horozontal-scroller(ref="scroller" scroll-behavior="smooth")
+  .tour-modal-horizontal-scroller(ref="scroller" scroll-behavior="smooth" @scroll.capture)
     .tour-container
       .tour-anim-container(ref="container1")
       .tour-description
@@ -206,7 +206,7 @@ export default {
   width: 95vw
   max-height: 90vh
 
-.tour-modal-horozontal-scroller
+.tour-modal-horizontal-scroller
   display: flex
   overflow: scroll
   scroll-snap-type: x mandatory
