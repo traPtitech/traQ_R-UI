@@ -69,9 +69,10 @@ export default {
 $profile-area-height: 20vh
 $profile-area-width: 400px
 
-.user-modal
+.modal.user-modal
   grid-template-columns: 100%
   display: flex
+  height: $modal-height
   +mq(pc)
     flex-direction: row
   +mq(sp)
