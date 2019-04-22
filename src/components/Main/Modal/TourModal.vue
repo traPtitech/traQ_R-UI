@@ -36,7 +36,7 @@
   .tour-modal-footer
     a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R" target="_blank")
       .tour-link-icon
-        icon-book(color="var(--primary-color)")
+        icon-book(color="var(--primary-color)" size="18")
     .tour-link.tour-go-back(v-else @click="goToPrevPage")
       .tour-link-icon
         icon-back(color="var(--primary-color)" size="14")
