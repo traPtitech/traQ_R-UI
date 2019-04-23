@@ -15,7 +15,7 @@ export default {
     MessageInput
   },
   mounted() {
-    if (Date.parse(this.$store.state.me.lastOnline) === 0) {
+    if (Date(this.$store.state.me.lastOnline).valueOf === 0) {
       this.$store.dispatch('openTourModal')
     }
   }
