@@ -4,7 +4,7 @@
   .setting-input-box(@click="focusInput")
     span.setting-input-prefix(v-if="prefix") {{ prefix }}
     input.setting-input.input-reset(
-      :type="text"
+      :type="type"
       :value="value"
       ref="input"
       @input="$emit('input', $event.target.value)")
