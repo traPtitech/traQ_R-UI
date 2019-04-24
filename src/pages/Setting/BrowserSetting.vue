@@ -28,9 +28,9 @@
       | メッセージ送信キー
     .message-send-key-selector
       input(type="radio" value="shift" v-model="messageSendKey" checked)
-      | Shift+Enter / Alt+Enter / Ctrl+Enter / Option+Enter
+      | {{ messageSendSpecialKeys }}
     .message-send-key-selector
-      input(type="radio" value="none" v-model="messageSendKey" checked)
+      input(type="radio" value="none" v-model="messageSendKey")
       | Enter
     SettingButton(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
       | 更新
@@ -38,6 +38,7 @@
 
 <script>
 import client from '@/bin/client'
+import { getOS } from '@/bin/utils.js'
 import SettingTitle from '@/components/Setting/SettingTitle'
 import SettingItem from '@/components/Setting/SettingItem'
 import SettingItemTitle from '@/components/Setting/SettingItemTitle'
@@ -77,6 +78,12 @@ export default {
     },
     isChannelNameValid() {
       return this.$store.getters.getChannelByName(this.openChannelName)
+    },
+    messageSendSpecialKeys() {
+      if (getOS() === 'mac') {
+        return 'Shift+Enter / ⌥(Option)+Enter / Ctrl+Enter / ⌘(Command)+Enter'
+      }
+      return 'Shift+Enter / Alt+Enter / Ctrl+Enter'
     }
   },
   methods: {

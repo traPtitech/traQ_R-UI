@@ -231,15 +231,20 @@ export default {
       }
     },
     isSendKey(keyEvent) {
-      const sendKey = this.$store.state.messageSendKey
       if (keyEvent.key !== 'Enter') {
         return false
       }
+
+      const sendKey = this.$store.state.messageSendKey
+      const isSpecialKey =
+        keyEvent.shiftKey ||
+        keyEvent.altKey ||
+        keyEvent.ctrlKey ||
+        keyEvent.metaKey
+
       return (
-        (sendKey === 'shift' &&
-          (keyEvent.ctrlKey || keyEvent.metaKey || keyEvent.shiftKey)) ||
-        (sendKey === 'none' &&
-          !(keyEvent.ctrlKey || keyEvent.metaKey || keyEvent.shiftKey))
+        (sendKey === 'shift' && isSpecialKey) ||
+        (sendKey === 'none' && !isSpecialKey)
       )
     },
     keydown(event) {
