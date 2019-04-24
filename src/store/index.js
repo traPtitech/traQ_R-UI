@@ -117,7 +117,8 @@ const store = new Vuex.Store({
     isOnline: true,
     filterText: '',
     isUnreadFiltered: false,
-    webhooks: []
+    webhooks: [],
+    messageSendKey: ''
   },
   mutations: {
     openSidebar(state) {
@@ -493,6 +494,9 @@ const store = new Vuex.Store({
     },
     setWebhooks(state, webhooks) {
       state.webhooks = webhooks
+    },
+    setMessageSendKey(state, key) {
+      state.messageSendKey = key
     }
   },
   getters: {
@@ -930,7 +934,8 @@ const store = new Vuex.Store({
         dispatch('loadOpenChannels'),
         dispatch('loadFilterSubscribedActivity'),
         dispatch('loadOpenUserLists'),
-        dispatch('loadChannelView')
+        dispatch('loadChannelView'),
+        dispatch('loadMessageSendKey')
       ])
     },
     loadOpenMode({ commit, dispatch }) {
@@ -997,6 +1002,16 @@ const store = new Vuex.Store({
         })
         .catch(() => {
           commit('setOpenUserLists', {})
+        })
+    },
+    loadMessageSendKey({ commit, dispatch }) {
+      return db
+        .read('browserSettings', 'loadMessageSendKey')
+        .then(data => {
+          commit('setMessageSendKey', data)
+        })
+        .catch(async () => {
+          await dispatch('updateMessageSendKey', 'shift')
         })
     },
     updateOpenMode({ commit }, mode) {
@@ -1082,6 +1097,10 @@ const store = new Vuex.Store({
         .catch(async () => {
           await dispatch('updateChannelView', 'tree')
         })
+    },
+    updateMessageSendKey({ commit }, key) {
+      commit('setMessageSendKey', key)
+      return db.write('browserSetting', { type: 'messageSendKey', data: key })
     }
   }
 })

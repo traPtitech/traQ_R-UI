@@ -230,16 +230,25 @@ export default {
         keyword: ''
       }
     },
+    isSendKey(keyEvent) {
+      const sendKey = this.$store.state.messageSendKey
+      if (keyEvent.key !== 'Enter') {
+        return false
+      }
+      return (
+        (sendKey === 'shift' &&
+          (keyEvent.ctrlKey || keyEvent.metaKey || keyEvent.shiftKey)) ||
+        (sendKey === 'none' &&
+          !(keyEvent.ctrlKey || keyEvent.metaKey || keyEvent.shiftKey))
+      )
+    },
     keydown(event) {
       if (this.postStatus === 'processing') {
         event.returnValue = false
         return
       }
       this.postStatus = 'default'
-      if (
-        event.key === 'Enter' &&
-        (event.ctrlKey || event.metaKey || event.shiftKey)
-      ) {
+      if (this.isSendKey(event)) {
         this.submit()
         event.returnValue = false
       }

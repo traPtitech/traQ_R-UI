@@ -24,6 +24,14 @@
       SettingInput(v-model="openChannelName")
     p(v-if="!isChannelNameValid")
       | 存在しないチャンネル名です
+    SettingItemTitle
+      | メッセージ送信キー
+    .message-send-key-selector
+      input(type="radio" value="shift" v-model="messageSendKey" checked)
+      | Shift+Enter / Alt+Enter / Ctrl+Enter / Option+Enter
+    .message-send-key-selector
+      input(type="radio" value="none" v-model="messageSendKey" checked)
+      | Enter
     SettingButton(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
       | 更新
 </template>
@@ -49,7 +57,8 @@ export default {
       state: 'default',
       done: '',
       openMode: 'particular',
-      openChannelName: 'random'
+      openChannelName: 'random',
+      messageSendKey: 'none'
     }
   },
   computed: {
@@ -62,7 +71,8 @@ export default {
         this.openChannelName !==
           this.$store.getters.getChannelPathById(
             this.$store.state.openChannelId
-          )
+          ) ||
+        this.messageSendKey !== this.$store.state.messageSendKey
       )
     },
     isChannelNameValid() {
@@ -86,6 +96,7 @@ export default {
       this.$store.dispatch('updateOpenMode', this.openMode)
       const channel = this.$store.getters.getChannelByName(this.openChannelName)
       this.$store.dispatch('updateOpenChannelId', channel.channelId)
+      this.$store.dispatch('updateMessageSendKey', this.messageSendKey)
     },
     logout() {
       client.logout().then(() => {
@@ -99,12 +110,13 @@ export default {
     this.openChannelName = this.$store.getters.getChannelPathById(
       this.$store.state.openChannelId
     )
+    this.messageSendKey = this.$store.state.messageSendKey
   }
 }
 </script>
 
 <style lang="sass">
-.open-mode-selector
+.open-mode-selector, .message-send-key-selector
   margin: 1rem 0
   input
     margin-right: 0.5rem
