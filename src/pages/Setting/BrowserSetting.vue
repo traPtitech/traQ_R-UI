@@ -29,7 +29,9 @@
     .message-send-key-selector
       input(type="radio" value="modifier" v-model="messageSendKey" checked)
       | 修飾キー(
-      span(v-html="messageSendModifierKeys")
+      span(v-for="(key, i) in messageSendModifierKeys")
+        span.key {{key}}
+        span(v-if="i + 1 !== messageSendModifierKeys.length") /
       | ) +
       span.key Enter
       | で送信
@@ -85,11 +87,11 @@ export default {
       return this.$store.getters.getChannelByName(this.openChannelName)
     },
     messageSendModifierKeys() {
-      let keys = ['Shift', 'Alt', 'Ctrl']
       if (isMac()) {
-        keys = ['Shift', '⌥(Option)', 'Ctrl', '⌘(Command)']
+        return ['Shift', '⌥(Option)', 'Ctrl', '⌘(Command)']
+      } else {
+        return ['Shift', 'Alt', 'Ctrl']
       }
-      return keys.map(k => `<span class="key">${k}</span>`).join(' / ')
     }
   },
   methods: {
