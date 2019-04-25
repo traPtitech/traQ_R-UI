@@ -178,7 +178,7 @@ export default {
     font-size: 1.1rem
 
   .notifications-members
-    max-height: #{calc(80vh - 18rem)}
+    height: #{calc(80vh - 18rem)}
     overflow-y: scroll
     -webkit-overflow-scrolling: touch
     background-color: $background-color

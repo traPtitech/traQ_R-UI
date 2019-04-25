@@ -81,6 +81,7 @@ export default {
 .member-choice-user-container
   display: flex
   align-items: center
+  overflow: hidden
 
 .member-choice-icon
   min-width: 30px
