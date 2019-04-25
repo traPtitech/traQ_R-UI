@@ -25,20 +25,25 @@
     p(v-if="!isChannelNameValid")
       | 存在しないチャンネル名です
     SettingItemTitle
-      | メッセージ送信キー
+      | メッセージの送信スタイル
     .message-send-key-selector
-      input(type="radio" value="shift" v-model="messageSendKey" checked)
-      | {{ messageSendSpecialKeys }}
+      input(type="radio" value="modifier" v-model="messageSendKey" checked)
+      | 修飾キー(
+      span(v-html="messageSendModifierKeys")
+      | ) +
+      span.key Enter
+      | で送信
     .message-send-key-selector
       input(type="radio" value="none" v-model="messageSendKey")
-      | Enter
+      span.key Enter
+      | で送信
     SettingButton(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
       | 更新
 </template>
 
 <script>
 import client from '@/bin/client'
-import { getOS } from '@/bin/utils.js'
+import { isMac } from '@/bin/utils'
 import SettingTitle from '@/components/Setting/SettingTitle'
 import SettingItem from '@/components/Setting/SettingItem'
 import SettingItemTitle from '@/components/Setting/SettingItemTitle'
@@ -59,7 +64,7 @@ export default {
       done: '',
       openMode: 'particular',
       openChannelName: 'random',
-      messageSendKey: 'none'
+      messageSendKey: 'modifier'
     }
   },
   computed: {
@@ -79,11 +84,12 @@ export default {
     isChannelNameValid() {
       return this.$store.getters.getChannelByName(this.openChannelName)
     },
-    messageSendSpecialKeys() {
-      if (getOS() === 'mac') {
-        return 'Shift+Enter / ⌥(Option)+Enter / Ctrl+Enter / ⌘(Command)+Enter'
+    messageSendModifierKeys() {
+      let keys = ['Shift', 'Alt', 'Ctrl']
+      if (isMac()) {
+        keys = ['Shift', '⌥(Option)', 'Ctrl', '⌘(Command)']
       }
-      return 'Shift+Enter / Alt+Enter / Ctrl+Enter'
+      return keys.map(k => `<span class="key">${k}</span>`).join(' / ')
     }
   },
   methods: {
@@ -129,4 +135,15 @@ export default {
     margin-right: 0.5rem
 .open-channel-selector
   margin-top: -1rem
+.key
+  display: inline-block;
+  background: #ddd;
+  border:
+    color: #666;
+    style: solid;
+    width: 1px;
+    radius: 5px;
+  padding: 4px 8px;
+  margin: 2px 4px;
+  box-shadow: 0px 1px #999;
 </style>

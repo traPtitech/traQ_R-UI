@@ -1006,12 +1006,12 @@ const store = new Vuex.Store({
     },
     loadMessageSendKey({ commit, dispatch }) {
       return db
-        .read('browserSettings', 'loadMessageSendKey')
+        .read('browserSetting', 'messageSendKey')
         .then(data => {
           commit('setMessageSendKey', data)
         })
         .catch(async () => {
-          await dispatch('updateMessageSendKey', 'shift')
+          await dispatch('updateMessageSendKey', 'modifier')
         })
     },
     updateOpenMode({ commit }, mode) {

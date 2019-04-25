@@ -236,15 +236,15 @@ export default {
       }
 
       const sendKey = this.$store.state.messageSendKey
-      const isSpecialKey =
+      const isModifierKey =
         keyEvent.shiftKey ||
         keyEvent.altKey ||
         keyEvent.ctrlKey ||
         keyEvent.metaKey
 
       return (
-        (sendKey === 'shift' && isSpecialKey) ||
-        (sendKey === 'none' && !isSpecialKey)
+        (sendKey === 'modifier' && isModifierKey) ||
+        (sendKey === 'none' && !isModifierKey)
       )
     },
     keydown(event) {

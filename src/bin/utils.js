@@ -152,13 +152,6 @@ export const detectFiles = text => {
   return ret
 }
 
-export const getOS = () => {
-  const platform = window.navigator.platform
-  if (platform.includes('Win')) {
-    return 'win'
-  } else if (platform.includes('Mac')) {
-    return 'mac'
-  } else {
-    return 'other'
-  }
+export const isMac = () => {
+  return window.navigator.platform.includes('Mac')
 }
