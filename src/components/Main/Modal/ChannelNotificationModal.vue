@@ -2,7 +2,7 @@
 base-common-modal.channel-notification-modal(title="NOTIFICATIONS" small)
   icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   p 通知を受け取るユーザーを選択
-  filter-input.notification-modal-filter(@input="handleInput" placeholder="ユーザー名・ID・グループ名" is-on-bg)
+  filter-input.notification-modal-filter(:filterText="searchQuery" @input="handleInput" placeholder="ユーザー名・ID・グループ名" is-on-bg)
   .notification-modal-group-operation-area(v-if="isSearchQueryGroup && filterByGroup")
     .notification-toggle-group-filtering-notice
       .notification-toggle-group-icon
