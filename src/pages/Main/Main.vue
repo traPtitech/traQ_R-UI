@@ -146,6 +146,7 @@ export default {
         sse.startListen(() => {
           console.log('sse reconnect')
           this.$store.dispatch('getMessages', true)
+          this.$store.dispatch('updateUnreadMessages')
         })
       }
     }
