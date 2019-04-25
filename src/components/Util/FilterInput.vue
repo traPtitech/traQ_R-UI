@@ -1,5 +1,5 @@
 <template lang="pug">
-.filter-input-container
+.filter-input-container(:data-is-on-bg="isOnBg ? 'true' : 'false'")
   debounced-input.input-reset.filter-input(
     v-if="useDebounce"
     :placeholder="placeholder"
@@ -11,7 +11,7 @@
     :value="filterText"
     @input="handleInput")
   .filter-input-reset(v-if="filterText !== ''" @click="reset")
-    icon-close(color="white")
+    icon-close(:color="isOnBg ? 'var(--primary-color-on-bg)' : 'white'")
 </template>
 
 <script>
@@ -29,6 +29,10 @@ export default {
     event: 'input'
   },
   props: {
+    isOnBg: {
+      type: Boolean,
+      default: false
+    },
     useDebounce: {
       type: Boolean,
       default: false
@@ -81,6 +85,18 @@ input.filter-input
   &::placeholder
     color: $text-light-color
     opacity: 0.8
+
+.filter-input-container[data-is-on-bg="true"] input.filter-input
+  background:
+    color: var(--setting-background-color)
+  color: $text-color
+
+  &:hover
+    background:
+      color: var(--setting-background-hover-color)
+
+  &::placeholder
+    color: $text-color
 
 .filter-input-reset
   cursor: pointer

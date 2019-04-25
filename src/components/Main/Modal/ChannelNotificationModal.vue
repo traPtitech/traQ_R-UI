@@ -1,96 +1,173 @@
 <template lang="pug">
-base-common-modal(title="NOTIFICATIONS" small)
+base-common-modal.channel-notification-modal(title="NOTIFICATIONS" small)
   icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
-  .channel-notification-modal
-    .notifications-item
-      h2 ONにしてる人
-      .notifications-members(v-if="onMembers.length")
-          transition-group(name="slide-fade" tag="ul")
-            member-choice(v-for="member in onMembers"
-                         @memberSelected="toggleMemberOff(member.userId)"
-                         :member="member"
-                         :key="member.userId")
-      .notifications-empty(v-else)
-        IconLandscapeNight(size="64" color="lightgray")
-        | 通知がONの人はいません
-    .notifications-item
-      h2 OFFにしてる人
-      .notifications-members(v-if="offMembers.length")
-        transition-group(name="slide-fade" tag="ul")
-            member-choice(v-for="member in offMembers"
-                         @memberSelected="toggleMemberOn(member.userId)"
-                         :member="member"
-                         :key="member.userId")
-      .notifications-empty(v-else)
-        IconLandscapeDay(size="64" color="lightgray")
-        | 通知がOFFの人はいません
+  p 通知を受け取るユーザーを選択
+  filter-input.notification-modal-filter(@input="handleInput" placeholder="ユーザー名・ID・グループ名" is-on-bg)
+  .notification-modal-group-operation-area(v-if="isSearchQueryGroup && filterByGroup")
+    .notification-toggle-group-filtering-notice
+      .notification-toggle-group-icon
+        icon-profile-fill(color="var(--primary-color-on-bg)" size="20")
+      .notification-toggle-group-info
+        p グループ「{{ searchQuery }}」でフィルタ中
+        a.notification-modal-link(@click.prevent="filterByGroup=false") ID検索に戻す
+    .notification-modal-button.notification-modal-switch-all-button(@click="toggleGroup(toEnableGroup)")
+      | 全員{{ toEnableGroup ? 'ON' : 'OFF' }}
+  .notifications-item
+    .notifications-members
+      member-choice(v-for="notificationItem in membersWithNotificationStatusFiltered"
+                   @memberSelected="toggleMemberOff(member.userId)"
+                   :member="notificationItem.member"
+                   :key="notificationItem.member.userId"
+                   v-model="notificationItem.status")
+  .notifications-modal-footer
+    .notification-modal-button.notification-modal-button-passive(@click="$store.emit('closeModal')")
+      | キャンセル
+    .notification-modal-button.notification-modal-button-active(@click="submit")
+      | 確定
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 import MemberChoice from '@/components/Main/Modal/Util/MemberChoice'
+import FilterInput from '@/components/Util/FilterInput'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconNotificationFill from '@/components/Icon/IconNotificationFill'
-import IconLandscapeDay from '@/components/Icon/IconLandscapeDay'
-import IconLandscapeNight from '@/components/Icon/IconLandscapeNight'
+import IconProfileFill from '@/components/Icon/IconProfileFill'
 
 export default {
   name: 'ChannelNotificationModal',
   components: {
     MessageElement,
     MemberChoice,
+    FilterInput,
     BaseCommonModal,
     IconNotificationFill,
-    IconLandscapeDay,
-    IconLandscapeNight
+    IconProfileFill
   },
   data() {
     return {
-      channelName: '',
-      state: 'default'
+      searchQuery: '',
+      membersWithNotificationStatus: [],
+      initialEnabledMembers: [],
+      initialDisabledMembers: [],
+      filterByGroup: true
     }
   },
   computed: {
     ...mapState('modal', ['data']),
-    onMembers() {
-      return this.$store.getters.notificationsOnMembers.filter(
-        user => !user.bot
+    groupNameToMemberIdMap() {
+      return new Map(
+        this.$store.state.groupData.map(g => [g.name, new Set(g.members)])
       )
     },
-    offMembers() {
-      return this.$store.getters.notificationsOffMembers.filter(
-        user => !user.bot
+    isSearchQueryGroup() {
+      return this.groupNameToMemberIdMap.has(this.searchQuery)
+    },
+    membersWithNotificationStatusFiltered() {
+      if (this.searchQuery.length === 0)
+        return this.membersWithNotificationStatus
+      if (this.isSearchQueryGroup && this.filterByGroup) {
+        return this.membersWithNotificationStatus.filter(({ member }) =>
+          this.groupNameToMemberIdMap.get(this.searchQuery).has(member.userId)
+        )
+      }
+      return this.membersWithNotificationStatus.filter(
+        ({ member }) =>
+          member.name.match(this.searchQuery) ||
+          member.displayName.match(this.searchQuery)
       )
+    },
+    toEnableGroup() {
+      if (!this.isSearchQueryGroup || !this.filterByGroup) return false
+      for (let { status } of this.membersWithNotificationStatusFiltered) {
+        if (!status) return true
+      }
+      return false
     }
   },
   methods: {
-    toggleMemberOff(userId) {
-      this.$store
-        .dispatch('updateCurrentChannelNotifications', { off: [userId] })
-        .then(() => {
-          if (userId === this.$store.state.me.userId) {
-            this.$store.dispatch('updateMyNotifiedChannels')
-          }
-        })
+    handleInput(event) {
+      this.searchQuery = event.target ? event.target.value : ''
+      this.filterByGroup = true
     },
-    toggleMemberOn(userId) {
-      this.$store
-        .dispatch('updateCurrentChannelNotifications', { on: [userId] })
-        .then(() => {
-          if (userId === this.$store.state.me.userId) {
-            this.$store.dispatch('updateMyNotifiedChannels')
-          }
-        })
+    toggleGroup(state) {
+      for (let ms of this.membersWithNotificationStatusFiltered) {
+        ms.status = state
+      }
+    },
+    submit() {
+      const membersToEnable = this.membersWithNotificationStatus.filter(
+        ({ member, status }) =>
+          status && this.initialDisabledMembers.has(member)
+      )
+      const membersToEDisable = this.membersWithNotificationStatus.filter(
+        ({ member, status }) =>
+          !status && this.initialEnabledMembers.has(member)
+      )
+      this.$store.dispatch('updateCurrentChannelNotifications', {
+        on: [...membersToEnable].map(({ member }) => member.userId),
+        off: [...membersToEDisable].map(({ member }) => member.userId)
+      })
+      this.$store.dispatch('updateMyNotifiedChannels')
+      this.$store.dispatch('modal/close')
     }
+  },
+  mounted() {
+    this.initialEnabledMembers = new Set(
+      this.$store.getters.notificationsOnMembers.filter(user => !user.bot)
+    )
+    this.initialDisabledMembers = new Set(
+      this.$store.getters.notificationsOffMembers.filter(user => !user.bot)
+    )
+    const makeMapper = status => member => {
+      return { member, status }
+    }
+    this.membersWithNotificationStatus = [...this.initialEnabledMembers]
+      .map(makeMapper(true))
+      .concat([...this.initialDisabledMembers].map(makeMapper(false)))
   }
 }
 </script>
 
 <style lang="sass">
+.modal.channel-notification-modal
+  padding: 1rem 2rem
+  +mq(sp)
+    padding: 1rem
+
 .channel-notification-filter-wrap
   width: 13rem
   margin-left: auto
+
+.notification-modal-filter
+  margin: 1rem 0
+  input.filter-input
+    width: 100%
+
+.notification-modal-group-operation-area
+  +mq(pc)
+    display: flex
+    align-items: center
+    justify-content: space-between
+  .notification-modal-switch-all-button
+    +mq(sp)
+      margin:
+        top: 0.5rem
+        left: 0.5rem
+      transform: scale(0.85)
+
+.notification-toggle-group-filtering-notice
+  display: flex
+  align-items: center
+
+.notification-toggle-group-icon
+  margin-right: 1rem
+
+.notification-modal-link
+  margin-top: 0.25rem
+  color: $link-color
+  cursor: pointer
 
 .notifications-item
   margin: 1rem 0
@@ -101,10 +178,9 @@ export default {
     font-size: 1.1rem
 
   .notifications-members
-    height: 25vh
+    height: #{calc(80vh - 18rem)}
     overflow-y: scroll
     -webkit-overflow-scrolling: touch
-    border: 1px solid #eeeeee
     background-color: $background-color
 
   .notifications-empty
@@ -121,17 +197,35 @@ export default {
       height: 5vh
       width: 5vh
 
-.slide-fade
-  &-enter-active
-    transition: all .2s ease
+.notifications-modal-footer
+  display: flex
+  justify-content: flex-end
+  margin: 0 0.5rem
 
-  &-leave-active
-    transition: all .1s ease
+.notification-modal-button
+  display: flex
+  justify-content: center
+  align-items: center
+  fot-size: 0.9rem
+  width: 6rem
+  height: 2.5rem
+  user-select: none
+  cursor: pointer
+  border:
+    radius: 4px
+    width: 1px
+    style: solid
 
-  &-enter, &-leave-to
-    transform: translateX(10px)
-    opacity: 0
+  +mq(sp)
+    flex-grow: 1
 
-  &-move
-    transition: transform .2s ease
+  &:not(:first-child)
+    margin-left: 2rem
+
+  &-active
+    color: $primary-color-on-bg
+    border-color: $primary-color-on-bg
+  &-passive
+    color: gray
+    border-color: gray
 </style>

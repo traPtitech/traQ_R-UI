@@ -1,18 +1,31 @@
 <template lang="pug">
-  div.member-choice(@click="$emit('memberSelected')")
-    div.member-choice-icon-container
-      div.member-choice-icon(:style="userIconBackground")
-    div.member-choice-username.text-ellipsis
+.member-choice(@click="handleClick", :style="memberChoiceStyle")
+  .member-choice-user-container
+    .member-choice-icon-container
+      .member-choice-icon(:style="userIconBackground")
+    .member-choice-username.text-ellipsis
       span
         | {{userName}}
+  icon-notification-fill(v-if="value" size="22" color="var(--primary-color-on-bg)")
+  icon-notification(v-else size="22" color="var(--primary-color-on-bg)")
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import IconNotification from '@/components/Icon/IconNotification'
+import IconNotificationFill from '@/components/Icon/IconNotificationFill'
 
 export default {
   name: 'MemberChoice',
+  components: {
+    IconNotification,
+    IconNotificationFill
+  },
   props: {
+    value: {
+      type: Boolean,
+      required: true
+    },
     member: {
       type: Object,
       required: true
@@ -33,6 +46,9 @@ export default {
     },
     userName() {
       return this.getUserName(this.userId)
+    },
+    memberChoiceStyle() {
+      return { opacity: this.value ? 1 : 0.5 }
     }
   },
   methods: {
@@ -43,6 +59,9 @@ export default {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
+    },
+    handleClick() {
+      this.$emit('input', !this.value)
     }
   }
 }
@@ -52,17 +71,17 @@ export default {
 .member-choice
   display: flex
   align-items: center
+  justify-content: space-between
   cursor: pointer
-  padding:
-    top: 2px
-    left: 4px
-    right: 4px
-    bottom: 2px
+  padding: 0.5rem 1rem
 
   &:hover
     background: rgba(0,0,0,0.1)
 
-.member-choice-icon-container
+.member-choice-user-container
+  display: flex
+  align-items: center
+  overflow: hidden
 
 .member-choice-icon
   min-width: 30px
