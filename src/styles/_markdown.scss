@@ -93,7 +93,7 @@
 
 #app[data-theme="light"] .markdown-body {
   a {
-    color: #2980b9;
+    color: $link-color;
   }
 
   h1,
@@ -165,7 +165,7 @@
 
 #app[data-theme="dark"] .markdown-body {
   a {
-    color: #61afef;
+    color: $link-color;
   }
 
   h1,
