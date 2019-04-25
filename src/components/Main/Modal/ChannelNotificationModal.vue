@@ -2,13 +2,16 @@
 base-common-modal.channel-notification-modal(title="NOTIFICATIONS" small)
   icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   p 通知を受け取るユーザーを選択
-  filter-input.notification-modal-filter(@input="handleInput" is-on-bg)
-  .notification-toggle-group-filtering-notice(v-if="isSearchQueryGroup && filterByGroup")
-    .notification-toggle-group-icon
-      icon-profile-fill(color="var(--primary-color-on-bg)" size="20")
-    .notification-toggle-group-info
-      p グループ「{{ searchQuery }}」で絞り込んでいます
-      a.notification-modal-link(@click.prevent="filterByGroup=false") ID検索に戻す
+  filter-input.notification-modal-filter(@input="handleInput" placeholder="ユーザー名・ID・グループ名" is-on-bg)
+  .notification-modal-group-operation-area(v-if="isSearchQueryGroup && filterByGroup")
+    .notification-toggle-group-filtering-notice
+      .notification-toggle-group-icon
+        icon-profile-fill(color="var(--primary-color-on-bg)" size="20")
+      .notification-toggle-group-info
+        p グループ「{{ searchQuery }}」でフィルタ中
+        a.notification-modal-link(@click.prevent="filterByGroup=false") ID検索に戻す
+    .notification-modal-button.notification-modal-switch-all-button(@click="toggleGroup(toEnableGroup)")
+      | 全員{{ toEnableGroup ? 'ON' : 'OFF' }}
   .notifications-item
     .notifications-members
       member-choice(v-for="notificationItem in membersWithNotificationStatusFiltered"
@@ -74,25 +77,37 @@ export default {
           member.name.match(this.searchQuery) ||
           member.displayName.match(this.searchQuery)
       )
+    },
+    toEnableGroup() {
+      if (!this.isSearchQueryGroup || !this.filterByGroup) return false
+      for (let { status } of this.membersWithNotificationStatusFiltered) {
+        if (!status) return true
+      }
+      return false
     }
   },
   methods: {
     handleInput(event) {
-      this.searchQuery = event.target.value
+      this.searchQuery = event.target ? event.target.value : ''
       this.filterByGroup = true
     },
+    toggleGroup(state) {
+      for (let ms of this.membersWithNotificationStatusFiltered) {
+        ms.status = state
+      }
+    },
     submit() {
-      const toEnableMembers = this.membersWithNotificationStatus.filter(
+      const membersToEnable = this.membersWithNotificationStatus.filter(
         ({ member, status }) =>
           status && this.initialDisabledMembers.has(member)
       )
-      const toDisableMembers = this.membersWithNotificationStatus.filter(
+      const membersToEDisable = this.membersWithNotificationStatus.filter(
         ({ member, status }) =>
           !status && this.initialEnabledMembers.has(member)
       )
       this.$store.dispatch('updateCurrentChannelNotifications', {
-        on: [...toEnableMembers].map(({ member }) => member.userId),
-        off: [...toDisableMembers].map(({ member }) => member.userId)
+        on: [...membersToEnable].map(({ member }) => member.userId),
+        off: [...membersToEDisable].map(({ member }) => member.userId)
       })
       this.$store.dispatch('updateMyNotifiedChannels')
       this.$store.dispatch('modal/close')
@@ -116,8 +131,10 @@ export default {
 </script>
 
 <style lang="sass">
-.channel-notification-modal
+.modal.channel-notification-modal
   padding: 1rem 2rem
+  +mq(sp)
+    padding: 1rem
 
 .channel-notification-filter-wrap
   width: 13rem
@@ -127,6 +144,18 @@ export default {
   margin: 1rem 0
   input.filter-input
     width: 100%
+
+.notification-modal-group-operation-area
+  +mq(pc)
+    display: flex
+    align-items: center
+    justify-content: space-between
+  .notification-modal-switch-all-button
+    +mq(sp)
+      margin:
+        top: 0.5rem
+        left: 0.5rem
+      transform: scale(0.85)
 
 .notification-toggle-group-filtering-notice
   display: flex
@@ -149,7 +178,7 @@ export default {
     font-size: 1.1rem
 
   .notifications-members
-    height: 25vh
+    max-height: #{calc(80vh - 18rem)}
     overflow-y: scroll
     -webkit-overflow-scrolling: touch
     background-color: $background-color
