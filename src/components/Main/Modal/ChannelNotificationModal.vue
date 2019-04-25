@@ -1,29 +1,19 @@
 <template lang="pug">
-base-common-modal(title="NOTIFICATIONS" small)
+base-common-modal.channel-notification-modal(title="NOTIFICATIONS" small)
   icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
-  .channel-notification-modal
-    .notifications-item
-      h2 ONにしてる人
-      .notifications-members(v-if="onMembers.length")
-          transition-group(name="slide-fade" tag="ul")
-            member-choice(v-for="member in onMembers"
-                         @memberSelected="toggleMemberOff(member.userId)"
-                         :member="member"
-                         :key="member.userId")
-      .notifications-empty(v-else)
-        IconLandscapeNight(size="64" color="lightgray")
-        | 通知がONの人はいません
-    .notifications-item
-      h2 OFFにしてる人
-      .notifications-members(v-if="offMembers.length")
-        transition-group(name="slide-fade" tag="ul")
-            member-choice(v-for="member in offMembers"
-                         @memberSelected="toggleMemberOn(member.userId)"
-                         :member="member"
-                         :key="member.userId")
-      .notifications-empty(v-else)
-        IconLandscapeDay(size="64" color="lightgray")
-        | 通知がOFFの人はいません
+  p 通知を受け取るユーザーを選択
+  .notifications-item
+    .notifications-members
+      member-choice(v-for="notificationItem in membersWithNotificationStatus"
+                   @memberSelected="toggleMemberOff(member.userId)"
+                   :member="notificationItem.member"
+                   :key="notificationItem.member.userId"
+                   v-model="notificationItem.status")
+  .notifications-modal-footer
+    button(@click="$store.emit('closeModal')")
+      | キャンセル
+    button(@click="submit")
+      | 確定
 </template>
 
 <script>
@@ -32,8 +22,6 @@ import MessageElement from '@/components/Main/MessageView/MessageElement/Message
 import MemberChoice from '@/components/Main/Modal/Util/MemberChoice'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconNotificationFill from '@/components/Icon/IconNotificationFill'
-import IconLandscapeDay from '@/components/Icon/IconLandscapeDay'
-import IconLandscapeNight from '@/components/Icon/IconLandscapeNight'
 
 export default {
   name: 'ChannelNotificationModal',
@@ -41,28 +29,19 @@ export default {
     MessageElement,
     MemberChoice,
     BaseCommonModal,
-    IconNotificationFill,
-    IconLandscapeDay,
-    IconLandscapeNight
+    IconNotificationFill
   },
   data() {
     return {
       channelName: '',
-      state: 'default'
+      state: 'default',
+      membersWithNotificationStatus: [],
+      initialEnabledMembers: [],
+      initialDisabledMembers: []
     }
   },
   computed: {
-    ...mapState('modal', ['data']),
-    onMembers() {
-      return this.$store.getters.notificationsOnMembers.filter(
-        user => !user.bot
-      )
-    },
-    offMembers() {
-      return this.$store.getters.notificationsOffMembers.filter(
-        user => !user.bot
-      )
-    }
+    ...mapState('modal', ['data'])
   },
   methods: {
     toggleMemberOff(userId) {
@@ -82,7 +61,37 @@ export default {
             this.$store.dispatch('updateMyNotifiedChannels')
           }
         })
+    },
+    submit() {
+      const toEnableMembers = this.membersWithNotificationStatus.filter(
+        ({ member, status }) =>
+          status && this.initialDisabledMembers.has(member)
+      )
+      const toDisableMembers = this.membersWithNotificationStatus.filter(
+        ({ member, status }) =>
+          !status && this.initialEnabledMembers.has(member)
+      )
+      this.$store.dispatch('updateCurrentChannelNotifications', {
+        on: [...toEnableMembers].map(({ member }) => member.userId),
+        off: [...toDisableMembers].map(({ member }) => member.userId)
+      })
+      this.$store.dispatch('updateMyNotifiedChannels')
+      this.$store.dispatch('modal/close')
     }
+  },
+  mounted() {
+    this.initialEnabledMembers = new Set(
+      this.$store.getters.notificationsOnMembers.filter(user => !user.bot)
+    )
+    this.initialDisabledMembers = new Set(
+      this.$store.getters.notificationsOffMembers.filter(user => !user.bot)
+    )
+    const makeMapper = status => member => {
+      return { member, status }
+    }
+    this.membersWithNotificationStatus = [...this.initialEnabledMembers]
+      .map(makeMapper(true))
+      .concat([...this.initialDisabledMembers].map(makeMapper(false)))
   }
 }
 </script>
@@ -104,7 +113,6 @@ export default {
     height: 25vh
     overflow-y: scroll
     -webkit-overflow-scrolling: touch
-    border: 1px solid #eeeeee
     background-color: $background-color
 
   .notifications-empty
@@ -121,17 +129,8 @@ export default {
       height: 5vh
       width: 5vh
 
-.slide-fade
-  &-enter-active
-    transition: all .2s ease
-
-  &-leave-active
-    transition: all .1s ease
-
-  &-enter, &-leave-to
-    transform: translateX(10px)
-    opacity: 0
-
-  &-move
-    transition: transform .2s ease
+.notifications-modal-footer
+  display: flex
+  justify-content: flex-end
+  margin: 0 1rem
 </style>
