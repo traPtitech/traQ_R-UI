@@ -2,16 +2,16 @@
 base-common-modal.channel-notification-modal(title="NOTIFICATIONS" small)
   icon-notification-fill(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   p 通知を受け取るユーザーを選択
-  filter-input.notification-modal-filter(@input="searchQuery = $event.target.value" is-on-bg)
+  filter-input.notification-modal-filter(@input="handleInput" is-on-bg)
   .notification-toggle-group-filtering-notice(v-if="isSearchQueryGroup && filterByGroup")
     .notification-toggle-group-icon
       icon-profile-fill(color="var(--primary-color-on-bg)" size="20")
     .notification-toggle-group-info
       p グループ「{{ searchQuery }}」で絞り込んでいます
-      a.notification-modal-link ID検索に戻す
+      a.notification-modal-link(@click.prevent="filterByGroup=false") ID検索に戻す
   .notifications-item
     .notifications-members
-      member-choice(v-for="notificationItem in membersWithNotificationStatus"
+      member-choice(v-for="notificationItem in membersWithNotificationStatusFiltered"
                    @memberSelected="toggleMemberOff(member.userId)"
                    :member="notificationItem.member"
                    :key="notificationItem.member.userId"
@@ -53,30 +53,33 @@ export default {
   },
   computed: {
     ...mapState('modal', ['data']),
+    groupNameToMemberIdMap() {
+      return new Map(
+        this.$store.state.groupData.map(g => [g.name, new Set(g.members)])
+      )
+    },
     isSearchQueryGroup() {
-      return new Set(this.$store.state.groupData.map(g => g.name)).has(
-        this.searchQuery
+      return this.groupNameToMemberIdMap.has(this.searchQuery)
+    },
+    membersWithNotificationStatusFiltered() {
+      if (this.searchQuery.length === 0)
+        return this.membersWithNotificationStatus
+      if (this.isSearchQueryGroup && this.filterByGroup) {
+        return this.membersWithNotificationStatus.filter(({ member }) =>
+          this.groupNameToMemberIdMap.get(this.searchQuery).has(member.userId)
+        )
+      }
+      return this.membersWithNotificationStatus.filter(
+        ({ member }) =>
+          member.name.match(this.searchQuery) ||
+          member.displayName.match(this.searchQuery)
       )
     }
   },
   methods: {
-    toggleMemberOff(userId) {
-      this.$store
-        .dispatch('updateCurrentChannelNotifications', { off: [userId] })
-        .then(() => {
-          if (userId === this.$store.state.me.userId) {
-            this.$store.dispatch('updateMyNotifiedChannels')
-          }
-        })
-    },
-    toggleMemberOn(userId) {
-      this.$store
-        .dispatch('updateCurrentChannelNotifications', { on: [userId] })
-        .then(() => {
-          if (userId === this.$store.state.me.userId) {
-            this.$store.dispatch('updateMyNotifiedChannels')
-          }
-        })
+    handleInput(event) {
+      this.searchQuery = event.target.value
+      this.filterByGroup = true
     },
     submit() {
       const toEnableMembers = this.membersWithNotificationStatus.filter(
