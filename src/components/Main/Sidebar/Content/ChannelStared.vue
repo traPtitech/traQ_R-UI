@@ -9,8 +9,8 @@
     .channel-empty-message(v-if="filteredChannels.length === 0")
       | 見つかりませんでした
   template(v-else)
-    channel-element(v-for="channel in channels" :key="channel.channelId" :model="channel")
-    .channel-empty-message(v-if="channels.length === 0")
+    channel-element(v-for="channel in duplicateCheckedChannels" :key="channel.channelId" :model="channel")
+    .channel-empty-message(v-if="duplicateCheckedChannels.length === 0")
       | お気に入りのチャンネルがまだないようです
 </template>
 
@@ -34,8 +34,24 @@ export default {
     channels() {
       return this.$store.getters.getStaredChannels
     },
+    channelNames() {
+      return this.channels.map(c => c.name)
+    },
+    duplicateCheckedChannels() {
+      return this.channels.map((c, i) => {
+        if (
+          this.channelNames.indexOf(c.name) !==
+          this.channelNames.lastIndexOf(c.name)
+        ) {
+          c.isDuplicated = true
+        } else {
+          c.isDuplicated = false
+        }
+        return c
+      })
+    },
     filteredChannels() {
-      return this.channels.filter(c => {
+      return this.duplicateCheckedChannels.filter(c => {
         return this.caseIgnoreFilterText.test(c.name)
       })
     },

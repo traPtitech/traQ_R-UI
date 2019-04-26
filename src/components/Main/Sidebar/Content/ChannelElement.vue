@@ -10,7 +10,7 @@
         icon-hash(v-if="!hasInputContent" size="12" :color="channelHashColor")
         icon-pen(v-else size="12" :color="channelHashColor")
     p.channel-box-name
-      | {{model.name}}
+      | {{channelName}}
   .channel-children-wrapper(ref="children")
     transition-group.channel-children(
       tag="div"
@@ -64,6 +64,22 @@ export default {
     }
   },
   computed: {
+    channelName() {
+      return this.model.isDuplicated ? this.shortChannelName : this.model.name
+    },
+    fullChannelName() {
+      return this.$store.getters.getChannelPathById(this.model.channelId)
+    },
+    shortChannelName() {
+      let ret = ''
+      this.fullChannelName
+        .split('/')
+        .slice(0, -1)
+        .forEach(e => {
+          ret += e.charAt(0) + '/'
+        })
+      return ret + this.model.name
+    },
     isParent() {
       return this.model.children && this.model.children.length > 0
     },
@@ -167,7 +183,7 @@ export default {
     background: white
 
 .channel-box-name
-  display: inline-flex
+  display: inline-block
   align-items: center
   position: relative
   color: $text-light-color
@@ -184,9 +200,11 @@ export default {
   text-overflow: ellipsis
   z-index: 1
   user-select: none
-  height: 34px
+  line-height: 1.6em
+
   .channel-watched &
     color: $primary-color
+
   &:after
     display: block
     position: absolute
