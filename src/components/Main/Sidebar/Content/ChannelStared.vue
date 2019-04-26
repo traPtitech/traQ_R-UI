@@ -38,7 +38,7 @@ export default {
       return this.channels.map(c => c.name)
     },
     duplicateCheckedChannels() {
-      return this.channels.map((c, i) => {
+      return this.channels.map(c => {
         if (
           this.channelNames.indexOf(c.name) !==
           this.channelNames.lastIndexOf(c.name)
