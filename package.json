@@ -31,7 +31,7 @@
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
     "@vue/cli-plugin-pwa": "^3.5.0",
-    "@vue/cli-service": "^3.5.3",
+    "@vue/cli-service": "^3.6.0",
     "@vue/eslint-config-prettier": "^4.0.1",
     "autosize": "^4.0.2",
     "axios": "^0.18.0",
