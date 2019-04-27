@@ -5,7 +5,7 @@
       .channel-detail-element-before(:class="channelBeforeClass")
         | #
     p.channel-detail-element-box-name
-      | {{fullChannelName}}
+      | {{shortChannelName}}
   .channel-detail-element-topic-wrapper(v-if="hasTopic")
     .channel-detail-element-topic-icon.flex-center
       icon-topic(size="18" :color="iconColor")
@@ -52,6 +52,16 @@ export default {
     },
     fullChannelName() {
       return this.$store.getters.getChannelPathById(this.model.channelId)
+    },
+    shortChannelName() {
+      let ret = ''
+      this.fullChannelName
+        .split('/')
+        .slice(0, -1)
+        .forEach(e => {
+          ret += e.charAt(0) + '/'
+        })
+      return ret + this.model.name
     },
     isWatched() {
       return this.$store.state.currentChannel.channelId === this.model.channelId
