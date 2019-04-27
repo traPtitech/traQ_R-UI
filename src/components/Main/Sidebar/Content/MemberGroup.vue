@@ -3,6 +3,8 @@
     div.member-group-name-container(@click="toggle")
       p
         | {{groupName}}
+        span.member-count(v-if="filterUnread") {{ filteredUnreadMembers.length }}
+        span.member-count(v-else) {{ filteredMembers.length }}
     div.member-group-list(ref="list")
       transition(name="simple" @after-enter="removeHeight" @after-leave="zeroHeight")
         div(ref="listWrap" v-show="isOpen")
@@ -176,6 +178,12 @@ export default {
     color: $text-light-color
     padding:
       left: 10px
+  .member-count
+    padding: 0 0.5rem
+    &::after
+      content: ")"
+    &::before
+      content: "("
 .simple-enter-active
   transition: all .1s
   opacity: 1
