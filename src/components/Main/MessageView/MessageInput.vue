@@ -2,6 +2,11 @@
 .message-input(:class="{'input-focused':focused}")
   transition(name="typing-slide-in")
     message-typing-users(v-if="isAnyoneTyping" :typingUsers="typingUsers")
+  .message-input-key-guide(v-if="showKeyGuide")
+    span(v-if="messageSendKey === 'modifier'")
+      | + Enterを押して送信
+    span(v-else)
+      | + Enterを押して改行
   input.upload-button(id="upload" style="display:none" type="file" multiple="multiple" @change="addFiles")
   .message-input-body
     .message-input-buttons-wrapper
@@ -34,6 +39,7 @@
         @focus="inputFocus"
         @blur="inputBlur"
         @keydown="keydown"
+        @keyup="keyup"
         @click="clearKey"
         @paste="pasteImage"
         ref="inputArea")
@@ -47,7 +53,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import autosize from 'autosize'
 import client from '@/bin/client'
 import { isImage } from '@/bin/utils'
@@ -88,7 +94,8 @@ export default {
       limit: 5,
       suggestMode: false,
       suggestIndex: 0,
-      uploadProgressSum: 0
+      uploadProgressSum: 0,
+      isPushedModifierKey: false
     }
   },
   created() {
@@ -110,7 +117,7 @@ export default {
       this.$store.commit('setEditing', false)
     },
     submit() {
-      if (this.postLock || (this.inputText === '' && this.files.length === 0)) {
+      if (this.postLock || !this.canSubmit) {
         return
       }
       this.postLock = true
@@ -234,17 +241,17 @@ export default {
       if (keyEvent.key !== 'Enter') {
         return false
       }
-
-      const sendKey = this.$store.state.messageSendKey
-      const isModifierKey =
+      return (
+        (this.messageSendKey === 'modifier' && this.isModifierKey(keyEvent)) ||
+        (this.messageSendKey === 'none' && !this.isModifierKey(keyEvent))
+      )
+    },
+    isModifierKey(keyEvent) {
+      return (
         keyEvent.shiftKey ||
         keyEvent.altKey ||
         keyEvent.ctrlKey ||
         keyEvent.metaKey
-
-      return (
-        (sendKey === 'modifier' && isModifierKey) ||
-        (sendKey === 'none' && !isModifierKey)
       )
     },
     keydown(event) {
@@ -253,6 +260,9 @@ export default {
         return
       }
       this.postStatus = 'default'
+      if (this.isModifierKey(event)) {
+        this.isPushedModifierKey = true
+      }
       if (this.isSendKey(event)) {
         this.submit()
         event.returnValue = false
@@ -334,6 +344,12 @@ export default {
         })
       }
       */
+    },
+    keyup(event) {
+      const isModifierKey = event.key === 'Shift' || 'Meta' || 'Alt'
+      if (isModifierKey) {
+        this.isPushedModifierKey = false
+      }
     },
     onmouseover(index) {
       this.suggestMode = true
@@ -443,6 +459,13 @@ export default {
   },
   computed: {
     ...mapGetters(['stampPickerActive']),
+    ...mapState(['messageSendKey']),
+    showKeyGuide() {
+      return (
+        this.isPushedModifierKey &&
+        !(this.messageSendKey === 'modifier' && !this.canSubmit)
+      )
+    },
     currentChannel() {
       return this.$store.state.currentChannel
     },
@@ -504,9 +527,12 @@ export default {
     isEmptyMessage() {
       return this.inputText.length === 0
     },
+    canSubmit() {
+      return this.hasFile || !this.isEmptyMessage
+    },
     sendButtonStyle() {
       return {
-        opacity: this.hasFile || !this.isEmptyMessage ? 1 : 0.4
+        opacity: this.canSubmit ? 1 : 0.4
       }
     },
     me() {
@@ -708,4 +734,13 @@ $message-input-button-height-pc: 40px - 2px
   &-leave-to
     transform: translateY(0)
     opacity: 0
+
+.message-input-key-guide
+  position: absolute
+  opacity: 0.5
+  right: 10px
+  top: -5px
+  transform: translateY(-100%)
+  font:
+    size: 0.8em
 </style>
