@@ -34,13 +34,7 @@ export default {
   computed: {
     ...mapGetters(['getMyId', 'activeMessageContextMenu']),
     isDirectMessage() {
-      if (
-        this.$store.state.currentChannel.channelId ===
-        this.$store.state.directMessageId
-      )
-        return true
-      if (this.$store.state.currentChannel.member) return true
-      return false
+      return this.$store.state.currentChannel.dm
     },
     pinned() {
       return this.$store.getters.isPinned(this.messageId)
