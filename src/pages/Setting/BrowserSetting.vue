@@ -141,13 +141,14 @@ export default {
   margin-top: -1rem
 .key
   display: inline-block
-  background: #ddd
+  background: var(--key-background-color)
   border:
-    color: #666
+    color: var(--key-border-color)
     style: solid
     width: 1px
     radius: 5px
+  color: var(--key-text-color)
   padding: 4px 8px
   margin: 2px 4px
-  box-shadow: 0px 1px #999
+  box-shadow: 0px 1px var(--key-shadow-color)
 </style>
