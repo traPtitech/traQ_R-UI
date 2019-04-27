@@ -47,6 +47,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
             | Edit
       message-attached-messages(v-if="hasAttachedMessage" :messages="messages" @rendered="attachedMessageRendered")
       message-attached-files(v-if="hasAttachedFile" :files="files")
+      message-attached-votes(v-if="hasAttachedVotes" :votes="votes" :stampList="model.stampList" :messageId="model.messageId")
       message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
     .message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
       message-context-drop-menu(:userId="model.userId"
@@ -68,6 +69,7 @@ import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 import MessageAttachedMessages from './MessageAttachedMessages'
 import MessageAttachedFiles from './MessageAttachedFiles'
+import MessageAttachedVotes from './MessageAttachedVotes'
 import MessageStampsList from './MessageStampsList'
 import MessageContextDropMenu from './MessageContextDropMenu'
 import IconDots from '@/components/Icon/IconDots'
@@ -83,6 +85,7 @@ export default {
   components: {
     MessageAttachedMessages,
     MessageAttachedFiles,
+    MessageAttachedVotes,
     MessageStampsList,
     MessageContextDropMenu,
     IconDots,
@@ -96,6 +99,7 @@ export default {
       edited: '',
       files: [],
       messages: [],
+      votes: [],
       isRendered: false,
       isContextMenuActive: false,
       attachedData: null,
@@ -187,6 +191,7 @@ export default {
               .catch(() => null)
           })
       )).filter(e => e)
+      this.votes = this.attachedData.filter(e => e.type === 'vote')
       this.isRendered = true
 
       this.$nextTick(() => {
@@ -270,6 +275,9 @@ export default {
     },
     hasAttachedFile() {
       return this.files.length > 0
+    },
+    hasAttachedVotes() {
+      return this.votes.length > 0
     },
     pinDetail() {
       return (

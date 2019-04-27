@@ -15,7 +15,11 @@ const validate = data => {
     return true
   } else if (data['type'] === 'group' && store.state.groupMap[data['id']]) {
     return true
-  } else if (data['type'] === 'file' || data['type'] === 'message') {
+  } else if (
+    data['type'] === 'file' ||
+    data['type'] === 'message' ||
+    data['type'] === 'vote'
+  ) {
     return true
   }
   return false

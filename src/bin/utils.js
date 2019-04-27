@@ -87,64 +87,98 @@ export const isAudio = mime => {
   return mime.split('/')[0] === 'audio'
 }
 
-function isFile(text) {
-  try {
-    const data = JSON.parse(text)
-    if (
-      data['type'] === 'file' &&
-      typeof data['id'] === 'string' &&
-      typeof data['raw'] === 'string'
-    ) {
-      return true
-    } else {
-      return false
-    }
-  } catch (e) {
+function isFile(data) {
+  if (
+    data['type'] === 'file' &&
+    typeof data['id'] === 'string' &&
+    typeof data['raw'] === 'string'
+  ) {
+    return true
+  } else {
     return false
   }
 }
-function isMessage(text) {
+function isMessage(data) {
+  if (
+    data['type'] === 'message' &&
+    typeof data['id'] === 'string' &&
+    typeof data['raw'] === 'string'
+  ) {
+    return true
+  } else {
+    return false
+  }
+}
+function isStamp(data) {
+  if (typeof data['id'] === 'string' && typeof data['raw'] === 'string') {
+    return true
+  }
+  return false
+}
+function isVote(data) {
+  if (
+    data['type'] === 'vote' &&
+    typeof data['raw'] === 'string' &&
+    typeof data['title'] === 'string' &&
+    Array.isArray(data['stamps']) &&
+    data['stamps'].every(isStamp)
+  ) {
+    return true
+  }
+  return false
+}
+
+function isContent(text) {
   try {
     const data = JSON.parse(text)
-    if (
-      data['type'] === 'message' &&
-      typeof data['id'] === 'string' &&
-      typeof data['raw'] === 'string'
-    ) {
-      return true
-    } else {
-      return false
-    }
+    return isFile(data) || isMessage(data) || isVote(data)
   } catch (e) {
     return false
   }
 }
 
 export const detectFiles = text => {
-  let isInside = false
   let startIndex = -1
   let isString = false
+  let stack = []
   const ret = []
   for (let i = 0; i < text.length; i++) {
-    if (isInside) {
-      if (text[i] === '"') {
-        isString ^= true
-      } else if (!isString && text[i] === '}') {
-        isInside = false
-        if (
-          isFile(text.substr(startIndex + 1, i - startIndex)) ||
-          isMessage(text.substr(startIndex + 1, i - startIndex))
-        ) {
-          ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
-        } else {
-          i = startIndex + 1
+    if (stack.length > 0) {
+      if (isString) {
+        if (text[i] === '\\') {
+          i++
+        } else if (text[i] === '"') {
+          isString = false
+        }
+      } else {
+        if (text[i] === '"') {
+          isString = true
+        } else if (text[i] === '{' || text[i] === '[') {
+          stack.push(text[i])
+        } else if (text[i] === '}') {
+          if (stack.pop() !== '{') {
+            stack = []
+            i = startIndex + 1
+          }
+          if (stack.length === 0) {
+            if (isContent(text.substr(startIndex + 1, i - startIndex))) {
+              ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
+            } else {
+              i = startIndex + 1
+            }
+          }
+        } else if (text[i] === ']') {
+          if (stack.pop() !== '[') {
+            stack = []
+            i = startIndex + 1
+          }
         }
       }
     } else {
       if (i < text.length - 1 && text[i] === '!' && text[i + 1] === '{') {
         startIndex = i
         i++
-        isInside = true
+        stack.push('{')
         isString = false
       }
     }
