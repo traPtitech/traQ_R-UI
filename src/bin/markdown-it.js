@@ -1,7 +1,7 @@
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import MarkdownItMark from 'markdown-it-mark'
-import myPlugin from '@/bin/markdown-it-extends'
+import json from '@/bin/markdown-it-json'
 import regexp from 'markdown-it-regexp'
 import store from '@/store/index'
 import mila from 'markdown-it-link-attributes'
@@ -39,7 +39,7 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
 }
 
 md.use(MarkdownItMark)
-md.use(myPlugin)
+md.use(json)
 md.use(
   regexp(/:([a-zA-Z0-9+_-]{1,32}):/, (match, utils) => {
     if (store.state.stampNameMap[match[1]]) {
