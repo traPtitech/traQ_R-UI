@@ -737,7 +737,7 @@ $message-input-button-height-pc: 40px - 2px
 
 .message-input-key-guide
   position: absolute
-  opacity: 0.5
+  opacity: 0.6
   right: 10px
   top: -5px
   transform: translateY(-100%)
