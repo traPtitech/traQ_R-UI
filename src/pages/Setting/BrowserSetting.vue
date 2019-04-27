@@ -14,10 +14,10 @@
   SettingItem
     SettingItemTitle
       | 起動時チャンネル設定
-    .open-mode-selector
+    label.open-mode-selector
       input(type="radio" value="lastOpen" v-model="openMode")
       | 最後に開いたチャンネル
-    .open-mode-selector.open-patiular-channel
+    label.open-mode-selector.open-patiular-channel
       input(type="radio" value="particular" v-model="openMode" checked)
       | 特定のチャンネル
     .open-channel-selector(v-show="openMode === 'particular'")
@@ -26,7 +26,7 @@
       | 存在しないチャンネル名です
     SettingItemTitle
       | メッセージの送信スタイル
-    .message-send-key-selector
+    label.message-send-key-selector
       input(type="radio" value="modifier" v-model="messageSendKey" checked)
       | 修飾キー(
       span(v-for="(key, i) in messageSendModifierKeys")
@@ -35,7 +35,7 @@
       | ) +
       span.key Enter
       | で送信
-    .message-send-key-selector
+    label.message-send-key-selector
       input(type="radio" value="none" v-model="messageSendKey")
       span.key Enter
       | で送信
@@ -132,6 +132,7 @@ export default {
 
 <style lang="sass">
 .open-mode-selector, .message-send-key-selector
+  display: block
   margin: 1rem 0
   input
     margin-right: 0.5rem
