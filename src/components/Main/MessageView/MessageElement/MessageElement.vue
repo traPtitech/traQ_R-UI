@@ -360,7 +360,7 @@ export default {
   font-weight: bold
   text-align: left
   max-width: 60%
-  line-height: 1.4em
+  line-height: 1.5em
   overflow: hidden
   cursor: pointer
   flex-shrink: 0
@@ -384,7 +384,7 @@ export default {
   opacity: 0.6
   margin-left: 5px
   font-size: 0.8em
-  line-height: 1.4em
+  line-height: 1.3em
   max-width: 40%
 
 .message-date

@@ -68,6 +68,7 @@ export default {
   cursor: pointer
   display: flex
   flex-flow: row
+  align-items: center
   padding: 5px 10px
   &:hover
     background: rgba(0,0,0,0.1)
@@ -133,6 +134,8 @@ export default {
     border-color: var(--primary-color-hovered) !important
 
 .member-display-name
+  line-height: 1.5em
+
   .is-watched &
     color: var(--primary-color)
 
