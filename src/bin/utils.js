@@ -151,3 +151,7 @@ export const detectFiles = text => {
   }
   return ret
 }
+
+export const isMac = () => {
+  return window.navigator.platform.includes('Mac')
+}
