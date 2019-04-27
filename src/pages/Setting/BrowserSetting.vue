@@ -136,17 +136,18 @@ export default {
   margin: 1rem 0
   input
     margin-right: 0.5rem
+  cursor: pointer
 .open-channel-selector
   margin-top: -1rem
 .key
-  display: inline-block;
-  background: #ddd;
+  display: inline-block
+  background: #ddd
   border:
-    color: #666;
-    style: solid;
-    width: 1px;
-    radius: 5px;
-  padding: 4px 8px;
-  margin: 2px 4px;
-  box-shadow: 0px 1px #999;
+    color: #666
+    style: solid
+    width: 1px
+    radius: 5px
+  padding: 4px 8px
+  margin: 2px 4px
+  box-shadow: 0px 1px #999
 </style>
