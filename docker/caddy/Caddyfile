@@ -1,10 +1,12 @@
 :80
 gzip
-log / stdout "time:{when}	host:{host}	method:{method}	uri:{uri}	proto:{proto}	remote:{remote}	scheme:{scheme}	status:{status}	size:{size}	latency:{latency}	referer:{>Referer}	ua:{>User-Agent}	real_ip:{>X-Real-IP}	forwarded_for:{>X-Forwarded-For}"
+
+realip {
+  from 172.17.0.0/16
+}
+log / stdout "time:{when}	host:{host}	method:{method}	uri:{uri}	proto:{proto}	remote:{remote}	scheme:{scheme}	status:{status}	size:{size}	latency:{latency}	referer:{>Referer}	ua:{>User-Agent}	forwarded_for:{>X-Forwarded-For}"
+
 header / Access-Control-Allow-Origin  *
-
-root /usr/share/caddy/html
-
 header /sw.js Cache-Control "max-age=0"
 
 rewrite {
