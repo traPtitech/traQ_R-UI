@@ -168,7 +168,7 @@ export default {
     },
     topic() {
       if (this.$route.params.user) return ''
-      return this.$store.getters.channelTopic(this.currentChannelId)
+      return this.$store.state.channelMap[this.currentChannelId].topic
     },
     titlebarClass() {
       return {
