@@ -10,7 +10,7 @@
     .channel-detail-element-topic-icon.flex-center
       icon-topic(size="18" :color="iconColor")
     p.channel-detail-element-topic.text-ellipsis
-      | {{topic}}
+      | {{this.model.topic}}
 </template>
 
 <script>
@@ -23,11 +23,6 @@ export default {
   },
   props: {
     model: Object
-  },
-  mounted() {
-    if (this.$store.state.channelTopicMap[this.model.channelId] === undefined) {
-      this.$store.dispatch('getChannelTopic', this.model.channelId)
-    }
   },
   methods: {
     channelNameById(channelId) {
@@ -85,11 +80,8 @@ export default {
     isNotified() {
       return this.$store.state.myNotifiedChannelSet.has(this.model.channelId)
     },
-    topic() {
-      return this.$store.getters.channelTopic(this.model.channelId)
-    },
     hasTopic() {
-      return this.topic.length > 0
+      return this.model.topic.length > 0
     },
     iconColor() {
       return this.isWatched ? 'var(--primary-color)' : 'white'
