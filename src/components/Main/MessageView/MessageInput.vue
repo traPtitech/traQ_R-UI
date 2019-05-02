@@ -600,7 +600,7 @@ $message-input-button-height-pc: 40px - 2px
     border:
       style: solid
       color: var(--tertiary-color-on-bg)
-      width: 1px
+      width: 2px
       radius: 8px
   padding:
     right: 6px
