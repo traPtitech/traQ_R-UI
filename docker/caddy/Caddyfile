@@ -6,6 +6,8 @@ realip {
 }
 log / stdout "time:{when}	host:{host}	method:{method}	uri:{uri}	proto:{proto}	remote:{remote}	scheme:{scheme}	status:{status}	size:{size}	latency:{latency}	referer:{>Referer}	ua:{>User-Agent}	forwarded_for:{>X-Forwarded-For}"
 
+root /usr/share/caddy/html
+
 header / Access-Control-Allow-Origin  *
 header /sw.js Cache-Control "max-age=0"
 

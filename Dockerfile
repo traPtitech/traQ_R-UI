@@ -11,4 +11,4 @@ RUN npm run build
 FROM abiosoft/caddy:0.11.5-no-stats
 EXPOSE 80
 COPY ./docker/caddy/Caddyfile /etc/Caddyfile
-COPY --from=build /app/dist /srv
+COPY --from=build /app/dist /usr/share/caddy/html
