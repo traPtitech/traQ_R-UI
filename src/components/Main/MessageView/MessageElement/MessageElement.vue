@@ -40,7 +40,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea#message-edit-text-area.input-reset.edit-area(v-model="edited")
+          textarea.message-edit-text-area.input-reset.edit-area(v-model="edited")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -297,7 +297,7 @@ export default {
     this.getAttachments()
   },
   updated() {
-    autosize(document.getElementById('message-edit-text-area'))
+    autosize(this.$el.querySelector('.message-edit-text-area'))
   }
 }
 </script>
