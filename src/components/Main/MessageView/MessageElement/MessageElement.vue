@@ -40,7 +40,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea.message-edit-text-area.input-reset.edit-area(v-model="edited")
+          textarea.input-reset.edit-area(v-model="edited" ref="editArea")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -120,10 +120,12 @@ export default {
     editMessage() {
       this.isEditing = true
       this.edited = this.model.content
+      console.log(this.isEditing)
     },
     editSubmit() {
       if (this.edited === this.model.content) {
         this.isEditing = false
+        console.log(this.isEditing)
         return
       }
       client.editMessage(this.model.messageId, this.edited)
@@ -290,15 +292,29 @@ export default {
     model() {
       this.render()
       this.getAttachments()
+    },
+    isEditing: function(newValue) {
+      if (newValue === true) {
+        this.$nextTick(() => {
+          autosize(this.$refs.editArea)
+        })
+      } else {
+        this.$nextTick(() => {
+          autosize.destroy(this.$refs.editArea)
+        })
+      }
+    },
+    edited: function() {
+      autosize.update(this.$refs.editArea)
     }
   },
   mounted() {
     this.render()
     this.getAttachments()
-  },
-  updated() {
-    autosize(this.$el.querySelector('.message-edit-text-area'))
   }
+  /*updated() {
+    autosize(this.$el.querySelector('.message-edit-text-area'))
+  }*/
 }
 </script>
 
