@@ -242,7 +242,7 @@ export default {
   width: 100%
   height: 100%
   padding: 6px 12px 6px
-  overflow: scroll
+  overflow: visible
 
 .stamp-picker-body-inner-wrapper
   display: flex
