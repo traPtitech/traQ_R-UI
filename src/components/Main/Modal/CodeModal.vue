@@ -17,6 +17,11 @@ export default {
     BaseCommonModal,
     IconQRCode
   },
+  data() {
+    return {
+      intervalId: null
+    }
+  },
   methods: {
     checkQRCodeImage() {
       this.$store.commit('modal/setQRCodeImage')
@@ -35,10 +40,10 @@ export default {
   },
   mounted() {
     this.checkQRCodeImage()
-    setInterval(this.checkQRCodeImage, 1000 * 60)
+    this.intervalId = setInterval(this.checkQRCodeImage, 1000 * 60)
   },
   beforeDestroy() {
-    clearInterval(this.checkQRCodeImage)
+    clearInterval(this.intervalId)
   }
 }
 </script>
