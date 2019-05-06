@@ -56,6 +56,10 @@ input, textarea
 
 .is-scroll
   -webkit-overflow-scrolling: touch
+  scrollbar-color: var(--primary-color-transparent) transparent
+
+  &:hover
+    scrollbar-color: var(--primary-color-on-bg) transparent
 
   &::-webkit-scrollbar
     width: $scrollbar-width
@@ -74,6 +78,10 @@ input, textarea
       background: var(--primary-color-on-bg)
 
   &.white
+    scrollbar-color: #{rgba(white, 0.3)} transparent
+
+    &:hover
+      scrollbar-color: white transparent
 
     &::-webkit-scrollbar
       width: $scrollbar-width
