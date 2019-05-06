@@ -291,7 +291,7 @@ export default {
       this.render()
       this.getAttachments()
     },
-    isEditingat(newValue) {
+    isEditing(newValue) {
       if (newValue) {
         this.$nextTick(() => {
           autosize(this.$refs.editArea)
