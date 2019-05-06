@@ -8,7 +8,8 @@ export default {
     currentUserTags: [],
     currentTagUserIds: [],
     currentUserGroupIds: [],
-    lastUser: null
+    lastUser: null,
+    qrLastLoad: null
   },
   getters: {
     isActive: state => !!state.name,
@@ -30,6 +31,14 @@ export default {
     }
   },
   mutations: {
+    setQRCodeImage(state) {
+      if (
+        !state.qrLastLoad ||
+        new Date().getTime() - state.qrLastLoad > 1000 * 60 * 10
+      ) {
+        state.qrLastLoad = new Date().getTime()
+      }
+    },
     setModalName(state, name) {
       state.name = name
     },

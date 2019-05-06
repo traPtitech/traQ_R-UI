@@ -17,16 +17,28 @@ export default {
     BaseCommonModal,
     IconQRCode
   },
+  methods: {
+    checkQRCodeImage() {
+      this.$store.commit('modal/setQRCodeImage')
+    }
+  },
   computed: {
-    ...mapState('modal', ['data']),
+    ...mapState('modal', ['data', 'qrLastLoad']),
     qrImageStyle() {
       return {
-        backgroundImage: `url(${this.qrCodeUrl})`
+        backgroundImage: `url(${this.qrCodeUrl}?${this.qrLastLoad})`
       }
     },
     qrCodeUrl() {
       return client.getQRCodeUrl()
     }
+  },
+  mounted() {
+    this.checkQRCodeImage()
+    setInterval(this.checkQRCodeImage, 1000 * 60)
+  },
+  beforeDestroy() {
+    clearInterval(this.checkQRCodeImage)
   }
 }
 </script>
