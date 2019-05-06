@@ -480,6 +480,7 @@ export default {
   background-color: #d0d0d0
   padding: 10px
   box-sizing: border-box
+  max-height: 240px
 
 .edit-button
   border: none
@@ -586,8 +587,4 @@ export default {
 		background-position: 100% 50%
 	100%
 		background-position: 0% 50%
-
-#message-edit-text-area
-  font-family: 'メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
-  max-height: 240px
 </style>
