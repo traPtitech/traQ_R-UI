@@ -262,6 +262,9 @@ const client = {
       })
     })
   },
+  getQRCodeUrl() {
+    return (axios.defaults.baseURL || '/') + 'api/1.0/users/me/qr-code'
+  },
 
   // Tag: clip
   getAllClipMessages() {

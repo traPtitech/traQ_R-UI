@@ -35,7 +35,7 @@ module.exports = {
       })
     ]:[
       new webpack.DefinePlugin({
-        __VERSION__: JSON.stringify("local")
+        __VERSION__: JSON.stringify("dev")
       })
     ]
   },
