@@ -40,7 +40,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea.input-reset.edit-area(v-model="edited")
+          textarea.input-reset.edit-area(v-model="edited" ref="editArea")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -74,6 +74,7 @@ import IconDots from '@/components/Icon/IconDots'
 import IconPin from '@/components/Icon/IconPin'
 import IconStampPlus from '@/components/Icon/IconStampPlus'
 import IconPen from '@/components/Icon/IconPen'
+import autosize from 'autosize'
 
 export default {
   name: 'MessageElement',
@@ -289,6 +290,18 @@ export default {
     model() {
       this.render()
       this.getAttachments()
+    },
+    isEditingat(newValue) {
+      if (newValue) {
+        this.$nextTick(() => {
+          autosize(this.$refs.editArea)
+        })
+      } else {
+        autosize.destroy(this.$refs.editArea)
+      }
+    },
+    edited() {
+      autosize.update(this.$refs.editArea)
     }
   },
   mounted() {
@@ -573,4 +586,8 @@ export default {
 		background-position: 100% 50%
 	100%
 		background-position: 0% 50%
+
+#message-edit-text-area
+  font-family: 'メイリオ', Meiryo,'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','ＭＳ Ｐゴシック','MS PGothic','MS UI Gothic','Helvetica','Arial',sans-serif
+  max-height: 240px
 </style>
