@@ -120,12 +120,10 @@ export default {
     editMessage() {
       this.isEditing = true
       this.edited = this.model.content
-      console.log(this.isEditing)
     },
     editSubmit() {
       if (this.edited === this.model.content) {
         this.isEditing = false
-        console.log(this.isEditing)
         return
       }
       client.editMessage(this.model.messageId, this.edited)
@@ -293,18 +291,16 @@ export default {
       this.render()
       this.getAttachments()
     },
-    isEditing: function(newValue) {
-      if (newValue === true) {
+    isEditingat(newValue) {
+      if (newValue) {
         this.$nextTick(() => {
           autosize(this.$refs.editArea)
         })
       } else {
-        this.$nextTick(() => {
-          autosize.destroy(this.$refs.editArea)
-        })
+        autosize.destroy(this.$refs.editArea)
       }
     },
-    edited: function() {
+    edited() {
       autosize.update(this.$refs.editArea)
     }
   },
@@ -312,9 +308,6 @@ export default {
     this.render()
     this.getAttachments()
   }
-  /*updated() {
-    autosize(this.$el.querySelector('.message-edit-text-area'))
-  }*/
 }
 </script>
 
