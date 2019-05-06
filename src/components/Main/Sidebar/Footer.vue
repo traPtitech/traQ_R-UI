@@ -5,6 +5,8 @@
   ul.footer-button-wrap
     li.menu-button(@click.prevent="$store.dispatch('openTourModal')")
       IconHelp
+    li.menu-button(@click="$store.dispatch('openCodeModal')")
+      IconQRCode
     li.menu-button.theme(@click="changeTheme")
       IconCrescent(v-if="theme === 'light'")
       IconCrescentFill(v-else)
@@ -18,13 +20,15 @@ import IconGear from '@/components/Icon/IconGear'
 import IconCrescent from '@/components/Icon/IconCrescent'
 import IconCrescentFill from '@/components/Icon/IconCrescentFill'
 import IconHelp from '@/components/Icon/IconHelp'
+import IconQRCode from '@/components/Icon/IconQRCode'
 
 export default {
   components: {
     IconGear,
     IconCrescent,
     IconCrescentFill,
-    IconHelp
+    IconHelp,
+    IconQRCode
   },
   methods: {
     changeTheme() {
@@ -56,7 +60,7 @@ export default {
   align-items: center
   justify-content: space-between
 .footer-button-wrap
-  margin: 0 20px
+  margin: 0 15px
   display: flex
 
 .menu-button

@@ -114,6 +114,12 @@ export default {
         dispatch('open', { name: 'TourModal', data })
       }
     },
+    openCodeModal: {
+      root: true,
+      handler({ dispatch }, data) {
+        dispatch('open', { name: 'CodeModal', data })
+      }
+    },
     openChannelCreateModal: {
       root: true,
       handler({ dispatch }) {

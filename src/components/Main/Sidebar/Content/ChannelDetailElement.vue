@@ -216,6 +216,8 @@ export default {
   color: $text-light-color
   padding:
     left: 4px
+  font-size: 0.9em
+  line-height: 1.4em
 
   .channel-watched &
     color: $primary-color
