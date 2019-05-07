@@ -126,8 +126,6 @@ export default {
   z-index: 1
   user-select: none
   height: 34px
-  direction: rtl
-  text-align: left
 
   .channel-watched &
     color: $primary-color
