@@ -84,8 +84,9 @@ export default {
   text-align: center
   padding: 8px
   margin: 8px
-  background: var(--secondary-color)
+  color: white
+  background: var(--white-on-primary)
   cursor: pointer
   &:hover
-    background: var(--tertiary-color)
+    background: var(--white-on-primary-hovered)
 </style>
