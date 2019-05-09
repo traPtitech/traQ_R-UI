@@ -1,4 +1,5 @@
 import store from '@/store'
+import stampAltNameTable from '@/bin/emoji_altname_table.json'
 
 const match = (word, key) => {
   return word.substr(0, key.length).toLowerCase() === key
@@ -40,8 +41,15 @@ export default function(key, limit) {
         }
       })
   } else if (key.type === ':') {
+    const stampAltNames = stampAltNameTable
+      .filter(stamp => match(stamp.altName, key.keyword))
+      .map(stamp => stamp.name)
+
     return store.state.stampData
-      .filter(stamp => match(stamp.name, key.keyword))
+      .filter(
+        stamp =>
+          match(stamp.name, key.keyword) || stampAltNames.includes(key.keyword)
+      )
       .slice(0, limit)
       .map(stamp => {
         return {

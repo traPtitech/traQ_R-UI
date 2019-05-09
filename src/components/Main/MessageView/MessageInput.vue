@@ -58,6 +58,7 @@ import autosize from 'autosize'
 import client from '@/bin/client'
 import { isImage } from '@/bin/utils'
 import suggest from '@/bin/suggest'
+import stampAltNameTable from '@/bin/emoji_altname_table.json'
 import MessageTypingUsers from './MessageTypingUsers'
 import IconSend from '@/components/Icon/IconSend'
 import IconUpload from '@/components/Icon/IconUpload'
@@ -162,8 +163,8 @@ export default {
                   return s
                 } else {
                   inQuote = true
-                  return this.replaceGroup(
-                    this.replaceChannel(this.replaceUser(s))
+                  return this.replaceStampAltName(
+                    this.replaceGroup(this.replaceChannel(this.replaceUser(s)))
                   )
                 }
               })
@@ -230,6 +231,15 @@ export default {
           }
         }
       )
+    },
+    replaceStampAltName(message) {
+      return message.replace(/:([a-zA-Z0-9+_-]{1,32}):/g, (match, altName) => {
+        const stamp = stampAltNameTable.filter(
+          stamp => stamp.altName === altName
+        )[0]
+        if (!stamp) return match
+        return `:${stamp.name}:`
+      })
     },
     clearKey() {
       this.key = {
