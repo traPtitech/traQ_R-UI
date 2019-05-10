@@ -78,6 +78,20 @@ jobs:
               docker tag trap/traq-ui:$IMAGE_TAG trap/traq-ui:release
               docker push trap/traq-ui:release
             fi
+
+  deploy-staging:
+    machine: true
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "cd:2f:d4:8c:86:98:63:5e:07:37:78:65:f8:2a:a2:cc"
+      - run:
+          name: ssh-keyscan
+          command: ssh-keyscan ${STAGING_DEPLOY_HOST} >> ~/.ssh/known_hosts 2>/dev/null
+      - run:
+          name: deploy staging environment
+          command: ssh -o LogLevel=QUIET -t ${STAGING_DEPLOY_USER}@${STAGING_DEPLOY_HOST} "~/deploy.sh traq-frontend"
+
   deploy-prod:
     machine: true
     steps:
@@ -117,6 +131,12 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v[0-9]+(\.[0-9]+){2}.*/
+      - deploy-staging:
+          requires:
+            - build-image
+          filters:
+            branches:
+              only: master
       - deploy-prod:
           requires:
             - pending-approval
