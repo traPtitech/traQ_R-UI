@@ -3,14 +3,14 @@
   .file-modal-header-wrap(@click="close")
     .file-modal-close(@click="close")
       icon-close(color="white" size="16")
-  image-viewer.file-modal-image-viewer(:url="fileUrl(data.fileId)")
+  image-viewer.file-modal-image-viewer(:url="imageSrc")
 
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
+import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import ImageViewer from '@/components/Main/Modal/Util/ImageViewer'
 import IconClose from '@/components/Icon/IconClose'
 
@@ -29,7 +29,10 @@ export default {
   },
   computed: {
     ...mapState('modal', ['data']),
-    ...mapGetters(['fileUrl'])
+    ...mapGetters(['fileUrl']),
+    imageSrc() {
+      return this.fileUrl(this.data.fileId)
+    }
   },
   mounted() {
     this.$emit('opacityChange', 0.7)
@@ -46,10 +49,10 @@ export default {
   background: #222222
   width: 100vw
   height: 100%
+  max-height: 100%
   max-width: 60rem
   overflow: hidden
-  @media (max-width: 60rem)
-    border-radius: 0
+  border-radius: 0
 .file-modal-header-wrap
   position: absolute
   display: flex
