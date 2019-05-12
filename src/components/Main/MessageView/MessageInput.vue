@@ -235,7 +235,9 @@ export default {
     replaceStampAltName(message) {
       return message.replace(/:([a-zA-Z0-9+_-]{1,32}):/g, (match, altName) => {
         const stamp = stampAltNameTable.filter(
-          stamp => stamp.altName === altName
+          stamp =>
+            stamp.altName === altName &&
+            this.$store.state.stampNameMap[altName] === null
         )[0]
         if (!stamp) return match
         return `:${stamp.name}:`
