@@ -1,14 +1,14 @@
 <template lang="pug">
 .list-channels
   template(v-if="isUnreadFiltered")
-    channel-detail-element(v-for="channel in filteredUnreadChannels" :key="channel.channelId" :model="channel")
-    .channel-empty-message(v-if="filteredUnreadChannels.length === 0")
+    channel-detail-element(v-for="channel in visibleUnreadChannels" :key="channel.channelId" :model="channel")
+    .channel-empty-message(v-if="visibleUnreadChannels.length === 0")
       | 未読はありません
   template(v-else-if="filterText !== ''")
-    channel-detail-element(v-for="channel in filteredChannels" :key="channel.channelId" :model="channel")
+    channel-detail-element(v-for="channel in visibleChannels" :key="channel.channelId" :model="channel")
     .channel-remove-limit(v-if="isSearchLimited" @click="removeSearchLimit")
       | さらに検索する
-    .channel-empty-message(v-if="filteredChannels.length === 0")
+    .channel-empty-message(v-if="visibleChannels.length === 0")
       | 見つかりませんでした
   template(v-else)
     channel-element(v-for="channel in channels" :key="channel.channelId" :model="channel")
@@ -43,19 +43,19 @@ export default {
     channels() {
       return this.$store.getters.childrenChannels('')
     },
-    allFilteredChannels() {
+    filteredChannels() {
       return this.allChannels.filter(c => {
         return this.caseIgnoreFilterText.test(c.name)
       })
     },
-    filteredChannels() {
+    visibleChannels() {
       if (this.isSearchLimited) {
-        return this.allFilteredChannels.slice(0, SEARCH_LIMIT + 1)
+        return this.filteredChannels.slice(0, SEARCH_LIMIT + 1)
       }
-      return this.allFilteredChannels
+      return this.filteredChannels
     },
-    filteredUnreadChannels() {
-      return this.filteredChannels.filter(
+    visibleUnreadChannels() {
+      return this.visibleChannels.filter(
         c => this.getChannelUnreadMessageNum(c.channelId) > 0
       )
     },
@@ -70,7 +70,7 @@ export default {
     filterText() {
       this.isSearchLimited = true
     },
-    allFilteredChannels(val) {
+    filteredChannels(val) {
       if (val.length <= SEARCH_LIMIT) {
         this.isSearchLimited = false
       }
