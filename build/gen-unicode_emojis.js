@@ -25,6 +25,7 @@ Promise.all([axios.get('https://raw.githubusercontent.com/emojione/emojione/mast
       emojis: []
     }
 
+    const altNameTable = [];
     Object.keys(emojis).forEach(key => {
       const e = emojis[key]
       if (e.category === 'modifier') {
@@ -38,6 +39,12 @@ Promise.all([axios.get('https://raw.githubusercontent.com/emojione/emojione/mast
         name: e.shortname.replace(/:/g, ''),
         order: e.order,
         code: key
+      })
+      e.shortname_alternates.forEach(altName => {
+        altNameTable.push({
+          altName: altName.replace(/:/g, ''),
+          name: e.shortname.replace(/:/g, '')
+        })
       })
     })
 
@@ -53,6 +60,7 @@ Promise.all([axios.get('https://raw.githubusercontent.com/emojione/emojione/mast
     })
 
     fs.writeFileSync('./src/bin/unicode_emojis.json', JSON.stringify(result))
+    fs.writeFileSync('./src/bin/emoji_altname_table.json', JSON.stringify(altNameTable))
   })
   .catch(e => {
     console.error(e)

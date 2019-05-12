@@ -55,6 +55,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import stampAltNameTable from '@/bin/emoji_altname_table.json'
 import DebouncedInput from '@/components/Util/DebouncedInput'
 import IconSearch from '@/components/Icon/IconSearch'
 import IconClock from '@/components/Icon/IconClock'
@@ -114,19 +115,26 @@ export default {
       }
     },
     filteredStamps() {
+      let filterFunc
       if (this.search.length === 1) {
-        return this.stampCategolized
-          .slice(1, this.stampCategolized.length)
-          .map(c => c.stamps)
-          .flat()
-          .filter(stamp => stamp.name === this.search)
+        filterFunc = (a, b) => a === b
       } else {
-        return this.stampCategolized
-          .slice(1, this.stampCategolized.length)
-          .map(c => c.stamps)
-          .flat()
-          .filter(stamp => stamp.name.includes(this.search))
+        filterFunc = (a, b) => a.includes(b)
       }
+
+      const filteredAltName = stampAltNameTable
+        .filter(stamp => filterFunc(stamp.altName, this.search))
+        .map(stamp => stamp.name)
+
+      return this.stampCategolized
+        .slice(1, this.stampCategolized.length)
+        .map(c => c.stamps)
+        .flat()
+        .filter(
+          stamp =>
+            filterFunc(stamp.name, this.search) ||
+            filteredAltName.includes(stamp.name)
+        )
     }
   },
   methods: {
