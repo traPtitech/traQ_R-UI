@@ -1,14 +1,17 @@
 <template lang="pug">
 viewfinder-container.image-viewer(
+  close-mode="y"
   :flick-duration="flickDuration"
   @resize="handleViewfinderResize"
-  @flick-start="$emit('close-start')"
   @flick-end="$emit('close')"
+  @close-process="handleCloseProcess"
+  @position-reset="$emit('position-reset')"
 )
   img.image-viewer-image(
     ref="image"
     :src="url"
     :style="imageStyle"
+    @dragstart.prevent.stop
   )
 
 </template>
@@ -55,6 +58,9 @@ export default {
         this.imageWidth = this.containerHeight * this.imageAspectRatio
         this.imageHeight = this.containerHeight
       }
+    },
+    handleCloseProcess(process) {
+      this.$emit('close-process', process)
     }
   },
   computed: {

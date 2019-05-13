@@ -46,7 +46,7 @@ export default {
       default: 10
     },
 
-    enableFlick: {
+    enableFlickY: {
       type: Boolean,
       default: true
     },
@@ -54,7 +54,18 @@ export default {
     flickDuration: {
       type: Number,
       default: 300
-    }
+    },
+
+    /**
+     * @property { 'x' | 'y' | 'none' } closeMode
+     */
+    closeMode: {
+      type: String,
+      default: 'none',
+      validator (value) {
+        return ['x', 'y', 'none'].indexOf(value) !== -1
+      }
+    },
   },
   data() {
     return {
@@ -143,6 +154,13 @@ export default {
       return this.contentRight < this.rightBoundary
     },
 
+    flickEndX() {
+      return this.contentInitialLeft + this.contentWidth
+    },
+    flickEndY() {
+      return this.contentInitialTop + this.contentHeight
+    },
+
     contentStyle() {
       return this.contentAspectRetio === 0
         ? {
@@ -190,30 +208,29 @@ export default {
       this.contentHeight = rect.height
     },
 
-    toContainerLayerPos(clientX, clientY) {
-      return [
-        clientX - this.contentInitialLeft - this.containerRect.left,
-        clientY - this.contentInitialTop - this.containerRect.top
-      ]
-    },
-
-    processInteractionEnd() {},
-
     adjustContentPos() {
+      let flag = false
       this.toResetContentPos = true
       if (this.isExceedingTopBoundary) {
         this.contentY = this.topBoundary
+        flag = true
       }
       if (this.isExceedingLeftBoundary) {
         this.contentX = this.leftBoundary
+        flag = true
       }
       if (this.isExceedingBottomBoundary) {
         this.contentY =
           this.bottomBoundary - this.contentHeight * this.contentScale
+        flag = true
       }
       if (this.isExceedingRightBoundary) {
         this.contentX =
           this.rightBoundary - this.contentWidth * this.contentScale
+        flag = true
+      }
+      if (flag && this.contentScale === 1) {
+        this.$emit('position-reset')
       }
     },
 
@@ -222,13 +239,20 @@ export default {
 
       this.isFlicking = true
       if (this.potentiallyFlickingDirection > 0) {
-        this.contentY = this.contentInitialTop + this.contentHeight
+        this.contentY = this.flickEndY
       } else {
-        this.contentY = -this.contentInitialTop - this.contentHeight
+        this.contentY = -this.flickEndY
       }
 
       this.$emit('flick-start')
       setTimeout(() => this.$emit('flick-end'), this.flickDuration)
+    },
+
+    processFlick(from, to) {
+      const now = (new Date()).valueOf()
+      if (now < to) {
+
+      }
     },
 
     /**
@@ -237,7 +261,12 @@ export default {
      */
     zoom(position, scale) {
       this.toResetContentPos = false
-      if (scale < this.minScale || scale > this.maxScale) {
+      if (scale < this.minScale) {
+        this.contentScale = this.minScale
+        return
+      }
+      if (scale > this.maxScale) {
+        this.contentScale = this.maxScale
         return
       }
       const oldX = this.contentX
@@ -246,6 +275,41 @@ export default {
       this.contentScale = scale
       this.contentX = (1 - scale / oldScale) * (position[0] - oldX) + oldX
       this.contentY = (1 - scale / oldScale) * (position[1] - oldY) + oldY
+    },
+
+    pan(deltaX, deltaY, checkFlick) {
+      this.toResetContentPos = false
+
+      // change content position depending on close mode
+      if (this.closeMode === 'x' && this.contentScale === this.minScale) {
+        this.contentX += deltaX
+        this.$emit('close-process', Math.min(1, Math.max(0, Math.abs(this.contentX / this.flickEndX))))
+      }
+      else if (this.closeMode === 'y' && this.contentScale === this.minScale) {
+        this.contentY += deltaY
+        this.$emit('close-process', Math.min(1, Math.max(0, Math.abs(this.contentY / this.flickEndY))))
+      }
+      else {
+        this.contentX += deltaX
+        this.contentY += deltaY
+      }
+
+      if (!checkFlick || this.contentScale !== this.minScale) return
+
+      if (this.enableFlickY && Math.abs(deltaY) > flickThresould) {
+        this.potentiallyFlicking = true
+        this.potentiallyFlickingDirection = Math.sign(deltaY)
+      } else {
+        this.potentiallyFlicking = false
+        this.potentiallyFlickingDirection = 0
+      }
+    },
+
+    toContainerLayerPos(clientX, clientY) {
+      return [
+        clientX - this.contentInitialLeft - this.containerRect.left,
+        clientY - this.contentInitialTop - this.containerRect.top
+      ]
     },
 
     getMidPointOfTouches(touches) {
@@ -261,22 +325,6 @@ export default {
         (touch1.clientX - touch2.clientX) ** 2 +
           (touch1.clientY - touch2.clientY) ** 2
       )
-    },
-
-    pan(deltaX, deltaY, checkFlick) {
-      this.toResetContentPos = false
-      this.contentX += deltaX
-      this.contentY += deltaY
-
-      if (!checkFlick) return
-
-      if (this.enableFlick && Math.abs(deltaY) > flickThresould) {
-        this.potentiallyFlicking = true
-        this.potentiallyFlickingDirection = Math.sign(deltaY)
-      } else {
-        this.potentiallyFlicking = false
-        this.potentiallyFlickingDirection = 0
-      }
     },
 
     handleWheel(event) {

@@ -1,5 +1,7 @@
 <template lang="pug">
-.file-modal
+.file-modal(
+  :style="modalStyle"
+)
   .file-modal-header-wrap(
     @click="close"
     @wheel.stop.prevent
@@ -9,7 +11,9 @@
   image-viewer.file-modal-image-viewer(
     :url="imageSrc"
     :flick-duration="flickDuration"
+    @position-reset="opacity = 1"
     @close-start="handleCloseStart"
+    @close-process="handleCloseProcess"
     @close="close"
   )
 </template>
@@ -27,7 +31,8 @@ export default {
   },
   data() {
     return {
-      flickDuration: 200
+      flickDuration: 200,
+      opacity: 1
     }
   },
   methods: {
@@ -36,11 +41,19 @@ export default {
     }),
     handleCloseStart() {
       this.$emit('fadeout-start', this.flickDuration)
+    },
+    handleCloseProcess(process) {
+      this.opacity = 1 - process
     }
   },
   computed: {
     ...mapState('modal', ['data']),
     ...mapGetters(['fileUrl']),
+    modalStyle() {
+      return {
+        opacity: this.opacity
+      }
+    },
     imageSrc() {
       return this.fileUrl(this.data.fileId)
     }
