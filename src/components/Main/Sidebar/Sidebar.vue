@@ -11,11 +11,11 @@
           :isUnreadFiltered="isUnreadFiltered"
           @change="$store.commit('setIsUnreadFiltered', $event)"
           :hasDropShadow="filterHasDropShadow")
-    // .activity-controll-wrapper(v-show="isChannelsActivityTab")
-    //   transition(name="filter-slide-up")
-    //     channel-activity-controlls(
-    //       v-show="isActivityControllShown"
-    //       :hasDropShadow="filterHasDropShadow")
+    .activity-controll-wrapper(v-show="isChannelsActivityTab")
+      transition(name="filter-slide-up")
+        channel-activity-controlls(
+          v-show="isActivityControllShown"
+          :hasDropShadow="filterHasDropShadow")
     Content(@scroll="scrollHandler" ref="sidebarContent")
     channel-list-tab-switcher(v-if="menuContent === 'Channels'" @scrollToTop="scrollToTop")
   Footer

@@ -298,7 +298,9 @@ export default {
           }
         }
         this.$store.dispatch('updateUnreadMessages')
-        this.$store.dispatch('updateChannelActivity')
+
+        // [NOTE] MESSAGE_CREATEDは通知ONのチャンネルにしか起きないので通知でフィルタリングする必要がない
+        this.$store.commit('addActivityMessages', res.data)
       })
     },
     messageUpdated(data) {
