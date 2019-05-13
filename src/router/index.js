@@ -51,6 +51,10 @@ const router = new Router({
       component: asyncLoadComponents(import('@/pages/Register/Register'))
     },
     {
+      path: '/pipeline',
+      redirect: '/'
+    },
+    {
       path: '*',
       name: 'NotFound',
       component: asyncLoadComponents(import('@/pages/NotFound'))
