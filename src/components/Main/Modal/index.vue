@@ -1,6 +1,14 @@
 <template lang="pug">
-div.modal-overlay(v-if="isActive" :style="overlayStyle" @click.self="close")
-  component.modal(:is="name" @opacityChange="handleOpacityChange")
+.modal-container(v-if="isActive")
+  .modal-overlay(
+    :style="overlayStyle"
+    @click.self="close"
+  )
+  component.modal(
+    :is="name"
+    @opacity-change="handleOpacityChange"
+    @fadeout-start="handleFadeoutStart"
+  )
 </template>
 
 <script>
@@ -31,7 +39,9 @@ export default {
   data() {
     return {
       overlayOpacity: 0.2,
-      defaultOverlayOpacity: 0.2
+      defaultOverlayOpacity: 0.2,
+      isOnFadeout: false,
+      containerOpacityChangingDuration: 2000
     }
   },
   computed: {
@@ -39,7 +49,14 @@ export default {
     ...mapGetters('modal', ['isActive']),
     overlayStyle() {
       return {
-        background: `rgba(0, 0, 0, ${this.overlayOpacity})`
+        opacity: this.overlayOpacity
+      }
+    },
+    containerStyle() {
+      return {
+        opacity: this.containerOpacity,
+        transition: `opacity ${this.containerOpacityChangingDuration /
+          1000}s ease`
       }
     }
   },
@@ -47,6 +64,11 @@ export default {
     ...mapActions('modal', ['close']),
     handleOpacityChange(opacity) {
       this.overlayOpacity = opacity >= 0 ? opacity : this.defaultOverlayOpacity
+    },
+    async handleFadeoutStart(duration) {
+      this.containerOpacityChangingDuration = duration
+      this.isOnFadeout = true
+      this.containerOpacity = 0
     }
   }
 }
@@ -65,7 +87,8 @@ export default {
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)
   +mq(sp)
     max-height: 90vh
-.modal-overlay
+
+.modal-container
   z-index: $modal-index
   position: fixed
   width: 100vw
@@ -75,8 +98,20 @@ export default {
   display: flex
   justify-content: center
   align-items: center
-  cursor: auto
   animation: fadeIn .2s ease
+
+.modal-overlay
+  position: fixed
+  background: black
+  opacity: 0
+  width: 100vw
+  height: 100%
+  top: 0
+  left: 0
+  display: flex
+  justify-content: center
+  align-items: center
+  cursor: auto
 
 @keyframes fadeIn
   0%
