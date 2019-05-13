@@ -84,8 +84,11 @@ export default {
   background: var(--white-on-primary)
   color: #FFFFFF
   box-sizing: border-box
+  cursor: pointer
   &:first-child
     margin-right: 12px
+  &:hover
+    background: var(--white-on-primary-hovered)
 .channel-activity-notification-toggle.filter-enabled
   background: white
   .fa-icon
