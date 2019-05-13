@@ -24,6 +24,7 @@
 <script>
 const wheelTimeoutDuration = 100
 const flickThresould = 10
+const closeThresouldRate = 0.4
 
 export default {
   name: 'ViewfinderContainer',
@@ -62,10 +63,10 @@ export default {
     closeMode: {
       type: String,
       default: 'none',
-      validator (value) {
+      validator(value) {
         return ['x', 'y', 'none'].indexOf(value) !== -1
       }
-    },
+    }
   },
   data() {
     return {
@@ -248,10 +249,26 @@ export default {
       setTimeout(() => this.$emit('flick-end'), this.flickDuration)
     },
 
-    processFlick(from, to) {
-      const now = (new Date()).valueOf()
-      if (now < to) {
-
+    release(enableFlick) {
+      this.isPanning = false
+      if (enableFlick && this.potentiallyFlicking) {
+        this.startFlick()
+      } else if (
+        this.closeMode === 'x' &&
+        Math.abs(this.contentX) > this.flickEndX * closeThresouldRate
+      ) {
+        this.potentiallyFlicking = true
+        this.potentiallyFlickingDirection = Math.sign(this.contentX)
+        this.startFlick()
+      } else if (
+        this.closeMode === 'y' &&
+        Math.abs(this.contentY) > this.flickEndY * closeThresouldRate
+      ) {
+        this.potentiallyFlicking = true
+        this.potentiallyFlickingDirection = Math.sign(this.contentY)
+        this.startFlick()
+      } else {
+        this.adjustContentPos()
       }
     },
 
@@ -283,13 +300,20 @@ export default {
       // change content position depending on close mode
       if (this.closeMode === 'x' && this.contentScale === this.minScale) {
         this.contentX += deltaX
-        this.$emit('close-process', Math.min(1, Math.max(0, Math.abs(this.contentX / this.flickEndX))))
-      }
-      else if (this.closeMode === 'y' && this.contentScale === this.minScale) {
+        this.$emit(
+          'close-process',
+          Math.min(1, Math.max(0, Math.abs(this.contentX / this.flickEndX)))
+        )
+      } else if (
+        this.closeMode === 'y' &&
+        this.contentScale === this.minScale
+      ) {
         this.contentY += deltaY
-        this.$emit('close-process', Math.min(1, Math.max(0, Math.abs(this.contentY / this.flickEndY))))
-      }
-      else {
+        this.$emit(
+          'close-process',
+          Math.min(1, Math.max(0, Math.abs(this.contentY / this.flickEndY)))
+        )
+      } else {
         this.contentX += deltaX
         this.contentY += deltaY
       }
@@ -344,7 +368,7 @@ export default {
         clearTimeout(this.wheelPosResetTimeoutId)
       }
       this.wheelPosResetTimeoutId = setTimeout(() => {
-        this.adjustContentPos()
+        this.release()
       }, wheelTimeoutDuration)
     },
 
@@ -392,16 +416,10 @@ export default {
     },
     handleTouchEnd(event) {
       if (event.changedTouches.length === 1 && this.panBySingleFinger) {
-        this.isPanning = false
-        if (this.potentiallyFlicking) {
-          this.startFlick()
-        } else {
-          this.adjustContentPos()
-        }
+        this.release(true)
       }
       if (event.changedTouches.length === 2) {
-        this.isPanning = false
-        this.adjustContentPos()
+        this.release()
       }
     },
 
@@ -418,8 +436,7 @@ export default {
       }
     },
     handlePointerUp() {
-      this.isPanning = false
-      this.adjustContentPos()
+      this.release()
     },
 
     handleMouseDown(event) {
@@ -435,8 +452,7 @@ export default {
       }
     },
     handleMouseUp() {
-      this.isPanning = false
-      this.adjustContentPos()
+      this.release()
     }
   },
   mounted() {
