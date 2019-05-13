@@ -255,6 +255,7 @@ export default {
         this.startFlick()
       } else if (
         this.closeMode === 'x' &&
+        this.contentScale === this.minScale &&
         Math.abs(this.contentX) > this.flickEndX * closeThresouldRate
       ) {
         this.potentiallyFlicking = true
@@ -262,6 +263,7 @@ export default {
         this.startFlick()
       } else if (
         this.closeMode === 'y' &&
+        this.contentScale === this.minScale &&
         Math.abs(this.contentY) > this.flickEndY * closeThresouldRate
       ) {
         this.potentiallyFlicking = true
