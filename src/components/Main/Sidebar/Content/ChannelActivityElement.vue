@@ -5,13 +5,13 @@ div.channel-activity-wrap
     div.channel-activity-channel
       div.channel-activity-before(:class="channelBeforeClass")
         | #
-      div.channel-activity-name
+      div.channel-activity-name.text-ellipsis
         | {{ channelName }}
     hr.channel-activity-separator
     p.channel-recent-message
-      span.channel-recent-message-author
+      span.channel-recent-message-author.text-ellipsis
         | {{ authorName }}
-      span.channel-recent-message-content
+      span.channel-recent-message-content.text-ellipsis
         | {{ sanitizedMessage }}
       span.channel-recent-message-attachment-info(v-if="hasFile")
         | ファイルを送信しました
@@ -97,12 +97,17 @@ export default {
 <style lang="sass">
 .channel-activity-wrap
   display: block
+
 .channel-activity-box
   position: relative
   margin: 0 0
   cursor: pointer
-  padding: 16px
-  word-break: break-all;
+  padding:
+    top: 12px
+    bottom: 12px
+    right: 16px
+    left: 16px
+  word-break: break-all
   border-bottom: 1px solid rgba(0,0,0,0.1)
   color: white
   &:hover
@@ -110,11 +115,11 @@ export default {
   &.activity-watched
     background: white
     color: $primary-color
+
 .channel-activity-channel
   display: flex
   position: relative
   color: $text-light-color
-  margin-bottom: 8px
   font-weight: bold
   flex: 1
   text-align: left
@@ -122,7 +127,8 @@ export default {
   white-space: nowrap
   z-index: 1
   user-select: none
-  height: 18px
+  height: 24px
+
 .channel-activity-before
   position: relative
   display: flex
@@ -148,25 +154,42 @@ export default {
     top: -3px
     border-radius: 100%
     background: $notification-color
+
 .channel-activity-name
   width: 100%
-  overflow: hidden
+  line-height: 1.4em
   .activity-watched &
     color: $primary-color
+
 .channel-activity-separator
-  border-color: rgba(255, 255, 255, 0.5)
-  margin-left: 1.5rem
+  border:
+    top:
+      style: solid
+      width: 1px
+      color: rgba(255, 255, 255, 0.5)
+    left: none
+    right: none
+    bottom: none
+  margin:
+    top: 2px
+    bottom: 2px
+    left: 1.5rem
 
 .channel-recent-message
   margin-left: 1.5rem
-  max-height: 2rem
+  max-height: 2.8rem
+  line-height: 1.4em
   font-size: 0.9rem
   overflow: hidden
   text-overflow: ellipsis
 
 .channel-recent-message-author
+  display: inline-block
   font-weight: bold
   margin-right: 1rem
+
+.channel-recent-message-content
+  display: inline-block
 
 .channel-toggle
   border: solid 1px $text-light-color
@@ -184,8 +207,10 @@ export default {
     background: $primary-color
     color: $text-light-color
     border-color: $primary-color
+
 .list-complete-enter-active, .list-complete-leave-active
   transition: all .2s ease
+
 .list-complete-enter, .list-complete-leave-to
   opacity: 0
   transform: translateX(-5px)
