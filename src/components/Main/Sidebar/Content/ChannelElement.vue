@@ -285,6 +285,8 @@ export default {
     border-radius: 100%
     background: rgba(255, 255, 255, 0.3)
     border: 2px solid $primary-color
+    .channel-box:hover &
+      border-color: var(--primary-color-hovered)
   &.channel-notified.channel-toggle:not(.has-unread)::before
     content: ''
     position: absolute
