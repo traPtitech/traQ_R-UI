@@ -478,7 +478,9 @@ const store = new Vuex.Store({
     },
     addActivityMessages(state, data) {
       if (state.activityChannelIdSet.has(data.parentChannelId)) {
-        const index = state.activityMessages.findIndex(m => m.parentChannelId === data.parentChannelId)
+        const index = state.activityMessages.findIndex(
+          m => m.parentChannelId === data.parentChannelId
+        )
         state.activityMessages.splice(index, 1)
         state.activityMessages = [data, ...state.activityMessages]
       } else {

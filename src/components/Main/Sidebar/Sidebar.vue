@@ -195,6 +195,10 @@ export default {
       this.$nextTick(() => {
         this.currentChannelView = newVar
       })
+    },
+    isChannelsActivityTab(isActivityTab) {
+      if (!isActivityTab) return
+      this.$store.dispatch('updateChannelActivity')
     }
   }
 }
