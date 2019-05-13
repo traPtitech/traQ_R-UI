@@ -56,7 +56,7 @@
 import { mapGetters, mapState } from 'vuex'
 import autosize from 'autosize'
 import client from '@/bin/client'
-import { isImage } from '@/bin/utils'
+import { isImage, isModifierKey } from '@/bin/utils'
 import suggest from '@/bin/suggest'
 import stampAltNameTable from '@/bin/emoji_altname_table.json'
 import MessageTypingUsers from './MessageTypingUsers'
@@ -254,16 +254,8 @@ export default {
         return false
       }
       return (
-        (this.messageSendKey === 'modifier' && this.isModifierKey(keyEvent)) ||
-        (this.messageSendKey === 'none' && !this.isModifierKey(keyEvent))
-      )
-    },
-    isModifierKey(keyEvent) {
-      return (
-        keyEvent.shiftKey ||
-        keyEvent.altKey ||
-        keyEvent.ctrlKey ||
-        keyEvent.metaKey
+        (this.messageSendKey === 'modifier' && isModifierKey(keyEvent)) ||
+        (this.messageSendKey === 'none' && !isModifierKey(keyEvent))
       )
     },
     keydown(event) {
@@ -272,7 +264,7 @@ export default {
         return
       }
       this.postStatus = 'default'
-      if (this.isModifierKey(event)) {
+      if (isModifierKey(event)) {
         this.isPushedModifierKey = true
       }
       if (this.isSendKey(event)) {

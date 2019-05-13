@@ -40,7 +40,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea.input-reset.edit-area(v-model="edited" ref="editArea")
+          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @keydown="editKeydown")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -63,7 +63,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { detectFiles, displayDateTime } from '@/bin/utils'
+import { detectFiles, displayDateTime, isModifierKey } from '@/bin/utils'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 import MessageAttachedMessages from './MessageAttachedMessages'
@@ -116,6 +116,11 @@ export default {
         messageId: this.model.messageId
       })
       this.$store.commit('setStampPickerActive', true)
+    },
+    editKeydown(event) {
+      if (isModifierKey(event) && event.key === 'Enter') {
+        this.editSubmit()
+      }
     },
     editMessage() {
       this.isEditing = true
