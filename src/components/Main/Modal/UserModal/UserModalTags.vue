@@ -6,7 +6,7 @@
         IconTag(size="16" color="gray")
       .user-modal-tag-body(@click="openTagModal(tag)")
         | {{tag.tag}}
-      .user-modal-tag-status-icon(v-if="tag.editable")
+      .user-modal-tag-status-icon
         .user-modal-icon-wrap(@click="lockTag(index)" v-show="hasAuth && !tag.isLocked" role="button")
           IconUnlocked(size="16" color="gray")
         .user-modal-icon-wrap(@click="eraseTag(index)" v-show="!tag.isLocked" role="button")
@@ -81,7 +81,6 @@ export default {
       }
     },
     addTag() {
-      console.log(this.tagInput)
       if (this.tagInput === '') {
         return
       }

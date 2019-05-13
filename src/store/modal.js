@@ -14,10 +14,7 @@ export default {
   getters: {
     isActive: state => !!state.name,
     currentUserTagsSorted: state => {
-      const current = state.currentUserTags
-      return current
-        .filter(tag => !tag.editable)
-        .concat(current.filter(tag => tag.editable))
+      return state.currentUserTags
     },
     currentTagUsersSorted: state => {
       return state.currentTagUserIds
