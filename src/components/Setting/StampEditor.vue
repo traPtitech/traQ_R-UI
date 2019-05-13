@@ -15,6 +15,8 @@
     | {{ model ? '更新' : '追加' }}
   SettingDescription(v-if="showNameTakenError" warning)
     | このスタンプ名はすでに登録されています
+  SettingDescription(v-if="showNameInvalid" warning)
+    | スタンプ名は32文字以下の英数字または記号(+-_)で入力してください
 </template>
 
 <script>
@@ -71,7 +73,12 @@ export default {
       )
     },
     canNewStampBeRegistered() {
-      return this.stampFile && this.stampName.length > 0 && !this.hasNameTaken
+      return (
+        this.stampFile &&
+        this.stampName.length > 0 &&
+        !this.hasNameTaken &&
+        this.isNameValid
+      )
     },
     canStampBeUpdated() {
       return this.stampFile
@@ -86,6 +93,12 @@ export default {
       return (
         this.hasNameTaken && (!this.model || this.stampName !== this.model.name)
       )
+    },
+    isNameValid() {
+      return /^[a-zA-Z0-9+_-]{1,32}$/.test(this.stampName)
+    },
+    showNameInvalid() {
+      return this.stampName.length > 0 && !this.isNameValid
     }
   },
   methods: {
