@@ -55,7 +55,7 @@ export default {
       return this.filteredChannels
     },
     visibleUnreadChannels() {
-      return this.visibleChannels.filter(
+      return this.filteredChannels.filter(
         c => this.getChannelUnreadMessageNum(c.channelId) > 0
       )
     },
