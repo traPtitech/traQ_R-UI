@@ -63,7 +63,8 @@ const store = new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
-    channelRecentMessages: [],
+    activityMessages: [],
+    activityChannelIdSet: new Set(),
     openChannels: {},
     openUserLists: {},
     sidebarOpened: false,
@@ -471,8 +472,21 @@ const store = new Vuex.Store({
       })
       state.myNotifiedChannelSet = set
     },
-    setChannelRecentMessages(state, data) {
-      state.channelRecentMessages = data
+    setActivityMessages(state, data) {
+      state.activityMessages = data
+      state.activityChannelIdSet = new Set(data.map(m => m.parentChannelId))
+    },
+    addActivityMessages(state, data) {
+      if (state.activityChannelIdSet.has(data.parentChannelId)) {
+        const index = state.activityMessages.findIndex(
+          m => m.parentChannelId === data.parentChannelId
+        )
+        state.activityMessages.splice(index, 1)
+        state.activityMessages = [data, ...state.activityMessages]
+      } else {
+        state.activityMessages = [data, ...state.activityMessages]
+        state.activityChannelIdSet.add(data.parentChannelId)
+      }
     },
     setFilterSubscribedActivity(state, data) {
       state.filterSubscribedActivity = data
@@ -1043,7 +1057,7 @@ const store = new Vuex.Store({
     async updateChannelActivity({ state, commit }) {
       const filter = state.filterSubscribedActivity || false
       const res = await client.getLatestMessages(50, filter)
-      commit('setChannelRecentMessages', res.data)
+      commit('setActivityMessages', res.data)
     },
     async updateMyNotifiedChannels({ commit }) {
       const res = await client.getMyNotifiedChannels()

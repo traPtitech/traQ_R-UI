@@ -174,6 +174,9 @@ export default {
     top: 2px
     bottom: 2px
     left: 1.5rem
+  .activity-watched &
+    border-top-color: $primary-color
+    opacity: 0.5
 
 .channel-recent-message
   margin-left: 1.5rem
