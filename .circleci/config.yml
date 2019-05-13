@@ -22,7 +22,7 @@ jobs:
       - run:
           name: module install
           when: always
-          command: npm ci
+          command: npm install
       - save_cache:
           key: node_modules-{{ checksum "package-lock.json" }}
           when: always
