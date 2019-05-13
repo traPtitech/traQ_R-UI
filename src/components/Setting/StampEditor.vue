@@ -16,7 +16,7 @@
   SettingDescription(v-if="showNameTakenError" warning)
     | このスタンプ名はすでに登録されています
   SettingDescription(v-if="showNameInvalid" warning)
-    | スタンプ名は英数字または記号(+-_)の32文字以下からなる必要があります
+    | スタンプ名は32文字以下の英数字または記号(+-_)で入力してください
 </template>
 
 <script>
