@@ -1,6 +1,9 @@
 <template lang="pug">
 viewfinder-container.image-viewer(
+  :flick-duration="flickDuration"
   @resize="handleViewfinderResize"
+  @flick-start="$emit('close-start')"
+  @flick-end="$emit('close')"
 )
   img.image-viewer-image(
     ref="image"
@@ -31,6 +34,10 @@ export default {
     url: {
       type: String,
       required: true
+    },
+    flickDuration: {
+      type: Number,
+      default: 300
     }
   },
   methods: {

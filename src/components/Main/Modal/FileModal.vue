@@ -1,31 +1,42 @@
 <template lang="pug">
 .file-modal
-  .file-modal-header-wrap(@click="close")
+  .file-modal-header-wrap(
+    @click="close"
+    @wheel.stop.prevent
+  )
     .file-modal-close(@click="close")
       icon-close(color="white" size="16")
-  image-viewer.file-modal-image-viewer(:url="imageSrc")
-
+  image-viewer.file-modal-image-viewer(
+    :url="imageSrc"
+    :flick-duration="flickDuration"
+    @close-start="handleCloseStart"
+    @close="close"
+  )
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
-import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import ImageViewer from '@/components/Main/Modal/Util/ImageViewer'
 import IconClose from '@/components/Icon/IconClose'
 
 export default {
   name: 'FileModal',
   components: {
-    BaseCommonModal,
-    MemberElement,
     IconClose,
     ImageViewer
+  },
+  data() {
+    return {
+      flickDuration: 200
+    }
   },
   methods: {
     ...mapActions({
       close: 'modal/close'
-    })
+    }),
+    handleCloseStart() {
+      this.$emit('fadeout-start', this.flickDuration)
+    }
   },
   computed: {
     ...mapState('modal', ['data']),
@@ -35,10 +46,10 @@ export default {
     }
   },
   mounted() {
-    this.$emit('opacityChange', 0.7)
+    this.$emit('opacity-change', 0.7)
   },
   beforeDestroy() {
-    this.$emit('opacityChange', -1)
+    this.$emit('opacity-change', -1)
   }
 }
 </script>

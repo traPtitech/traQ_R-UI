@@ -23,6 +23,7 @@
 
 <script>
 const wheelTimeoutDuration = 100
+const flickThresould = 10
 
 export default {
   name: 'ViewfinderContainer',
@@ -43,6 +44,16 @@ export default {
     maxScale: {
       type: Number,
       default: 10
+    },
+
+    enableFlick: {
+      type: Boolean,
+      default: true
+    },
+
+    flickDuration: {
+      type: Number,
+      default: 300
     }
   },
   data() {
@@ -61,6 +72,10 @@ export default {
       lastPanX: 0,
       lastPanY: 0,
       lastTouchDist: 0,
+
+      isFlicking: false,
+      potentiallyFlicking: false,
+      potentiallyFlickingDirection: 0,
 
       toResetContentPos: false,
 
@@ -140,12 +155,13 @@ export default {
             left: `${this.contentInitialLeft}px`,
             transform: `translate(${this.contentX}px, ${
               this.contentY
-            }px) scale(${this.contentScale})`
+            }px) scale(${this.contentScale})`,
+            transition: this.isFlicking ? `transform ${this.flickDuration/1000}s ease-out` : ''
           }
     },
     contentClass() {
       return {
-        'to-reset': this.toResetContentPos
+        'to-reset': this.toResetContentPos,
       }
     }
   },
@@ -179,9 +195,12 @@ export default {
       ]
     },
 
-    async adjustContentPos() {
+    processInteractionEnd() {
+
+    },
+
+    adjustContentPos() {
       this.toResetContentPos = true
-      await this.$nextTick
       if (this.isExceedingTopBoundary) {
         this.contentY = this.topBoundary
       }
@@ -196,6 +215,20 @@ export default {
         this.contentX =
           this.rightBoundary - this.contentWidth * this.contentScale
       }
+    },
+
+    startFlick() {
+      if (!this.potentiallyFlicking) return
+
+      this.isFlicking = true
+      if (this.potentiallyFlickingDirection > 0) {
+        this.contentY = this.contentInitialTop + this.contentHeight
+      } else {
+        this.contentY = -this.contentInitialTop - this.contentHeight
+      }
+
+      this.$emit('flick-start')
+      setTimeout(() => this.$emit('flick-end'), this.flickDuration)
     },
 
     /**
@@ -230,10 +263,21 @@ export default {
       )
     },
 
-    pan(deltaX, deltaY) {
+    pan(deltaX, deltaY, checkFlick) {
       this.toResetContentPos = false
       this.contentX += deltaX
       this.contentY += deltaY
+
+      if (!checkFlick) return
+
+      if (this.enableFlick && Math.abs(deltaY) > flickThresould) {
+        this.potentiallyFlicking = true
+        this.potentiallyFlickingDirection = Math.sign(deltaY)
+      }
+      else {
+        this.potentiallyFlicking = false
+        this.potentiallyFlickingDirection = 0
+      }
     },
 
     handleWheel(event) {
@@ -280,7 +324,7 @@ export default {
         this.isPanning
       ) {
         const touch = event.touches[0]
-        this.pan(touch.clientX - this.lastPanX, touch.clientY - this.lastPanY)
+        this.pan(touch.clientX - this.lastPanX, touch.clientY - this.lastPanY, true)
         this.lastPanX = touch.clientX
         this.lastPanY = touch.clientY
       }
@@ -298,7 +342,11 @@ export default {
     handleTouchEnd(event) {
       if (event.changedTouches.length === 1 && this.panBySingleFinger) {
         this.isPanning = false
-        this.adjustContentPos()
+        if (this.potentiallyFlicking) {
+          this.startFlick()
+        } else {
+          this.adjustContentPos()
+        }
       }
       if (event.changedTouches.length === 2) {
         this.isPanning = false
@@ -322,6 +370,7 @@ export default {
       this.isPanning = false
       this.adjustContentPos()
     },
+
     handleMouseDown(event) {
       this.isPanning = true
       this.lastPanX = event.clientX
