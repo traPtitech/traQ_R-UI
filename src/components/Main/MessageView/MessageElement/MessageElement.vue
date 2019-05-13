@@ -40,11 +40,16 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @keydown="editKeydown")
+          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @keydown="editKeydown" @keyup="editKeyup")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
             | Edit
+          .message-edit-key-guide(v-if="showKeyGuide")
+            span(v-if="messageSendKey === 'modifier'")
+              | + Enterを押して送信
+            span(v-else)
+              | + Enterを押して改行
       message-attached-messages(v-if="hasAttachedMessage" :messages="messages" @rendered="attachedMessageRendered")
       message-attached-files(v-if="hasAttachedFile" :files="files")
       message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
@@ -62,8 +67,14 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { detectFiles, displayDateTime, isModifierKey } from '@/bin/utils'
+import { mapGetters, mapState, mapActions } from 'vuex'
+import {
+  detectFiles,
+  displayDateTime,
+  withModifierKey,
+  isModifierKey,
+  isSendKey
+} from '@/bin/utils'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 import MessageAttachedMessages from './MessageAttachedMessages'
@@ -100,7 +111,8 @@ export default {
       isRendered: false,
       isContextMenuActive: false,
       attachedData: null,
-      renderedBody: null
+      renderedBody: null,
+      isPushedModifierKey: false
     }
   },
   methods: {
@@ -118,8 +130,16 @@ export default {
       this.$store.commit('setStampPickerActive', true)
     },
     editKeydown(event) {
-      if (isModifierKey(event) && event.key === 'Enter') {
+      if (withModifierKey(event)) {
+        this.isPushedModifierKey = true
+      }
+      if (isSendKey(event, this.messageSendKey)) {
         this.editSubmit()
+      }
+    },
+    editKeyup(event) {
+      if (isModifierKey(event)) {
+        this.isPushedModifierKey = false
       }
     },
     editMessage() {
@@ -248,6 +268,13 @@ export default {
   },
   computed: {
     ...mapGetters(['fileUrl', 'getMyId', 'userDisplayName']),
+    ...mapState(['messageSendKey']),
+    showKeyGuide() {
+      return (
+        this.isPushedModifierKey &&
+        !(this.messageSendKey === 'modifier' && !this.edited)
+      )
+    },
     userIconBackground() {
       return {
         backgroundImage: `url(${this.fileUrl(this.userDetail.iconFileId)})`
@@ -592,4 +619,12 @@ export default {
 		background-position: 100% 50%
 	100%
 		background-position: 0% 50%
+
+.message-edit-key-guide
+  position: absolute
+  opacity: 0.6
+  right: 10px
+  bottom: 20px
+  font:
+    size: 0.8em
 </style>
