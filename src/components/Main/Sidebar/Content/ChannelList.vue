@@ -1,10 +1,5 @@
 <template lang="pug">
 .channel-list
-  .channel-list-action-area-wrapper
-      // channel-activity-controlls(v-else
-      //                           :isLoading="isLoading"
-      //                           @refreshClick="refresh"
-      //                           @filterToggle="toggleNotification")
   keep-alive
     channel-treeView(v-if="channelView === 'tree'")
     channel-stared(v-if="channelView === 'stared'")
@@ -30,24 +25,7 @@ export default {
     ),
     ChannelActivity: window.asyncLoadComponents(
       import('@/components/Main/Sidebar/Content/ChannelActivity')
-    ),
-    ChannelActivityControlls: window.asyncLoadComponents(
-      import('@/components/Main/Sidebar/Content/ChannelActivityControlls')
     )
-  },
-  methods: {
-    async refresh() {
-      if (this.isLoading) return
-      this.isLoading = true
-      await this.$nextTick()
-      await this.$store.dispatch('updateChannelActivity')
-      this.isLoading = false
-    },
-    toggleNotification() {
-      const filter = this.$store.state.filterSubscribedActivity
-      this.$store.dispatch('updateFilterSubscribedActivity', !filter)
-      this.refresh()
-    }
   },
   computed: {
     ...mapGetters(['channelView'])

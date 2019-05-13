@@ -11,6 +11,11 @@
           :isUnreadFiltered="isUnreadFiltered"
           @change="$store.commit('setIsUnreadFiltered', $event)"
           :hasDropShadow="filterHasDropShadow")
+    .activity-controll-wrapper(v-show="isChannelsActivityTab")
+      transition(name="filter-slide-up")
+        channel-activity-controlls(
+          v-show="isActivityControllShown"
+          :hasDropShadow="filterHasDropShadow")
     Content(@scroll="scrollHandler" ref="sidebarContent")
     channel-list-tab-switcher(v-if="menuContent === 'Channels'" @scrollToTop="scrollToTop")
   Footer
@@ -22,6 +27,7 @@ import { mapGetters } from 'vuex'
 import SidebarTabMenu from '@/components/Main/Sidebar/SidebarTabMenu'
 import Footer from '@/components/Main/Sidebar/Footer'
 import FilterAndToggle from '@/components/Util/FilterAndToggle'
+import ChannelActivityControlls from '@/components/Main/Sidebar/Content/ChannelActivityControlls'
 
 export default {
   name: 'Sidebar',
@@ -37,7 +43,8 @@ export default {
     ChannelListTabSwitcher: window.asyncLoadComponents(
       import('@/components/Main/Sidebar/Content/ChannelListTabSwitcher')
     ),
-    FilterAndToggle
+    FilterAndToggle,
+    ChannelActivityControlls
   },
   data() {
     return {
@@ -114,8 +121,22 @@ export default {
         this.channelView !== 'activity'
       )
     },
+    isChannelsActivityTab() {
+      return this.menuContent === 'Channels' && this.channelView === 'activity'
+    },
     isFilterShown() {
       if (!this.isFilterVisibleTab) return false
+      if (this.contentScrollTop < 20) return true
+      if (
+        this.currentMenuContent !== this.menuContent ||
+        this.currentChannelView !== this.channelView
+      ) {
+        return false
+      }
+      return this.isScrollToTop
+    },
+    isActivityControllShown() {
+      if (!this.isChannelsActivityTab) return false
       if (this.contentScrollTop < 20) return true
       if (
         this.currentMenuContent !== this.menuContent ||
@@ -227,7 +248,8 @@ export default {
   position: relative
   overflow: hidden
 
-.filter-and-toggle-wrapper
+.filter-and-toggle-wrapper,
+.activity-controll-wrapper
   position: absolute
   width: 80%
   left: 0
