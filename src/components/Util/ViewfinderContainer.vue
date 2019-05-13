@@ -156,12 +156,14 @@ export default {
             transform: `translate(${this.contentX}px, ${
               this.contentY
             }px) scale(${this.contentScale})`,
-            transition: this.isFlicking ? `transform ${this.flickDuration/1000}s ease-out` : ''
+            transition: this.isFlicking
+              ? `transform ${this.flickDuration / 1000}s ease-out`
+              : ''
           }
     },
     contentClass() {
       return {
-        'to-reset': this.toResetContentPos,
+        'to-reset': this.toResetContentPos
       }
     }
   },
@@ -195,9 +197,7 @@ export default {
       ]
     },
 
-    processInteractionEnd() {
-
-    },
+    processInteractionEnd() {},
 
     adjustContentPos() {
       this.toResetContentPos = true
@@ -273,8 +273,7 @@ export default {
       if (this.enableFlick && Math.abs(deltaY) > flickThresould) {
         this.potentiallyFlicking = true
         this.potentiallyFlickingDirection = Math.sign(deltaY)
-      }
-      else {
+      } else {
         this.potentiallyFlicking = false
         this.potentiallyFlickingDirection = 0
       }
@@ -324,7 +323,11 @@ export default {
         this.isPanning
       ) {
         const touch = event.touches[0]
-        this.pan(touch.clientX - this.lastPanX, touch.clientY - this.lastPanY, true)
+        this.pan(
+          touch.clientX - this.lastPanX,
+          touch.clientY - this.lastPanY,
+          true
+        )
         this.lastPanX = touch.clientX
         this.lastPanY = touch.clientY
       }
@@ -366,7 +369,7 @@ export default {
         this.lastPanY = event.clientY
       }
     },
-    handlePointerUp(_) {
+    handlePointerUp() {
       this.isPanning = false
       this.adjustContentPos()
     },
@@ -383,7 +386,7 @@ export default {
         this.lastPanY = event.clientY
       }
     },
-    handleMouseUp(_) {
+    handleMouseUp() {
       this.isPanning = false
       this.adjustContentPos()
     }
