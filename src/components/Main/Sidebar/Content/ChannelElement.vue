@@ -274,6 +274,7 @@ export default {
 
   .channel-watched &
     color: $primary-color
+
   &.channel-notified:not(.has-unread)::after
     content: ''
     position: absolute
@@ -285,8 +286,18 @@ export default {
     border-radius: 100%
     background: rgba(255, 255, 255, 0.3)
     border: 2px solid $primary-color
+
+    .channel-watched &
+      background-color: $primary-color
+      border-color: white
+      opacity: 0.3
+
     .channel-box:hover &
       border-color: var(--primary-color-hovered)
+
+    .channel-watched.channel-box:hover &
+      border-color: white
+
   &.channel-notified.channel-toggle:not(.has-unread)::before
     content: ''
     position: absolute
@@ -297,13 +308,12 @@ export default {
     top: -3px
     border-radius: 100%
     background: $primary-color
-  .channel-watched &.channel-notified:not(.has-unread)::before
-    background: white
-    opacity: 1
-  .channel-watched &.channel-notified:not(.has-unread)::after
-    background-color: $primary-color
-    border: 2px solid white
-    opacity: 0.3
+
+  &.channel-notified:not(.has-unread)::before
+
+    .channel-watched &
+      background: white
+      opacity: 1
 
   &.has-unread::after
     content: ''
