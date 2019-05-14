@@ -280,6 +280,24 @@ const store = new Vuex.Store({
       state.unreadMessages = unreads
       state.unreadEarliests = earliests
     },
+    addUnreadMessage(state, message) {
+      if (message.userId === state.me.userId) {
+        return
+      }
+      let unreadMap = state.unreadMessages[message.parentChannelId]
+      if (unreadMap) {
+        unreadMap[message.messageId] = message
+      } else {
+        unreadMap = {}
+        unreadMap[message.messageId] = message
+        Vue.set(
+          state.unreadEarliests,
+          message.parentChannelId,
+          new Date(message.createdAt).valueOf()
+        )
+      }
+      Vue.set(state.unreadMessages, message.parentChannelId, unreadMap)
+    },
     setStaredChannelsData(state, data) {
       state.staredChannels = data
       const map = {}
