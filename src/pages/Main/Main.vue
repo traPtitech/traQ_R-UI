@@ -193,7 +193,7 @@ export default {
       sse.on('MESSAGE_CREATED', this.messageCreated)
       sse.on('MESSAGE_UPDATED', this.messageUpdated)
       sse.on('MESSAGE_DELETED', this.messageDeleted)
-      sse.on('MESSAGE_READ', () => this.$store.dispatch('updateUnreadMessages'))
+      sse.on('MESSAGE_READ', this.messageRead)
       sse.on('MESSAGE_STAMPED', data =>
         this.$store.commit('updateMessageStamp', data)
       )
@@ -312,6 +312,9 @@ export default {
     messageDeleted(data) {
       this.$store.commit('deleteMessage', data.id)
       this.$store.dispatch('checkPinnedMessage', data.id)
+    },
+    messageRead(data) {
+      this.$store.commit('readChannel', data.id)
     },
     channelUpdated(channelId) {
       if (this.$store.state.currentChannel.channelId === channelId) {
