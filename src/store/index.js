@@ -297,6 +297,13 @@ const store = new Vuex.Store({
         )
       }
       Vue.set(state.unreadMessages, message.parentChannelId, unreadMap)
+    readChannel(state, channelId) {
+      if (state.unreadMessages[channelId]) {
+        Vue.delete(state.unreadMessages, channelId)
+      }
+      if (state.unreadEarliests[channelId]) {
+        Vue.delete(state.unreadEarliests, channelId)
+      }
     },
     setStaredChannelsData(state, data) {
       state.staredChannels = data
