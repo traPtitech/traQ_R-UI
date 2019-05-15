@@ -6,7 +6,7 @@
         IconBack(color="white")
       .back-to-traq-text-wrap traQへ戻る
   .setting-container-wrap
-    .setting-container.drop-shadow.is-scroll
+    .setting-container.drop-shadow
       .setting-menu.drop-shadow
         .setting-title-container
           .setting-traq-logo
@@ -25,13 +25,13 @@
             .setting-page-list-item-icon
               IconStamp(color="white" size="22")
             | スタンプ設定
-      .setting-page-container(v-if="windowWidth >= 750")
+      .setting-page-container.is-scroll(v-if="windowWidth >= 750")
         transition(name="fade" mode="out-in")
           keep-alive
             ProfileSetting(v-if="active === 0")
             BrowserSetting(v-if="active === 1")
             StampSetting(v-if="active === 2")
-      .setting-page-all-container
+      .setting-page-all-container.is-scroll
           ProfileSetting
           BrowserSetting
           StampSetting
@@ -138,7 +138,7 @@ $header-height: 3rem
   position: relative
   margin-left: -1rem
   padding: 2rem
-  overflow: scroll
+  overflow-y: scroll
   flex: 1
   display: block
   -webkit-overflow-scrolling: touch
@@ -148,7 +148,7 @@ $header-height: 3rem
 .setting-page-all-container
   padding: 1rem
   flex: 1
-  overflow: scroll
+  overflow-y: scroll
   display: none
   -webkit-overflow-scrolling: touch
   @media (max-width: 750px)
