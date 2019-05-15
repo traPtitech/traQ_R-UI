@@ -47,7 +47,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
             | Edit
           .message-edit-key-guide(v-if="showKeyGuide")
             span(v-if="messageSendKey === 'modifier'")
-              | + Enterを押して送信
+              | + Enterを押して確定
             span(v-else)
               | + Enterを押して改行
       message-attached-messages(v-if="hasAttachedMessage" :messages="messages" @rendered="attachedMessageRendered")
@@ -153,6 +153,7 @@ export default {
       }
       client.editMessage(this.model.messageId, this.edited)
       this.isEditing = false
+      this.isPushedModifierKey = false
       this.getAttachments()
     },
     editCancel() {
