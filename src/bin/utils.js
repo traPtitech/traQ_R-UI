@@ -155,3 +155,21 @@ export const detectFiles = text => {
 export const isMac = () => {
   return window.navigator.platform.includes('Mac')
 }
+
+export const withModifierKey = keyEvent => {
+  return (
+    keyEvent.shiftKey || keyEvent.altKey || keyEvent.ctrlKey || keyEvent.metaKey
+  )
+}
+export const isModifierKey = keyEvent => {
+  return keyEvent.key === 'Shift' || 'Meta' || 'Alt'
+}
+export const isSendKey = (keyEvent, messageSendKey) => {
+  if (keyEvent.key !== 'Enter') {
+    return false
+  }
+  return (
+    (messageSendKey === 'modifier' && withModifierKey(keyEvent)) ||
+    (messageSendKey === 'none' && !withModifierKey(keyEvent))
+  )
+}
