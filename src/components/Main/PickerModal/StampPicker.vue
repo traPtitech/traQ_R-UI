@@ -11,17 +11,18 @@
         template(
           v-if="search.length === 0" )
           div.stamp-picker-body-container(
-            v-for="(category, idx) in stampCategolized" 
-            v-show="idx==currentCategoryIndex" 
+            v-for="(category, idx) in stampCategolized"
+            v-show="idx==currentCategoryIndex"
             :key="category.category")
             p.stamp-picker-category-name
               | {{category.category}}
             div.stamp-picker-body-inner-wrapper
               div.stamp-picker-stamp-item-wrapper.flex-center(
                 v-for="stamp in stamps(idx)"
+                :key="stamp.id"
                 @click="addStamp(stamp)"
                 @mouseover="hoverStamp(stamp.name)")
-                div.stamp-picker-stamp-item( 
+                div.stamp-picker-stamp-item(
                   v-lazy:background-image="fileUrl(stamp.fileId)"
                   :title="`:${stamp.name}:`")
               div.stamp-picker-stamp-item-dummy(v-for="i in 20")
@@ -34,22 +35,22 @@
             div.stamp-picker-body-inner-wrapper
               div.stamp-picker-stamp-item-wrapper.flex-center(
                 :key="stamp.id"
-                v-for="stamp in filteredStamps" 
+                v-for="stamp in filteredStamps"
                 @click="addStamp(stamp)"
                 @mouseover="hoverStamp(stamp.name)")
-                div.stamp-picker-stamp-item( 
-                  :style="stampItemStyle(stamp.fileId)" 
+                div.stamp-picker-stamp-item(
+                  :style="stampItemStyle(stamp.fileId)"
                   :title="`:${stamp.name}:`")
               div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
     div.stamp-picker-footer
         div.stamp-category-wrap
           div.stamp-category-item.flex-center(
-            v-for="(category,idx) in stampCategolized" 
+            v-for="(category,idx) in stampCategolized"
             @click="currentCategoryIndex = idx"
             :class="{'stamp-picker-category-selected': idx === currentCategoryIndex}")
             component(
-              :is="categoryIcon(idx)" 
-              :size="idx <= 1 ? '20' : '28'" 
+              :is="categoryIcon(idx)"
+              :size="idx <= 1 ? '20' : '28'"
               :color="idx === currentCategoryIndex ? 'var(--primary-color-on-bg)' : 'gray'")
 </template>
 
