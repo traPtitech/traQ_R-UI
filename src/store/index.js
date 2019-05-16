@@ -611,6 +611,19 @@ const store = new Vuex.Store({
         return path
       }
     },
+    getShortChannelPathById(state) {
+      return channelId => {
+        let current = state.channelMap[channelId]
+        let path = current.name
+        let next = state.channelMap[current.parent]
+        while (next.name) {
+          path = next.name[0] + '/' + path
+          current = next
+          next = state.channelMap[current.parent]
+        }
+        return path
+      }
+    },
     getFileDataById() {
       return fileId => {
         return client.getFileMeta(fileId)
