@@ -14,17 +14,23 @@ div.channel-activity-wrap
       span.channel-recent-message-content.text-ellipsis
         | {{ sanitizedMessage }}
       span.channel-recent-message-attachment-info(v-if="hasFile")
-        | ファイルを送信しました
+        icon-attach(:color="isWatched ? 'var(--primary-color)' : 'white'")
       span.channel-recent-message-attachment-info(v-if="hasMessage")
-        | メッセージを引用しました
+        icon-speech-balloon(:color="isWatched ? 'var(--primary-color)' : 'white'")
 </template>
 
 <script>
 import md from '@/bin/markdown-it'
 import { detectFiles } from '@/bin/utils'
+import IconAttach from '@/components/Icon/IconAttach'
+import IconSpeechBalloon from '@/components/Icon/IconSpeechBalloon'
 
 export default {
   name: 'ChannelActivityElement',
+  components: {
+    IconAttach,
+    IconSpeechBalloon
+  },
   props: {
     model: Object
   },
@@ -219,5 +225,5 @@ export default {
   transform: translateX(-5px)
 
 .channel-recent-message-attachment-info
-  font-style: italic
+  margin-left: 1rem
 </style>
