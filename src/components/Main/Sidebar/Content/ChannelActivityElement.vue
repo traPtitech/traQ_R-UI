@@ -10,7 +10,7 @@ div.channel-activity-wrap
     hr.channel-activity-separator
     p.channel-recent-message
       span.channel-recent-message-author.text-ellipsis
-        | {{ authorName }}
+        | @{{ authorName }}
       span.channel-recent-message-content.text-ellipsis
         | {{ sanitizedMessage }}
       span.channel-recent-message-attachment-info(v-if="hasFile")
@@ -47,7 +47,9 @@ export default {
   },
   computed: {
     channelName() {
-      return this.$store.state.channelMap[this.model.parentChannelId].name
+      return this.$store.getters.getShortChannelPathById(
+        this.model.parentChannelId
+      )
     },
     authorName() {
       return this.$store.state.memberMap[this.model.userId].name
