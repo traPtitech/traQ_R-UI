@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
+import { detectMentions } from '@/bin/utils'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -276,12 +277,20 @@ const store = new Vuex.Store({
       if (channel) {
         channel.count += 1
         channel.updatedAt = message.createdAt
+        if (!channel.noticeable) {
+          channel.noticeable = detectMentions(message.content).some(
+            data => data.id === state.me.userId
+          )
+        }
       } else {
         channel = {
           channelId: message.parentChannelId,
           count: 1,
           since: message.createdAt,
-          updatedAt: message.createdAt
+          updatedAt: message.createdAt,
+          noticeable: detectMentions(message.content).some(
+            data => data.id === state.me.userId
+          )
         }
       }
       Vue.set(state.unreadChannelMap, message.parentChannelId, channel)
