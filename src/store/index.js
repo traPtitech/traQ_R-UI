@@ -6,6 +6,7 @@ import stampCategorizer from '@/bin/stampCategorizer'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
+import rtc from './rtc'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -56,7 +57,8 @@ const store = new Vuex.Store({
   modules: {
     modal,
     pickerModal,
-    messageInput
+    messageInput,
+    rtc
   },
   state: {
     loaded: false,

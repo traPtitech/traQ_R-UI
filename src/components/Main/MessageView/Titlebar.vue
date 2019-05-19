@@ -33,6 +33,12 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-plus(size="24")
       span
         | サブチャンネル作成
+    .titlebar-menu-item(@click="$store.dispatch('rtc/establishConnection')")
+      .menu-icon
+        icon-plus(size="24")
+      span
+        // [TODO] fix this
+        | Start Qall
 </template>
 
 <script>
