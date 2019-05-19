@@ -102,7 +102,6 @@ export default {
   created() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'setFiles') {
-        console.log(state.files)
         this.dropFile(state.files)
         this.$store.commit('clearFiles')
       }
@@ -445,6 +444,9 @@ export default {
     pasteImage(event) {
       const items = event.clipboardData.items
       for (let i = 0; i < items.length; i++) {
+        if (items[i].kind === 'string') {
+          continue
+        }
         const item = items[i]
         const file = item.getAsFile()
         this.addFile(file)
