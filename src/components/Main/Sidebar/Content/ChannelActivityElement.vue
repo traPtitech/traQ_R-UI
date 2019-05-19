@@ -69,7 +69,7 @@ export default {
       return { 'has-unread': this.unreadNum > 0 }
     },
     parsed() {
-      const parsed = md.parseInline(this.model.content)
+      const parsed = md.parseInline(this.model.content, {})
       return parsed[0].children
     },
     attachments() {
@@ -82,7 +82,7 @@ export default {
       return this.attachments.filter(a => a.type === 'file').length > 0
     },
     sanitizedMessage() {
-      const parsed = md.parseInline(this.model.content)
+      const parsed = md.parseInline(this.model.content, {})
       const tokens = parsed[0].children
       const message = []
       for (let token of tokens) {
