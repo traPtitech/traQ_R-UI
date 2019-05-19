@@ -82,7 +82,6 @@ export default {
       return this.attachments.filter(a => a.type === 'file').length > 0
     },
     sanitizedMessage() {
-      console.log(this.model.content)
       const parsed = md.parseInline(this.model.content, {})
       const tokens = parsed[0].children
       const message = []
