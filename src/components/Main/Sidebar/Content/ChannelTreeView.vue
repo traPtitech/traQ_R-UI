@@ -60,7 +60,11 @@ export default {
       )
     },
     caseIgnoreFilterText() {
-      return new RegExp(this.filterText, 'i')
+      try {
+        return new RegExp(this.filterText, 'i')
+      } catch {
+        return new RegExp('', 'i')
+      }
     },
     allChannels() {
       return this.$store.getters.allChannels
