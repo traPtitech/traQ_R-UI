@@ -286,6 +286,8 @@ export default {
             if (document.hasFocus()) {
               client.readMessages([res.data.messageId])
             }
+          } else {
+            this.$store.commit('addUnreadMessage', res.data)
           }
         } else {
           if (
@@ -295,9 +297,10 @@ export default {
             if (document.hasFocus()) {
               client.readMessages([res.data.messageId])
             }
+          } else {
+            this.$store.commit('addUnreadMessage', res.data)
           }
         }
-        this.$store.commit('addUnreadMessage', res.data)
 
         // [NOTE] MESSAGE_CREATEDは通知ONのチャンネルにしか起きないので通知でフィルタリングする必要がない
         this.$store.commit('addActivityMessages', res.data)
