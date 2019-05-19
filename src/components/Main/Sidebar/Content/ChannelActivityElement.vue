@@ -4,7 +4,7 @@ div.channel-activity-wrap
                            :class="{'activity-watched': isWatched}")
     div.channel-activity-channel
       div.channel-activity-before(:class="channelBeforeClass")
-        | #
+        icon-hash(size="16")
       div.channel-activity-name.text-ellipsis
         | {{ channelName }}
     hr.channel-activity-separator
@@ -24,12 +24,14 @@ import md from '@/bin/markdown-it'
 import { detectFiles } from '@/bin/utils'
 import IconAttach from '@/components/Icon/IconAttach'
 import IconSpeechBalloon from '@/components/Icon/IconSpeechBalloon'
+import IconHash from '@/components/Icon/IconHash'
 
 export default {
   name: 'ChannelActivityElement',
   components: {
     IconAttach,
-    IconSpeechBalloon
+    IconSpeechBalloon,
+    IconHash
   },
   props: {
     model: Object
@@ -139,17 +141,11 @@ export default {
 
 .channel-activity-before
   position: relative
-  display: flex
-  flex: 0 0 20px
-  justify-content: center
-  align-items: center
-  width: 20px
-  height: 20px
-  color: $text-light-color
+  top: 4px
+  width: 16px
+  height: 16px
   margin-right: 0.5rem
-  font:
-    weight: bold
-    size: 1.5rem;
+
   .activity-watched &
     color: $primary-color
   &.has-unread::after
