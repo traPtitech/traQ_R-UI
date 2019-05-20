@@ -194,3 +194,15 @@ export const isSendKey = (keyEvent, messageSendKey) => {
     (messageSendKey === 'none' && !withModifierKey(keyEvent))
   )
 }
+
+export const isTouchDevice = () => {
+  const userAgent = navigator.userAgent
+  return (
+    userAgent.includes('traQ-Android') ||
+    userAgent.includes('traQ-iOS') ||
+    userAgent.includes('iPhone') ||
+    userAgent.includes('iPod') ||
+    userAgent.includes('iPad') ||
+    userAgent.includes('Android')
+  )
+}
