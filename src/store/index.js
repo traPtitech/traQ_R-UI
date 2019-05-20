@@ -805,7 +805,7 @@ const store = new Vuex.Store({
           commit('setMe', null)
         })
     },
-    getMessages({ state, commit, getters }, update) {
+    getMessages({ state, commit, getters, dispatch }, update) {
       const nowChannel = state.currentChannel
       let loaded = false
       const latest = state.messages.length === 0 || update
@@ -832,7 +832,7 @@ const store = new Vuex.Store({
       return loadedMessages.then(res => {
         loaded = true
         const messages = res.data.reverse()
-        client.readMessages(nowChannel.channelId)
+        dispatch.readMessages(nowChannel.channelId)
         if (latest) {
           db.write('channelMessages', {
             channelId: nowChannel.channelId,
