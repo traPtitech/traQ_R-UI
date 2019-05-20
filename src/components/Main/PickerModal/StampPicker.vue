@@ -56,6 +56,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { isTouchDevice } from '@/bin/utils'
 import stampAltNameTable from '@/bin/emoji_altname_table.json'
 import DebouncedInput from '@/components/Util/DebouncedInput'
 import IconSearch from '@/components/Icon/IconSearch'
@@ -163,6 +164,15 @@ export default {
   },
   created() {
     this.$store.dispatch('getStampHistory')
+  },
+  mounted() {
+    if (isTouchDevice()) {
+      return
+    }
+    const input = this.$el.querySelector('.stamp-picker-search')
+    if (input) {
+      input.focus()
+    }
   }
 }
 </script>
