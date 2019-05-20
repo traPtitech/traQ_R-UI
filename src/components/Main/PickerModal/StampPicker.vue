@@ -163,6 +163,12 @@ export default {
   },
   created() {
     this.$store.dispatch('getStampHistory')
+  },
+  mounted() {
+    const input = this.$el.querySelector('.stamp-picker-search')
+    if (input) {
+      input.focus()
+    }
   }
 }
 </script>
