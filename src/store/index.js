@@ -832,7 +832,7 @@ const store = new Vuex.Store({
       return loadedMessages.then(res => {
         loaded = true
         const messages = res.data.reverse()
-        dispatch.readMessages(nowChannel.channelId)
+        dispatch('readMessages', nowChannel.channelId)
         if (latest) {
           db.write('channelMessages', {
             channelId: nowChannel.channelId,
