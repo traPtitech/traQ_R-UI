@@ -73,7 +73,8 @@ import {
   displayDateTime,
   withModifierKey,
   isModifierKey,
-  isSendKey
+  isSendKey,
+  isBRKey
 } from '@/bin/utils'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
@@ -135,6 +136,17 @@ export default {
       }
       if (isSendKey(event, this.messageSendKey)) {
         this.editSubmit()
+      }
+      if (isBRKey(event, this.messageSendKey)) {
+        event.preventDefault()
+        const pre = this.edited.substring(0, this.$refs.editArea.selectionStart)
+        const suf = this.edited.substring(this.$refs.editArea.selectionEnd)
+        this.edited = `${pre}\n${suf}`
+        this.$nextTick(() => {
+          this.$refs.editArea.selectionStart = this.$refs.editArea.selectionEnd =
+            pre.length + 1
+          autosize.update(this.$refs.editArea)
+        })
       }
     },
     editKeyup(event) {

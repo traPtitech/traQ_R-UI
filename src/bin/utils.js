@@ -183,7 +183,7 @@ export const withModifierKey = keyEvent => {
   )
 }
 export const isModifierKey = keyEvent => {
-  return keyEvent.key === 'Shift' || 'Meta' || 'Alt'
+  return ['Shift', 'Meta', 'Alt'].includes(keyEvent.key)
 }
 export const isSendKey = (keyEvent, messageSendKey) => {
   if (keyEvent.key !== 'Enter') {
@@ -192,6 +192,13 @@ export const isSendKey = (keyEvent, messageSendKey) => {
   return (
     (messageSendKey === 'modifier' && withModifierKey(keyEvent)) ||
     (messageSendKey === 'none' && !withModifierKey(keyEvent))
+  )
+}
+export const isBRKey = (keyEvent, messageSendKey) => {
+  return (
+    messageSendKey === 'none' &&
+    keyEvent.key === 'Enter' &&
+    withModifierKey(keyEvent)
   )
 }
 
