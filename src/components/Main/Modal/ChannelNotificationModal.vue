@@ -20,7 +20,7 @@ base-common-modal.channel-notification-modal(title="NOTIFICATIONS" small)
                    :key="notificationItem.member.userId"
                    v-model="notificationItem.status")
   .notifications-modal-footer
-    .notification-modal-button.notification-modal-button-passive(@click="$store.dispatch('modal/close')")
+    .notification-modal-button.notification-modal-button-passive(@click="close")
       | キャンセル
     .notification-modal-button.notification-modal-button-active(@click="submit")
       | 確定
@@ -110,6 +110,9 @@ export default {
         off: [...membersToEDisable].map(({ member }) => member.userId)
       })
       this.$store.dispatch('updateMyNotifiedChannels')
+      this.$store.dispatch('modal/close')
+    },
+    close() {
       this.$store.dispatch('modal/close')
     }
   },
