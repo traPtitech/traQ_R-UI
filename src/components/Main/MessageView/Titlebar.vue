@@ -28,7 +28,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-notification-fill(size="24")
       span
         | チャンネル通知設定
-    .titlebar-menu-item(v-show="!isDirectMessage" @click="$store.dispatch('openChannelCreateModal')")
+    .titlebar-menu-item(v-show="!isDirectMessage && channelDepth < 5" @click="$store.dispatch('openChannelCreateModal')")
       .menu-icon
         icon-plus(size="24")
       span
@@ -180,6 +180,9 @@ export default {
       return {
         transform: `rotate(${this.isTitlebarExpanded ? 180 : 0}deg)`
       }
+    },
+    channelDepth() {
+      return this.$route.params.channel.split('/').length
     }
   },
   created: function() {
