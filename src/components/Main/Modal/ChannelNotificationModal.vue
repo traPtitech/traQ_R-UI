@@ -20,7 +20,7 @@ base-common-modal.channel-notification-modal(title="NOTIFICATIONS" small)
                    :key="notificationItem.member.userId"
                    v-model="notificationItem.status")
   .notifications-modal-footer
-    .notification-modal-button.notification-modal-button-passive(@click="$store.emit('closeModal')")
+    .notification-modal-button.notification-modal-button-passive(@click="$store.dispatch('modal/close')")
       | キャンセル
     .notification-modal-button.notification-modal-button-active(@click="submit")
       | 確定
