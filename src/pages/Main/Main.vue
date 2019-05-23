@@ -284,7 +284,7 @@ export default {
           ) {
             this.$store.commit('addMessages', res.data)
             if (document.hasFocus()) {
-              client.readMessages([res.data.messageId])
+              client.readMessages(res.data.parentChannelId)
             }
           } else {
             this.$store.commit('addUnreadMessage', res.data)
@@ -295,7 +295,7 @@ export default {
           ) {
             this.$store.commit('addMessages', res.data)
             if (document.hasFocus()) {
-              client.readMessages([res.data.messageId])
+              client.readMessages(res.data.parentChannelId)
             }
           } else {
             this.$store.commit('addUnreadMessage', res.data)

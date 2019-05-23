@@ -236,7 +236,7 @@ export default {
         const stamp = stampAltNameTable.filter(
           stamp =>
             stamp.altName === altName &&
-            this.$store.state.stampNameMap[altName] === null
+            !this.$store.state.stampNameMap[altName]
         )[0]
         if (!stamp) return match
         return `:${stamp.name}:`
