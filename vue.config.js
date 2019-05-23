@@ -16,7 +16,11 @@ module.exports = {
   chainWebpack: config => {
   },
   configureWebpack: {
+    entry: {
+      app: './src/main.js'
+    },
     resolve: {
+      extensions: ['ts', 'js'],
       alias: {
         'vue$': 'vue/dist/vue.esm.js'
       }

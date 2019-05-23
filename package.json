@@ -1,8 +1,8 @@
 {
   "name": "traq-ui",
   "version": "2.7.5",
-  "author": "traP",
   "private": true,
+  "author": "traP",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --morden",
@@ -10,20 +10,13 @@
     "fix": "vue-cli-service lint --fix",
     "gen-unicode_emojis": "node build/gen-unicode_emojis"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,vue}": [
-      "vue-cli-service lint --fix",
-      "git add"
-    ]
-  },
   "dependencies": {
     "lottie-web": "^5.5.1",
     "register-service-worker": "^1.5.2",
     "scroll-behavior-polyfill": "^2.0.7",
     "vue": "^2.6.9",
+    "vue-class-component": "^7.0.2",
+    "vue-property-decorator": "^8.1.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
@@ -31,8 +24,10 @@
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
     "@vue/cli-plugin-pwa": "^3.5.0",
+    "@vue/cli-plugin-typescript": "^3.7.0",
     "@vue/cli-service": "^3.6.0",
     "@vue/eslint-config-prettier": "^4.0.1",
+    "@vue/eslint-config-typescript": "^4.0.0",
     "autosize": "^4.0.2",
     "axios": "^0.18.0",
     "babel-eslint": "^10.0.1",
@@ -52,10 +47,20 @@
     "postcss-import": "^12.0.1",
     "sass-loader": "^7.1.0",
     "tar": "^4.4.8",
+    "typescript": "^3.4.3",
     "vue-cli-plugin-pug": "^1.0.7",
     "vue-clipboard2": "^0.3.0",
     "vue-lazyload": "^1.2.6",
     "vue-meta": "^1.5.8",
     "vue-template-compiler": "^2.6.9"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,js,vue}": [
+      "vue-cli-service lint --fix",
+      "git add"
+    ]
   }
 }
