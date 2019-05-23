@@ -1,4 +1,4 @@
-import traQRTCClient from '@/bin/rtc.js'
+import traQRTCClient from '@/bin/rtc'
 
 export default {
   namespaced: true,
@@ -10,14 +10,22 @@ export default {
     activeVoiceChannelId: ''
   },
   getters: {},
-  mutations: {},
+  mutations: {
+    setClient(state, data) {
+      state.client = data
+    }
+  },
   actions: {
-    async establishConnection({ state }) {
+    async establishConnection({ state, commit, rootState }) {
       if (state.client) {
         return
       }
-      state.client = new traQRTCClient('poyo')
-      await state.client.establishConnection()
+      commit('setClient', new traQRTCClient(rootState.me.name))
+      try {
+        await state.client.establishConnection()
+      } catch {
+        commit('setClient', null)
+      }
     },
     async joinRoom({ state }, room) {
       await state.client.joinRoom(room)
