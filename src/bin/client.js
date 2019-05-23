@@ -333,14 +333,14 @@ const client = {
   },
 
   // Tag: unread
-  getUnreadMessages() {
-    return middleWare('getUnreadMessages', () => {
-      return axios.get(`/api/1.0/users/me/unread`)
+  getUnreadChannels() {
+    return middleWare('getUnreadChannels', () => {
+      return axios.get('/api/1.0/users/me/unread/channels')
     })
   },
   readMessages(channelId) {
     return middleWare('readMessages', () => {
-      return axios.delete(`/api/1.0/users/me/unread/${channelId}`)
+      return axios.delete(`/api/1.0/users/me/unread/channels/${channelId}`)
     })
   },
 

@@ -49,14 +49,7 @@ export default {
       return this.$store.getters.getChannelPathById(this.model.channelId)
     },
     shortChannelName() {
-      let ret = ''
-      this.fullChannelName
-        .split('/')
-        .slice(0, -1)
-        .forEach(e => {
-          ret += e.charAt(0) + '/'
-        })
-      return ret + this.model.name
+      return this.$store.getters.getShortChannelPathById(this.model.channelId)
     },
     isWatched() {
       return this.$store.state.currentChannel.channelId === this.model.channelId

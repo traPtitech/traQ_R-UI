@@ -62,7 +62,11 @@ export default {
       return this.filteredMembers.filter(u => u.unread > 0)
     },
     caseIgnoreFilterText() {
-      return new RegExp(this.filterText, 'i')
+      try {
+        return new RegExp(this.filterText, 'i')
+      } catch {
+        return new RegExp('', 'i')
+      }
     }
   },
   methods: {

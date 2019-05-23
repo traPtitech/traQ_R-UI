@@ -103,6 +103,7 @@ function isFile(text) {
     return false
   }
 }
+
 function isMessage(text) {
   try {
     const data = JSON.parse(text)
@@ -120,37 +121,57 @@ function isMessage(text) {
   }
 }
 
-export const detectFiles = text => {
-  let isInside = false
-  let startIndex = -1
-  let isString = false
-  const ret = []
-  for (let i = 0; i < text.length; i++) {
-    if (isInside) {
-      if (text[i] === '"') {
-        isString ^= true
-      } else if (!isString && text[i] === '}') {
-        isInside = false
-        if (
-          isFile(text.substr(startIndex + 1, i - startIndex)) ||
-          isMessage(text.substr(startIndex + 1, i - startIndex))
-        ) {
-          ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
-        } else {
-          i = startIndex + 1
+function isMention(text) {
+  try {
+    const data = JSON.parse(text)
+    if (
+      data['type'] === 'user' &&
+      typeof data['id'] === 'string' &&
+      typeof data['raw'] === 'string'
+    ) {
+      return true
+    } else {
+      return false
+    }
+  } catch (e) {
+    return false
+  }
+}
+
+function makeDetecter(f) {
+  return text => {
+    let isInside = false
+    let startIndex = -1
+    let isString = false
+    const ret = []
+    for (let i = 0; i < text.length; i++) {
+      if (isInside) {
+        if (text[i] === '"') {
+          isString ^= true
+        } else if (!isString && text[i] === '}') {
+          isInside = false
+          if (f(text.substr(startIndex + 1, i - startIndex))) {
+            ret.push(JSON.parse(text.substr(startIndex + 1, i - startIndex)))
+          } else {
+            i = startIndex + 1
+          }
+        }
+      } else {
+        if (i < text.length - 1 && text[i] === '!' && text[i + 1] === '{') {
+          startIndex = i
+          i++
+          isInside = true
+          isString = false
         }
       }
-    } else {
-      if (i < text.length - 1 && text[i] === '!' && text[i + 1] === '{') {
-        startIndex = i
-        i++
-        isInside = true
-        isString = false
-      }
     }
+    return ret
   }
-  return ret
 }
+
+export const detectFiles = makeDetecter(text => isFile(text) || isMessage(text))
+
+export const detectMentions = makeDetecter(text => isMention(text))
 
 export const isMac = () => {
   return window.navigator.platform.includes('Mac')
@@ -171,5 +192,17 @@ export const isSendKey = (keyEvent, messageSendKey) => {
   return (
     (messageSendKey === 'modifier' && withModifierKey(keyEvent)) ||
     (messageSendKey === 'none' && !withModifierKey(keyEvent))
+  )
+}
+
+export const isTouchDevice = () => {
+  const userAgent = navigator.userAgent
+  return (
+    userAgent.includes('traQ-Android') ||
+    userAgent.includes('traQ-iOS') ||
+    userAgent.includes('iPhone') ||
+    userAgent.includes('iPod') ||
+    userAgent.includes('iPad') ||
+    userAgent.includes('Android')
   )
 }

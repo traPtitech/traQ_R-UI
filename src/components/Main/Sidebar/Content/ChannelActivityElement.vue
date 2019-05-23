@@ -4,27 +4,35 @@ div.channel-activity-wrap
                            :class="{'activity-watched': isWatched}")
     div.channel-activity-channel
       div.channel-activity-before(:class="channelBeforeClass")
-        | #
+        icon-hash(size="16")
       div.channel-activity-name.text-ellipsis
         | {{ channelName }}
     hr.channel-activity-separator
     p.channel-recent-message
       span.channel-recent-message-author.text-ellipsis
-        | {{ authorName }}
+        | @{{ authorName }}
       span.channel-recent-message-content.text-ellipsis
         | {{ sanitizedMessage }}
       span.channel-recent-message-attachment-info(v-if="hasFile")
-        | ファイルを送信しました
+        icon-attach(:color="isWatched ? 'var(--primary-color)' : 'white'")
       span.channel-recent-message-attachment-info(v-if="hasMessage")
-        | メッセージを引用しました
+        icon-speech-balloon(:color="isWatched ? 'var(--primary-color)' : 'white'")
 </template>
 
 <script>
 import md from '@/bin/markdown-it'
 import { detectFiles } from '@/bin/utils'
+import IconAttach from '@/components/Icon/IconAttach'
+import IconSpeechBalloon from '@/components/Icon/IconSpeechBalloon'
+import IconHash from '@/components/Icon/IconHash'
 
 export default {
   name: 'ChannelActivityElement',
+  components: {
+    IconAttach,
+    IconSpeechBalloon,
+    IconHash
+  },
   props: {
     model: Object
   },
@@ -41,7 +49,9 @@ export default {
   },
   computed: {
     channelName() {
-      return this.$store.state.channelMap[this.model.parentChannelId].name
+      return this.$store.getters.getShortChannelPathById(
+        this.model.parentChannelId
+      )
     },
     authorName() {
       return this.$store.state.memberMap[this.model.userId].name
@@ -61,7 +71,7 @@ export default {
       return { 'has-unread': this.unreadNum > 0 }
     },
     parsed() {
-      const parsed = md.parseInline(this.model.content)
+      const parsed = md.parseInline(this.model.content, {})
       return parsed[0].children
     },
     attachments() {
@@ -74,7 +84,7 @@ export default {
       return this.attachments.filter(a => a.type === 'file').length > 0
     },
     sanitizedMessage() {
-      const parsed = md.parseInline(this.model.content)
+      const parsed = md.parseInline(this.model.content, {})
       const tokens = parsed[0].children
       const message = []
       for (let token of tokens) {
@@ -131,17 +141,11 @@ export default {
 
 .channel-activity-before
   position: relative
-  display: flex
-  flex: 0 0 20px
-  justify-content: center
-  align-items: center
-  width: 20px
-  height: 20px
-  color: $text-light-color
+  top: 4px
+  width: 16px
+  height: 16px
   margin-right: 0.5rem
-  font:
-    weight: bold
-    size: 1.5rem;
+
   .activity-watched &
     color: $primary-color
   &.has-unread::after
@@ -219,5 +223,5 @@ export default {
   transform: translateX(-5px)
 
 .channel-recent-message-attachment-info
-  font-style: italic
+  margin-left: 1rem
 </style>

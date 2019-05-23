@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
+import { detectMentions } from '@/bin/utils'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -83,8 +84,7 @@ const store = new Vuex.Store({
     currentChannel: {},
     currentChannelUpdateDate: new Date(0),
     clipedMessages: {},
-    unreadMessages: {},
-    unreadEarliests: {},
+    unreadChannelMap: {},
     staredChannels: [],
     staredChannelMap: {},
     mutedChannels: [],
@@ -239,9 +239,12 @@ const store = new Vuex.Store({
     },
     changeChannel(state, channel) {
       state.currentChannel = channel
-      state.currentChannelUpdateDate = new Date(
-        state.unreadEarliests[channel.channelId] || 0
-      )
+      const unread = state.unreadChannelMap[channel.channelId]
+      if (unread) {
+        state.currentChannelUpdateDate = new Date(unread.since)
+      } else {
+        state.currentChannelUpdateDate = new Date(0)
+      }
       state.messages = []
     },
     loadStart(state) {
@@ -262,50 +265,41 @@ const store = new Vuex.Store({
       })
     },
     setUnreadMessagesData(state, data) {
-      const unreads = {}
-      const earliests = {}
-      data.forEach(message => {
-        if (unreads[message.parentChannelId]) {
-          unreads[message.parentChannelId][message.messageId] = message
-          earliests[message.parentChannelId] = Math.min(
-            earliests[message.parentChannelId],
-            new Date(message.createdAt).valueOf()
-          )
-        } else {
-          unreads[message.parentChannelId] = {}
-          unreads[message.parentChannelId][message.messageId] = message
-          earliests[message.parentChannelId] = new Date(
-            message.createdAt
-          ).valueOf()
-        }
+      const channelMap = {}
+      data.forEach(channel => {
+        channelMap[channel.channelId] = channel
       })
-      state.unreadMessages = unreads
-      state.unreadEarliests = earliests
+      state.unreadChannelMap = channelMap
     },
     addUnreadMessage(state, message) {
       if (message.userId === state.me.userId) {
         return
       }
-      let unreadMap = state.unreadMessages[message.parentChannelId]
-      if (unreadMap) {
-        unreadMap[message.messageId] = message
+      let channel = state.unreadChannelMap[message.parentChannelId]
+      if (channel) {
+        channel.count += 1
+        channel.updatedAt = message.createdAt
+        if (!channel.noticeable) {
+          channel.noticeable = detectMentions(message.content).some(
+            data => data.id === state.me.userId
+          )
+        }
       } else {
-        unreadMap = {}
-        unreadMap[message.messageId] = message
-        Vue.set(
-          state.unreadEarliests,
-          message.parentChannelId,
-          new Date(message.createdAt).valueOf()
-        )
+        channel = {
+          channelId: message.parentChannelId,
+          count: 1,
+          since: message.createdAt,
+          updatedAt: message.createdAt,
+          noticeable: detectMentions(message.content).some(
+            data => data.id === state.me.userId
+          )
+        }
       }
-      Vue.set(state.unreadMessages, message.parentChannelId, unreadMap)
+      Vue.set(state.unreadChannelMap, message.parentChannelId, channel)
     },
     readChannel(state, channelId) {
-      if (state.unreadMessages[channelId]) {
-        Vue.delete(state.unreadMessages, channelId)
-      }
-      if (state.unreadEarliests[channelId]) {
-        Vue.delete(state.unreadEarliests, channelId)
+      if (state.unreadChannelMap[channelId]) {
+        Vue.delete(state.unreadChannelMap, channelId)
       }
     },
     setStaredChannelsData(state, data) {
@@ -613,6 +607,19 @@ const store = new Vuex.Store({
         return path
       }
     },
+    getShortChannelPathById(state) {
+      return channelId => {
+        let current = state.channelMap[channelId]
+        let path = current.name
+        let next = state.channelMap[current.parent]
+        while (next.name) {
+          path = next.name[0] + '/' + path
+          current = next
+          next = state.channelMap[current.parent]
+        }
+        return path
+      }
+    },
     getFileDataById() {
       return fileId => {
         return client.getFileMeta(fileId)
@@ -645,10 +652,10 @@ const store = new Vuex.Store({
     },
     getChannelUnreadMessageNum(state) {
       return channelId => {
-        if (!state.unreadMessages[channelId]) {
+        if (!state.unreadChannelMap[channelId]) {
           return 0
         }
-        return Object.keys(state.unreadMessages[channelId]).length
+        return state.unreadChannelMap[channelId].count
       }
     },
     getChannelUnreadMessageSum(state, getters) {
@@ -668,7 +675,7 @@ const store = new Vuex.Store({
       }
     },
     getUnreadMessageNum(state, getters) {
-      return Object.keys(state.unreadMessages).reduce((pre, channelId) => {
+      return Object.keys(state.unreadChannelMap).reduce((pre, channelId) => {
         return pre + getters.getChannelUnreadMessageNum(channelId)
       }, 0)
     },
@@ -800,7 +807,7 @@ const store = new Vuex.Store({
           commit('setMe', null)
         })
     },
-    getMessages({ state, commit, getters }, update) {
+    getMessages({ state, commit, getters, dispatch }, update) {
       const nowChannel = state.currentChannel
       let loaded = false
       const latest = state.messages.length === 0 || update
@@ -827,7 +834,7 @@ const store = new Vuex.Store({
       return loadedMessages.then(res => {
         loaded = true
         const messages = res.data.reverse()
-        client.readMessages(nowChannel.channelId)
+        dispatch('readMessages', nowChannel.channelId)
         if (latest) {
           db.write('channelMessages', {
             channelId: nowChannel.channelId,
@@ -879,7 +886,7 @@ const store = new Vuex.Store({
       )
     },
     updateUnreadMessages({ commit }) {
-      return loadGeneralData('UnreadMessages', client.getUnreadMessages, commit)
+      return loadGeneralData('UnreadMessages', client.getUnreadChannels, commit)
     },
     updateStaredChannels({ commit }) {
       return loadGeneralData('StaredChannels', client.getStaredChannels, commit)
