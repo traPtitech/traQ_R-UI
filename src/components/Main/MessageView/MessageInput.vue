@@ -56,7 +56,13 @@
 import { mapGetters, mapState } from 'vuex'
 import autosize from 'autosize'
 import client from '@/bin/client'
-import { isImage, withModifierKey, isModifierKey, isSendKey } from '@/bin/utils'
+import {
+  isImage,
+  withModifierKey,
+  isModifierKey,
+  isSendKey,
+  isBRKey
+} from '@/bin/utils'
 import suggest from '@/bin/suggest'
 import stampAltNameTable from '@/bin/emoji_altname_table.json'
 import MessageTypingUsers from './MessageTypingUsers'
@@ -260,6 +266,20 @@ export default {
       if (isSendKey(event, this.messageSendKey)) {
         this.submit()
         event.returnValue = false
+      }
+      if (isBRKey(event, this.messageSendKey)) {
+        event.preventDefault()
+        const pre = this.inputText.substring(
+          0,
+          this.messageInput.selectionStart
+        )
+        const suf = this.inputText.substring(this.messageInput.selectionEnd)
+        this.inputText = `${pre}\n${suf}`
+        this.$nextTick(() => {
+          this.messageInput.selectionStart = this.messageInput.selectionEnd =
+            pre.length + 1
+          autosize.update(this.messageInput)
+        })
       }
       /*
       if (this.suggests.length === 0) {
