@@ -86,7 +86,7 @@ export default class traQRTCClient implements EventTarget {
     })
   }
 
-  public replaceStream(stream: MediaStream) {
+  public setStream(stream: MediaStream) {
     if (!this.peer) {
       throw 'Connection is not established'
     }
