@@ -7,7 +7,11 @@ export default {
      * @property {traQRTCClient} client RTC Client
      */
     client: null,
-    activeVoiceChannelId: ''
+    /**
+     * @property { * }
+     */
+    activeVoiceChannelId: '',
+    localStream: null
   },
   getters: {},
   mutations: {
@@ -30,7 +34,12 @@ export default {
     async joinRoom({ state }, room) {
       await state.client.joinRoom(room)
     },
-    async setStream() {},
+    /**
+     * @param {MediaStream} stream A media stream to set.
+     */
+    async setStream({ state }, stream) {
+      state.client.setStream(stream)
+    },
     async sendData() {}
   }
 }

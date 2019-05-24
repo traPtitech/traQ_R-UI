@@ -17,7 +17,7 @@ export type RTCEventType =
 /**
  * @class リアルタイム系機能を提供するクラス
  */
-export default class traQRTCClient {
+export default class traQRTCClient implements EventTarget {
   private peer?: Peer
   private room?: SFURoom
 
@@ -43,6 +43,10 @@ export default class traQRTCClient {
       listener,
       options
     )
+  }
+
+  public dispatchEvent(event: Event) {
+    return this.eventTargetDeligator.dispatchEvent(event)
   }
 
   /**
@@ -96,7 +100,10 @@ export default class traQRTCClient {
     return this.room ? this.room.name : ''
   }
 
-  private dispatchEventOfType(type: RTCEventType) {
+  private dispatchEventOfType(type: RTCEventType, payload?: any) {
+    if (type === 'streamchange') {
+      this.eventTargetDeligator.dispatchEvent(new CustomEvent(type, payload))
+    }
     this.eventTargetDeligator.dispatchEvent(new Event(type))
   }
 
