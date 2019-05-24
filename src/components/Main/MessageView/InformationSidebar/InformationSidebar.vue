@@ -40,9 +40,9 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
               | PINNED
           div.information-sidebar-content-body
             template(v-for="p in pinnedMessages")
-              slim-message-element(:message="p.message")
+              slim-message-element(:message="p.message" :key="p.messageId")
         div.information-sidebar-content-item
-          div(v-for="user in onlineUsers")
+          div(v-for="user in onlineUsers" :key="user.userId")
             slim-member-element(:member="user")
 </template>
 
