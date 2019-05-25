@@ -1,5 +1,10 @@
 import axios from 'axios'
 
+interface Window {
+  debug: boolean
+}
+declare var window: Window
+
 axios.interceptors.response.use(
   res => {
     if (process.env.NODE_ENV === 'development' || window.debug) {

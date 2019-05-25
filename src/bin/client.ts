@@ -134,9 +134,12 @@ const client = {
   },
   changeIcon(file) {
     const form = new FormData()
-    form.enctype = 'multipart/form-data'
     form.append('file', file)
-    return axios.put('/api/1.0/users/me/icon', form)
+    return axios.put('/api/1.0/users/me/icon', form, {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    })
   },
   changeDisplayName(name) {
     return axios.patch('/api/1.0/users/me', {
@@ -239,20 +242,26 @@ const client = {
   },
   addStamp(name, file) {
     const form = new FormData()
-    form.enctype = 'multipart/form-data'
     form.append('name', name)
     form.append('file', file)
-    return axios.post(`/api/1.0/stamps`, form)
+    return axios.post(`/api/1.0/stamps`, form, {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    })
   },
   getStampDetail(stampId) {
     return axios.get(`/api/1.0/stamps/${stampId}`)
   },
   fixStamp(stampId, name, file) {
     const form = new FormData()
-    form.enctype = 'multipart/form-data'
     form.append('name', name)
     form.append('file', file)
-    return axios.patch(`/api/1.0/stamps/${stampId}`, form)
+    return axios.patch(`/api/1.0/stamps/${stampId}`, form, {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    })
   },
   deleteStamp(stampId) {
     return axios.delete(`/api/1.0/stamps/${stampId}`)
@@ -287,7 +296,6 @@ const client = {
   // Tag: file
   uploadFile(file, readableUsers, onUploadProgress) {
     const form = new FormData()
-    form.enctype = 'multipart/form-data'
     form.append('file', file)
     form.append('acl_readable', readableUsers.join(','))
     return axios.post(
@@ -295,9 +303,16 @@ const client = {
       form,
       onUploadProgress
         ? {
-            onUploadProgress
+            onUploadProgress,
+            headers: {
+              'content-type': 'multipart/form-data'
+            }
           }
-        : {}
+        : {
+            headers: {
+              'content-type': 'multipart/'
+            }
+          }
     )
   },
   deleteFile(fileId) {
@@ -377,8 +392,12 @@ const client = {
   }
 }
 
+interface Window {
+  client: any
+}
+declare var window: Window
+
 if (process.env.NODE_ENV === 'development') {
   window.client = client
 }
-
 export default client

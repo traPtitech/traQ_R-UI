@@ -5,6 +5,7 @@ RUN apk add --no-cache git
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN npm run gen-swagger-type
 RUN npm run build
 
 # 本番環境
