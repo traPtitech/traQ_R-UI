@@ -23,6 +23,10 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-star(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         icon-star-fill(size="24")
+      .titlebar-menu-button.border-left(v-show="!isDirectMessage && !isStared" @click="copyMessage")
+        icon-star(size="24")
+      .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
+        icon-star-fill(size="24")
     .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
       .menu-icon
         icon-notification-fill(size="24")
@@ -97,6 +101,9 @@ export default {
           this.$store.dispatch('updateMyNotifiedChannels')
         })
     },
+    copyMessage() {
+      this.$copyText(`#${this.$route.params.channel}`)
+    },
     removeWidth() {
       this.$refs.titlebarInner.style.width = ''
     },
@@ -135,6 +142,9 @@ export default {
       return this.$store.state.currentChannel.channelId
     },
     isDirectMessage() {
+      console.log('~~~~~~~~~~~~~~~~~~~')
+      console.log(this.$store.state.currentChannel.parent)
+      console.log(this.$store.state.directMessageId)
       return (
         this.$store.state.currentChannel.parent ===
         this.$store.state.directMessageId
