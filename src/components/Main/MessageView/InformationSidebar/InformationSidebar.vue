@@ -16,7 +16,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
         div.information-sidebar-content-item.separator-line(v-if="$store.state.rtc.isActive")
           div.information-sidebar-content-header
-            icon-pin(size="24")
+            icon-flag(size="24")
             span
               | QALL
           div.information-sidebar-content-body
@@ -62,6 +62,7 @@ import IconClose from '@/components/Icon/IconClose'
 import IconTopic from '@/components/Icon/IconTopic'
 import IconPin from '@/components/Icon/IconPin'
 import IconEdit from '@/components/Icon/IconEdit'
+import IconCall from '@/components/Icon/IconCall'
 import SlimMessageElement from '@/components/Main/MessageView/InformationSidebar/SlimMessageElement'
 import SlimMemberElement from '@/components/Main/MessageView/InformationSidebar/SlimMemberElement'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
@@ -73,6 +74,7 @@ export default {
     IconTopic,
     IconPin,
     IconEdit,
+    IconCall,
     SlimMessageElement,
     SlimMemberElement,
     MemberElement

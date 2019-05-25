@@ -37,6 +37,7 @@ const actions: ActionTree<S, TempRS> = {
     })
     await state.client.joinRoom(room, await getUserAudio())
     commit('setIsActive', true)
+    commit('setActiveMediaChannelId', state.client.roomName)
   },
 
   closeConnection({ state, commit }) {

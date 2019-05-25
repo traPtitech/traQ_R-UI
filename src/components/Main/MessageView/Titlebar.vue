@@ -35,12 +35,12 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         | サブチャンネル作成
     .titlebar-menu-item(v-if="$store.state.rtc.isActive" @click="$store.dispatch('rtc/closeConnection', $store.state.currentChannel.channelId)")
       .menu-icon
-        icon-plus(size="24")
+        icon-call(size="24")
       span
         | Quit Qall
     .titlebar-menu-item(v-else @click="$store.dispatch('rtc/joinVoiceChannel', $store.state.currentChannel.channelId)")
       .menu-icon
-        icon-plus(size="24")
+        icon-call(size="24")
       span
         | Start Qall
 </template>
@@ -54,6 +54,7 @@ import IconNotification from '@/components/Icon/IconNotification'
 import IconStar from '@/components/Icon/IconStar'
 import IconStarFill from '@/components/Icon/IconStarFill'
 import IconPlus from '@/components/Icon/IconPlus'
+import IconCall from '@/components/Icon/IconCall'
 
 export default {
   name: 'Titlebar',
@@ -63,7 +64,8 @@ export default {
     IconNotification,
     IconStar,
     IconStarFill,
-    IconPlus
+    IconPlus,
+    IconCall
   },
   data() {
     return {
