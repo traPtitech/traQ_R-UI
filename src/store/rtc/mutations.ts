@@ -4,11 +4,23 @@ import { MutationTree } from 'vuex'
 import { S } from './types'
 
 const mutations: MutationTree<S> = {
-  setIsJoined(state, isJoined: boolean) {
-    state.isJoined = isJoined
-  },
   setClient(state, instance: traQRTClient) {
     state.client = instance
+  },
+  destroyClient(state) {
+    state.client = undefined
+  },
+  setLocalStream(state, stream: MediaStream) {
+    state.localStream = stream
+  },
+  destroyLocalStream(state) {
+    state.localStream = undefined
+  },
+  setIsActive(state, isActive: boolean) {
+    state.isActive = isActive
+  },
+  setActiveMediaChannelId(state, channelID: string) {
+    state.activeMediaChannelId = channelID
   },
   addRemoteAudioStream(state, stream: MediaStreamWithPeerId) {
     Vue.set(state.remoteAudioStreamMap, stream.peerId, stream)

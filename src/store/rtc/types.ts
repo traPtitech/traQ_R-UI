@@ -10,10 +10,10 @@ export interface TempRS {
 }
 
 export interface S {
-  isJoined: boolean
   client?: traQRTCClient
   localStream?: MediaStream
-  activeVoiceChannelId: string
+  isActive: boolean
+  activeMediaChannelId: string
   remoteAudioStreamMap: Record<string, MediaStream>
   remoteVideoStreamMap: Record<string, MediaStream>
 }

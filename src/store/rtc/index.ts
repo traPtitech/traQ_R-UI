@@ -7,8 +7,8 @@ import getters from './getters'
 const namespaced = true
 
 const state: S = {
-  isJoined: false,
-  activeVoiceChannelId: '',
+  isActive: false,
+  activeMediaChannelId: '',
   remoteAudioStreamMap: {},
   remoteVideoStreamMap: {}
 }

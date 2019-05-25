@@ -14,7 +14,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
         div.icon-close-wrap
           icon-close
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
-        div.information-sidebar-content-item.separator-line(v-if="$store.state.rtc.isJoined")
+        div.information-sidebar-content-item.separator-line(v-if="$store.state.rtc.isActive")
           div.information-sidebar-content-header
             icon-pin(size="24")
             span

@@ -1,4 +1,4 @@
-import Peer, { SFURoom } from 'skyway-js'
+import Peer from 'skyway-js'
 import axios from 'axios'
 
 const skywayApiKey = '2a4e923e-2e16-4d3c-9a39-607c3f605f0a'
@@ -39,6 +39,7 @@ interface QRTCEventMap {
   userleave: QRTCUserLeaveEvent
   streamchange: QRTCStreamChangeEvent
   datarecieve: QRTCDataRecieveEvent
+  connectionerror: Event
 }
 
 /**
@@ -93,7 +94,9 @@ export default class traQRTCClient implements EventTarget {
 
   public closeConnection() {
     if (this.peer) {
+      const id = this.peer.id
       this.peer.destroy()
+      console.log('[RTC] Connection closed')
     }
   }
 
@@ -199,6 +202,7 @@ export default class traQRTCClient implements EventTarget {
   }
   private handlePeerError(err: any) {
     console.error(`[RTC] ${err}`)
+    this.dispatchEvent(new Event('connectionerror'))
   }
   private async handleRoomOpen() {
     console.log(`[RTC] Room opened, name: ${this.roomName}`)

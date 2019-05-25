@@ -33,16 +33,16 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-plus(size="24")
       span
         | サブチャンネル作成
-    .titlebar-menu-item(@click="$store.dispatch('rtc/establishConnection')")
+    .titlebar-menu-item(v-if="$store.state.rtc.isActive" @click="$store.dispatch('rtc/closeConnection', $store.state.currentChannel.channelId)")
       .menu-icon
         icon-plus(size="24")
       span
-        | Establish Connection
-    .titlebar-menu-item(@click="$store.dispatch('rtc/joinRoom', $store.state.currentChannel.channelId)")
+        | Quit Qall
+    .titlebar-menu-item(v-else @click="$store.dispatch('rtc/joinVoiceChannel', $store.state.currentChannel.channelId)")
       .menu-icon
         icon-plus(size="24")
       span
-        | Join Room
+        | Start Qall
 </template>
 
 <script>

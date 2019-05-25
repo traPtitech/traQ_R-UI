@@ -12,18 +12,18 @@ const actions: ActionTree<S, TempRS> = {
     commit('setClient', client)
   },
 
-  async joinRoom({ state, commit }, room) {
-    if (!state.client) {
-      return
+  async joinVoiceChannel({ state, commit, dispatch }, room) {
+    while (!state.client) {
+      await dispatch('establishConnection')
     }
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User joined, ID: ${userId}`)
-      commit('removeRemoteAudioStream', e.detail.userId)
     })
     state.client.addEventListener('userleave', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User left, ID: ${userId}`)
+      commit('removeRemoteAudioStream', e.detail.userId)
     })
     state.client.addEventListener('streamchange', e => {
       const stream = e.detail.stream
@@ -36,7 +36,16 @@ const actions: ActionTree<S, TempRS> = {
       }
     })
     await state.client.joinRoom(room, await getUserAudio())
-    commit('setIsJoined', true)
+    commit('setIsActive', true)
+  },
+
+  closeConnection({ state, commit }) {
+    if (!state.client) {
+      return
+    }
+    state.client.closeConnection()
+    commit('destroyClient')
+    commit('setIsActive', false)
   },
 
   async setStream({ state }, stream: MediaStream) {
