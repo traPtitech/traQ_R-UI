@@ -16,15 +16,18 @@ const actions: ActionTree<S, TempRS> = {
     while (!state.client) {
       await dispatch('establishConnection')
     }
+
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User joined, ID: ${userId}`)
     })
+
     state.client.addEventListener('userleave', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User left, ID: ${userId}`)
       commit('removeRemoteAudioStream', e.detail.userId)
     })
+
     state.client.addEventListener('streamchange', e => {
       const stream = e.detail.stream
       console.log(`[RTC] Recieved stream from ${stream.peerId}`)
@@ -35,7 +38,11 @@ const actions: ActionTree<S, TempRS> = {
         commit('addRemoteVideoStream', stream)
       }
     })
-    await state.client.joinRoom(room, await getUserAudio())
+
+    const localStream = await getUserAudio()
+    commit('setLocalStream', localStream)
+
+    await state.client.joinRoom(room, localStream)
     commit('setIsActive', true)
     commit('setActiveMediaChannelId', state.client.roomName)
   },
@@ -46,6 +53,7 @@ const actions: ActionTree<S, TempRS> = {
     }
     state.client.closeConnection()
     commit('destroyClient')
+    commit('destroyLocalStream')
     commit('setIsActive', false)
   },
 

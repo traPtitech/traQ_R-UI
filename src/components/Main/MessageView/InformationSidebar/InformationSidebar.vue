@@ -16,13 +16,13 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
         div.information-sidebar-content-item.separator-line(v-if="$store.state.rtc.isActive")
           div.information-sidebar-content-header
-            icon-flag(size="24")
+            icon-call(size="24")
             span
               | QALL
           div.information-sidebar-content-body
             .information-sidebar-call-item
               slim-member-element(:member="$store.state.me")
-            .information-sidebar-call-item(v-for="stream in Object.values($store.state.rtc.remoteAudioStreamMap)")
+            .information-sidebar-call-item(v-for="stream in $store.getters['rtc/remoteAudioStreams']")
               slim-member-element(:member="$store.state.memberMap[stream.peerId]")
 
         div.information-sidebar-content-item.separator-line(v-if="isChannel")

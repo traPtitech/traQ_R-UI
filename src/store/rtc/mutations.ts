@@ -14,6 +14,9 @@ const mutations: MutationTree<S> = {
     state.localStream = stream
   },
   destroyLocalStream(state) {
+    if (state.localStream) {
+      state.localStream.getTracks().forEach(track => track.stop())
+    }
     state.localStream = undefined
   },
   setIsActive(state, isActive: boolean) {
