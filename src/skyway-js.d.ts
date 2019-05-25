@@ -49,7 +49,7 @@ interface SFURoomOptions extends RoomOptions {
   mode: 'sfu'
 }
 
-interface SFURoomOptions extends RoomOptions {
+interface MeshRoomOptions extends RoomOptions {
   mode: 'mesh'
 }
 

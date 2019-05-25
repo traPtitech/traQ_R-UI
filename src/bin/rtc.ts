@@ -3,16 +3,43 @@ import axios from 'axios'
 
 const skywayApiKey = '2a4e923e-2e16-4d3c-9a39-607c3f605f0a'
 
-export type RTCEventType =
-  | 'connect'
-  | 'connectionclose'
-  | 'disconnect'
-  | 'roomopen'
-  | 'roomclose'
-  | 'peerjoin'
-  | 'peerleave'
-  | 'streamchange'
-  | 'datarecieve'
+const randomStr = () =>
+  Math.random()
+    .toString(36)
+    .slice(-10)
+
+interface QRTCStreamChangeEvent extends Event {
+  detail: {
+    stream: MediaStreamWithPeerId
+  }
+}
+interface QRTCDataRecieveEvent extends Event {
+  detail: {
+    data: DataObject
+  }
+}
+interface QRTCUserJoinEvent extends Event {
+  detail: {
+    userId: string
+  }
+}
+interface QRTCUserLeaveEvent extends Event {
+  detail: {
+    userId: string
+  }
+}
+
+interface QRTCEventMap {
+  connect: Event
+  connectionclose: Event
+  disconnect: Event
+  roomopen: Event
+  roomclose: Event
+  userjoin: QRTCUserJoinEvent
+  userleave: QRTCUserLeaveEvent
+  streamchange: QRTCStreamChangeEvent
+  datarecieve: QRTCDataRecieveEvent
+}
 
 /**
  * @class リアルタイム系機能を提供するクラス
@@ -25,17 +52,17 @@ export default class traQRTCClient implements EventTarget {
 
   constructor(private id: string) {}
 
-  public addEventListener(
-    event: RTCEventType,
-    listener: EventListener | EventListenerObject | null,
+  public addEventListener<K extends keyof QRTCEventMap>(
+    event: K,
+    listener: (ev: QRTCEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions
   ) {
     return this.eventTargetDeligator.addEventListener(event, listener, options)
   }
 
-  public removeEventListener(
-    event: RTCEventType,
-    listener: EventListener | EventListenerObject | null,
+  public removeEventListener<K extends keyof QRTCEventMap>(
+    event: K,
+    listener: (ev: QRTCEventMap[K]) => any,
     options?: boolean | EventListenerOptions
   ) {
     return this.eventTargetDeligator.removeEventListener(
@@ -54,39 +81,53 @@ export default class traQRTCClient implements EventTarget {
    */
   public async establishConnection() {
     this.peer = await this.createPeer(this.id)
+    this.dispatchEvent(new Event('connect'))
+
+    this.peer.on('close', this.handlePeerClose.bind(this))
+    this.peer.on('disnonected', this.handlePeerDisconnected.bind(this))
+    this.peer.on('error', this.handlePeerError.bind(this))
+
     this.id = this.peer.id
     return this.id
+  }
+
+  public closeConnection() {
+    if (this.peer) {
+      this.peer.destroy()
+    }
   }
 
   /**
    * Join to the room.
    * @param roomName a name of room to join.
    */
-  public joinRoom(roomName: string) {
-    return new Promise((resolve, reject) => {
+  public joinRoom(roomName: string, stream: MediaStream) {
+    return new Promise(async (resolve, reject) => {
       if (!this.peer || !this.peer.open) {
         reject('connection has not been established')
         return
       }
       const room = this.peer.joinRoom(roomName, {
-        mode: 'sfu'
+        mode: 'sfu',
+        stream
       })
       if (!room) {
         reject(`failed to join room: ${roomName}.`)
         return
       }
-      room.on('open', this.handleRoomOpen)
-      room.on('peerJoin', this.handleRoomPeerJoin)
-      room.on('peerLeave', this.handleRoomPeerLeave)
-      room.on('stream', this.handleRoomStream)
-      room.on('data', this.handleRoomData)
-      room.on('close', this.handleRoomClose)
+      room.on('open', this.handleRoomOpen.bind(this))
+      room.on('peerJoin', this.handleRoomPeerJoin.bind(this))
+      room.on('peerLeave', this.handleRoomPeerLeave.bind(this))
+      room.on('stream', this.handleRoomStream.bind(this))
+      room.on('data', this.handleRoomData.bind(this))
+      room.on('close', this.handleRoomClose.bind(this))
       this.room = room
+      await this.dummyRoomJoin()
       resolve()
     })
   }
 
-  public setStream(stream: MediaStream) {
+  public async setStream(stream: MediaStream) {
     if (!this.peer) {
       throw 'Connection is not established'
     }
@@ -94,17 +135,13 @@ export default class traQRTCClient implements EventTarget {
       throw 'Not joined to any room'
     }
     this.room.replaceStream(stream)
+    await this.dummyRoomJoin()
   }
+
+  public setUserAudio() {}
 
   get roomName() {
     return this.room ? this.room.name : ''
-  }
-
-  private dispatchEventOfType(type: RTCEventType, payload?: any) {
-    if (type === 'streamchange') {
-      this.eventTargetDeligator.dispatchEvent(new CustomEvent(type, payload))
-    }
-    this.eventTargetDeligator.dispatchEvent(new Event(type))
   }
 
   private createPeer(peerId: string) {
@@ -116,7 +153,7 @@ export default class traQRTCClient implements EventTarget {
         reject("Couldn't get credential")
         return
       }
-      const peer = new Peer(this.id, {
+      const peer = new Peer(peerId, {
         key: skywayApiKey,
         credential: res.data
       })
@@ -125,71 +162,104 @@ export default class traQRTCClient implements EventTarget {
         return
       }
       peer.on('open', () => {
-        this.dispatchEventOfType('connect')
+        console.log(`[RTC] Connection established, ID: ${peer.id}`)
         resolve(peer)
       })
-      peer.on('close', this.handlePeerClose)
-      peer.on('disnonected', this.handlePeerDisconnected)
-      peer.on('error', this.handlePeerError)
     })
   }
 
   private dummyRoomJoin() {
     return new Promise(async (resolve, reject) => {
       if (!this.room) {
-        reject()
+        reject('No room to join')
       }
       // create dummy peer with random id
-      const dummyPeer = await this.createPeer(
-        Math.random()
-          .toString(36)
-          .slice(-11)
-      )
-      dummyPeer.on('open', () => {
-        const dummyRoom = dummyPeer.joinRoom(this.roomName, { mode: 'sfu' })
-        if (!dummyRoom) {
-          reject()
-          return
-        }
-        dummyRoom.on('open', () => dummyRoom.close())
-        dummyRoom.on('close', () => {
-          dummyPeer.destroy()
-          resolve()
-        })
+      const dummyPeer = await this.createPeer('-dummy--' + randomStr())
+      dummyPeer.on('close', () => {
+        console.log(`[RTC] Dummy connection closed, ID: ${dummyPeer.id}`)
+      })
+      const dummyRoom = dummyPeer.joinRoom(this.roomName, { mode: 'sfu' })
+      if (!dummyRoom) {
+        reject('Failed to open dummy room')
+        return
+      }
+      dummyRoom.on('open', () => dummyRoom.close())
+      dummyRoom.on('close', () => {
+        dummyPeer.destroy()
+        resolve()
       })
     })
   }
 
   private handlePeerClose() {
-    this.dispatchEventOfType('connectionclose')
+    this.dispatchEvent(new Event('connectionclose'))
   }
   private handlePeerDisconnected() {
-    this.dispatchEventOfType('disconnect')
+    this.dispatchEvent(new Event('disconnect'))
   }
-  private handlePeerError() {
-    throw 'Error on peer'
+  private handlePeerError(err: any) {
+    console.error(`[RTC] ${err}`)
   }
   private async handleRoomOpen() {
-    try {
-      await this.dummyRoomJoin()
-    } catch (err) {
-      throw 'Dummy room join failed'
-    }
-    this.dispatchEventOfType('roomopen')
+    console.log(`[RTC] Room opened, name: ${this.roomName}`)
+    this.dispatchEvent(new Event('roomopen'))
   }
   private async handleRoomClose() {
-    this.dispatchEventOfType('roomclose')
+    this.dispatchEvent(new Event('roomclose'))
   }
-  private async handleRoomPeerJoin() {
-    this.dispatchEventOfType('peerjoin')
+  private async handleRoomPeerJoin(peerId: string) {
+    if (peerId.startsWith('-dummy--')) {
+      return
+    }
+    this.dispatchEvent(
+      new CustomEvent('userjoin', { detail: { userId: peerId } })
+    )
   }
-  private async handleRoomPeerLeave() {
-    this.dispatchEventOfType('peerleave')
+  private async handleRoomPeerLeave(peerId: string) {
+    if (peerId.startsWith('-dummy--')) {
+      return
+    }
+    this.dispatchEvent(
+      new CustomEvent('userleave', { detail: { userId: peerId } })
+    )
   }
   private async handleRoomStream(stream: MediaStreamWithPeerId) {
-    this.dispatchEventOfType('streamchange')
+    this.dispatchEvent(new CustomEvent('streamchange', { detail: { stream } }))
   }
   private async handleRoomData(data: DataObject) {
-    this.dispatchEventOfType('datarecieve')
+    this.dispatchEvent(new CustomEvent('datarecieve', { detail: { data } }))
+  }
+}
+
+export const getUserAudio = async () => {
+  const rawAudio = await navigator.mediaDevices.getUserMedia({
+    audio: true,
+    video: false
+  })
+  return rawAudio
+}
+
+export const getUserDisplay = async () => {
+  const rawVideo = await (navigator.mediaDevices as any).getDisplayMedia({
+    audio: false,
+    video: true
+  })
+  return rawVideo
+}
+
+export class AudioStream {
+  private _stream: MediaStream
+  private context: AudioContext
+
+  constructor(stream: MediaStream) {
+    if (stream.getAudioTracks().length === 0) {
+      throw 'Invalid audio stream'
+    }
+    this._stream = stream
+    this.context = new AudioContext()
+  }
+
+  get stream() {
+    return this._stream
   }
 }

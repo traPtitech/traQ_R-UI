@@ -5,6 +5,7 @@
   "author": "traP",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve-https": "vue-cli-service serve --https",
     "build": "vue-cli-service build --morden",
     "lint": "vue-cli-service lint",
     "fix": "vue-cli-service lint --fix",

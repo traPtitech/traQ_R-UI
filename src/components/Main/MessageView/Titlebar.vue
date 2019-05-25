@@ -43,11 +43,6 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-plus(size="24")
       span
         | Join Room
-    .titlebar-menu-item(@click="$store.dispatch('rtc/joinRoom', $store.state.currentChannel.channelId)")
-      .menu-icon
-        icon-plus(size="24")
-      span
-        | Set stream
 </template>
 
 <script>
