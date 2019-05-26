@@ -146,8 +146,6 @@ export default class traQRTCClient implements EventTarget {
     await this.dummyRoomJoin()
   }
 
-  public setUserAudio() {}
-
   get roomName() {
     return this.room ? this.room.name : ''
   }
@@ -237,38 +235,5 @@ export default class traQRTCClient implements EventTarget {
   }
   private async handleRoomData(data: DataObject) {
     this.dispatchEvent(new CustomEvent('datarecieve', { detail: { data } }))
-  }
-}
-
-export const getUserAudio = async () => {
-  const rawAudio = await navigator.mediaDevices.getUserMedia({
-    audio: true,
-    video: false
-  })
-  return rawAudio
-}
-
-export const getUserDisplay = async () => {
-  const rawVideo = await (navigator.mediaDevices as any).getDisplayMedia({
-    audio: false,
-    video: true
-  })
-  return rawVideo
-}
-
-export class AudioStream {
-  private _stream: MediaStream
-  private context: AudioContext
-
-  constructor(stream: MediaStream) {
-    if (stream.getAudioTracks().length === 0) {
-      throw 'Invalid audio stream'
-    }
-    this._stream = stream
-    this.context = new AudioContext()
-  }
-
-  get stream() {
-    return this._stream
   }
 }

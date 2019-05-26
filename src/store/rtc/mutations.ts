@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import traQRTClient from '@/bin/rtc'
+import traQRTClient from '@/lib/rtc/traQRTCClient'
 import { MutationTree } from 'vuex'
 import { S } from './types'
 
@@ -33,9 +33,9 @@ const mutations: MutationTree<S> = {
       Vue.delete(state.remoteVideoStreamMap, peerId)
     }
     if (stream.getVideoTracks().length === 0) {
-      Vue.set(state.remoteAudioStreamMap, stream.peerId, stream);
+      Vue.set(state.remoteAudioStreamMap, stream.peerId, stream)
     } else {
-      Vue.set(state.remoteVideoStreamMap, stream.peerId, stream);
+      Vue.set(state.remoteVideoStreamMap, stream.peerId, stream)
     }
   },
   removeRemoteStream(state, peerId) {

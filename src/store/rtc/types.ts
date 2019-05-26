@@ -1,4 +1,4 @@
-import traQRTCClient from '@/bin/rtc'
+import traQRTCClient from '@/lib/rtc/traQRTCClient'
 
 // Temporary root state
 // [TODO] Type root state!

@@ -1,4 +1,5 @@
-import traQRTCClient, { getUserAudio, getUserDisplay } from '@/bin/rtc'
+import traQRTCClient from '@/lib/rtc/traQRTCClient'
+import { getUserAudio, getUserDisplay } from '@/lib/rtc/utils'
 import { ActionTree } from 'vuex'
 import { S, TempRS } from './types'
 
