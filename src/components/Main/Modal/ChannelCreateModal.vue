@@ -56,12 +56,12 @@ export default {
     createChannel() {
       this.state = 'processing'
       client
-        .makeChannel(
-          'public',
-          [],
-          this.channelName,
-          this.$store.state.currentChannel.channelId
-        )
+        .makeChannel({
+          private: false,
+          member: [],
+          name: this.channelName,
+          parent: this.$store.state.currentChannel.channelId
+        })
         .then(() => {
           this.state = 'successed'
         })

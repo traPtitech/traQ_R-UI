@@ -7,6 +7,14 @@ import { detectMentions } from '@/bin/utils'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
+
+interface Window {
+  openUserModal: (string) => void
+  openGroupModal: (string) => void
+  navigator: any
+}
+declare var window: Window
+
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -568,12 +576,12 @@ const store = new Vuex.Store({
     getChannelByName(state, getters) {
       return channelName => {
         const channelLevels = channelName.split('/')
-        let channel = null
+        let channel: { channelId: string } | null | undefined = null
         let channelId = ''
         channelLevels.forEach(name => {
           const levelChannels = getters.childrenChannels(channelId)
           channel = levelChannels.find(ch => ch.name === name)
-          if (channel === undefined) return null
+          if (channel === null || channel === undefined) return null
           channelId = channel.channelId
         })
         return channel
@@ -819,15 +827,16 @@ const store = new Vuex.Store({
           .catch(() => {})
       }
       const loadedMessages = !nowChannel.dm
-        ? client.loadMessages(
-            nowChannel.channelId,
-            20,
-            latest ? 0 : state.messages.length
-          )
+        ? client.loadMessages(nowChannel.channelId, {
+            limit: 20,
+            offset: latest ? 0 : state.messages.length
+          })
         : client.loadDirectMessages(
             getters.getUserIdByDirectMessageChannel(nowChannel),
-            20,
-            latest ? 0 : state.messages.length
+            {
+              limit: 20,
+              offset: latest ? 0 : state.messages.length
+            }
           )
       return loadedMessages.then(res => {
         loaded = true
@@ -1089,7 +1098,10 @@ const store = new Vuex.Store({
     },
     async updateChannelActivity({ state, commit }) {
       const filter = state.filterSubscribedActivity || false
-      const res = await client.getLatestMessages(50, filter)
+      const res = await client.getLatestMessages({
+        limit: 50,
+        subscribe: filter
+      })
       commit('setActivityMessages', res.data)
     },
     async updateMyNotifiedChannels({ commit }) {
@@ -1110,7 +1122,7 @@ const store = new Vuex.Store({
     },
     async updateCurrentChannelTopic({ state, dispatch }, text) {
       const channelId = state.currentChannel.channelId
-      await client.changeChannelTopic(channelId, text)
+      await client.changeChannelTopic(channelId, { text })
       await dispatch('getChannelTopic', channelId)
     },
     updateFilterSubscribedActivity({ commit }, filter) {

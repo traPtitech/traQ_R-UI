@@ -180,10 +180,10 @@ export default {
         })
         .join('\n')
       const postedMessage = !nowChannel.dm
-        ? client.postMessage(nowChannel.channelId, message)
+        ? client.postMessage(nowChannel.channelId, { text: message })
         : client.postDirectMessage(
             this.$store.getters.getUserIdByDirectMessageChannel(nowChannel),
-            message
+            { text: message }
           )
       postedMessage
         .then(() => {

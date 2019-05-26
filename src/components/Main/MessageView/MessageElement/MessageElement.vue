@@ -163,7 +163,7 @@ export default {
         this.isEditing = false
         return
       }
-      client.editMessage(this.model.messageId, this.edited)
+      client.editMessage(this.model.messageId, { text: this.edited })
       this.isEditing = false
       this.isPushedModifierKey = false
       this.getAttachments()
@@ -177,7 +177,7 @@ export default {
       }
     },
     async pinMessage() {
-      await client.pinMessage(this.model.messageId)
+      await client.pinMessage({ messageId: this.model.messageId })
       this.$store.dispatch(
         'getCurrentChannelPinnedMessages',
         this.$store.state.currentChannel.channelId
@@ -191,7 +191,7 @@ export default {
       )
     },
     clipMessage() {
-      client.clipMessage('', this.model.messageId)
+      client.clipMessage({ messageId: this.model.messageId })
     },
     async getAttachments() {
       this.attachedData = detectFiles(this.model.content)
@@ -251,7 +251,7 @@ export default {
         'このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください'
       )
       if (reason) {
-        client.reportMessage(this.model.messageId, reason).then(() => {
+        client.reportMessage(this.model.messageId, { reason }).then(() => {
           this.$store.commit('removeMessage', this.model.messageId)
         })
       }
