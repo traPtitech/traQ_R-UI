@@ -38,6 +38,7 @@
         v-model="inputText"
         @focus="inputFocus"
         @blur="inputBlur"
+        @input="input"
         @keydown="keydown"
         @keyup="keyup"
         @click="clearKey"
@@ -61,6 +62,7 @@ import {
   withModifierKey,
   isModifierKey,
   isSendKey,
+  isSendKeyInput,
   isBRKey
 } from '@/bin/utils'
 import suggest from '@/bin/suggest'
@@ -252,6 +254,17 @@ export default {
       this.key = {
         type: '',
         keyword: ''
+      }
+    },
+    input(event) {
+      if (this.postStatus === 'processing') {
+        event.returnValue = false
+        return
+      }
+      this.postStatus = 'default'
+      if (isSendKeyInput(event, this.messageSendKey)) {
+        this.submit()
+        event.returnValue = false
       }
     },
     keydown(event) {

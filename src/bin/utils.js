@@ -189,9 +189,15 @@ export const isSendKey = (keyEvent, messageSendKey) => {
   if (keyEvent.key !== 'Enter') {
     return false
   }
+  // messageSendKey === 'none'はisSendKeyInput()で処理
+  return messageSendKey === 'modifier' && withModifierKey(keyEvent)
+}
+export const isSendKeyInput = (inputEvent, messageSendKey) => {
+  // modifierが押されているときはisBRKey()を利用してpreventされる
   return (
-    (messageSendKey === 'modifier' && withModifierKey(keyEvent)) ||
-    (messageSendKey === 'none' && !withModifierKey(keyEvent))
+    messageSendKey === 'none' &&
+    inputEvent.inputType === 'insertLineBreak' &&
+    !isTouchDevice()
   )
 }
 export const isBRKey = (keyEvent, messageSendKey) => {
