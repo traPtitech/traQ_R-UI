@@ -28,6 +28,11 @@ interface QRTCUserLeaveEvent extends Event {
     userId: string
   }
 }
+interface QRTCConnectionErrorEvent extends Event {
+  detail: {
+    error: any
+  }
+}
 
 interface QRTCEventMap {
   connect: Event
@@ -39,7 +44,7 @@ interface QRTCEventMap {
   userleave: QRTCUserLeaveEvent
   streamchange: QRTCStreamChangeEvent
   datarecieve: QRTCDataRecieveEvent
-  connectionerror: Event
+  connectionerror: QRTCConnectionErrorEvent
 }
 
 /**
@@ -202,7 +207,7 @@ export default class traQRTCClient implements EventTarget {
   }
   private handlePeerError(err: any) {
     console.error(`[RTC] ${err}`)
-    this.dispatchEvent(new Event('connectionerror'))
+    this.dispatchEvent(new CustomEvent('connectionerror', { detail: { err } }))
   }
   private async handleRoomOpen() {
     console.log(`[RTC] Room opened, name: ${this.roomName}`)

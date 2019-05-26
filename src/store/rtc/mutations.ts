@@ -25,17 +25,29 @@ const mutations: MutationTree<S> = {
   setActiveMediaChannelId(state, channelID: string) {
     state.activeMediaChannelId = channelID
   },
-  addRemoteAudioStream(state, stream: MediaStreamWithPeerId) {
-    Vue.set(state.remoteAudioStreamMap, stream.peerId, stream)
+  addRemoteStream(state, stream: MediaStreamWithPeerId) {
+    const peerId = stream.peerId
+    if (peerId in state.remoteAudioStreamMap) {
+      Vue.delete(state.remoteAudioStreamMap, peerId)
+    } else if (peerId in state.remoteVideoStreamMap) {
+      Vue.delete(state.remoteVideoStreamMap, peerId)
+    }
+    if (stream.getVideoTracks().length === 0) {
+      Vue.set(state.remoteAudioStreamMap, stream.peerId, stream);
+    } else {
+      Vue.set(state.remoteVideoStreamMap, stream.peerId, stream);
+    }
   },
-  addRemoteVideoStream(state, stream: MediaStreamWithPeerId) {
-    Vue.set(state.remoteVideoStreamMap, stream.peerId, stream)
+  removeRemoteStream(state, peerId) {
+    if (peerId in state.remoteAudioStreamMap) {
+      Vue.delete(state.remoteAudioStreamMap, peerId)
+    } else if (peerId in state.remoteVideoStreamMap) {
+      Vue.delete(state.remoteVideoStreamMap, peerId)
+    }
   },
-  removeRemoteAudioStream(state, peerId) {
-    Vue.delete(state.remoteAudioStreamMap, peerId)
-  },
-  removeRemoteVideoStream(state, peerId) {
-    Vue.delete(state.remoteVideoStreamMap, peerId)
+  resetRemoteStreamsMap(state) {
+    state.remoteAudioStreamMap = {}
+    state.remoteVideoStreamMap = {}
   }
 }
 

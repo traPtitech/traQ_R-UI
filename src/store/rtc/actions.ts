@@ -32,11 +32,7 @@ const actions: ActionTree<S, TempRS> = {
       const stream = e.detail.stream
       console.log(`[RTC] Recieved stream from ${stream.peerId}`)
 
-      if (stream.getVideoTracks().length === 0) {
-        commit('addRemoteAudioStream', stream)
-      } else {
-        commit('addRemoteVideoStream', stream)
-      }
+      commit('addRemoteStream', stream)
     })
 
     const localStream = await getUserAudio()
@@ -54,6 +50,7 @@ const actions: ActionTree<S, TempRS> = {
     state.client.closeConnection()
     commit('destroyClient')
     commit('destroyLocalStream')
+    commit('resetRemoteStreamsMap')
     commit('setIsActive', false)
   },
 
