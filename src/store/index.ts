@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Vuex, { Store } from 'vuex'
+import Vuex, { Store, RootState } from 'vuex'
 import general from './general'
 import modal from './modal'
 import messageInput from './messageInput'
@@ -7,7 +7,7 @@ import pickerModal from './pickerModal'
 
 Vue.use(Vuex)
 
-const store = new Store({
+const store = new Store<RootState>({
   ...general,
   modules: {
     modal,

@@ -17,7 +17,7 @@ module.exports = {
   },
   configureWebpack: {
     entry: {
-      app: './src/main.js'
+      app: './src/main.ts'
     },
     resolve: {
       extensions: ['ts', 'js'],
