@@ -1,5 +1,5 @@
 import axios from '@/bin/axios'
-import { AxiosResponse, AxiosError, AxiosPromise } from 'axios'
+import { AxiosResponse, AxiosPromise } from 'axios'
 import Schemas = Components.Schemas
 import Parameters = Components.Parameters
 
@@ -151,9 +151,7 @@ const client = {
   },
   getNotifiedChannels(
     userId: Parameters.UserIdInPath.UserID
-  ): AxiosPromise<
-    Paths.Users$UserIDNotification.Get.Responses.$200 | AxiosError
-  > {
+  ): AxiosPromise<Paths.Users$UserIDNotification.Get.Responses.$200> {
     return axios.get(`/api/1.0/users/${userId}/notification`)
   },
   registerDevice(
@@ -162,7 +160,7 @@ const client = {
     return axios.post(`/api/1.0/notification/device`, reqBody)
   },
   getMyNotifiedChannels(): AxiosPromise<
-    Paths.UsersMeNotification.Get.Responses.$200 | AxiosError
+    Paths.UsersMeNotification.Get.Responses.$200
   > {
     return axios.get('/api/1.0/users/me/notification')
   },
@@ -171,10 +169,10 @@ const client = {
   registerUser(reqBody: Paths.Users.Post.RequestBody): AxiosPromise {
     return axios.post(`/api/1.0/users`, reqBody)
   },
-  getMembers(): AxiosPromise<Paths.Users.Get.Responses.$200 | AxiosError> {
+  getMembers(): AxiosPromise<Paths.Users.Get.Responses.$200> {
     return axios.get(`/api/1.0/users`)
   },
-  whoAmI(): AxiosPromise<Paths.UsersMe.Get.Responses.$200 | AxiosError> {
+  whoAmI(): AxiosPromise<Paths.UsersMe.Get.Responses.$200> {
     return axios.get(`/api/1.0/users/me`)
   },
   // deprecated
@@ -201,7 +199,7 @@ const client = {
   },
   getUserDetail(
     userId: Parameters.UserIdInPath.UserID
-  ): AxiosPromise<Paths.Users$UserID.Get.Responses.$200 | AxiosError> {
+  ): AxiosPromise<Paths.Users$UserID.Get.Responses.$200> {
     return axios.get(`/api/1.0/users/${userId}`)
   },
   loadDirectMessages(
@@ -425,7 +423,9 @@ const client = {
   getHeartbeat(): AxiosPromise<Paths.Heartbeat.Get.Responses.$200> {
     return axios.get(`/api/1.0/heartbeat`)
   },
-  postHeartbeat(reqBody: Paths.Heartbeat.Post.QueryParameters): AxiosPromise {
+  postHeartbeat(
+    reqBody: Paths.Heartbeat.Post.QueryParameters
+  ): AxiosPromise<Paths.Heartbeat.Get.Responses.$200> {
     return axios.post(`/api/1.0/heartbeat`, reqBody)
   },
 
