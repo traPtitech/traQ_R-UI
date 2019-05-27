@@ -117,26 +117,28 @@ export default {
       }
     },
     filteredStamps() {
-      let filterFunc
-      if (this.search.length === 1) {
-        filterFunc = (a, b) => a === b
-      } else {
-        filterFunc = (a, b) => a.includes(b)
-      }
-
       const filteredAltName = stampAltNameTable
-        .filter(stamp => filterFunc(stamp.altName, this.search))
+        .filter(stamp => stamp.altName.includes(this.search))
         .map(stamp => stamp.name)
 
-      return this.stampCategolized
+      let filterFunc
+      if (this.search.length === 1) {
+        filterFunc = (a, b) => false
+      } else {
+        filterFunc = (a, b) =>
+          a !== b && (a.includes(b) || filteredAltName.includes(a))
+      }
+
+      const stamps = this.stampCategolized
         .slice(1, this.stampCategolized.length)
         .map(c => c.stamps)
         .flat()
-        .filter(
-          stamp =>
-            filterFunc(stamp.name, this.search) ||
-            filteredAltName.includes(stamp.name)
-        )
+
+      const match = stamps.filter(stamp => stamp.name === this.search)
+
+      return match.concat(
+        stamps.filter(stamp => filterFunc(stamp.name, this.search))
+      )
     }
   },
   methods: {
