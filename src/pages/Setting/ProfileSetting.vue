@@ -148,9 +148,11 @@ export default {
         this.displayName !== this.$store.state.me.displayName
       ) {
         tasks.push(
-          client.changeDisplayName(this.displayName).then(() => {
-            this.done += '表示名 '
-          })
+          client
+            .changeDisplayName({ displayName: this.displayName })
+            .then(() => {
+              this.done += '表示名 '
+            })
         )
       }
       if (
@@ -158,16 +160,21 @@ export default {
         this.twitterId !== this.$store.state.me.twitterId
       ) {
         tasks.push(
-          client.changeTwitterId(this.twitterId).then(() => {
+          client.changeTwitterId({ twitterId: this.twitterId }).then(() => {
             this.done += 'Twitter ID '
           })
         )
       }
       if (this.newPassword !== '') {
         tasks.push(
-          client.changePassword(this.oldPassword, this.newPassword).then(() => {
-            this.done += 'パスワード '
-          })
+          client
+            .changePassword({
+              password: this.oldPassword,
+              newPassword: this.newPassword
+            })
+            .then(() => {
+              this.done += 'パスワード '
+            })
         )
       }
       return Promise.all(tasks)
@@ -205,9 +212,11 @@ export default {
         this.displayName !== this.$store.state.me.displayName
       ) {
         tasks.push(
-          client.changeDisplayName(this.displayName).then(() => {
-            this.done += '表示名 '
-          })
+          client
+            .changeDisplayName({ displayName: this.displayName })
+            .then(() => {
+              this.done += '表示名 '
+            })
         )
       }
       if (
@@ -215,7 +224,7 @@ export default {
         this.twitterId !== this.$store.state.me.twitterId
       ) {
         tasks.push(
-          client.changeTwitterId(this.twitterId).then(() => {
+          client.changeTwitterId({ twitterId: this.twitterId }).then(() => {
             this.done += 'Twitter ID '
           })
         )

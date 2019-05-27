@@ -23,12 +23,12 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-star(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         icon-star-fill(size="24")
-    .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
+    .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('modal/openChannelNotificationModal')")
       .menu-icon
         icon-notification-fill(size="24")
       span
         | チャンネル通知設定
-    .titlebar-menu-item(v-show="!isDirectMessage && channelDepth < 5" @click="$store.dispatch('openChannelCreateModal')")
+    .titlebar-menu-item(v-show="!isDirectMessage && channelDepth < 5" @click="$store.dispatch('modal/openChannelCreateModal')")
       .menu-icon
         icon-plus(size="24")
       span

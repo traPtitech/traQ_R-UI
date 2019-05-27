@@ -44,7 +44,7 @@ export default {
     handleHeaderClick() {
       if (this.enableBack) {
         this.$store.dispatch(
-          'openUserModal',
+          'modal/openUserModal',
           this.$store.state.modal.lastUser.userId
         )
       }

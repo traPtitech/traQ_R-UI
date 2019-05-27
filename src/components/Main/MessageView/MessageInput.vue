@@ -180,10 +180,10 @@ export default {
         })
         .join('\n')
       const postedMessage = !nowChannel.dm
-        ? client.postMessage(nowChannel.channelId, message)
+        ? client.postMessage(nowChannel.channelId, { text: message })
         : client.postDirectMessage(
             this.$store.getters.getUserIdByDirectMessageChannel(nowChannel),
-            message
+            { text: message }
           )
       postedMessage
         .then(() => {
@@ -458,8 +458,11 @@ export default {
       )
     },
     showStampPicker() {
-      this.$store.commit('setStampPickerModeAsInput')
-      this.$store.commit('setStampPickerActive', !this.stampPickerActive)
+      this.$store.commit('pickerModal/setStampPickerModeAsInput')
+      this.$store.commit(
+        'pickerModal/setStampPickerActive',
+        !this.stampPickerActive
+      )
     },
     pasteImage(event) {
       const items = event.clipboardData.items
@@ -474,7 +477,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['stampPickerActive']),
+    ...mapGetters('pickerModal', ['stampPickerActive']),
     ...mapState(['messageSendKey']),
     showKeyGuide() {
       return (

@@ -8,9 +8,11 @@
     "build": "vue-cli-service build --morden",
     "lint": "vue-cli-service lint",
     "fix": "vue-cli-service lint --fix",
-    "gen-unicode_emojis": "node build/gen-unicode_emojis"
+    "gen-unicode_emojis": "node build/gen-unicode_emojis",
+    "gen-swagger-type": "dtsgen --out src/types/swagger.d.ts --url https://traptitech.github.io/traQ/swagger.yaml && vue-cli-service lint --fix src/swagger.d.ts"
   },
   "dependencies": {
+    "dtsgenerator": "^2.0.7",
     "lottie-web": "^5.5.1",
     "register-service-worker": "^1.5.2",
     "scroll-behavior-polyfill": "^2.0.7",

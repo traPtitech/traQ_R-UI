@@ -21,34 +21,34 @@ const router = new Router({
     {
       path: '/login',
       name: 'Login',
-      component: asyncLoadComponents(import('@/pages/Login/Login'))
+      component: asyncLoadComponents(import('@/pages/Login/Login.vue'))
     },
     {
       path: '/consent',
       name: 'Consent',
-      component: asyncLoadComponents(import('@/pages/Consent/Consent'))
+      component: asyncLoadComponents(import('@/pages/Consent/Consent.vue'))
     },
     {
       path: '/setting',
       name: 'Setting',
-      component: asyncLoadComponents(import('@/pages/Setting/Index'))
+      component: asyncLoadComponents(import('@/pages/Setting/Index.vue'))
     },
     {
       path: '/',
       name: 'Index',
-      component: asyncLoadComponents(import('@/pages/Main/Main'))
+      component: asyncLoadComponents(import('@/pages/Main/Main.vue'))
     },
     {
       path: '/channels/:channel(.*)',
-      component: asyncLoadComponents(import('@/pages/Main/Main'))
+      component: asyncLoadComponents(import('@/pages/Main/Main.vue'))
     },
     {
       path: '/users/:user',
-      component: asyncLoadComponents(import('@/pages/Main/Main'))
+      component: asyncLoadComponents(import('@/pages/Main/Main.vue'))
     },
     {
       path: '/register',
-      component: asyncLoadComponents(import('@/pages/Register/Register'))
+      component: asyncLoadComponents(import('@/pages/Register/Register.vue'))
     },
     {
       path: '/pipeline',
@@ -57,7 +57,7 @@ const router = new Router({
     {
       path: '*',
       name: 'NotFound',
-      component: asyncLoadComponents(import('@/pages/NotFound'))
+      component: asyncLoadComponents(import('@/pages/NotFound.vue'))
     }
   ],
   mode: 'history'
@@ -73,7 +73,7 @@ router.beforeEach(async (to, from, next) => {
   if (!store.state.me && navigator.onLine) {
     store.commit('loadEnd')
     if (to.path === '/login') {
-      next(true)
+      next()
       return
     }
     next('/login')
@@ -125,41 +125,42 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)
+    let channel: Components.Schemas.Channel | undefined
     if (nextUser) {
-      const member = [nextUser.userId]
-      if (store.state.me.userId !== nextUser.userId) {
-        member.push(store.state.me.userId)
+      const member = [nextUser.userId || '']
+      if (store.state.me && store.state.me.userId !== nextUser.userId) {
+        member.push(store.state.me.userId || '')
       }
       let channelId = nextUser.userId
-      if (nextUser.userId === store.state.me.userId) {
-        const channel = store.getters.getDirectMessageChannels.find(
-          c => c.member.length === 1
+      if (store.state.me && nextUser.userId === store.state.me.userId) {
+        channel = store.getters.getDirectMessageChannels.find(
+          c => !!c.member && c.member.length === 1
         )
         if (channel) {
           channelId = channel.channelId
         }
       } else {
-        const channel = store.getters.getDirectMessageChannels.find(c =>
-          c.member.some(userId => userId === nextUser.userId)
+        channel = store.getters.getDirectMessageChannels.find(
+          c => !!c.member && c.member.some(userId => userId === nextUser.userId)
         )
         if (channel) {
           channelId = channel.channelId
         }
       }
-      store.commit('changeChannel', {
-        channelId: channelId,
-        name: nextUser.name,
-        parent: store.state.directMessageId,
-        children: [],
-        member: member,
-        visibility: true,
-        private: true,
-        dm: true
-      })
+      if (channel) {
+        channel.name = nextUser.name
+        channel.parent = store.state.directMessageId
+        channel.children = []
+        channel.member = member
+        channel.visibility = true
+        channel.private = true
+        channel.dm = true
+        store.commit('changeChannel', channel)
+      }
       store.commit('setCurrentChannelPinnedMessages', [])
       store.dispatch('getMessages')
       store.commit('loadEnd')
-      next(true)
+      next()
       return
     } else {
       next('/notfound')
@@ -169,7 +170,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (!to.params.channel) {
     store.commit('loadEnd')
-    next(true)
+    next()
     return
   }
 
@@ -186,10 +187,15 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('getCurrentChannelPinnedMessages', nextChannel.channelId)
       store.dispatch('getCurrentChannelNotifications', nextChannel.channelId)
     })
-    next(true)
+    next()
   }
   store.commit('loadEnd')
 })
+
+interface Window {
+  changeChannel: (channelPath: string) => void
+}
+declare var window: Window
 
 window.changeChannel = channelPath => {
   router.push(`/channels/${channelPath}`)

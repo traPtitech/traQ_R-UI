@@ -50,7 +50,7 @@ export default {
       else return user.displayName
     },
     openModal() {
-      this.$store.dispatch('openPinnedModal', this.message)
+      this.$store.dispatch('modal/openPinnedModal', this.message)
     }
   },
   mounted() {

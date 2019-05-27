@@ -16,7 +16,7 @@ export default {
   },
   mounted() {
     if (Date(this.$store.state.me.lastOnline).valueOf === 0) {
-      this.$store.dispatch('openTourModal')
+      this.$store.dispatch('modal/openTourModal')
     }
   }
 }

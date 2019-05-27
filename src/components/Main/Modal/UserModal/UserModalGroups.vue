@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     openGroupModal(group) {
-      this.$store.dispatch('openGroupModal', group.groupId)
+      this.$store.dispatch('modal/openGroupModal', group.groupId)
     }
   }
 }

@@ -3,9 +3,9 @@
   span.version-text
     | traQ R {{ version }}
   ul.footer-button-wrap
-    li.menu-button(@click.prevent="$store.dispatch('openTourModal')")
+    li.menu-button(@click.prevent="$store.dispatch('modal/openTourModal')")
       IconHelp
-    li.menu-button(@click="$store.dispatch('openCodeModal')")
+    li.menu-button(@click="$store.dispatch('modal/openCodeModal')")
       IconQRCode
     li.menu-button.theme(@click="changeTheme")
       IconCrescent(v-if="theme === 'light'")

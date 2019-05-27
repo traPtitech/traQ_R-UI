@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import Meta from 'vue-meta'
 import VueClipboard from 'vue-clipboard2'
-import App from './App'
+import App from './App.vue'
 import store from './store'
 import router from './router'
 import VueLazyload from 'vue-lazyload'
@@ -13,6 +13,11 @@ Vue.config.productionTip = false
 Vue.use(Meta)
 Vue.use(VueClipboard)
 Vue.use(VueLazyload)
+
+interface Window {
+  asyncLoadComponents: (any) => any
+}
+declare var window: Window
 
 window.asyncLoadComponents = component => {
   return () => {

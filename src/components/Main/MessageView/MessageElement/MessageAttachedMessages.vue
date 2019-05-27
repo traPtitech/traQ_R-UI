@@ -39,7 +39,7 @@ export default {
     ...mapGetters(['userDisplayName', 'fileUrl'])
   },
   methods: {
-    ...mapActions(['openUserModal']),
+    ...mapActions('modal', ['openUserModal']),
     userIconBackground(userId) {
       return {
         backgroundImage: `url(${this.fileUrl(

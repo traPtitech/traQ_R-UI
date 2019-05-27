@@ -91,7 +91,7 @@ export default {
             .then(() => {
               console.log('permission granted')
               messaging.getToken().then(currentToken => {
-                client.registerDevice(currentToken)
+                client.registerDevice({ token: currentToken })
               })
 
               messaging.onMessage(payload => {
@@ -113,7 +113,7 @@ export default {
 
           messaging.onTokenRefresh(() => {
             messaging.getToken().then(currentToken => {
-              client.registerDevice(currentToken)
+              client.registerDevice({ token: currentToken })
             })
           })
         })
@@ -130,13 +130,13 @@ export default {
       const token = window.Bridge.getFCMToken()
       if (token) {
         console.log('register:' + token)
-        client.registerDevice(token)
+        client.registerDevice({ token })
       }
     } else if (userAgent.includes('traQ-iOS')) {
       const token = window.iOSToken
       if (token) {
         console.log('register:' + token)
-        client.registerDevice(token)
+        client.registerDevice({ token })
       }
     }
 
@@ -226,10 +226,10 @@ export default {
     this.heartbeat = setInterval(() => {
       if (this.$store.state.channelId !== this.$store.state.directMessageId) {
         client
-          .postHeartbeat(
-            this.getStatus(),
-            this.$store.state.currentChannel.channelId
-          )
+          .postHeartbeat({
+            status: this.getStatus(),
+            channelId: this.$store.state.currentChannel.channelId
+          })
           .then(res => {
             this.$store.commit('updateHeartbeatStatus', res.data)
           })
@@ -375,10 +375,10 @@ export default {
   watch: {
     '$route.params.channel': function() {
       client
-        .postHeartbeat(
-          this.getStatus(),
-          this.$store.state.currentChannel.channelId
-        )
+        .postHeartbeat({
+          status: this.getStatus(),
+          channelId: this.$store.state.currentChannel.channelId
+        })
         .then(res => {
           this.$store.commit('updateHeartbeatStatus', res.data)
         })

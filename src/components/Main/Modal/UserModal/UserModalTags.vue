@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     openTagModal(tag) {
-      this.$store.dispatch('openTagModal', tag)
+      this.$store.dispatch('modal/openTagModal', tag)
     },
     onInputChange(event) {
       if (
@@ -84,7 +84,7 @@ export default {
       if (this.tagInput === '') {
         return
       }
-      client.addUserTag(this.data.userId, this.tagInput).then(() => {
+      client.addUserTag(this.data.userId, { tag: this.tagInput }).then(() => {
         this.tagInput = ''
         this.$store.dispatch('modal/updateCurrentUserTags')
       })
@@ -96,14 +96,18 @@ export default {
     },
     lockTag(id) {
       client
-        .changeLockUserTag(this.data.userId, this.tags[id].tagId, true)
+        .changeLockUserTag(this.data.userId, this.tags[id].tagId, {
+          isLocked: true
+        })
         .then(() => {
           this.$store.dispatch('modal/updateCurrentUserTags')
         })
     },
     unlockTag(id) {
       client
-        .changeLockUserTag(this.data.userId, this.tags[id].tagId, false)
+        .changeLockUserTag(this.data.userId, this.tags[id].tagId, {
+          isLocked: false
+        })
         .then(() => {
           this.$store.dispatch('modal/updateCurrentUserTags')
         })
