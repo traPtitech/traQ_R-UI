@@ -2,7 +2,7 @@ import 'vuex'
 import * as Root from '../../store/general/type'
 import * as MessageInput from '../../store/messageInput/type'
 import * as Modal from '../../store/modal/type'
-import * as PickerModal from '../../store/PickerModal/type'
+import * as PickerModal from '../../store/pickerModal/type'
 
 declare module 'vuex' {
   type RootState = Root.S & {
