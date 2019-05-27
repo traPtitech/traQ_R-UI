@@ -5,7 +5,7 @@
         | {{groupName}}
     div.member-group-list(ref="list")
       transition(name="simple" @after-enter="removeHeight" @after-leave="zeroHeight")
-        div(ref="listWrap" v-show="isOpen")
+        div(ref="listWrap" v-show="isOpen || filterUnread")
           template(v-if="filterUnread")
             member-element(v-for="member in filteredUnreadMembers" :model="member" :key="member.userId")
           template(v-else)
