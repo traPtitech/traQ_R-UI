@@ -33,7 +33,7 @@ export default {
     },
     backToUserModal() {
       this.$store.dispatch(
-        'openUserModal',
+        'modal/openUserModal',
         this.$store.state.modal.lastUser.userId
       )
     }

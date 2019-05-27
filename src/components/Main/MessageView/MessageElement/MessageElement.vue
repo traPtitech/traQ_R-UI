@@ -117,18 +117,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['openUserModal']),
+    ...mapActions('modal', ['openUserModal']),
     detectFiles,
     activeDropMenu() {
       this.$store.commit('setActiveMessageContextMenu', this.model.messageId)
       this.isContextMenuActive = true
     },
     showStampPicker() {
-      this.$store.commit('setStampPickerModeAsMessage')
-      this.$store.commit('setStampPickerModel', {
+      this.$store.commit('pickerModal/setStampPickerModeAsMessage')
+      this.$store.commit('pickerModal/setStampPickerModel', {
         messageId: this.model.messageId
       })
-      this.$store.commit('setStampPickerActive', true)
+      this.$store.commit('pickerModal/setStampPickerActive', true)
     },
     editKeydown(event) {
       if (withModifierKey(event)) {
@@ -270,7 +270,7 @@ export default {
     handleStatusClick() {
       if (!this.isBot) {
         this.$store.dispatch(
-          'openGroupModal',
+          'modal/openGroupModal',
           this.grade(this.model.userId).groupId
         )
       }

@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     deactive() {
-      this.$store.commit('setStampPickerActive', false)
+      this.$store.commit('pickerModal/setStampPickerActive', false)
     },
     listen: function(target, eventType, callback) {
       if (!this._eventRemovers) {

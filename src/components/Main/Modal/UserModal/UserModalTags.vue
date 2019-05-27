@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     openTagModal(tag) {
-      this.$store.dispatch('openTagModal', tag)
+      this.$store.dispatch('modal/openTagModal', tag)
     },
     onInputChange(event) {
       if (

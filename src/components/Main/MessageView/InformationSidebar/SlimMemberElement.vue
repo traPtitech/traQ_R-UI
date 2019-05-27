@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     openUserModal() {
-      this.$store.dispatch('openUserModal', this.userId)
+      this.$store.dispatch('modal/openUserModal', this.userId)
     },
     getUserName(userId) {
       const user = this.$store.state.memberMap[userId]

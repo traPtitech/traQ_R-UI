@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     openUserModal() {
-      this.$store.dispatch('openUserModal', this.model.userId)
+      this.$store.dispatch('modal/openUserModal', this.model.userId)
     },
     openDMChannel() {
       this.$store.commit('closeSidebar')
