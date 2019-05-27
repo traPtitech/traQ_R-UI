@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import Vuex, { Store, RootState } from 'vuex'
+import Vuex, { Store, RootState, ExStore } from 'vuex'
+
 import general from './general'
 import modal from './modal'
 import messageInput from './messageInput'
@@ -7,7 +8,7 @@ import pickerModal from './pickerModal'
 
 Vue.use(Vuex)
 
-const store = new Store<RootState>({
+const store: ExStore = new Store<RootState>({
   ...general,
   modules: {
     modal,
@@ -23,11 +24,11 @@ interface Window {
 declare var window: Window
 
 window.openUserModal = userId => {
-  store.dispatch('openUserModal', userId)
+  store.dispatch('modal/openUserModal', userId)
 }
 
 window.openGroupModal = groupId => {
-  store.dispatch('openGroupModal', groupId)
+  store.dispatch('modal/openGroupModal', groupId)
 }
 
 export default store

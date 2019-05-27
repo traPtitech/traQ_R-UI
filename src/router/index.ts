@@ -125,37 +125,38 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)
+    let channel: Components.Schemas.Channel | undefined
     if (nextUser) {
-      const member = [nextUser.userId]
+      const member = [nextUser.userId || '']
       if (store.state.me && store.state.me.userId !== nextUser.userId) {
-        member.push(store.state.me.userId)
+        member.push(store.state.me.userId || '')
       }
       let channelId = nextUser.userId
       if (store.state.me && nextUser.userId === store.state.me.userId) {
-        const channel = store.getters.getDirectMessageChannels.find(
-          c => c.member.length === 1
+        channel = store.getters.getDirectMessageChannels.find(
+          c => !!c.member && c.member.length === 1
         )
         if (channel) {
           channelId = channel.channelId
         }
       } else {
-        const channel = store.getters.getDirectMessageChannels.find(c =>
-          c.member.some(userId => userId === nextUser.userId)
+        channel = store.getters.getDirectMessageChannels.find(
+          c => !!c.member && c.member.some(userId => userId === nextUser.userId)
         )
         if (channel) {
           channelId = channel.channelId
         }
       }
-      store.commit('changeChannel', {
-        channelId: channelId,
-        name: nextUser.name,
-        parent: store.state.directMessageId,
-        children: [],
-        member: member,
-        visibility: true,
-        private: true,
-        dm: true
-      })
+      if (channel) {
+        channel.name = nextUser.name
+        channel.parent = store.state.directMessageId
+        channel.children = []
+        channel.member = member
+        channel.visibility = true
+        channel.private = true
+        channel.dm = true
+        store.commit('changeChannel', channel)
+      }
       store.commit('setCurrentChannelPinnedMessages', [])
       store.dispatch('getMessages')
       store.commit('loadEnd')
