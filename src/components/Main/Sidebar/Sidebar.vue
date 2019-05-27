@@ -206,6 +206,8 @@ export default {
 
 <style lang="sass">
 .sidebar
+  display: flex
+  flex-direction: column
   background-color: white
   z-index: $sidebar-index
   width: $sidebar-width
@@ -247,7 +249,8 @@ export default {
     transition: opacity .5s
 
 .menu-content-wrapper
-  height: calc( 100% - #{$navigation-height} - #{$footer-height} )
+  flex-grow: 1
+  flex-shrink: 1
   background-color: $primary-color
   position: relative
   overflow: hidden

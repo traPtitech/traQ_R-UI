@@ -13,6 +13,7 @@ export interface S {
   client?: traQRTCClient
   localStream?: MediaStream
   isActive: boolean
+  isCalling: boolean
   activeMediaChannelId: string
   remoteAudioStreamMap: Record<string, MediaStream>
   remoteVideoStreamMap: Record<string, MediaStream>

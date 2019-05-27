@@ -22,6 +22,9 @@ const mutations: MutationTree<S> = {
   setIsActive(state, isActive: boolean) {
     state.isActive = isActive
   },
+  setIsCalling(state, isCalling: boolean) {
+    state.isCalling = isCalling
+  },
   setActiveMediaChannelId(state, channelID: string) {
     state.activeMediaChannelId = channelID
   },

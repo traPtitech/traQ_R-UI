@@ -11,6 +11,7 @@ const actions: ActionTree<S, TempRS> = {
     const client = new traQRTCClient(rootState.me.userId)
     await client.establishConnection()
     commit('setClient', client)
+    commit('setIsActive', true)
   },
 
   async joinVoiceChannel({ state, commit, dispatch }, room) {
@@ -40,7 +41,7 @@ const actions: ActionTree<S, TempRS> = {
     commit('setLocalStream', localStream)
 
     await state.client.joinRoom(room, localStream)
-    commit('setIsActive', true)
+    commit('setIsCalling', true)
     commit('setActiveMediaChannelId', state.client.roomName)
   },
 
@@ -53,6 +54,7 @@ const actions: ActionTree<S, TempRS> = {
     commit('destroyLocalStream')
     commit('resetRemoteStreamsMap')
     commit('setIsActive', false)
+    commit('setIsCalling', false)
   },
 
   async setStream({ state }, stream: MediaStream) {
