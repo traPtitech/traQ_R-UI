@@ -9,6 +9,7 @@ const namespaced = true
 const state: S = {
   isActive: false,
   isCalling: false,
+  isMicMuted: false,
   activeMediaChannelId: '',
   remoteAudioStreamMap: {},
   remoteVideoStreamMap: {}

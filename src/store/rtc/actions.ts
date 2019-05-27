@@ -27,7 +27,7 @@ const actions: ActionTree<S, TempRS> = {
     state.client.addEventListener('userleave', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User left, ID: ${userId}`)
-      commit('removeRemoteAudioStream', e.detail.userId)
+      commit('removeRemoteStream', e.detail.userId)
     })
 
     state.client.addEventListener('streamchange', e => {
@@ -75,7 +75,27 @@ const actions: ActionTree<S, TempRS> = {
     }
     state.client.setStream(await getUserDisplay())
   },
-  async sendData() {}
+  async sendData() {},
+
+  muteLocalStream({ state, commit }) {
+    if (!state.localStream) {
+      return
+    }
+    state.localStream.getAudioTracks().forEach(track => {
+      track.enabled = false
+    })
+    commit('setIsMicMuted', true)
+  },
+
+  unmuteLocalStream({ state, commit }) {
+    if (!state.localStream) {
+      return
+    }
+    state.localStream.getAudioTracks().forEach(track => {
+      track.enabled = true
+    })
+    commit('setIsMicMuted', false)
+  }
 }
 
 export default actions

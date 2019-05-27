@@ -9,9 +9,11 @@
       .footer-calling-channel-name
         | {{ callingPath }}
   .footer-calling-actions.footer-button-wrap
-    .menu-button
+    .menu-button(@click="$store.dispatch('rtc/closeConnection', $store.state.rtc.activeMediaChannelId)")
       icon-call-end(size="24")
-    .menu-button
+    .menu-button(v-if="$store.state.rtc.isMicMuted" @click="$store.dispatch('rtc/unmuteLocalStream')")
+      icon-mic-off(size="24")
+    .menu-button(v-else @click="$store.dispatch('rtc/muteLocalStream')")
       icon-mic(size="24")
 </template>
 

@@ -14,6 +14,7 @@ export interface S {
   localStream?: MediaStream
   isActive: boolean
   isCalling: boolean
+  isMicMuted: boolean
   activeMediaChannelId: string
   remoteAudioStreamMap: Record<string, MediaStream>
   remoteVideoStreamMap: Record<string, MediaStream>
