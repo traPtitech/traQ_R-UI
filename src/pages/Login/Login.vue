@@ -60,7 +60,10 @@
             :disabled="status === 'processing'"
             @keydown.enter="loginPost")
           p.login-failed-message(v-if="status === 'failed'")
-            | IDまたはパスワードが異なります
+            span(v-if="failType === 'unconnected'")
+              | インターネットに接続されていません
+            span(v-else)
+              | IDまたはパスワードが異なります
         button.input-reset.login-button(
           @click="loginPost")
           | SIGN IN
@@ -80,13 +83,14 @@ export default {
     return {
       name: '',
       pass: '',
-      status: 'default'
+      status: 'default',
       /*
        * default: not in progress
        * processing: in progress
        * failed: missed login
        * successed: success login
        */
+      failType: ''
     }
   },
   components: {
@@ -112,6 +116,11 @@ export default {
         })
         .catch(err => {
           this.status = 'failed'
+          if (err.message === 'Network Error') {
+            this.failType = 'unconnected'
+            return
+          }
+          this.failType = ''
           console.error(err)
         })
     }
