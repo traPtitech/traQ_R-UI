@@ -23,10 +23,8 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-star(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         icon-star-fill(size="24")
-      .titlebar-menu-button.border-left(v-show="!isDirectMessage && !isStared" @click="copyMessage")
+      .titlebar-menu-button.border-left(v-show="!isDirectMessage" @click="copyMessage")
         icon-star(size="24")
-      .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
-        icon-star-fill(size="24")
     .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
       .menu-icon
         icon-notification-fill(size="24")
@@ -102,7 +100,22 @@ export default {
         })
     },
     copyMessage() {
-      this.$copyText(`#${this.$route.params.channel}`)
+      /*function sleep(waitMsec) {
+        var startMsec = new Date()
+
+        // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
+        while (new Date() - startMsec < waitMsec);
+      }*/
+
+      this.$copyText(
+        `[#${this.$route.params.channel}](https://q.trap.jp/channels/${
+          this.$route.params.channel
+        })`
+      )
+      /*client.unstarChannel(this.currentChannelId).then(() => {
+        this.$store.dispatch('updateStaredChannels')
+      })*/
+      //sleep(2000)
     },
     removeWidth() {
       this.$refs.titlebarInner.style.width = ''
@@ -142,9 +155,6 @@ export default {
       return this.$store.state.currentChannel.channelId
     },
     isDirectMessage() {
-      console.log('~~~~~~~~~~~~~~~~~~~')
-      console.log(this.$store.state.currentChannel.parent)
-      console.log(this.$store.state.directMessageId)
       return (
         this.$store.state.currentChannel.parent ===
         this.$store.state.directMessageId
@@ -201,6 +211,8 @@ export default {
         window,
         'click',
         function(e) {
+          console.log('~~~~~~~~~~~~~')
+          console.log(e.target)
           if (!this.$el.contains(e.target)) {
             this.$store.commit('contractTitlebar')
           }
