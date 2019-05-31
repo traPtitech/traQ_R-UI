@@ -23,8 +23,8 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-star(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         icon-star-fill(size="24")
-      .titlebar-menu-button.border-left(v-show="!isDirectMessage" @click="copyMessage")
-        icon-star(size="24")
+      .titlebar-menu-button.border-left#clip(v-show="!isDirectMessage" @click="copyMessage")
+        icon-attach(size="24")
     .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
       .menu-icon
         icon-notification-fill(size="24")
@@ -46,6 +46,7 @@ import IconNotification from '@/components/Icon/IconNotification'
 import IconStar from '@/components/Icon/IconStar'
 import IconStarFill from '@/components/Icon/IconStarFill'
 import IconPlus from '@/components/Icon/IconPlus'
+import IconAttach from '@/components/Icon/IconAttach'
 
 export default {
   name: 'Titlebar',
@@ -55,7 +56,8 @@ export default {
     IconNotification,
     IconStar,
     IconStarFill,
-    IconPlus
+    IconPlus,
+    IconAttach
   },
   data() {
     return {
@@ -100,22 +102,11 @@ export default {
         })
     },
     copyMessage() {
-      /*function sleep(waitMsec) {
-        var startMsec = new Date()
-
-        // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
-        while (new Date() - startMsec < waitMsec);
-      }*/
-
       this.$copyText(
         `[#${this.$route.params.channel}](https://q.trap.jp/channels/${
           this.$route.params.channel
         })`
       )
-      /*client.unstarChannel(this.currentChannelId).then(() => {
-        this.$store.dispatch('updateStaredChannels')
-      })*/
-      //sleep(2000)
     },
     removeWidth() {
       this.$refs.titlebarInner.style.width = ''
@@ -425,4 +416,7 @@ $topic-height: 18px
 
   &:hover
     background: rgba(0,0,0,0.1)
+
+#clip:active
+  background-color: rgba(0,0,0,0.3)
 </style>
