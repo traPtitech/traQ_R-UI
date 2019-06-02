@@ -24,7 +24,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         icon-star-fill(size="24")
       .titlebar-menu-button.border-left#clip(v-show="!isDirectMessage" @click="copyMessage")
-        icon-attach(size="24")
+        icon-copy(size="24")
     .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
       .menu-icon
         icon-notification-fill(size="24")
@@ -46,7 +46,7 @@ import IconNotification from '@/components/Icon/IconNotification'
 import IconStar from '@/components/Icon/IconStar'
 import IconStarFill from '@/components/Icon/IconStarFill'
 import IconPlus from '@/components/Icon/IconPlus'
-import IconAttach from '@/components/Icon/IconAttach'
+import IconCopy from '@/components/Icon/IconCopy'
 
 export default {
   name: 'Titlebar',
@@ -57,7 +57,7 @@ export default {
     IconStar,
     IconStarFill,
     IconPlus,
-    IconAttach
+    IconCopy
   },
   data() {
     return {
@@ -202,9 +202,7 @@ export default {
         window,
         'click',
         function(e) {
-          console.log('~~~~~~~~~~~~~')
-          console.log(e.target)
-          if (!this.$el.contains(e.target)) {
+          if (!this.$el.contains(e.target) && e.target.nodeName != 'BUTTON') {
             this.$store.commit('contractTitlebar')
           }
         }.bind(this)
