@@ -13,27 +13,33 @@
             IconLogo(color="white" size="22")
           | SETTINGS
         ul.setting-page-list
-          li.setting-page-list-item(:class="{active: active === 0}" @click="active = 0")
+          li.setting-page-list-item(:class="{active: active === 'profile'}" @click="active = 'profile'")
             .setting-page-list-item-icon
               IconProfile(color="white" size="22")
             | プロフィール設定
-          li.setting-page-list-item(:class="{active: active === 1}" @click="active = 1")
+          li.setting-page-list-item(:class="{active: active === 'browser'}" @click="active = 'browser'")
             .setting-page-list-item-icon
               IconWrench(color="white" size="22")
             | ブラウザ設定
-          li.setting-page-list-item(:class="{active: active === 2}" @click="active = 2")
+          li.setting-page-list-item(:class="{active: active === 'call'}" @click="active = 'call'")
+            .setting-page-list-item-icon
+              IconCall(color="white" size="22")
+            | 通話設定
+          li.setting-page-list-item(:class="{active: active === 'stamp'}" @click="active = 'stamp'")
             .setting-page-list-item-icon
               IconStamp(color="white" size="22")
             | スタンプ設定
       .setting-page-container.is-scroll(v-if="windowWidth >= 750")
         transition(name="fade" mode="out-in")
           keep-alive
-            ProfileSetting(v-if="active === 0")
-            BrowserSetting(v-if="active === 1")
-            StampSetting(v-if="active === 2")
+            ProfileSetting(v-if="active === 'profile'")
+            BrowserSetting(v-if="active === 'browser'")
+            CallSetting(v-if="active === 'call'")
+            StampSetting(v-if="active === 'stamp'")
       .setting-page-all-container.is-scroll
           ProfileSetting
           BrowserSetting
+          CallSetting
           StampSetting
 </template>
 
@@ -41,25 +47,29 @@
 import ProfileSetting from '@/pages/Setting/ProfileSetting'
 import BrowserSetting from '@/pages/Setting/BrowserSetting'
 import StampSetting from '@/pages/Setting/StampSetting'
+import CallSetting from '@/pages/Setting/CallSetting'
 import IconBack from '@/components/Icon/IconBack'
 import IconLogo from '@/components/Icon/IconLogo'
 import IconProfile from '@/components/Icon/IconProfile'
 import IconWrench from '@/components/Icon/IconWrench'
 import IconStamp from '@/components/Icon/IconStamp'
+import IconCall from '@/components/Icon/IconCall'
 export default {
   name: 'Setting',
   components: {
     ProfileSetting,
     BrowserSetting,
     StampSetting,
+    CallSetting,
     IconBack,
     IconLogo,
     IconProfile,
     IconWrench,
-    IconStamp
+    IconStamp,
+    IconCall
   },
   data() {
-    return { active: 0, windowWidth: 0 }
+    return { active: 'profile', windowWidth: 0 }
   },
   methods: {
     onResize() {
