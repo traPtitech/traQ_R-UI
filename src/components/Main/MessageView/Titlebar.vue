@@ -23,10 +23,10 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-star(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         icon-star-fill(size="24")
-      .titlebar-menu-button.border-left.clip(v-show="!isDirectMessage && !isCopyFake" @click="copyMessage")
+      .titlebar-menu-button.border-left.copy-channel-path(v-show="!isDirectMessage && !isCopyFake" @click="copyMessage")
         icon-copy(size="24")
-      .titlebar-menu-button.border-left.clip(v-show="!isDirectMessage && isCopyFake" @click="copyMessage")
-        icon-copy(size="24" color="white")
+      .titlebar-menu-button.border-left.copy-channel-path(v-show="!isDirectMessage && isCopyFake" @click="copyMessage")
+        icon-copy(size="24")
     .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
       .menu-icon
         icon-notification-fill(size="24")
@@ -105,11 +105,7 @@ export default {
         })
     },
     copyMessage() {
-      if (this.isCopyFake) {
-        this.isCopyFake = false
-      } else {
-        this.isCopyFake = true
-      }
+      this.isCopyFake = !this.isCopyFake
       this.$copyText(
         `[#${this.$route.params.channel}](https://q.trap.jp/channels/${
           this.$route.params.channel
@@ -372,7 +368,7 @@ $topic-height: 18px
     cursor: pointer
     &:hover
       background: rgba(0,0,0,0.1)
-  .clip:active
+  .copy-channel-path:active
     background-color: rgba(0,0,0,0.2)
 
 .border-left
