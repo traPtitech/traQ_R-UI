@@ -71,6 +71,7 @@ import IconLightBulb from '@/components/Icon/IconLightBulb'
 import IconHeart from '@/components/Icon/IconHeart'
 import IconFlag from '@/components/Icon/IconFlag'
 import IconRegional from '@/components/Icon/IconRegional'
+import IconMembers from '@/components/Icon/IconMembers'
 
 export default {
   name: 'StampPicker',
@@ -95,7 +96,8 @@ export default {
         IconLightBulb,
         IconHeart,
         IconFlag,
-        IconRegional
+        IconRegional,
+        IconMembers
       ]
     }
   },
@@ -108,12 +110,30 @@ export default {
       return this.$store.getters.stampPickerModel
     },
     stampCategolized() {
-      return [this.stampHistory].concat(this.$store.state.stampCategolized)
+      return [this.stampHistory].concat(
+        this.$store.state.stampCategolized,
+        this.stampMembers
+      )
     },
     stampHistory() {
       return {
         category: 'history',
         stamps: this.$store.getters.stampHistory
+      }
+    },
+    stampMembers() {
+      return {
+        category: 'members',
+        stamps: this.$store.getters.nonBotUsers.map(user => {
+          return {
+            createdAt: null,
+            creatorId: user.userId,
+            fileId: user.iconFileId,
+            id: `u-${user.userId}`,
+            name: user.name,
+            updatedAt: null
+          }
+        })
       }
     },
     filteredStamps() {
