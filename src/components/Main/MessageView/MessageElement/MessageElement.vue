@@ -106,7 +106,6 @@ export default {
   data() {
     return {
       isEditing: false,
-      edited: '',
       files: [],
       messages: [],
       isRendered: false,
@@ -124,10 +123,14 @@ export default {
       this.isContextMenuActive = true
     },
     showStampPicker() {
-      this.$store.commit('setStampPickerModeAsMessage')
-      this.$store.commit('setStampPickerModel', {
-        messageId: this.model.messageId
-      })
+      if (this.isEditing) {
+        this.$store.commit('setStampPickerModeAsEdit')
+      } else {
+        this.$store.commit('setStampPickerModeAsMessage')
+        this.$store.commit('setStampPickerModel', {
+          messageId: this.model.messageId
+        })
+      }
       this.$store.commit('setStampPickerActive', true)
     },
     editKeydown(event) {
@@ -164,6 +167,7 @@ export default {
         return
       }
       client.editMessage(this.model.messageId, this.edited)
+      this.edited = ''
       this.isEditing = false
       this.isPushedModifierKey = false
       this.getAttachments()
@@ -307,6 +311,16 @@ export default {
     },
     isEdited() {
       return this.model.createdAt !== this.model.updatedAt
+    },
+    edited: {
+      get() {
+        return this.$store.getters['messageEdit/edited']
+      },
+      set(edited) {
+        this.$store.commit('messageEdit/setEdited', {
+          edited
+        })
+      }
     },
     displayDateTime() {
       return displayDateTime(this.model.createdAt, this.model.updatedAt)

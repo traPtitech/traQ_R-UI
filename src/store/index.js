@@ -7,6 +7,7 @@ import { detectMentions } from '@/bin/utils'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
+import messageEdit from './messageEdit'
 const db = indexedDB.db
 
 Vue.use(Vuex)
@@ -57,7 +58,8 @@ const store = new Vuex.Store({
   modules: {
     modal,
     pickerModal,
-    messageInput
+    messageInput,
+    messageEdit
   },
   state: {
     loaded: false,
