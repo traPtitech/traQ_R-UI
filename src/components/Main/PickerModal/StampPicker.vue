@@ -106,13 +106,16 @@ export default {
     active() {
       return this.$store.getters.stampPickerActive
     },
+    mode() {
+      return this.$store.getters.stampPickerMode
+    },
     model() {
       return this.$store.getters.stampPickerModel
     },
     stampCategolized() {
       return [this.stampHistory].concat(
         this.$store.state.stampCategolized,
-        this.stampMembers
+        this.mode !== 'message' ? this.stampMembers : []
       )
     },
     stampHistory() {
@@ -129,7 +132,7 @@ export default {
             createdAt: null,
             creatorId: user.userId,
             fileId: user.iconFileId,
-            id: `u-${user.userId}`,
+            id: null,
             name: user.name,
             updatedAt: null
           }
