@@ -24,11 +24,11 @@ export default {
     },
     small: {
       type: Boolean,
-      defualt: null
+      default: null
     },
     tiny: {
       type: Boolean,
-      defualt: null
+      default: null
     },
     scroll: {
       type: Boolean,
