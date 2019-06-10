@@ -4,7 +4,7 @@ div.channel-activity-wrap
                            :class="{'activity-watched': isWatched}")
     div.channel-activity-channel
       div.channel-activity-before(:class="channelBeforeClass")
-        icon-hash(size="16")
+        icon-hash(size="16" :color="isWatched ? 'var(--primary-color)' : 'white'")
       div.channel-activity-name.text-ellipsis
         | {{ channelName }}
     hr.channel-activity-separator
