@@ -148,6 +148,7 @@ export default {
       }
     },
     open({ state, commit }, { name, data }) {
+      location.hash = name
       if (state.name === 'UserModal') {
         // Transition from user modal
         commit('setLastUser', state.data)
@@ -156,6 +157,7 @@ export default {
       commit('setModalData', data)
     },
     close({ commit }) {
+      history.pushState('', document.title, window.location.pathname)
       commit('setModalName', null)
       commit('setLastUser', null)
       commit('setModalData', null)
