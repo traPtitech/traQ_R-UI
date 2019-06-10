@@ -57,7 +57,7 @@ export default function(key, limit) {
       .filter(
         stamp =>
           match(stamp.name, key.keyword) ||
-          stampAltNames.includes(key.keyword) ||
+          stampAltNames.includes(stamp.name) ||
           unicodeMatchName.includes(stamp.name)
       )
       .slice(0, limit)
