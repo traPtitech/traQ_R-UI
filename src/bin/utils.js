@@ -183,7 +183,7 @@ export const withModifierKey = keyEvent => {
   )
 }
 export const isModifierKey = keyEvent => {
-  return ['Shift', 'Meta', 'Alt'].includes(keyEvent.key)
+  return ['Shift', 'Alt', 'Control', 'Meta'].includes(keyEvent.key)
 }
 export const isSendKey = (keyEvent, messageSendKey) => {
   if (keyEvent.key !== 'Enter') {
