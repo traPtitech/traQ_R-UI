@@ -117,13 +117,24 @@ export default {
       }
     },
     filteredStamps() {
+      let unicodeMatchName = []
+      // Array.fromならサロゲートペアが考慮される
+      if (Array.from(this.search).length === 1) {
+        unicodeMatchName = stampAltNameTable
+          .filter(
+            stamp => stamp.code === this.search.codePointAt(0).toString(16)
+          )
+          .map(stamp => stamp.name)
+      }
+
       const filteredAltName = stampAltNameTable
-        .filter(stamp => stamp.altName.includes(this.search))
+        .filter(stamp => stamp.altName && stamp.altName.includes(this.search))
         .map(stamp => stamp.name)
 
       let filterFunc
-      if (this.search.length === 1) {
-        filterFunc = (a, b) => false
+      // 前述同様サロゲートペア関係
+      if (Array.from(this.search).length === 1) {
+        filterFunc = (a, b) => unicodeMatchName.includes(a)
       } else {
         filterFunc = (a, b) =>
           a !== b && (a.includes(b) || filteredAltName.includes(a))
