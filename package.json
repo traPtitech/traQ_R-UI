@@ -42,7 +42,7 @@
     "markdown-it-link-attributes": "^2.1.0",
     "markdown-it-mark": "^2.0.0",
     "markdown-it-regexp": "^0.4.0",
-    "node-gyp": "^4.0.0",
+    "node-gyp": "^5.0.0",
     "node-sass": "^4.12.0",
     "postcss-import": "^12.0.1",
     "sass-loader": "^7.1.0",
