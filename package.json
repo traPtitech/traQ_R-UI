@@ -51,7 +51,7 @@
     "vue-cli-plugin-pug": "^1.0.7",
     "vue-clipboard2": "^0.3.0",
     "vue-lazyload": "^1.2.6",
-    "vue-meta": "^1.5.8",
+    "vue-meta": "^2.0.0",
     "vue-template-compiler": "^2.6.9"
   },
   "gitHooks": {
