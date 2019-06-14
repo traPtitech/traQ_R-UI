@@ -40,7 +40,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @keydown="editKeydown" @keyup="editKeyup")
+          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @input="editInput" @keydown="editKeydown" @keyup="editKeyup")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -74,6 +74,7 @@ import {
   withModifierKey,
   isModifierKey,
   isSendKey,
+  isSendKeyInput,
   isBRKey
 } from '@/bin/utils'
 import md from '@/bin/markdown-it'
@@ -129,6 +130,11 @@ export default {
         messageId: this.model.messageId
       })
       this.$store.commit('setStampPickerActive', true)
+    },
+    editInput(event) {
+      if (isSendKeyInput(event, this.messageSendKey)) {
+        this.editSubmit()
+      }
     },
     editKeydown(event) {
       if (withModifierKey(event)) {
