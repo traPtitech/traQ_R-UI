@@ -1,12 +1,12 @@
 <template lang="pug">
-.common-modal(:data-is-small="small" :data-is-tiny="tiny")
+.common-modal(:data-is-small="small" :data-is-tiny="tiny" :data-is-scroll="scroll")
   .common-modal-header-wrap
     .common-modal-header(:class="{'common-modal-header-back': enableBack}" @click="handleHeaderClick")
       slot(name="header-icon")
       h1.common-modal-header-title {{ title }}
     .common-modal-close(@click="close")
       icon-close(color="var(--primary-color-on-bg)" size="12")
-  .common-modal-content
+  .common-modal-content(:class="{'is-scroll': scroll}")
     slot
 </template>
 
@@ -24,11 +24,15 @@ export default {
     },
     small: {
       type: Boolean,
-      defualt: null
+      default: null
     },
     tiny: {
       type: Boolean,
-      defualt: null
+      default: null
+    },
+    scroll: {
+      type: Boolean,
+      default: null
     },
     enableBack: {
       // enable "back to user modal" when header is clicked
@@ -66,6 +70,11 @@ export default {
     max-height: 90vh
 .common-modal[data-is-tiny="true"]
     max-width: 25rem
+.common-modal[data-is-scroll="true"]
+    display: flex
+    flex-direction: column
+    .common-modal-content
+        overflow-y: auto
 .common-modal-header-wrap
     display: flex
     align-items: center

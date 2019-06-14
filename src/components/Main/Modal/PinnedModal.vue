@@ -1,5 +1,5 @@
 <template lang="pug">
-base-common-modal(title="PINNED" small)
+base-common-modal(title="PINNED" small scroll)
   icon-pin(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .message-item
     message-element(:model="data")
