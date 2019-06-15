@@ -19,18 +19,24 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
             icon-call(size="24")
             span
               | QALL
+            .indormation-sidebar-topic-edit-button(:class="{'information-sidebar-action-cancel': isAdjustingCallVolumes}" @click="toggleCallVolumeAdjust")
+              icon-check(v-if="isAdjustingCallVolumes")
+              icon-edit(v-else)
           div.information-sidebar-content-body
             .information-sidebar-call-item
               slim-member-element(:member="$store.state.me")
             .information-sidebar-call-item(v-for="stream in $store.getters['rtc/remoteAudioStreams']")
-              slim-member-element(:member="$store.state.memberMap[stream.peerId]")
+              calling-member-element(
+                :member="$store.state.memberMap[stream.peerId]"
+                :adjustVolume="isAdjustingCallVolumes"
+              )
 
         div.information-sidebar-content-item.separator-line(v-if="isChannel")
           div.information-sidebar-content-header
             icon-topic(size="24")
             span
               | TOPIC
-            div.indormation-sidebar-topic-edit-button(:class="{'topic-edit-cancel': isTopicEditing}" @click="toggleTopicEdit")
+            div.indormation-sidebar-topic-edit-button(:class="{'information-sidebar-action-cancel': isTopicEditing}" @click="toggleTopicEdit")
               icon-close(v-if="isTopicEditing")
               icon-edit(v-else)
               div.indormation-sidebar-topic-edit-button-text(v-if="isTopicEditing")
@@ -63,9 +69,11 @@ import IconTopic from '@/components/Icon/IconTopic'
 import IconPin from '@/components/Icon/IconPin'
 import IconEdit from '@/components/Icon/IconEdit'
 import IconCall from '@/components/Icon/IconCall'
+import IconCheck from '@/components/Icon/IconCheck'
 import SlimMessageElement from '@/components/Main/MessageView/InformationSidebar/SlimMessageElement'
 import SlimMemberElement from '@/components/Main/MessageView/InformationSidebar/SlimMemberElement'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
+import CallingMemberElement from '@/components/Main/Rtc/CallingMemberElement'
 
 export default {
   name: 'InformationSidebar',
@@ -75,9 +83,11 @@ export default {
     IconPin,
     IconEdit,
     IconCall,
+    IconCheck,
     SlimMessageElement,
     SlimMemberElement,
-    MemberElement
+    MemberElement,
+    CallingMemberElement
   },
   data() {
     return {
@@ -85,7 +95,8 @@ export default {
       isNotFirst: false,
       isScrolled: false,
       isTopicEditing: false,
-      newTopic: ''
+      newTopic: '',
+      isAdjustingCallVolumes: false
     }
   },
   computed: {
@@ -150,6 +161,9 @@ export default {
     async updateTopic() {
       await this.$store.dispatch('updateCurrentChannelTopic', this.newTopic)
       this.isTopicEditing = false
+    },
+    toggleCallVolumeAdjust() {
+      this.isAdjustingCallVolumes = !this.isAdjustingCallVolumes
     },
     listen: function(target, eventType, callback) {
       if (!this._eventRemovers) {
@@ -404,7 +418,7 @@ export default {
   display: flex
   align-items: center
   opacity: 0.5
-  &:hover, &.topic-edit-cancel
+  &:hover, &.information-sidebar-action-cancel
     opacity: 1
 
 .indormation-sidebar-topic-edit-button-text
