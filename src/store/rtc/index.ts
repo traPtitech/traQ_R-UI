@@ -11,6 +11,7 @@ const state: S = {
   isCalling: false,
   isMicMuted: false,
   activeMediaChannelId: '',
+  userVolumeMap: {},
   remoteAudioStreamMap: {},
   remoteVideoStreamMap: {}
 }

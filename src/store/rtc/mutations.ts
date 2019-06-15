@@ -31,6 +31,9 @@ const mutations: MutationTree<S> = {
   setActiveMediaChannelId(state, channelID: string) {
     state.activeMediaChannelId = channelID
   },
+  setUserVolume(state, { userId, volume }: { userId: string; volume: number }) {
+    state.userVolumeMap[userId] = volume
+  },
   addRemoteStream(state, stream: MediaStreamWithPeerId) {
     const peerId = stream.peerId
     if (peerId in state.remoteAudioStreamMap) {

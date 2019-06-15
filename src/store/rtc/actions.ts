@@ -22,12 +22,13 @@ const actions: ActionTree<S, TempRS> = {
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User joined, ID: ${userId}`)
+      commit('setUserVolume', { userId, volume: 1 })
     })
 
     state.client.addEventListener('userleave', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User left, ID: ${userId}`)
-      commit('removeRemoteStream', e.detail.userId)
+      commit('removeRemoteStream', userId)
     })
 
     state.client.addEventListener('streamchange', e => {

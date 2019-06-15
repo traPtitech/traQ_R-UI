@@ -16,6 +16,7 @@ export interface S {
   isCalling: boolean
   isMicMuted: boolean
   activeMediaChannelId: string
+  userVolumeMap: Record<string, number>
   remoteAudioStreamMap: Record<string, MediaStream>
   remoteVideoStreamMap: Record<string, MediaStream>
 }

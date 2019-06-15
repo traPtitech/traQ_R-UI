@@ -4,7 +4,8 @@
       img.calling-member-element__icon(:src="userIconSrc")
     .calling-member-element__volume-adjust(v-if="adjustVolume")
       InputSlider(
-        v-model="volume"
+        :value="$store.state.userVolumeMap[member.userId]"
+        :input="handleVolumeChange"
         :min="0"
         :max="200"
         :step="1"
@@ -40,7 +41,7 @@ export default {
     isTalking: {
       type: Boolean,
       default: false
-    },
+    }
   },
   computed: {
     ...mapGetters(['fileUrl']),
@@ -62,6 +63,9 @@ export default {
       const user = this.$store.state.memberMap[userId]
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
+    },
+    handleVolumeChange(volume) {
+      this.$store.rtc.setUserVolume({ userId: this.member.userId, volume })
     }
   }
 }
