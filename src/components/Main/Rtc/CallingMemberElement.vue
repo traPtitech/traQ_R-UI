@@ -4,11 +4,9 @@
       img.calling-member-element__icon(:src="userIconSrc")
     .calling-member-element__volume-adjust(v-if="adjustVolume")
       InputSlider(
-        :value="$store.state.userVolumeMap[member.userId]"
-        :input="handleVolumeChange"
+        v-model="volume"
         :min="0"
-        :max="200"
-        :step="1"
+        :max="100"
       )
     .calling-member-element__username.text-ellipsis(v-else @click="openUserModal")
       span
@@ -26,7 +24,11 @@ export default {
   },
   data() {
     return {
-      volume: 1
+      volume:
+        this.$store.state.rtc.userVolumeMap[this.member.userId] * 100 || 100,
+      debounceDelay: 100,
+      debounceLastTime: 0,
+      debounceTimerId: -1
     }
   },
   props: {
@@ -64,8 +66,25 @@ export default {
       if (user.bot) return user.displayName + '#bot'
       else return user.displayName
     },
-    handleVolumeChange(volume) {
-      this.$store.rtc.setUserVolume({ userId: this.member.userId, volume })
+    updateVolumeAction() {
+      this.$store.commit('rtc/setUserVolume', {
+        userId: this.member.userId,
+        volume: this.volume / 100
+      })
+    },
+    updateVolume() {
+      if (this.debounceTimerId !== -1) {
+        clearTimeout(this.debounceTimerId)
+      }
+      this.debounceTimerId = setTimeout(
+        this.updateVolumeAction,
+        this.debounceDelay
+      )
+    }
+  },
+  watch: {
+    volume() {
+      this.updateVolume()
     }
   }
 }

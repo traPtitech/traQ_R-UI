@@ -33,8 +33,9 @@ const actions: ActionTree<S, TempRS> = {
 
     state.client.addEventListener('streamchange', e => {
       const stream = e.detail.stream
+      const userId = stream.peerId
       console.log(`[RTC] Recieved stream from ${stream.peerId}`)
-
+      commit('setUserVolume', { userId, volume: 1 })
       commit('addRemoteStream', stream)
     })
 

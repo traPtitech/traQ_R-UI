@@ -63,13 +63,11 @@ export default class traQRTCClient implements EventTarget {
     listener: (ev: QRTCEventMap[K]) => void,
     options?: boolean | AddEventListenerOptions
   ) {
-    if (listener instanceof ((_: Event) => {})) {
-      return this.eventTargetDeligator.addEventListener(
-        event,
-        listener as EventListener,
-        options
-      )
-    }
+    return this.eventTargetDeligator.addEventListener(
+      event,
+      listener as EventListener,
+      options
+    )
   }
 
   public removeEventListener<K extends keyof QRTCEventMap>(

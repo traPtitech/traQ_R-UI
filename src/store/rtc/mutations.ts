@@ -32,7 +32,8 @@ const mutations: MutationTree<S> = {
     state.activeMediaChannelId = channelID
   },
   setUserVolume(state, { userId, volume }: { userId: string; volume: number }) {
-    state.userVolumeMap[userId] = volume
+    // Vue.set(state.userVolumeMap, userId, volume)
+    state.userVolumeMap = { ...state.userVolumeMap, [userId]: volume }
   },
   addRemoteStream(state, stream: MediaStreamWithPeerId) {
     const peerId = stream.peerId
