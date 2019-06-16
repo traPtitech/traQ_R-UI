@@ -206,7 +206,7 @@ export default {
         window,
         'click',
         function(e) {
-          if (!this.$el.contains(e.target) && e.target.nodeName != 'BUTTON') {
+          if (!this.$el.contains(e.target) && e.target.nodeName !== 'BUTTON') {
             this.$store.commit('contractTitlebar')
           }
         }.bind(this)
