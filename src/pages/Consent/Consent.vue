@@ -8,7 +8,7 @@ div
       br
       | クライアント説明: {{ clientInfo.description }}
       br
-      | クライアント製作者: {{ userDisplayName(clientInfo.creatorId) }}
+      | クライアント製作者: {{ creator.displayName }} (@{{ creator.name }})
       br
       | 要求スコープ: {{ scope }}
       form(method="post" action="/api/1.0/oauth2/authorize/decide")
@@ -44,7 +44,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userDisplayName'])
+    ...mapGetters(['nonBotUsers']),
+    creator() {
+      return this.$store.state.memberMap[this.clientInfo.creatorId]
+    }
   },
   beforeRouteEnter(to, from, next) {
     if (to.query.client_id && to.query.scopes) {
