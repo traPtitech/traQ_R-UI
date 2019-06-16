@@ -23,10 +23,6 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-star(size="24")
       .titlebar-menu-button.border-left(v-show="!isDirectMessage && isStared" @click="unstarChannel")
         icon-star-fill(size="24")
-      .titlebar-menu-button.border-left.copy-channel-path(v-show="!isDirectMessage && !isCopyFake" @click="copyMessage")
-        icon-copy(size="24")
-      .titlebar-menu-button.border-left.copy-channel-path(v-show="!isDirectMessage && isCopyFake" @click="copyMessage")
-        icon-copy(size="24")
     .titlebar-menu-item(v-show="!isDirectMessage && !isNotificationForced" @click="$store.dispatch('openChannelNotificationModal')")
       .menu-icon
         icon-notification-fill(size="24")
@@ -37,6 +33,16 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-plus(size="24")
       span
         | サブチャンネル作成
+    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage && !isCopyFake" @click="copyMessage")
+      .menu-icon
+        icon-copy(size="24")
+      span
+        | チャンネルパスをコピー
+    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage && isCopyFake" @click="copyMessage")
+      .menu-icon
+        icon-copy(size="24")
+      span
+        | チャンネルパスをコピー
 </template>
 
 <script>
@@ -234,12 +240,12 @@ $topic-height: 18px
   will-change: max-width, min-width
   +mq(pc)
     left: $sidebar-width
-    min-width: 230px
+    min-width: 260px
     max-width: calc( 100vw - #{$sidebar-width} - #{$information-sidebar-button-width} - 5px )
     height: 60px
   +mq(sp)
     // top: 10px
-    min-width: 200px
+    min-width: 230px
     max-width: calc( 100vw - #{$information-sidebar-button-width} - 5px )
     height: 50px
     &.is-sidebar-opened
