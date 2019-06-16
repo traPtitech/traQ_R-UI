@@ -4,11 +4,16 @@ import { ActionTree } from 'vuex'
 import { S, TempRS } from './types'
 
 const actions: ActionTree<S, TempRS> = {
-  async establishConnection({ state, commit, rootState }) {
+  async establishConnection({ state, commit, rootState, dispatch }) {
     if (state.client) {
       state.client.closeConnection()
     }
     const client = new traQRTCClient(rootState.me.userId)
+    client.addEventListener('connectionerror', e => {
+      console.log(`[RTC] Failed to establish connection, trying to reconnect...`)
+      dispatch('closeConnection')
+      dispatch('establishConnection')
+    })
     await client.establishConnection()
     commit('setClient', client)
     commit('setIsActive', true)

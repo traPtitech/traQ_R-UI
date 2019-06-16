@@ -103,7 +103,6 @@ export default class traQRTCClient implements EventTarget {
 
   public closeConnection() {
     if (this.peer) {
-      const id = this.peer.id
       this.peer.destroy()
       console.log('[RTC] Connection closed')
     }
