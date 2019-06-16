@@ -10,6 +10,9 @@ const actions: ActionTree<S, TempRS> = {
     }
     const client = new traQRTCClient(rootState.me.userId)
     client.addEventListener('connectionerror', e => {
+      if (e.detail.error.startsWith('Error: PeerId')) {
+        console.error(`[RTC] Peer Id already in use!`)
+      }
       console.log(`[RTC] Failed to establish connection, trying to reconnect...`)
       dispatch('closeConnection')
       dispatch('establishConnection')

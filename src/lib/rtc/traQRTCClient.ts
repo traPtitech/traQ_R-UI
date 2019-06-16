@@ -133,7 +133,7 @@ export default class traQRTCClient implements EventTarget {
       room.on('data', this.handleRoomData.bind(this))
       room.on('close', this.handleRoomClose.bind(this))
       this.room = room
-      await this.dummyRoomJoin()
+      // await this.dummyRoomJoin()
       resolve()
     })
   }
@@ -164,7 +164,8 @@ export default class traQRTCClient implements EventTarget {
       }
       const peer = new Peer(peerId, {
         key: skywayApiKey,
-        credential: res.data
+        credential: res.data,
+        debug: 3
       })
       if (!peer) {
         reject("Couldn't establish connection")
