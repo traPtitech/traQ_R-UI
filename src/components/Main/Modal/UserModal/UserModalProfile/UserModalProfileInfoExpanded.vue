@@ -4,8 +4,8 @@
       | {{data.displayName}}
     .user-modal-profile-info-name
       | @{{data.name}}
-      .user-modal-profile-info-grade
-        | {{grade}}
+      .user-modal-profile-info-grade(v-if="statusBadge !== undefined")
+        | {{statusBadge}}
     UserModalProfileOnlineIndicator(:detailed="true")
     .user-modal-misc-profiles
       a.user-modal-misc-profile(:class="{inactive: !data.twitterId}" :href="twitterUrl" target="_blank" @click.stop="onTwitterLinkClicked")
@@ -37,7 +37,15 @@ export default {
       tags: 'currentUserTags'
     }),
     grade() {
-      return this.$store.getters.gradeByUserMap[this.data.userId].name
+      return this.$store.getters.gradeByUserMap[this.data.userId]
+    },
+    statusBadge() {
+      // grade or bot or undefined
+      if (this.data.bot) {
+        return 'bot'
+      } else {
+        return this.grade ? this.grade.name : undefined
+      }
     },
     twitterId() {
       return this.data.twitterId !== '' ? this.data.twitterId : '-'
