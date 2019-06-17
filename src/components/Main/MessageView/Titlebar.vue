@@ -374,8 +374,6 @@ $topic-height: 18px
     cursor: pointer
     &:hover
       background: rgba(0,0,0,0.1)
-  .copy-channel-path:active
-    background-color: rgba(0,0,0,0.2)
 
 .border-left
   position: relative
@@ -404,6 +402,9 @@ $topic-height: 18px
     margin-right: 15px
   &:hover
       background: rgba(0,0,0,0.1)
+.copy-channel-path:active
+  background-color: rgba(0,0,0,0.2)
+
 
 .traq-logo
   width: 25px
