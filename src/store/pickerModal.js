@@ -22,7 +22,11 @@ export default {
     },
     setStampPickerActive(state, isActive) {
       state.stampPickerActive = isActive
-      changeHash(isActive ? 'PickerModal' : '')
+      if (isActive) {
+        changeHash('PickerModal')
+      } else if (location.hash === '#PickerModal') {
+        changeHash('')
+      }
     },
     setStampPickerModeAsMessage(state) {
       state.stampPickerMode = 'message'
