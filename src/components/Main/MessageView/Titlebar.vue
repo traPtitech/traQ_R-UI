@@ -37,12 +37,12 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       .menu-icon
         icon-copy(size="24")
       span
-        | チャンネルパスをコピー
+        | チャンネルリンクをコピー
     .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage && isCopyFake" @click="copyMessage")
       .menu-icon
         icon-copy(size="24")
       span
-        | チャンネルパスをコピー
+        | チャンネルリンクをコピー
 </template>
 
 <script>
