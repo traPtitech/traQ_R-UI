@@ -245,7 +245,7 @@ $topic-height: 18px
     height: 60px
   +mq(sp)
     // top: 10px
-    min-width: 230px
+    min-width: 250px
     max-width: calc( 100vw - #{$information-sidebar-button-width} - 5px )
     height: 50px
     &.is-sidebar-opened
