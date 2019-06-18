@@ -33,12 +33,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-plus(size="24")
       span
         | サブチャンネル作成
-    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage && !isCopyFake" @click="copyMessage")
-      .menu-icon
-        icon-copy(size="24")
-      span
-        | チャンネルリンクをコピー
-    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage && isCopyFake" @click="copyMessage")
+    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage" @click="copyMessage")
       .menu-icon
         icon-copy(size="24")
       span
@@ -69,8 +64,7 @@ export default {
   },
   data() {
     return {
-      width: 0,
-      isCopyFake: true
+      width: 0
     }
   },
   methods: {
@@ -111,7 +105,6 @@ export default {
         })
     },
     copyMessage() {
-      this.isCopyFake = !this.isCopyFake
       this.$copyText(
         `[#${this.$route.params.channel}](https://q.trap.jp/channels/${
           this.$route.params.channel
