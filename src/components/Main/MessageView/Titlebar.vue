@@ -106,9 +106,7 @@ export default {
     },
     copyMessage() {
       this.$copyText(
-        `[#${this.$route.params.channel}](https://q.trap.jp/channels/${
-          this.$route.params.channel
-        })`
+        `[#${this.$route.params.channel}](${window.location.href})`
       )
     },
     removeWidth() {
