@@ -33,6 +33,11 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-plus(size="24")
       span
         | サブチャンネル作成
+    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage" @click="copyMessage")
+      .menu-icon
+        icon-copy(size="24")
+      span
+        | チャンネルリンクをコピー
 </template>
 
 <script>
@@ -44,6 +49,7 @@ import IconNotification from '@/components/Icon/IconNotification'
 import IconStar from '@/components/Icon/IconStar'
 import IconStarFill from '@/components/Icon/IconStarFill'
 import IconPlus from '@/components/Icon/IconPlus'
+import IconCopy from '@/components/Icon/IconCopy'
 
 export default {
   name: 'Titlebar',
@@ -53,7 +59,8 @@ export default {
     IconNotification,
     IconStar,
     IconStarFill,
-    IconPlus
+    IconPlus,
+    IconCopy
   },
   data() {
     return {
@@ -96,6 +103,13 @@ export default {
           )
           this.$store.dispatch('updateMyNotifiedChannels')
         })
+    },
+    copyMessage() {
+      this.$copyText(
+        `[#${this.$route.params.channel}](https://q.trap.jp/channels/${
+          this.$route.params.channel
+        })`
+      )
     },
     removeWidth() {
       this.$refs.titlebarInner.style.width = ''
@@ -191,7 +205,7 @@ export default {
         window,
         'click',
         function(e) {
-          if (!this.$el.contains(e.target)) {
+          if (!this.$el.contains(e.target) && e.target.nodeName !== 'BUTTON') {
             this.$store.commit('contractTitlebar')
           }
         }.bind(this)
@@ -219,12 +233,12 @@ $topic-height: 18px
   will-change: max-width, min-width
   +mq(pc)
     left: $sidebar-width
-    min-width: 230px
+    min-width: 260px
     max-width: calc( 100vw - #{$sidebar-width} - #{$information-sidebar-button-width} - 5px )
     height: 60px
   +mq(sp)
     // top: 10px
-    min-width: 200px
+    min-width: 250px
     max-width: calc( 100vw - #{$information-sidebar-button-width} - 5px )
     height: 50px
     &.is-sidebar-opened
@@ -381,6 +395,9 @@ $topic-height: 18px
     margin-right: 15px
   &:hover
       background: rgba(0,0,0,0.1)
+.copy-channel-path:active
+  background-color: rgba(0,0,0,0.2)
+
 
 .traq-logo
   width: 25px
