@@ -21,7 +21,7 @@
       .channel-children-space(v-show="isOpened" @click="toggle" key="space")
       .channel-children-container(ref="childrenContainer" v-show="isOpened" key="container")
         div(v-for="child in children")
-          ChannelElement(:model="child")
+          ChannelElement(:model="child" :isChild="true")
 </template>
 
 <script>
@@ -31,7 +31,11 @@ import IconPen from '@/components/Icon/IconPen'
 export default {
   name: 'ChannelElement',
   props: {
-    model: Object
+    model: Object,
+    isChild: {
+      type: Boolean,
+      default: false
+    }
   },
   components: { IconHash, IconPen },
   data() {
@@ -65,7 +69,9 @@ export default {
   },
   computed: {
     channelName() {
-      return this.model.isDuplicated ? this.shortChannelName : this.model.name
+      return !this.isChild && this.model.isDuplicated
+        ? this.shortChannelName
+        : this.model.name
     },
     fullChannelName() {
       return this.$store.getters.getChannelPathById(this.model.channelId)
