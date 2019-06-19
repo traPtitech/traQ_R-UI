@@ -11,8 +11,7 @@ div.channel-activity-wrap
     p.channel-recent-message
       span.channel-recent-message-author.text-ellipsis
         | @{{ authorName }}
-      span.channel-recent-message-content.text-ellipsis
-        | {{ sanitizedMessage }}
+      span.channel-recent-message-content.text-ellipsis(v-html="sanitizedMessage")
       span.channel-recent-message-attachment-info(v-if="hasFile")
         icon-attach(:color="isWatched ? 'var(--primary-color)' : 'white'")
       span.channel-recent-message-attachment-info(v-if="hasMessage")
@@ -20,7 +19,7 @@ div.channel-activity-wrap
 </template>
 
 <script>
-import md from '@/bin/markdown-it'
+import { renderInline } from '@/bin/markdown-it'
 import { detectFiles } from '@/bin/utils'
 import IconAttach from '@/components/Icon/IconAttach'
 import IconSpeechBalloon from '@/components/Icon/IconSpeechBalloon'
@@ -70,10 +69,6 @@ export default {
     channelBeforeClass() {
       return { 'has-unread': this.unreadNum > 0 }
     },
-    parsed() {
-      const parsed = md.parseInline(this.model.content, {})
-      return parsed[0].children
-    },
     attachments() {
       return detectFiles(this.model.content)
     },
@@ -84,21 +79,7 @@ export default {
       return this.attachments.filter(a => a.type === 'file').length > 0
     },
     sanitizedMessage() {
-      const parsed = md.parseInline(this.model.content, {})
-      const tokens = parsed[0].children
-      const message = []
-      for (let token of tokens) {
-        if (token.type === 'regexp-0') {
-          // emoji
-          message.push(token.meta.match[0])
-        } else if (token.type === 'softbreak') {
-          // newline
-          message.push(' ')
-        } else {
-          message.push(token.content)
-        }
-      }
-      return message.join('')
+      return renderInline(this.model.content)
     }
   }
 }
@@ -197,6 +178,9 @@ export default {
 
 .channel-recent-message-content
   display: inline-block
+  .emoji
+    height: 1.4em
+    width: 1.4em
 
 .channel-toggle
   border: solid 1px $text-light-color
