@@ -106,7 +106,9 @@ export default {
     },
     copyMessage() {
       this.$copyText(
-        `[#${this.$route.params.channel}](${window.location.href})`
+        `[#${this.$route.params.channel}](${location.origin}${
+          this.$route.path
+        })`
       )
     },
     removeWidth() {
