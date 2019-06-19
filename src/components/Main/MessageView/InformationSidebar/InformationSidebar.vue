@@ -156,7 +156,7 @@ export default {
         window,
         'click',
         function(e) {
-          if (!this.$el.contains(e.target)) {
+          if (e.target.parentElement && !this.$el.contains(e.target)) {
             this.isOpened = false
           }
         }.bind(this)
