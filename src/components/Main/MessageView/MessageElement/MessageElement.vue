@@ -73,7 +73,6 @@ import {
   displayDateTime,
   withModifierKey,
   isModifierKey,
-  isSendKey,
   isSendKeyInput,
   isBRKey
 } from '@/bin/utils'
@@ -143,8 +142,19 @@ export default {
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true
       }
-      if (isSendKey(event, this.messageSendKey)) {
-        this.editSubmit()
+      if (event.key === 'Enter') {
+        if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
+          this.editSubmit()
+          return
+        }
+        if (this.messageSendKey === 'none' && !withModifierKey(event)) {
+          event.preventDefault()
+          // 改行を防ぐためにeventをpreventするとinputイベントが発火せず送信判定ができないので手動で発火
+          this.editInput(
+            new InputEvent('input', { inputType: 'insertLineBreak' })
+          )
+          return
+        }
       }
       if (isBRKey(event, this.messageSendKey)) {
         event.preventDefault()

@@ -61,7 +61,6 @@ import {
   isImage,
   withModifierKey,
   isModifierKey,
-  isSendKey,
   isSendKeyInput,
   isBRKey
 } from '@/bin/utils'
@@ -262,6 +261,7 @@ export default {
         return
       }
       this.postStatus = 'default'
+      // 変換確定のEnterかどうかのためにInputイベントで判定する
       if (isSendKeyInput(event, this.messageSendKey)) {
         this.submit()
         event.returnValue = false
@@ -276,9 +276,18 @@ export default {
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true
       }
-      if (isSendKey(event, this.messageSendKey)) {
-        this.submit()
-        event.returnValue = false
+      if (event.key === 'Enter') {
+        if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
+          this.submit()
+          event.returnValue = false
+          return
+        }
+        if (this.messageSendKey === 'none' && !withModifierKey(event)) {
+          event.returnValue = false
+          // 改行を防ぐためにeventをpreventするとinputイベントが発火せず送信判定ができないので手動で発火
+          this.input(new InputEvent('input', { inputType: 'insertLineBreak' }))
+          return
+        }
       }
       if (isBRKey(event, this.messageSendKey)) {
         event.preventDefault()
