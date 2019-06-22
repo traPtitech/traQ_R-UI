@@ -234,8 +234,10 @@ export default {
             this.$store.state.currentChannel.channelId
           )
           .then(res => {
-            this.heartbeatPending = false
             this.$store.commit('updateHeartbeatStatus', res.data)
+          })
+          .finally(() => {
+            this.heartbeatPending = false
           })
       } else {
         this.$store.commit('updateHeartbeatStatus', {
@@ -386,8 +388,10 @@ export default {
           this.$store.state.currentChannel.channelId
         )
         .then(res => {
-          this.heartbeatPending = false
           this.$store.commit('updateHeartbeatStatus', res.data)
+        })
+        .finally(() => {
+          this.heartbeatPending = false
         })
     },
     nowStatus(newStatus) {
