@@ -378,12 +378,15 @@ export default {
   },
   watch: {
     '$route.params.channel': function() {
+      if (this.heartbeatPending) return
+      this.heartbeatPending = true
       client
         .postHeartbeat(
           this.getStatus(),
           this.$store.state.currentChannel.channelId
         )
         .then(res => {
+          this.heartbeatPending = false
           this.$store.commit('updateHeartbeatStatus', res.data)
         })
     },
