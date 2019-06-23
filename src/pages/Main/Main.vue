@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       heartbeat: null,
+      heartbeatPending: false,
       swipeEvent: {
         isActive: false,
         startX: Number,
@@ -225,6 +226,8 @@ export default {
 
     this.heartbeat = setInterval(() => {
       if (this.$store.state.channelId !== this.$store.state.directMessageId) {
+        if (this.heartbeatPending) return
+        this.heartbeatPending = true
         client
           .postHeartbeat(
             this.getStatus(),
@@ -232,6 +235,9 @@ export default {
           )
           .then(res => {
             this.$store.commit('updateHeartbeatStatus', res.data)
+          })
+          .finally(() => {
+            this.heartbeatPending = false
           })
       } else {
         this.$store.commit('updateHeartbeatStatus', {
@@ -374,6 +380,8 @@ export default {
   },
   watch: {
     '$route.params.channel': function() {
+      if (this.heartbeatPending) return
+      this.heartbeatPending = true
       client
         .postHeartbeat(
           this.getStatus(),
@@ -381,6 +389,9 @@ export default {
         )
         .then(res => {
           this.$store.commit('updateHeartbeatStatus', res.data)
+        })
+        .finally(() => {
+          this.heartbeatPending = false
         })
     },
     nowStatus(newStatus) {
