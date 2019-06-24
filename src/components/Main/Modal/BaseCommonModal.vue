@@ -59,6 +59,8 @@ export default {
 
 <style lang="sass">
 .common-modal
+    display: flex
+    flex-direction: column
     background: $background-color
     border-radius: $modal-border-radius
     max-width: 60rem
@@ -71,10 +73,11 @@ export default {
 .common-modal[data-is-tiny="true"]
     max-width: 25rem
 .common-modal[data-is-scroll="true"]
-    display: flex
-    flex-direction: column
     .common-modal-content
-        overflow-y: auto
+        overflow-y: scroll
+.common-modal:not([data-is-scroll])
+    .common-modal-content
+        overflow-y: visible
 .common-modal-header-wrap
     display: flex
     align-items: center
