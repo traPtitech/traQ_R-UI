@@ -226,7 +226,7 @@ export default {
               })
           })
       )
-      this.messages = (await Promise.all(
+      this.messages = await Promise.all(
         this.attachedData
           .filter(e => e.type === 'message')
           .map(async e => {
@@ -235,7 +235,7 @@ export default {
               .then(res => res.data)
               .catch(() => null)
           })
-      )).filter(e => e)
+      )
       this.isRendered = true
 
       this.$nextTick(() => {
