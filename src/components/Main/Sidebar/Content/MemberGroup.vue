@@ -5,7 +5,7 @@
         | {{groupName}}
     div.member-group-list(ref="list")
       transition(name="simple" @after-enter="removeHeight" @after-leave="zeroHeight")
-        div(ref="listWrap" v-show="isOpen || filterUnread || filterText !== ''")
+        div(ref="listWrap" v-show="isOpen")
           template(v-if="filterUnread")
             member-element(v-for="member in filteredUnreadMembers" :model="member" :key="member.userId")
           template(v-else)
@@ -67,6 +67,9 @@ export default {
       } catch {
         return new RegExp('', 'i')
       }
+    },
+    isOpenChangedTemporary() {
+      return this.filterUnread || this.filterText !== ''
     }
   },
   methods: {
@@ -78,6 +81,7 @@ export default {
     },
     toggle() {
       this.isOpen = !this.isOpen
+      if (this.isOpenChangedTemporary) return
       this.$store.dispatch('updateUserListOpen', {
         groupId: this.groupId,
         isOpen: this.isOpen
@@ -104,6 +108,13 @@ export default {
       } else {
         return 0
       }
+    },
+    restoreIsOpen() {
+      if (this.$store.state.openUserLists.hasOwnProperty(this.groupId)) {
+        this.isOpen = this.$store.state.openUserLists[this.groupId]
+        return true
+      }
+      return false
     }
   },
   watch: {
@@ -114,12 +125,18 @@ export default {
           this.$refs.list.style.height = this.height + 'px'
         })
       }
+    },
+    isOpenChangedTemporary(val) {
+      if (val) {
+        this.isOpen = true
+      } else {
+        this.restoreIsOpen()
+      }
     }
   },
   mounted() {
-    if (this.$store.state.openUserLists.hasOwnProperty(this.groupId)) {
-      this.isOpen = this.$store.state.openUserLists[this.groupId]
-    } else {
+    const restored = this.restoreIsOpen()
+    if (!restored) {
       this.isOpen = true
       this.$store.dispatch('updateUserListOpen', {
         groupId: this.groupId,
