@@ -21,9 +21,9 @@ export default {
   computed: {
     ...mapState('modal', ['data']),
     message() {
-      return this.$store.state.messages.filter(
+      return this.$store.state.messages.find(
         m => m.messageId === this.data.messageId
-      )[0]
+      )
     }
   }
 }
