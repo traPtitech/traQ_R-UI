@@ -93,6 +93,13 @@
     word-break: break-all;
     white-space: pre-wrap;
   }
+
+  blockquote {
+    padding: 0 1em;
+    border-left: 0.25em solid;
+    font-style: italic;
+    background: transparent;
+  }
 }
 
 #app[data-theme="light"] .markdown-body {
@@ -135,10 +142,8 @@
   }
 
   blockquote {
-    padding: 0 1em;
     color: #777;
-    border-left: 0.25em solid #ddd;
-    background: transparent;
+    border-color: #ddd;
   }
 
   table {
@@ -232,8 +237,6 @@
 
   blockquote {
     color: #5c6370;
-    font-style: italic;
-    background: transparent;
     border-color: #2c323c;
   }
 }
