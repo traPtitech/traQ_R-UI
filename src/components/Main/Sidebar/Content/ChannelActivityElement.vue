@@ -181,6 +181,7 @@ export default {
   .emoji
     height: 1.4em
     width: 1.4em
+    vertical-align: top;
 
 .channel-toggle
   border: solid 1px $text-light-color
