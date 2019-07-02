@@ -2,7 +2,7 @@
 base-common-modal(title="PINNED" small scroll)
   icon-pin(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .message-item
-    message-element(:model="data")
+    message-element(:model="message")
 </template>
 
 <script>
@@ -19,7 +19,12 @@ export default {
     IconPin
   },
   computed: {
-    ...mapState('modal', ['data'])
+    ...mapState('modal', ['data']),
+    message() {
+      return this.$store.state.messages.find(
+        m => m.messageId === this.data.messageId
+      )
+    }
   }
 }
 </script>
