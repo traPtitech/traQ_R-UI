@@ -185,13 +185,6 @@ export const withModifierKey = keyEvent => {
 export const isModifierKey = keyEvent => {
   return ['Shift', 'Alt', 'Control', 'Meta'].includes(keyEvent.key)
 }
-export const isSendKey = (keyEvent, messageSendKey) => {
-  if (keyEvent.key !== 'Enter') {
-    return false
-  }
-  // messageSendKey === 'none'はisSendKeyInput()で処理
-  return messageSendKey === 'modifier' && withModifierKey(keyEvent)
-}
 export const isSendKeyInput = (inputEvent, messageSendKey) => {
   // modifierが押されているときはisBRKey()を利用してpreventされる
   return (

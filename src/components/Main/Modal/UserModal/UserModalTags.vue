@@ -77,7 +77,7 @@ export default {
         (event.ctrlKey || event.metaKey || event.shiftKey)
       ) {
         this.addTag()
-        event.returnValue = false
+        event.preventDefault()
       }
     },
     addTag() {

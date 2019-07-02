@@ -61,7 +61,6 @@ import {
   isImage,
   withModifierKey,
   isModifierKey,
-  isSendKey,
   isSendKeyInput,
   isBRKey
 } from '@/bin/utils'
@@ -258,27 +257,35 @@ export default {
     },
     input(event) {
       if (this.postStatus === 'processing') {
-        event.returnValue = false
         return
       }
       this.postStatus = 'default'
+      // 変換確定のEnterかどうかのためにInputイベントで判定する
       if (isSendKeyInput(event, this.messageSendKey)) {
         this.submit()
-        event.returnValue = false
       }
     },
     keydown(event) {
       if (this.postStatus === 'processing') {
-        event.returnValue = false
+        event.preventDefault()
         return
       }
       this.postStatus = 'default'
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true
       }
-      if (isSendKey(event, this.messageSendKey)) {
-        this.submit()
-        event.returnValue = false
+      if (event.key === 'Enter') {
+        if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
+          event.preventDefault()
+          this.submit()
+          return
+        }
+        if (this.messageSendKey === 'none' && !withModifierKey(event)) {
+          event.preventDefault()
+          // 改行を防ぐためにeventをpreventするとinputイベントが発火せず送信判定ができないので手動で発火
+          this.input(new InputEvent('input', { inputType: 'insertLineBreak' }))
+          return
+        }
       }
       if (isBRKey(event, this.messageSendKey)) {
         event.preventDefault()
@@ -303,7 +310,7 @@ export default {
           if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
             this.suggestMode = true
             this.suggestIndex = 0
-            event.returnValue = false
+            event.preventDefault()
             return
           }
         } else {
@@ -319,11 +326,11 @@ export default {
             if (this.suggestIndex >= this.suggests.length) {
               this.suggestIndex = this.suggests.length - 1
             }
-            event.returnValue = false
+            event.preventDefault()
             return
           } else if (event.key === 'Enter') {
             this.replaceSuggest(this.suggestIndex)
-            event.returnValue = false
+            event.preventDefault()
             return
           }
         }
@@ -338,7 +345,7 @@ export default {
         (event.ctrlKey || event.metaKey || event.shiftKey)
       ) {
         this.submit()
-        event.returnValue = false
+        event.preventDefault()
       } else {
         this.$nextTick(() => {
           const selectionStart = this.messageInput.selectionStart
