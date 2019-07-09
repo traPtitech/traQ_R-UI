@@ -95,6 +95,7 @@ export default {
       postLock: false,
       uploadedIds: [],
       messageInput: null,
+      inputTextTemp: '',
       key: {
         keyword: '',
         type: ''
@@ -262,6 +263,7 @@ export default {
       this.postStatus = 'default'
       // 変換確定のEnterかどうかのためにInputイベントで判定する
       if (isSendKeyInput(event, this.messageSendKey)) {
+        this.inputText = this.inputTextTemp
         this.submit()
       }
     },
@@ -281,9 +283,7 @@ export default {
           return
         }
         if (this.messageSendKey === 'none' && !withModifierKey(event)) {
-          event.preventDefault()
-          // 改行を防ぐためにeventをpreventするとinputイベントが発火せず送信判定ができないので手動で発火
-          this.input(new InputEvent('input', { inputType: 'insertLineBreak' }))
+          this.inputTextTemp = this.inputText
           return
         }
       }

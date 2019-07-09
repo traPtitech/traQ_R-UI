@@ -106,6 +106,7 @@ export default {
   data() {
     return {
       isEditing: false,
+      editedTemp: '',
       files: [],
       messages: [],
       isRendered: false,
@@ -135,6 +136,7 @@ export default {
     },
     editInput(event) {
       if (isSendKeyInput(event, this.messageSendKey)) {
+        this.edited = this.editedTemp
         this.editSubmit()
       }
     },
@@ -148,11 +150,7 @@ export default {
           return
         }
         if (this.messageSendKey === 'none' && !withModifierKey(event)) {
-          event.preventDefault()
-          // 改行を防ぐためにeventをpreventするとinputイベントが発火せず送信判定ができないので手動で発火
-          this.editInput(
-            new InputEvent('input', { inputType: 'insertLineBreak' })
-          )
+          this.editedTemp = this.edited
           return
         }
       }
