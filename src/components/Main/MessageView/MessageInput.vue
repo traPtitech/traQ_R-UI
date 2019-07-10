@@ -38,6 +38,7 @@
         v-model="inputText"
         @focus="inputFocus"
         @blur="inputBlur"
+        @beforeinput="beforeinput"
         @input="input"
         @keydown="keydown"
         @keyup="keyup"
@@ -62,7 +63,8 @@ import {
   withModifierKey,
   isModifierKey,
   isSendKeyInput,
-  isBRKey
+  isBRKey,
+  checkLevel2InputEventsSupport
 } from '@/bin/utils'
 import suggest from '@/bin/suggest'
 import stampAltNameTable from '@/bin/emoji_altname_table.json'
@@ -74,6 +76,8 @@ import IconHash from '@/components/Icon/IconHash'
 import IconProfile from '@/components/Icon/IconProfile'
 import IconFile from '@/components/Icon/IconFile'
 import IconClose from '@/components/Icon/IconClose'
+
+const isLevel2InputEventsSupported = checkLevel2InputEventsSupport()
 
 export default {
   name: 'MessageInput',
@@ -95,7 +99,6 @@ export default {
       postLock: false,
       uploadedIds: [],
       messageInput: null,
-      inputTextTemp: '',
       key: {
         keyword: '',
         type: ''
@@ -256,16 +259,17 @@ export default {
         keyword: ''
       }
     },
+    beforeinput(event) {
+      if (isSendKeyInput(event, this.messageSendKey)) {
+        event.preventDefault()
+        this.submit()
+      }
+    },
     input(event) {
       if (this.postStatus === 'processing') {
         return
       }
       this.postStatus = 'default'
-      // 変換確定のEnterかどうかのためにInputイベントで判定する
-      if (isSendKeyInput(event, this.messageSendKey)) {
-        this.inputText = this.inputTextTemp
-        this.submit()
-      }
     },
     keydown(event) {
       if (this.postStatus === 'processing') {
@@ -276,18 +280,24 @@ export default {
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true
       }
-      if (event.key === 'Enter') {
+      // #945
+      if (event.key === 'Enter' && !event.isComposing) {
         if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
           event.preventDefault()
           this.submit()
           return
         }
-        if (this.messageSendKey === 'none' && !withModifierKey(event)) {
-          this.inputTextTemp = this.inputText
+        if (
+          this.messageSendKey === 'none' &&
+          !withModifierKey(event) &&
+          !isLevel2InputEventsSupported
+        ) {
+          event.preventDefault()
+          this.submit()
           return
         }
       }
-      if (isBRKey(event, this.messageSendKey)) {
+      if (isBRKey(event, this.messageSendKey) && !event.isComposing) {
         event.preventDefault()
         const pre = this.inputText.substring(
           0,
