@@ -1,6 +1,6 @@
 <template lang="pug">
 .channel-detail-element-wrapper(@click="channelLink" :class="channelDetailElementClass")
-  .channel-detail-element-box
+  .channel-detail-element-box(:title="'#' + fullChannelName")
     .channel-detail-element-before-wrap
       .channel-detail-element-before(:class="channelBeforeClass")
         | #

@@ -5,8 +5,8 @@ div.channel-activity-wrap
     div.channel-activity-channel
       div.channel-activity-before(:class="channelBeforeClass")
         icon-hash(size="16" :color="isWatched ? 'var(--primary-color)' : 'white'")
-      div.channel-activity-name.text-ellipsis
-        | {{ channelName }}
+      div.channel-activity-name.text-ellipsis(:title="'#' + channelName")
+        | {{ shortChannelName }}
     hr.channel-activity-separator
     p.channel-recent-message
       span.channel-recent-message-author.text-ellipsis
@@ -48,6 +48,9 @@ export default {
   },
   computed: {
     channelName() {
+      return this.$store.getters.getChannelPathById(this.model.parentChannelId)
+    },
+    shortChannelName() {
       return this.$store.getters.getShortChannelPathById(
         this.model.parentChannelId
       )

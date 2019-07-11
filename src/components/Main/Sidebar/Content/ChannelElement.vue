@@ -1,6 +1,6 @@
 <template lang="pug">
 .channel-wrap(v-if="model.visibility")
-  .channel-box(@click="channelLink" :class="{'channel-opened': isOpened, 'channel-watched': isWatched}")
+  .channel-box(@click="channelLink" :class="{'channel-opened': isOpened, 'channel-watched': isWatched}" :title="'#' + fullChannelName")
     .channel-before-wrap(v-if="isParent" @click.stop="toggle")
       .channel-toggle.channel-before(:class="channelBeforeClass")
         icon-hash(v-if="!hasInputContent" size="12" :color="toggleChannelHashColor")
