@@ -17,6 +17,8 @@
               placeholder="ID"
               required
               :disabled="status === 'processing'"
+              autofocus
+              tabindex="0"
               @keydown.enter="loginPost")
             input.input-reset.login-input(
               v-model="pass"
@@ -25,14 +27,16 @@
               placeholder="PASSWORD"
               required
               :disabled="status === 'processing'"
+              tabindex="0"
               @keydown.enter="loginPost")
             p.login-failed-message(v-if="status === 'failed'")
               | IDまたはパスワードが異なります
           .login-button-wrap
             button.input-reset.login-button(
+              tabindex="0"
               @click="loginPost")
               | SIGN IN
-        a.login-trap-logo(href="https://trap.jp" target="_blank")
+        a.login-trap-logo(href="https://trap.jp" target="_blank" tabindex="-1")
           img(src="@/assets/img/icon/traP_logo.svg")
   template(v-else)
     .login-page-inner-wrap-sp.is-scroll
@@ -50,6 +54,8 @@
             placeholder="ID"
             required
             :disabled="status === 'processing'"
+            autofocus
+            tabindex="0"
             @keydown.enter="loginPost")
           input.input-reset.login-input(
             v-model="pass"
@@ -58,6 +64,7 @@
             placeholder="PASSWORD"
             required
             :disabled="status === 'processing'"
+            tabindex="0"
             @keydown.enter="loginPost")
           p.login-failed-message(v-if="status === 'failed'")
             span(v-if="failType === 'unconnected'")
@@ -65,9 +72,11 @@
             span(v-else)
               | IDまたはパスワードが異なります
         button.input-reset.login-button(
+          tabindex="0"
           @click="loginPost")
           | SIGN IN
-      a.login-trap-logo(href="https://trap.jp" target="_blank")
+      a.login-trap-logo(href="https://trap.jp" target="_blank"
+            tabindex="-1")
         img(src="@/assets/img/icon/traP_logo.svg")
 </template>
 
