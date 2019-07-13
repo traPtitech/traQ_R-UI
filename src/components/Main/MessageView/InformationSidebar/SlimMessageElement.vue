@@ -1,6 +1,6 @@
 <template lang="pug">
   div.slim-message-element(
-    :class="{'is-overflow': isOverflow}" 
+    :class="{'is-overflow': isOverflow}"
     @click.stop.prevent="openModal")
     div
       | {{userName}}
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import md from '@/bin/markdown-it'
+import * as md from '@/bin/markdown-it'
 export default {
   name: 'SlimMessageElement',
   props: {

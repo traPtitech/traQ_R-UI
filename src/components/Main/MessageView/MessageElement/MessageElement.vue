@@ -76,7 +76,7 @@ import {
   isSendKeyInput,
   isBRKey
 } from '@/bin/utils'
-import md from '@/bin/markdown-it'
+import * as md from '@/bin/markdown-it'
 import client from '@/bin/client'
 import MessageAttachedMessages from './MessageAttachedMessages'
 import MessageAttachedFiles from './MessageAttachedFiles'
@@ -571,6 +571,9 @@ export default {
   background-color: #4e72d6
 
 .emoji
+  &.s12
+    width: 12px
+    height: 12px
   &.s24
     width: 24px
     height: 24px

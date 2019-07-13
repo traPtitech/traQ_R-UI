@@ -3,20 +3,20 @@
     div.attached-message(v-for="(m, index) in messages")
       div.attached-message-detail-wrap
         div.attached-message-user-icon(
-          :style="userIconBackground(m.userId)" 
+          :style="userIconBackground(m.userId)"
           @click="openUserModal(m.userId)")
         p.attached-message-user-name(@click="openUserModal(m.userId)")
           | {{userDisplayName(m.userId)}}
       component(:is="renderedBodies[index]" v-bind="$props")
       div.attached-message-from
-        | from 
+        | from
         router-link(:to="parentChannel(m.parentChannelId).to")
           | {{parentChannel(m.parentChannelId).name}}
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import md from '@/bin/markdown-it'
+import * as md from '@/bin/markdown-it'
 
 export default {
   name: 'MessageAttachedMessages',
