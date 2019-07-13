@@ -30,12 +30,24 @@
               tabindex="0"
               @keydown.enter="loginPost")
             p.login-failed-message(v-if="status === 'failed'")
-              | IDまたはパスワードが異なります
+              span(v-if="failType === 'empty_id'")
+                | IDが入力されていません
+              span(v-else-if="failType === 'empty_pass'")
+                | パスワードが入力されていません
+              span(v-else-if="failType === 'unconnected'")
+                | インターネットに接続されていません
+              span(v-else-if="failType === 'wrong_id_or_pass'")
+                | IDまたはパスワードが異なります
+              span(v-else-if="failType !== 'suspended'")
+                | エラーが発生しました
           .login-button-wrap
             button.input-reset.login-button(
               tabindex="0"
               @click="loginPost")
               | SIGN IN
+          .login-suspended-wrap(v-if="status === 'failed' && failType === 'suspended'")
+            p.login-suspended-message
+              | このアカウントは現在ログインを一時的に制限されています。再びログインするためには、accounts@trap.jp宛にtraP IDを明記してメールをお送り下さい。
         a.login-trap-logo(href="https://trap.jp" target="_blank" tabindex="-1")
           img(src="@/assets/img/icon/traP_logo.svg")
   template(v-else)
@@ -67,14 +79,23 @@
             tabindex="0"
             @keydown.enter="loginPost")
           p.login-failed-message(v-if="status === 'failed'")
-            span(v-if="failType === 'unconnected'")
+            span(v-if="failType === 'empty_id'")
+              | IDが入力されていません
+            span(v-else-if="failType === 'empty_pass'")
+              | パスワードが入力されていません
+            span(v-else-if="failType === 'unconnected'")
               | インターネットに接続されていません
-            span(v-else)
+            span(v-else-if="failType === 'wrong_id_or_pass'")
               | IDまたはパスワードが異なります
+            span(v-else-if="failType !== 'suspended'")
+              | エラーが発生しました
         button.input-reset.login-button(
           tabindex="0"
           @click="loginPost")
           | SIGN IN
+        .login-suspended-wrap(v-if="status === 'failed' && failType === 'suspended'")
+          p.login-suspended-message
+            | このアカウントは現在ログインを一時的に制限されています。再びログインするためには、accounts@trap.jp宛にtraP IDを明記してメールをお送り下さい。
       a.login-trap-logo(href="https://trap.jp" target="_blank"
             tabindex="-1")
         img(src="@/assets/img/icon/traP_logo.svg")
@@ -92,13 +113,9 @@ export default {
     return {
       name: '',
       pass: '',
+      // default / processing / succeed / failed
       status: 'default',
-      /*
-       * default: not in progress
-       * processing: in progress
-       * failed: missed login
-       * successed: success login
-       */
+      // empty_id / empty_pass / unconnected / wrong_id_or_pass / suspended
       failType: ''
     }
   },
@@ -108,12 +125,21 @@ export default {
   },
   methods: {
     loginPost: function() {
+      if (this.name === '') {
+        this.status = 'failed'
+        this.failType = 'empty_id'
+        return
+      } else if (this.pass === '') {
+        this.status = 'failed'
+        this.failType = 'empty_pass'
+        return
+      }
+
       this.status = 'processing'
       client
         .login(this.name, this.pass)
         .then(res => {
-          this.status = 'successed'
-          console.log(res)
+          this.status = 'succeed'
           if (this.$store.state.baseURL === '') {
             document.location.href = this.redirect
           } else {
@@ -125,12 +151,21 @@ export default {
         })
         .catch(err => {
           this.status = 'failed'
-          if (err.message === 'Network Error') {
-            this.failType = 'unconnected'
-            return
+          const statusCode = /(\d{3})/.exec(err.message)[1]
+          switch (statusCode) {
+            case '500':
+              this.failType = 'unconnected'
+              break
+            case '401':
+              this.failType = 'wrong_id_or_pass'
+              break
+            case '403':
+              this.failType = 'suspended'
+              break
+            default:
+              this.failType = 'unknown'
+              break
           }
-          this.failType = ''
-          console.error(err)
         })
     }
   },
@@ -262,6 +297,15 @@ export default {
       right: auto
     width: 150px
 
+  .login-suspended-wrap
+    border-radius: 16px
+    padding: 18px
+    margin-top: 12px
+    background-color: #ED8888
+
+  .login-suspended-message
+    color: white
+
 .login-page-inner-wrap-pc
   display: flex
 
@@ -375,4 +419,13 @@ export default {
       top: auto
       bottom: 20px
     width: 150px
+
+  .login-suspended-wrap
+    border-radius: 16px
+    padding: 24px
+    margin: 40px 15%
+    background-color: #ED8888
+
+  .login-suspended-message
+    color: white
 </style>
