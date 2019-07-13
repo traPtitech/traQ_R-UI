@@ -40,7 +40,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @input="editInput" @keydown="editKeydown" @keyup="editKeyup")
+          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @beforeinput="editBeforeinput" @keydown="editKeydown" @keyup="editKeyup")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -74,7 +74,8 @@ import {
   withModifierKey,
   isModifierKey,
   isSendKeyInput,
-  isBRKey
+  isBRKey,
+  checkLevel2InputEventsSupport
 } from '@/bin/utils'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
@@ -87,6 +88,8 @@ import IconPin from '@/components/Icon/IconPin'
 import IconStampPlus from '@/components/Icon/IconStampPlus'
 import IconPen from '@/components/Icon/IconPen'
 import autosize from 'autosize'
+
+const isLevel2InputEventsSupported = checkLevel2InputEventsSupport()
 
 export default {
   name: 'MessageElement',
@@ -106,6 +109,7 @@ export default {
   data() {
     return {
       isEditing: false,
+      editedTemp: '',
       files: [],
       messages: [],
       isRendered: false,
@@ -133,8 +137,9 @@ export default {
       }
       this.$store.commit('setStampPickerActive', true)
     },
-    editInput(event) {
+    editBeforeinput(event) {
       if (isSendKeyInput(event, this.messageSendKey)) {
+        event.preventDefault()
         this.editSubmit()
       }
     },
@@ -142,21 +147,24 @@ export default {
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true
       }
-      if (event.key === 'Enter') {
+      // #945
+      if (event.key === 'Enter' && !event.isComposing) {
         if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
+          event.preventDefault()
           this.editSubmit()
           return
         }
-        if (this.messageSendKey === 'none' && !withModifierKey(event)) {
+        if (
+          this.messageSendKey === 'none' &&
+          !withModifierKey(event) &&
+          !isLevel2InputEventsSupported
+        ) {
           event.preventDefault()
-          // 改行を防ぐためにeventをpreventするとinputイベントが発火せず送信判定ができないので手動で発火
-          this.editInput(
-            new InputEvent('input', { inputType: 'insertLineBreak' })
-          )
+          this.editSubmit()
           return
         }
       }
-      if (isBRKey(event, this.messageSendKey)) {
+      if (isBRKey(event, this.messageSendKey) && !event.isComposing) {
         event.preventDefault()
         const pre = this.edited.substring(0, this.$refs.editArea.selectionStart)
         const suf = this.edited.substring(this.$refs.editArea.selectionEnd)
