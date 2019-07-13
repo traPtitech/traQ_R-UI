@@ -131,12 +131,14 @@ router.beforeEach(async (to, from, next) => {
         member.push(store.state.me.userId)
       }
       let channelId = nextUser.userId
+      let channelExists = false
       if (nextUser.userId === store.state.me.userId) {
         const channel = store.getters.getDirectMessageChannels.find(
           c => c.member.length === 1
         )
         if (channel) {
           channelId = channel.channelId
+          channelExists = true
         }
       } else {
         const channel = store.getters.getDirectMessageChannels.find(c =>
@@ -144,6 +146,7 @@ router.beforeEach(async (to, from, next) => {
         )
         if (channel) {
           channelId = channel.channelId
+          channelExists = true
         }
       }
       store.commit('changeChannel', {
@@ -156,10 +159,15 @@ router.beforeEach(async (to, from, next) => {
         private: true,
         dm: true
       })
-      store.commit('setCurrentChannelPinnedMessages', [])
-      store.dispatch('getMessages')
-      store.commit('loadEnd')
+      store.dispatch('getMessages').then(() => {
+        if (channelExists) {
+          store.dispatch('getCurrentChannelPinnedMessages', channelId)
+        } else {
+          store.commit('setCurrentChannelPinnedMessages', [])
+        }
+      })
       next(true)
+      store.commit('loadEnd')
       return
     } else {
       next('/notfound')
