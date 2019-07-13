@@ -4,9 +4,9 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
     .titlebar-channel-name(@click="toggleSidebarOpens")
       img.traq-logo(src="@/assets/img/icon/logo_white.svg")
       .channel-info-wrap(ref="titlebarInner")
-        h1.text-ellipsis.channel-name
-          | {{title}}
-        p.channel-topic-text(:key="title" v-bind:class="{'has-topic': topic}")
+        h1.text-ellipsis.channel-name(:title="title")
+          | {{shortTitle}}
+        p.channel-topic-text(:key="shortTitle" v-bind:class="{'has-topic': topic}")
           | {{topic}}
     .titlebar-expand-button(v-if="!isDirectMessage" @click="toggleTitlebarExpansion")
       div(:style="titlebarExpandButtonStyle")
@@ -169,16 +169,20 @@ export default {
     },
     title() {
       if (this.$route.params.user) return `@${this.$route.params.user}`
-      if (!this.$route.params.channel) return ''
-      let ret = '#'
-      this.$route.params.channel
+      if (this.$route.params.channel) return `#${this.$route.params.channel}`
+      return ''
+    },
+    shortTitle() {
+      if (!this.title.includes('#')) return this.title
+
+      const channels = this.title
+        .slice(1)
         .split('/')
         .slice(0, -1)
-        .forEach(e => {
-          ret += e.charAt(0) + '/'
-        })
-      ret += this.$store.state.currentChannel.name
-      return ret
+        .map(c => c.charAt(0))
+      channels.push(this.$store.state.currentChannel.name)
+
+      return `#${channels.join('/')}`
     },
     topic() {
       if (this.$route.params.user) return ''
