@@ -18,8 +18,10 @@
   SettingInput(v-model="twitterId" label="Twitter ID")
   // SettingInput(v-model="newPassword" type="password" label="新しいパスワード")
   // SettingInput(v-model="checkNewPassword" type="password" label="新しいパスワード(確認)")
-  .profile-setting-password-disabled
-    | 現在パスワードは変更できません
+  .profile-setting-password
+    | パスワードの変更は
+    a(href="https://portal.trap.jp/" target="_blank") traPortal
+    | から可能です
   br
   SettingButton(v-if="isChanged && !needPass" @click="submit")
     | 更新
@@ -268,4 +270,9 @@ export default {
 
 .profile-setting-password-disabled
   opacity: 0.5
+
+.profile-setting-password
+  a
+    font-weight: bold
+    color: #3580b9
 </style>
