@@ -19,7 +19,7 @@ div.channel-activity-wrap
 </template>
 
 <script>
-import { renderInline } from '@/bin/markdown-it'
+import md from '@/bin/markdown-it'
 import { detectFiles } from '@/bin/utils'
 import IconAttach from '@/components/Icon/IconAttach'
 import IconSpeechBalloon from '@/components/Icon/IconSpeechBalloon'
@@ -34,6 +34,11 @@ export default {
   },
   props: {
     model: Object
+  },
+  data() {
+    return {
+      sanitizedMessage: ''
+    }
   },
   methods: {
     channelLink() {
@@ -78,8 +83,13 @@ export default {
     hasFile() {
       return this.attachments.filter(a => a.type === 'file').length > 0
     },
-    sanitizedMessage() {
-      return renderInline(this.model.content)
+    content() {
+      return this.model.content
+    }
+  },
+  watch: {
+    async content(val) {
+      this.sanitizedMessage = await md.renderInline(val)
     }
   }
 }

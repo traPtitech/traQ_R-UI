@@ -8,7 +8,8 @@
 </template>
 
 <script>
-import * as md from '@/bin/markdown-it'
+import md from '@/bin/markdown-it'
+
 export default {
   name: 'SlimMessageElement',
   props: {
@@ -19,7 +20,10 @@ export default {
   },
   data() {
     return {
-      height: 0
+      height: 0,
+      renderedContent: {
+        template: ''
+      }
     }
   },
   computed: {
@@ -31,13 +35,6 @@ export default {
     },
     content() {
       return this.message.content
-    },
-    renderedContent() {
-      return {
-        template: `<div class="slim-message-content markdown-body" v-pre>${md.render(
-          this.content
-        )}</div>`
-      }
     },
     isOverflow() {
       return this.height >= 110
@@ -51,6 +48,13 @@ export default {
     },
     openModal() {
       this.$store.dispatch('openPinnedModal', this.message)
+    }
+  },
+  watch: {
+    async content(val) {
+      this.renderedContent.template = `<div class="slim-message-content markdown-body" v-pre>${await md.render(
+        val
+      )}</div>`
     }
   },
   mounted() {

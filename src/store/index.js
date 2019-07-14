@@ -4,6 +4,7 @@ import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import { detectMentions } from '@/bin/utils'
+import md from '@/bin/markdown-it'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -11,6 +12,9 @@ import messageEdit from './messageEdit'
 const db = indexedDB.db
 
 Vue.use(Vuex)
+
+const baseURL =
+  process.env.NODE_ENV === 'development' ? 'https://traq-dev.tokyotech.org' : ''
 
 const loadGeneralData = (dataName, webLoad, commit) => {
   let loaded = false
@@ -52,6 +56,35 @@ const stringSortGen = key => (lhs, rhs) => {
   } else {
     return 0
   }
+}
+
+md.updateData('baseURL', baseURL)
+
+const updateMd = (state, key) => {
+  md.updateData(key, state[key])
+}
+
+const markdownDataPlugin = store => {
+  store.subscribe(({ type, payload }, state) => {
+    switch (type) {
+      case 'setStampData':
+        updateMd(state, 'stampNameMap')
+        break
+      case 'setMemberData':
+        updateMd(state, 'memberData')
+        updateMd(state, 'memberMap')
+        break
+      case 'setChannelData':
+        updateMd(state, 'channelMap')
+        break
+      case 'setGroupData':
+        updateMd(state, 'groupMap')
+        break
+      case 'setMe':
+        updateMd(state, 'me')
+        break
+    }
+  })
 }
 
 const store = new Vuex.Store({
@@ -99,10 +132,7 @@ const store = new Vuex.Store({
     menuContent: 'Channels',
     channelView: 'tree',
     heartbeatStatus: { userStatuses: [] },
-    baseURL:
-      process.env.NODE_ENV === 'development'
-        ? 'https://traq-dev.tokyotech.org'
-        : '',
+    baseURL,
     files: [],
     userModal: null,
     tagModal: null,
@@ -1155,7 +1185,8 @@ const store = new Vuex.Store({
       commit('setMessageSendKey', key)
       return db.write('browserSetting', { type: 'messageSendKey', data: key })
     }
-  }
+  },
+  plugins: [markdownDataPlugin]
 })
 
 window.openUserModal = userId => {

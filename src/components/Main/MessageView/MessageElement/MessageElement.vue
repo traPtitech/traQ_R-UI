@@ -76,7 +76,7 @@ import {
   isSendKeyInput,
   isBRKey
 } from '@/bin/utils'
-import * as md from '@/bin/markdown-it'
+import md from '@/bin/markdown-it'
 import client from '@/bin/client'
 import MessageAttachedMessages from './MessageAttachedMessages'
 import MessageAttachedFiles from './MessageAttachedFiles'
@@ -177,7 +177,7 @@ export default {
       this.isEditing = true
       this.edited = this.model.content
     },
-    editSubmit() {
+    async editSubmit() {
       if (this.edited === this.model.content) {
         this.isEditing = false
         return
@@ -186,7 +186,9 @@ export default {
       this.edited = ''
       this.isEditing = false
       this.isPushedModifierKey = false
-      this.getAttachments()
+      await this.getAttachments()
+      await this.$nextTick()
+      this.$emit('rendered', this.$el.scrollHeight)
     },
     editCancel() {
       this.isEditing = false
@@ -247,16 +249,12 @@ export default {
           })
       )).filter(e => e)
       this.isRendered = true
-
-      this.$nextTick(() => {
-        this.$emit('rendered', this.$el.scrollHeight)
-      })
     },
-    render() {
+    async render() {
       this.renderedBody = {
         template: `
           <div class="message-content markdown-body" v-pre>
-            ${md.render(this.model.content)}
+            ${await md.render(this.model.content)}
           </div>`,
         props: this.$options.props
       }
@@ -362,9 +360,10 @@ export default {
     }
   },
   watch: {
-    model() {
-      this.render()
-      this.getAttachments()
+    async model() {
+      await Promise.all([this.render(), this.getAttachments()])
+      await this.$nextTick()
+      this.$emit('rendered', this.$el.scrollHeight)
     },
     isEditing(newValue) {
       if (newValue) {
@@ -379,9 +378,10 @@ export default {
       autosize.update(this.$refs.editArea)
     }
   },
-  mounted() {
-    this.render()
-    this.getAttachments()
+  async mounted() {
+    await Promise.all([this.render(), this.getAttachments()])
+    await this.$nextTick()
+    this.$emit('rendered', this.$el.scrollHeight)
   }
 }
 </script>

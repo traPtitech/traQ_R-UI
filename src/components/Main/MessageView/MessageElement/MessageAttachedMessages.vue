@@ -16,7 +16,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import * as md from '@/bin/markdown-it'
+import md from '@/bin/markdown-it'
 
 export default {
   name: 'MessageAttachedMessages',
@@ -31,8 +31,10 @@ export default {
       renderedBodies: []
     }
   },
-  mounted() {
-    this.renderedBodies = this.messages.map(m => this.mark(m.content))
+  async mounted() {
+    this.renderedBodies = await Promise.all(
+      this.messages.map(m => this.mark(m.content))
+    )
     this.$emit('rendered')
   },
   computed: {
@@ -50,9 +52,9 @@ export default {
     userDetail(userId) {
       return this.$store.state.memberMap[userId]
     },
-    mark(text) {
+    async mark(text) {
       return {
-        template: `<div class="message-content markdown-body" v-pre>${md.render(
+        template: `<div class="message-content markdown-body" v-pre>${await md.render(
           text
         )}</div>`,
         props: this.$options.props

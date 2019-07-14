@@ -10,9 +10,14 @@ export default {
   props: {
     text: String
   },
-  computed: {
-    html() {
-      return md.render(this.text)
+  data() {
+    return {
+      html: ''
+    }
+  },
+  watch: {
+    async text(val) {
+      this.html = await md.render(val)
     }
   }
 }
