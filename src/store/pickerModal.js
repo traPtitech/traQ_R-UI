@@ -46,7 +46,8 @@ export default {
           break
         case 'edit':
           commit('messageEdit/addStampToEdited', {
-            stampName: stamp.name
+            stampName: stamp.name,
+            messageId: state.stampPickerModel.messageId
           })
           break
         default:

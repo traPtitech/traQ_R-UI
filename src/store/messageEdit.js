@@ -3,19 +3,23 @@ import Vue from 'vue'
 export default {
   namespaced: true,
   state: {
-    edited: ''
+    editedMap: {} // messageId => textString
   },
   getters: {
-    edited: state => {
-      return state.edited
+    edited: state => messageId => {
+      return state.editedMap[messageId] || ''
     }
   },
   mutations: {
-    setEdited(state, { edited }) {
-      state.edited = edited
+    setEdited(state, { edited, messageId }) {
+      Vue.set(state.editedMap, messageId, edited)
     },
-    addStampToEdited(state, { stampName }) {
-      state.edited += `:${stampName}:`
+    addStampToEdited(state, { stampName, messageId }) {
+      if (state.editedMap[messageId]) {
+        state.editedMap[messageId] += `:${stampName}:`
+      } else {
+        Vue.set(state.editedMap, messageId, `:${stampName}:`)
+      }
     }
   }
 }
