@@ -259,14 +259,19 @@ export default {
   .password-restpage-link
     display: block
     color: #949494
+    text-align: center
     text-decoration: underline
-    margin-top: 30px
+    margin:
+      top: 30px
+      right: auto
+      left: auto
+    font-size: 0.8rem
 
 
   .login-trap-logo
     display: block
     margin:
-      top: 30px
+      top: 20px
       left: auto
       right: auto
     width: 150px
@@ -380,8 +385,10 @@ export default {
 
   .password-restpage-link
     color: #949494
+    text-align: center
     text-decoration: underline
-    margin-top: 15px
+    margin-top: 20px
+    font-size: 0.8rem
 
   .login-trap-logo
     display: block
