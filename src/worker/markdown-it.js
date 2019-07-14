@@ -1,12 +1,26 @@
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import MarkdownItMark from 'markdown-it-mark'
-import json from '@/bin/markdown-it-json'
+import json from '@/worker/markdown-it-json'
 import regexp from 'markdown-it-regexp'
-import store from '@/store/index'
 import mila from 'markdown-it-link-attributes'
 import filter from 'markdown-it-image-filter'
 import whitelist from '@/bin/domain_whitelist.json'
+import * as store from '@/worker/store'
+
+// exportできるのは関数のみ(asyncでくるまれるので)
+export const updateData = (key, val) => {
+  store.update(key, val)
+}
+export const initialize = states => {
+  store.initialize(states)
+}
+export const getImportStates = () => {
+  return store.importStates
+}
+export const getInitializePromise = () => {
+  return store.initializePromise
+}
 
 function highlight(code, lang) {
   const [langName, langCaption] = lang.split(':')
@@ -183,18 +197,18 @@ const renderEmoji = match => {
   const stampName = splitted[0]
   const effects = splitted.length > 1 ? splitted.slice(1) : []
 
-  if (store.state.stampNameMap[stampName]) {
+  if (store.getStampFromName(stampName)) {
     // 通常スタンプ
     return renderEmojiDom(
       match[0],
       stampName,
-      store.state.stampNameMap[stampName].name,
-      `/api/1.0/files/${store.state.stampNameMap[stampName].fileId}`,
+      store.getStampFromName(stampName).name,
+      `/api/1.0/files/${store.getStampFromName(stampName).fileId}`,
       effects
     )
-  } else if (store.getters.getUserByName(stampName)) {
+  } else if (store.getUserByName(stampName)) {
     // ユーザーアイコン
-    const user = store.getters.getUserByName(stampName)
+    const user = store.getUserByName(stampName)
     return renderEmojiDom(
       match[0],
       stampName,
@@ -223,7 +237,9 @@ md.use(mila, {
 })
 md.use(filter(whitelist))
 
-export default md
+export const render = text => {
+  return md.render(text, {})
+}
 
 export const renderInline = text => {
   const parsed = md.parseInline(text, {})
