@@ -36,6 +36,7 @@
               tabindex="0"
               @click="loginPost")
               | SIGN IN
+          a.password-restpage-link(href="https://portal.trap.jp/reset-password" target="_blank") パスワードを忘れた方はこちら
         a.login-trap-logo(href="https://trap.jp" target="_blank" tabindex="-1")
           img(src="@/assets/img/icon/traP_logo.svg")
   template(v-else)
@@ -75,6 +76,7 @@
           tabindex="0"
           @click="loginPost")
           | SIGN IN
+        a.password-restpage-link(href="https://portal.trap.jp/reset-password" target="_blank") パスワードを忘れた方はこちら
       a.login-trap-logo(href="https://trap.jp" target="_blank"
             tabindex="-1")
         img(src="@/assets/img/icon/traP_logo.svg")
@@ -254,6 +256,13 @@ export default {
     right: 0
     color: var(--warning-color)
 
+  .password-restpage-link
+    display: block
+    color: #949494
+    text-decoration: underline
+    margin-top: 30px
+
+
   .login-trap-logo
     display: block
     margin:
@@ -368,6 +377,11 @@ export default {
     left: 0
     right: 0
     color: var(--warning-color)
+
+  .password-restpage-link
+    color: #949494
+    text-decoration: underline
+    margin-top: 15px
 
   .login-trap-logo
     display: block
