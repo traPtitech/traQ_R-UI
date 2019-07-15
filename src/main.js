@@ -34,3 +34,6 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+import md from '@/bin/markdown-it'
+window.md = md

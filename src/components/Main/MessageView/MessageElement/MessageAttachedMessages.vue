@@ -53,8 +53,9 @@ export default {
       return this.$store.state.memberMap[userId]
     },
     async mark(text) {
+      const _md = await md()
       return {
-        template: `<div class="message-content markdown-body" v-pre>${await md.render(
+        template: `<div class="message-content markdown-body" v-pre>${await _md.render(
           text
         )}</div>`,
         props: this.$options.props

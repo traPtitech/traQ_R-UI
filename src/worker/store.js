@@ -1,5 +1,5 @@
 const data = new Map([
-  ['stampNameMap', {}],
+  ['stampNameMap', []],
   ['memberData', []],
   ['memberMap', {}],
   ['channelMap', {}],
@@ -13,6 +13,30 @@ export const importStates = [...data.keys()]
 export const update = (key, val) => {
   data.set(key, val)
 }
+
+export const initialize = states => {
+  for (const [key, val] of states) {
+    update(key, val)
+  }
+  initializeStatus.done = true
+}
+
+let initializeStatus
+export const initializePromise = new Promise(resolve => {
+  initializeStatus = new Proxy(
+    {
+      done: false
+    },
+    {
+      set(target, prop, val) {
+        if (prop === 'done' && val) {
+          resolve()
+        }
+        return Reflect.set(...arguments)
+      }
+    }
+  )
+})
 
 const get = key => {
   return data.get(key)

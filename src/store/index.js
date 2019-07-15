@@ -4,7 +4,11 @@ import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import { detectMentions } from '@/bin/utils'
-import md from '@/bin/markdown-it'
+import md, {
+  initialize as mdInitialize,
+  getImportStates as mdGetImportStates,
+  updateData as mdUpdateData
+} from '@/bin/markdown-it'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -58,15 +62,21 @@ const stringSortGen = key => (lhs, rhs) => {
   }
 }
 
+;(async () => {
+  const states = await mdGetImportStates()
+  await mdInitialize(
+    Object.entries(store.state).filter(([key]) => states.includes(key))
+  )
+})()
+
 const markdownDataPlugin = async store => {
-  const states = await md.getImportStates()
-  md.updateData('baseURL', baseURL)
+  const states = await mdGetImportStates()
   for (const name of states) {
-    md.updateData(name, store.state[name])
     store.watch(
       state => state[name],
       async newVal => {
-        await md.updateData(name, newVal)
+        console.log('update', name, newVal)
+        await mdUpdateData(name, newVal)
       }
     )
   }

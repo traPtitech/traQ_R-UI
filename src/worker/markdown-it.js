@@ -10,8 +10,14 @@ import * as store from '@/worker/store'
 export const updateData = (key, val) => {
   store.update(key, val)
 }
+export const initialize = states => {
+  store.initialize(states)
+}
 export const getImportStates = () => {
   return store.importStates
+}
+export const getInitializePromise = () => {
+  return store.initializePromise
 }
 
 function highlight(code, lang) {

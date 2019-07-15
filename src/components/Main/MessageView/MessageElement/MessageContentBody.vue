@@ -17,7 +17,8 @@ export default {
   },
   watch: {
     async text(val) {
-      this.html = await md.render(val)
+      const _md = await md()
+      this.html = await _md.render(val)
     }
   }
 }

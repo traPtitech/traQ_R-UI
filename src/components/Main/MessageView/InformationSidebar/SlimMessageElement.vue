@@ -52,7 +52,8 @@ export default {
   },
   watch: {
     async content(val) {
-      this.renderedContent.template = `<div class="slim-message-content markdown-body" v-pre>${await md.render(
+      const _md = await md()
+      this.renderedContent.template = `<div class="slim-message-content markdown-body" v-pre>${await _md.render(
         val
       )}</div>`
     }

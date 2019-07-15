@@ -251,10 +251,11 @@ export default {
       this.isRendered = true
     },
     async render() {
+      const _md = await md()
       this.renderedBody = {
         template: `
           <div class="message-content markdown-body" v-pre>
-            ${await md.render(this.model.content)}
+            ${await _md.render(this.model.content)}
           </div>`,
         props: this.$options.props
       }

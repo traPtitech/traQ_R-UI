@@ -89,7 +89,8 @@ export default {
   },
   watch: {
     async content(val) {
-      this.sanitizedMessage = await md.renderInline(val)
+      const _md = await md()
+      this.sanitizedMessage = await _md.renderInline(val)
     }
   }
 }
