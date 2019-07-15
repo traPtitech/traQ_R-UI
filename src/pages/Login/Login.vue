@@ -271,7 +271,7 @@ export default {
   .login-trap-logo
     display: block
     margin:
-      top: 20px
+      top: 30px
       left: auto
       right: auto
     width: 150px
