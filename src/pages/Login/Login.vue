@@ -47,7 +47,25 @@
               | SIGN IN
           .login-suspended-wrap(v-if="status === 'failed' && failType === 'suspended'")
             p.login-suspended-message
-              | このアカウントは現在ログインを一時的に制限されています。再びログインするためには、accounts@trap.jp宛にtraP IDを明記してメールをお送り下さい。
+              | このアカウントは現在凍結されております。
+              | 復旧を希望する方は、以下の方法で半期分の部費をお支払いの上、accounts@trap.jpへその旨をご連絡ください。
+              | 振り込みが確認され次第、アカウントを復旧いたします。
+              br
+              br
+              | 振込方法
+              br
+              | {{bankName}} {{branchName}}
+              br
+              | 口座番号 {{accountNumber}} 普通預金
+              br
+              | お受取人名 {{accountName}}
+              br
+              br
+              | 依頼人名はスペース区切りで「(traQIDの上5文字) (入学年度) (名字)」としてください。
+              | IDが5文字未満の人はそのままで構いません。
+              | (例:2017年入学の鈴木さん(ID:@rencon_man)の場合:「RENCO 17 ｽｽﾞｷ」)
+              | 金額:2000円
+              | ※振込手数料が発生した場合はご自身での負担でお願いします。
         a.login-trap-logo(href="https://trap.jp" target="_blank" tabindex="-1")
           img(src="@/assets/img/icon/traP_logo.svg")
   template(v-else)
@@ -95,7 +113,25 @@
           | SIGN IN
         .login-suspended-wrap(v-if="status === 'failed' && failType === 'suspended'")
           p.login-suspended-message
-            | このアカウントは現在ログインを一時的に制限されています。再びログインするためには、accounts@trap.jp宛にtraP IDを明記してメールをお送り下さい。
+            | このアカウントは現在凍結されております。
+            | 復旧を希望する方は、以下の方法で半期分の部費をお支払いの上、accounts@trap.jpへその旨をご連絡ください。
+            | 振り込みが確認され次第、アカウントを復旧いたします。
+            br
+            br
+            | 振込方法
+            br
+            | {{bankName}} {{branchName}}
+            br
+            | 口座番号 {{accountNumber}} 普通預金
+            br
+            | お受取人名 {{accountName}}
+            br
+            br
+            | 依頼人名はスペース区切りで「(traQIDの上5文字) (入学年度) (名字)」としてください。
+            | IDが5文字未満の人はそのままで構いません。
+            | (例:2017年入学の鈴木さん(ID:@rencon_man)の場合:「RENCO 17 ｽｽﾞｷ」)
+            | 金額:2000円
+            | ※振込手数料が発生した場合はご自身での負担でお願いします。
       a.login-trap-logo(href="https://trap.jp" target="_blank"
             tabindex="-1")
         img(src="@/assets/img/icon/traP_logo.svg")
@@ -116,7 +152,11 @@ export default {
       // default / processing / succeed / failed
       status: 'default',
       // empty_id / empty_pass / unconnected / wrong_id_or_pass / suspended
-      failType: ''
+      failType: '',
+      bankName: process.env.BANK_NAME,
+      branchName: process.env.BRANCH_NAME,
+      accountNumber: process.env.ACCOUNT_NUMBER,
+      accountName: process.env.ACCOUNT_NAME
     }
   },
   components: {
