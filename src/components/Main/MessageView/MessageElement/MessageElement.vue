@@ -131,10 +131,10 @@ export default {
         this.$store.commit('setStampPickerModeAsEdit')
       } else {
         this.$store.commit('setStampPickerModeAsMessage')
-        this.$store.commit('setStampPickerModel', {
-          messageId: this.model.messageId
-        })
       }
+      this.$store.commit('setStampPickerModel', {
+        messageId: this.model.messageId
+      })
       this.$store.commit('setStampPickerActive', true)
     },
     editBeforeinput(event) {
@@ -338,11 +338,12 @@ export default {
     },
     edited: {
       get() {
-        return this.$store.getters['messageEdit/edited']
+        return this.$store.getters['messageEdit/edited'](this.model.messageId)
       },
       set(edited) {
         this.$store.commit('messageEdit/setEdited', {
-          edited
+          edited,
+          messageId: this.model.messageId
         })
       }
     },
