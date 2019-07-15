@@ -58,33 +58,18 @@ const stringSortGen = key => (lhs, rhs) => {
   }
 }
 
-md.updateData('baseURL', baseURL)
-
-const updateMd = (state, key) => {
-  md.updateData(key, state[key])
-}
-
-const markdownDataPlugin = store => {
-  store.subscribe(({ type, payload }, state) => {
-    switch (type) {
-      case 'setStampData':
-        updateMd(state, 'stampNameMap')
-        break
-      case 'setMemberData':
-        updateMd(state, 'memberData')
-        updateMd(state, 'memberMap')
-        break
-      case 'setChannelData':
-        updateMd(state, 'channelMap')
-        break
-      case 'setGroupData':
-        updateMd(state, 'groupMap')
-        break
-      case 'setMe':
-        updateMd(state, 'me')
-        break
-    }
-  })
+const markdownDataPlugin = async store => {
+  const states = await md.getImportStates()
+  md.updateData('baseURL', baseURL)
+  for (const name of states) {
+    md.updateData(name, store.state[name])
+    store.watch(
+      state => state[name],
+      async newVal => {
+        await md.updateData(name, newVal)
+      }
+    )
+  }
 }
 
 const store = new Vuex.Store({

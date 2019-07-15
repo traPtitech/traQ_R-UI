@@ -6,12 +6,12 @@ import regexp from 'markdown-it-regexp'
 import mila from 'markdown-it-link-attributes'
 import * as store from '@/worker/store'
 
-// export { update as updateData } from '@/worker/store'
-// や
-// export const updateData = store.update
-// だとうまくいかない
+// exportできるのは関数のみ(asyncでくるまれるので)
 export const updateData = (key, val) => {
   store.update(key, val)
+}
+export const getImportStates = () => {
+  return store.importStates
 }
 
 function highlight(code, lang) {

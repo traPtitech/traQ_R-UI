@@ -1,15 +1,15 @@
-const data = new Map()
+const data = new Map([
+  ['stampNameMap', {}],
+  ['memberData', []],
+  ['memberMap', {}],
+  ['channelMap', {}],
+  ['groupMap', {}],
+  ['me', {}],
+  ['baseURL', '']
+])
 
-/*
-  keys
-    - stampNameMap
-    - memberData
-    - memberMap
-    - channelMap
-    - groupMap
-    - me
-    - baseURL
-*/
+export const importStates = [...data.keys()]
+
 export const update = (key, val) => {
   data.set(key, val)
 }
