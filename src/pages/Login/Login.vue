@@ -38,34 +38,18 @@
                 | インターネットに接続されていません
               span(v-else-if="failType === 'wrong_id_or_pass'")
                 | IDまたはパスワードが異なります
-              span(v-else-if="failType !== 'suspended'")
+              span(v-else)
                 | エラーが発生しました
           .login-button-wrap
             button.input-reset.login-button(
               tabindex="0"
               @click="loginPost")
               | SIGN IN
-          .login-suspended-wrap(v-if="status === 'failed' && failType === 'suspended'")
+          .login-suspended-wrap(v-if="status === 'suspended'")
             p.login-suspended-message
-              | このアカウントは現在凍結されております。
-              | 復旧を希望する方は、以下の方法で半期分の部費をお支払いの上、accounts@trap.jpへその旨をご連絡ください。
-              | 振り込みが確認され次第、アカウントを復旧いたします。
-              br
-              br
-              | 振込方法
-              br
-              | {{bankName}} {{branchName}}
-              br
-              | 口座番号 {{accountNumber}} 普通預金
-              br
-              | お受取人名 {{accountName}}
-              br
-              br
-              | 依頼人名はスペース区切りで「(traQIDの上5文字) (入学年度) (名字)」としてください。
-              | IDが5文字未満の人はそのままで構いません。
-              | (例:2017年入学の鈴木さん(ID:@rencon_man)の場合:「RENCO 17 ｽｽﾞｷ」)
-              | 金額:2000円
-              | ※振込手数料が発生した場合はご自身での負担でお願いします。
+              | このアカウントは部費が納入されていない等の理由により、traPの部員条件を満たさない事が確認された為に現在凍結されております。
+              | 復旧を希望する場合は、accounts@trap.jpへその旨をご連絡ください。
+              | 半期分の部費の支払い方法等について追ってご連絡いたします。その後支払いが確認でき次第アカウントを復旧いたします。
         a.login-trap-logo(href="https://trap.jp" target="_blank" tabindex="-1")
           img(src="@/assets/img/icon/traP_logo.svg")
   template(v-else)
@@ -105,33 +89,17 @@
               | インターネットに接続されていません
             span(v-else-if="failType === 'wrong_id_or_pass'")
               | IDまたはパスワードが異なります
-            span(v-else-if="failType !== 'suspended'")
+            span(v-else)
               | エラーが発生しました
         button.input-reset.login-button(
           tabindex="0"
           @click="loginPost")
           | SIGN IN
-        .login-suspended-wrap(v-if="status === 'failed' && failType === 'suspended'")
+        .login-suspended-wrap(v-if="status === 'suspended'")
           p.login-suspended-message
-            | このアカウントは現在凍結されております。
-            | 復旧を希望する方は、以下の方法で半期分の部費をお支払いの上、accounts@trap.jpへその旨をご連絡ください。
-            | 振り込みが確認され次第、アカウントを復旧いたします。
-            br
-            br
-            | 振込方法
-            br
-            | {{bankName}} {{branchName}}
-            br
-            | 口座番号 {{accountNumber}} 普通預金
-            br
-            | お受取人名 {{accountName}}
-            br
-            br
-            | 依頼人名はスペース区切りで「(traQIDの上5文字) (入学年度) (名字)」としてください。
-            | IDが5文字未満の人はそのままで構いません。
-            | (例:2017年入学の鈴木さん(ID:@rencon_man)の場合:「RENCO 17 ｽｽﾞｷ」)
-            | 金額:2000円
-            | ※振込手数料が発生した場合はご自身での負担でお願いします。
+            | このアカウントは部費が納入されていない等の理由により、traPの部員条件を満たさない事が確認された為に現在凍結されております。
+            | 復旧を希望する場合は、accounts@trap.jpへその旨をご連絡ください。
+            | 半期分の部費の支払い方法等について追ってご連絡いたします。その後支払いが確認でき次第アカウントを復旧いたします。
       a.login-trap-logo(href="https://trap.jp" target="_blank"
             tabindex="-1")
         img(src="@/assets/img/icon/traP_logo.svg")
@@ -149,14 +117,10 @@ export default {
     return {
       name: '',
       pass: '',
-      // default / processing / succeed / failed
+      // default / processing / succeed / failed / suspended
       status: 'default',
-      // empty_id / empty_pass / unconnected / wrong_id_or_pass / suspended
-      failType: '',
-      bankName: process.env.BANK_NAME,
-      branchName: process.env.BRANCH_NAME,
-      accountNumber: process.env.ACCOUNT_NUMBER,
-      accountName: process.env.ACCOUNT_NAME
+      // empty_id / empty_pass / unconnected / wrong_id_or_pass
+      failType: ''
     }
   },
   components: {
@@ -191,6 +155,7 @@ export default {
         })
         .catch(err => {
           this.status = 'failed'
+          this.failType = ''
           const statusCode = /(\d{3})/.exec(err.message)[1]
           switch (statusCode) {
             case '500':
@@ -200,7 +165,7 @@ export default {
               this.failType = 'wrong_id_or_pass'
               break
             case '403':
-              this.failType = 'suspended'
+              this.status = 'suspended'
               break
             default:
               this.failType = 'unknown'
