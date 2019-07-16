@@ -2,6 +2,12 @@
 div.links-list-wrap
   ul.links-list
     li
+      a(href="https://portal.trap.jp" target="_blank")
+        div.link-icon.flex-center
+          IconTraPortal(size="20")
+        p.link-title
+          | Portal
+    li
       a(href="https://trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogotraP(size="20")
@@ -55,12 +61,6 @@ div.links-list-wrap
           IconLogoBotConsole(size="20")
         p.link-title
           | BOT Console
-    li
-      a(href="https://portal.trap.jp" target="_blank")
-        div.link-icon.flex-center
-          IconTraPortal(size="20")
-        p.link-title
-          | Portal
 </template>
 
 <script>
