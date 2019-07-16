@@ -37,7 +37,7 @@
               @click="loginPost")
               | SIGN IN
         a.login-trap-logo(href="https://trap.jp" target="_blank" tabindex="-1")
-          img(src="@/assets/img/icon/traP_logo.svg")
+          IconLogotraPWide
   template(v-else)
     .login-page-inner-wrap-sp.is-scroll
       .top-background
@@ -77,14 +77,14 @@
           | SIGN IN
       a.login-trap-logo(href="https://trap.jp" target="_blank"
             tabindex="-1")
-        img(src="@/assets/img/icon/traP_logo.svg")
+        IconLogotraPWide
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import client from '@/bin/client'
 import IconLogo from '@/components/Icon/IconLogo'
-import IconLogotraP from '@/components/Icon/IconLogotraP'
+import IconLogotraPWide from '@/components/Icon/IconLogotraPWide'
 
 export default {
   name: 'login',
@@ -104,7 +104,7 @@ export default {
   },
   components: {
     IconLogo,
-    IconLogotraP
+    IconLogotraPWide
   },
   methods: {
     loginPost: function() {
