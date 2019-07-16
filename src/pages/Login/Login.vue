@@ -45,6 +45,7 @@
               tabindex="0"
               @click="loginPost")
               | SIGN IN
+          a.password-restpage-link(href="https://portal.trap.jp/reset-password" target="_blank") パスワードを忘れた方はこちら
           .login-suspended-wrap(v-if="status === 'suspended'")
             p.login-suspended-message
               | このアカウントは部費が納入されていない等の理由により、traPの部員条件を満たさない事が確認された為に現在凍結されております。
@@ -95,6 +96,7 @@
           tabindex="0"
           @click="loginPost")
           | SIGN IN
+        a.password-restpage-link(href="https://portal.trap.jp/reset-password" target="_blank") パスワードを忘れた方はこちら
         .login-suspended-wrap(v-if="status === 'suspended'")
           p.login-suspended-message
             | このアカウントは部費が納入されていない等の理由により、traPの部員条件を満たさない事が確認された為に現在凍結されております。
@@ -294,6 +296,18 @@ export default {
     right: 0
     color: var(--warning-color)
 
+  .password-restpage-link
+    display: block
+    color: #949494
+    text-align: center
+    text-decoration: underline
+    margin:
+      top: 30px
+      right: auto
+      left: auto
+    font-size: 0.8rem
+
+
   .login-trap-logo
     display: block
     margin:
@@ -417,6 +431,13 @@ export default {
     left: 0
     right: 0
     color: var(--warning-color)
+
+  .password-restpage-link
+    color: #949494
+    text-align: center
+    text-decoration: underline
+    margin-top: 20px
+    font-size: 0.8rem
 
   .login-trap-logo
     display: block
