@@ -131,10 +131,10 @@ export default {
         this.$store.commit('setStampPickerModeAsEdit')
       } else {
         this.$store.commit('setStampPickerModeAsMessage')
-        this.$store.commit('setStampPickerModel', {
-          messageId: this.model.messageId
-        })
       }
+      this.$store.commit('setStampPickerModel', {
+        messageId: this.model.messageId
+      })
       this.$store.commit('setStampPickerActive', true)
     },
     editBeforeinput(event) {
@@ -244,7 +244,7 @@ export default {
               })
           })
       )
-      this.messages = (await Promise.all(
+      this.messages = await Promise.all(
         this.attachedData
           .filter(e => e.type === 'message')
           .map(async e => {
@@ -253,7 +253,7 @@ export default {
               .then(res => res.data)
               .catch(() => null)
           })
-      )).filter(e => e)
+      )
       this.isRendered = true
 
       this.$nextTick(() => {
@@ -338,11 +338,12 @@ export default {
     },
     edited: {
       get() {
-        return this.$store.getters['messageEdit/edited']
+        return this.$store.getters['messageEdit/edited'](this.model.messageId)
       },
       set(edited) {
         this.$store.commit('messageEdit/setEdited', {
-          edited
+          edited,
+          messageId: this.model.messageId
         })
       }
     },
