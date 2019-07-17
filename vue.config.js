@@ -45,8 +45,8 @@ module.exports = {
   },
   pwa: {
     name: 'traQ',
-    themeColor: '#ffffff',
-    msTileColor: '#ffffff',
+    themeColor: '#0D67EA',
+    msTileColor: '#0D67EA',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
     assetsVersion: require('./package.json').version,
