@@ -288,6 +288,7 @@ export default {
 
   .login-failed-message
     position: absolute
+    text-align: center
     bottom: 0
     transform: translateY(calc(100% ))
     display: block
@@ -423,6 +424,7 @@ export default {
 
   .login-failed-message
     position: absolute
+    text-align: center
     bottom: 0
     transform: translateY(calc(100% + 20px ))
     display: block
