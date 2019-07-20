@@ -175,9 +175,6 @@ export default {
         newIndex > oldIndex ? 'slide-right' : 'slide-left'
     }
   },
-  created() {
-    this.$store.dispatch('getStampHistory')
-  },
   mounted() {
     if (isTouchDevice()) {
       return
