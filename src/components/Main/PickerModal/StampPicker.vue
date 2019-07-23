@@ -175,7 +175,7 @@ export default {
         newIndex > oldIndex ? 'slide-right' : 'slide-left'
     }
   },
-  created() {
+  destroyed() {
     this.$store.dispatch('getStampHistory')
   },
   mounted() {
