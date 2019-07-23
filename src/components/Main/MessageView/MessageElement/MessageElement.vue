@@ -184,6 +184,9 @@ export default {
     editMessage() {
       this.isEditing = true
       this.edited = this.model.content
+      this.$nextTick().then(() => {
+        this.$el.querySelector('textarea.input-reset.edit-area').focus()
+      })
     },
     editSubmit() {
       if (this.edited === this.model.content) {
