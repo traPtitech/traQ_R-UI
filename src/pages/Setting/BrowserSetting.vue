@@ -13,6 +13,13 @@
       | 破棄
   SettingItem
     SettingItemTitle
+      | 通知: {{notifyPermissionStatusText}}
+    SettingButton(v-if="notifyPermissionStatus === 'default'" @click="requestNotifyPermission")
+      | 設定
+    span(v-else)
+      | ブラウザや端末の設定から変更できます
+  SettingItem
+    SettingItemTitle
       | 起動時チャンネル設定
     label.open-mode-selector
       input(type="radio" value="lastOpen" v-model="openMode")
@@ -66,7 +73,8 @@ export default {
       done: '',
       openMode: 'particular',
       openChannelName: 'random',
-      messageSendKey: 'modifier'
+      messageSendKey: 'modifier',
+      notifyPermissionStatus: ''
     }
   },
   computed: {
@@ -92,6 +100,13 @@ export default {
       } else {
         return ['Shift', 'Alt', 'Ctrl']
       }
+    },
+    notifyPermissionStatusText() {
+      return {
+        default: '未設定（通知は来ません）',
+        granted: '許可',
+        denied: '拒否'
+      }[this.notifyPermissionStatus]
     }
   },
   methods: {
@@ -118,6 +133,14 @@ export default {
         this.$store.commit('setMe', null)
         this.$router.push({ path: '/' })
       })
+    },
+    updateNotifyPermissionStatus() {
+      this.notifyPermissionStatus = Notification.permission
+    },
+    requestNotifyPermission() {
+      Notification.requestPermission(permission => {
+        this.updateNotifyPermissionStatus()
+      })
     }
   },
   mounted() {
@@ -126,6 +149,7 @@ export default {
       this.$store.state.openChannelId
     )
     this.messageSendKey = this.$store.state.messageSendKey
+    this.updateNotifyPermissionStatus()
   }
 }
 </script>
