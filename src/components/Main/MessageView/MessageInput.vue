@@ -228,9 +228,10 @@ export default {
     },
     replaceGroup(message) {
       return message.replace(
-        /^"[@＠]([\S]+)|(?:[@＠]([\S]+))/g,
-        (match, userId, content) => {
-          if (userId) return match
+        /"[@＠]([\S]+)|(?:[@＠]([\S]+))/g,
+        (match, replacedUsername, content) => {
+          // すでにユーザーへのメンションに置換されているときは置換を行わない
+          if (replacedUsername) return match
           const group = this.$store.getters.getGroupByContent(content)
           if (group) {
             return `!{"type": "group", "raw": "${match}", "id": "${
