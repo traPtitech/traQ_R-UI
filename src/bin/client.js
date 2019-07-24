@@ -1,4 +1,10 @@
-import axios from '@/bin/axios'
+import { Apis } from 'traq-api'
+
+const BASE_PATH = '/api/1.0'
+
+const api = new Apis({
+  basePath: BASE_PATH
+})
 
 const middleWare =
   process.env.NODE_ENV === 'development' || window.debug
@@ -19,55 +25,47 @@ const middleWare =
           return Promise.reject(err)
         })
       }
+
 const client = {
   // Tag: authorization
   login(name, pass) {
-    return middleWare('login', () => {
-      return axios.post(`/api/1.0/login`, { name, pass })
-    })
+    return middleWare('login', () => api.login(undefined, { name, pass }))
   },
   logout() {
-    return middleWare('logout', () => {
-      return axios.post(`/api/1.0/logout`)
-    })
+    return middleWare('logout', () => api.logout())
   },
 
   // Tag: Session
   getSessions() {
-    return middleWare('getSessions', () => {
-      return axios.get('/api/1.0/users/me/sessions')
-    })
+    return middleWare('getSessions', () => api.getSessions())
   },
   deleteSessions() {
-    return middleWare('deleteSessions', () => {
-      return axios.delete('/api/1.0/users/me/sessions')
-    })
+    return middleWare('deleteSessions', () => api.deleteSessions())
   },
   deleteSession(sessionId) {
-    return middleWare('deleteSession', () => {
-      return axios.delete(`/api/1.0/users/me/sessions/${sessionId}`)
-    })
+    return middleWare('deleteSession', () => api.deleteSession(sessionId))
   },
 
   // Tag: channel
   makeChannel(type, member, name, parent) {
     return middleWare('makeChannel', () => {
-      return axios.post(`/api/1.0/channels`, { type, member, name, parent })
+      return api.createChannel({
+        _private: type === 'private',
+        member,
+        name,
+        parent
+      })
     })
   },
   getChannels() {
-    return middleWare('getChannels', () => {
-      return axios.get(`/api/1.0/channels`)
-    })
+    return middleWare('getChannels', () => api.getChannels())
   },
   getChannelInfo(channelId) {
-    return middleWare('getChannelInfo', () => {
-      return axios.get(`/api/1.0/channels/${channelId}`)
-    })
+    return middleWare('getChannelInfo', () => api.getChannel(channelId))
   },
   changeChannelInfo(channelId, name, visibility, force) {
     return middleWare('changeChannelName', () => {
-      return axios.patch(`/api/1.0/channels/${channelId}`, {
+      return api.editChannel(channelId, {
         name,
         visibility,
         force
@@ -75,384 +73,263 @@ const client = {
     })
   },
   changeChannelParent(channelId, parent) {
-    return middleWare('changeChannelParent', () => {
-      return axios.put(`/api/1.0/channels/${channelId}/parent`, { parent })
-    })
+    return middleWare('changeChannelParent', () =>
+      api.changeChannelParent(channelId, { parent })
+    )
   },
   deleteChannel(channelId) {
-    return middleWare('changeChannelName', () => {
-      return axios.delete(`/api/1.0/channels/${channelId}`)
-    })
+    return middleWare('changeChannelName', () => api.deleteChannel(channelId))
   },
 
   // Tag: topic
   getChannelTopic(channelId) {
-    return middleWare('getChannelTopic', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/topic`)
-    })
+    return middleWare('getChannelTopic', () => api.getChannelTopic(channelId))
   },
   changeChannelTopic(channelId, text) {
-    return middleWare('changeChannelTopic', () => {
-      return axios.put(`/api/1.0/channels/${channelId}/topic`, { text })
-    })
+    return middleWare('changeChannelTopic', () =>
+      api.changeChannelTopic(channelId, { text })
+    )
   },
 
   // Tag: message
   loadMessages(channelId, limit, offset) {
-    return middleWare('loadMessages', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/messages`, {
-        params: {
-          limit: limit,
-          offset: offset
-        }
-      })
-    })
+    return middleWare('loadMessages', () =>
+      api.getMessages(channelId, limit, offset)
+    )
   },
   postMessage(channelId, text) {
-    return middleWare('postMessage', () => {
-      return axios.post(`/api/1.0/channels/${channelId}/messages`, { text })
-    })
+    return middleWare('postMessage', () => api.postMessage(channelId, { text }))
   },
   postDirectMessage(userId, text) {
-    return middleWare('postDirectMessage', () => {
-      return axios.post(`/api/1.0/users/${userId}/messages`, { text })
-    })
+    return middleWare('postDirectMessage', () =>
+      api.postDirectMessage(userId, { text })
+    )
   },
   editMessage(messageId, text) {
-    return middleWare('editMessage', () => {
-      return axios.put(`/api/1.0/messages/${messageId}`, { text })
-    })
+    return middleWare('editMessage', () => api.editMessage(messageId, { text }))
   },
   getMessage(messageId) {
-    return middleWare('getMessage', () => {
-      return axios.get(`/api/1.0/messages/${messageId}`)
-    })
+    return middleWare('getMessage', () => api.getMessage(messageId))
   },
   deleteMessage(messageId) {
-    return middleWare('deleteMessage', () => {
-      return axios.delete(`/api/1.0/messages/${messageId}`)
-    })
+    return middleWare('deleteMessage', () => api.deleteMessage(messageId))
   },
   reportMessage(messageId, reason) {
-    return middleWare('reportMessage', () => {
-      return axios.post(`/api/1.0/messages/${messageId}/report`, { reason })
-    })
+    return middleWare('reportMessage', () =>
+      api.reportMessage(messageId, { reason })
+    )
   },
   getReports(page) {
-    return middleWare('getReports', () => {
-      return axios.get('/api/1.0/reports', {
-        params: {
-          p: page
-        }
-      })
-    })
+    return middleWare('getReports', () => api.getReports(page))
   },
 
   // Tag: pin
   getPinnedMessages(channelId) {
-    return middleWare('getPinnedMessages', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/pins`)
-    })
+    return middleWare('getPinnedMessages', () =>
+      api.getPinnedMessages(channelId)
+    )
   },
   pinMessage(messageId) {
-    return middleWare('pinMessage', () => {
-      return axios.post(`/api/1.0/pins`, { messageId })
-    })
+    return middleWare('pinMessage', () => api.pinMessage({ messageId }))
   },
   getPinnedMessage(pinId) {
-    return middleWare('getPinnedMessage', () => {
-      return axios.get(`/api/1.0/pins/${pinId}`)
-    })
+    return middleWare('getPinnedMessage', () => api.getPinnedMessage(pinId))
   },
   unpinMessage(pinId) {
-    return middleWare('unpinMessage', () => {
-      return axios.delete(`/api/1.0/pins/${pinId}`)
-    })
+    return middleWare('unpinMessage', () => api.unpinMessage(pinId))
   },
 
   // Tag: notification
   getNotifications(channelId) {
-    return middleWare('getNotifications', () => {
-      return axios.get(`/api/1.0/channels/${channelId}/notification`)
-    })
+    return middleWare('getNotifications', () => api.getNotifications(channelId))
   },
   changeNotifications(channelId, state) {
-    return middleWare('changeNotifications', () => {
-      return axios.put(`/api/1.0/channels/${channelId}/notification`, state)
-    })
+    return middleWare('changeNotifications', () =>
+      api.changeNotifications(channelId, state)
+    )
   },
   getNotifiedChannels(userId) {
-    return middleWare('getNotifiedChannels', () => {
-      return axios.get(`/api/1.0/users/${userId}/notification`)
-    })
+    return middleWare('getNotifiedChannels', () =>
+      api.getUserNotifiedChannels(userId)
+    )
   },
   registerDevice(token) {
-    return middleWare('registerDevice', () => {
-      return axios.post(`/api/1.0/notification/device`, { token })
-    })
+    return middleWare('registerDevice', () =>
+      api.registerNotificationDevice(token)
+    )
   },
   getMyNotifiedChannels() {
-    return middleWare('getMyNotifiedChannels', () => {
-      return axios.get('/api/1.0/users/me/notification')
-    })
+    return middleWare('getMyNotifiedChannels', () => api.getNotifiedChannels())
   },
 
   // Tag: user
   registerUser(name, password) {
-    return middleWare('registerUser', () => {
-      return axios.post(`/api/1.0/users`, { name, password })
-    })
+    return middleWare('registerUser', () =>
+      api.registerUser({ name, password })
+    )
   },
   getMembers() {
-    return middleWare('getMembers', () => {
-      return axios.get(`/api/1.0/users`)
-    })
+    return middleWare('getMembers', () => api.getUsers())
   },
   whoAmI() {
-    return middleWare('whoAmI', () => {
-      return axios.get(`/api/1.0/users/me`)
-    })
+    return middleWare('whoAmI', () => api.getMe())
   },
   // deprecated
   getUserIconUrl(userId) {
-    return (axios.defaults.baseURL || '/') + 'api/1.0/users/' + userId + '/icon'
+    return `${BASE_PATH}/users/${userId}/icon`
   },
   changeIcon(file) {
-    return middleWare('changeIcon', () => {
-      const form = new FormData()
-      form.enctype = 'multipart/form-data'
-      form.append('file', file)
-      return axios.put('/api/1.0/users/me/icon', form)
-    })
+    return middleWare('changeIcon', () => api.changeMyIcon(file))
   },
   changeDisplayName(name) {
-    return middleWare('changeDisplayName', () => {
-      return axios.patch('/api/1.0/users/me', {
-        displayName: name
-      })
-    })
+    return middleWare('changeDisplayName', () =>
+      api.changeMe({ displayName: name })
+    )
   },
   changeTwitterId(twitterId) {
-    return middleWare('changeTwitterId', () => {
-      return axios.patch('/api/1.0/users/me', {
-        twitterId
-      })
-    })
+    return middleWare('changeTwitterId', () => api.changeMe({ twitterId }))
   },
   changePassword(pass, newPass) {
     return middleWare('changePassword', () => {
-      return axios.put('api/1.0/users/me/password', {
+      return api.changePassword({
         password: pass,
         newPassword: newPass
       })
     })
   },
   getUserDetail(userId) {
-    return middleWare('getUserDetail', () => {
-      return axios.get(`/api/1.0/users/${userId}`)
-    })
+    return middleWare('getUserDetail', () => api.getUser(userId))
   },
   loadDirectMessages(userId, limit, offset) {
-    return middleWare('loadDirectMessages', () => {
-      return axios.get(`/api/1.0/users/${userId}/messages`, {
-        params: {
-          limit: limit,
-          offset: offset
-        }
-      })
-    })
+    return middleWare('loadDirectMessages', () =>
+      api.getDirectMessages(userId, limit, offset)
+    )
   },
   getQRCodeUrl() {
-    return (axios.defaults.baseURL || '/') + 'api/1.0/users/me/qr-code'
+    return `${BASE_PATH}/users/me/qr-code`
   },
 
   // Tag: clip
   getAllClipMessages() {
-    return middleWare('getAllClipMessages', () => {
-      return axios.get(`/api/1.0/users/me/clips`)
-    })
+    return middleWare('getAllClipMessages', () => api.getClips())
   },
   getClipMessages(folderId) {
-    return middleWare('getClipMessages', () => {
-      return axios.get(`/api/1.0/users/me/clips/folders/${folderId}`)
-    })
+    return middleWare('getClipMessages', () => api.getClipFolder(folderId))
   },
   clipMessage(folderId, messageId) {
-    return middleWare('clipMessage', () => {
-      return axios.post(`/api/1.0/users/me/clips`, { folderId, messageId })
-    })
+    return middleWare('clipMessage', () =>
+      api.clipMessage({ folderId, messageId })
+    )
   },
   unclipMessage(clipId) {
-    return middleWare('unclipMessage', () => {
-      return axios.delete(`/api/1.0/users/me/clips/${clipId}`)
-    })
+    return middleWare('unclipMessage', () => api.unclipMessage(clipId))
   },
   getClipFolders() {
-    return middleWare('getClipFolders', () => {
-      return axios.get(`/api/1.0/users/me/clips/folders`)
-    })
+    return middleWare('getClipFolders', () => api.getClipFolders())
   },
   getClipFolderInfo(folderId) {
-    return middleWare('getClipFolder', () => {
-      return axios.get(`/api/1.0/users/me/clips/folders/${folderId}`)
-    })
+    return middleWare('getClipFolder', () => api.getClipFolder(folderId))
   },
   renameClipFolder(folderId, name) {
-    return middleWare('renameClipFolder', () => {
-      return axios.patch(`/api/1.0/users/me/clips/folders/${folderId}`, {
-        name
-      })
-    })
+    return middleWare('renameClipFolder', () =>
+      api.editClipFolder(folderId, { name })
+    )
   },
   deleteClipFolder(folderId) {
-    return middleWare('deleteClipFolder', () => {
-      return axios.delete(`/api/1.0/users/me/clips/folders/${folderId}`)
-    })
+    return middleWare('deleteClipFolder', () => api.deleteClipFolder(folderId))
   },
   makeClipFolder(name) {
-    return middleWare('makeClipFolder', () => {
-      return axios.post(`/api/1.0/users/me/clips/folders`, { name })
-    })
+    return middleWare('makeClipFolder', () => api.createClipFolders({ name }))
   },
 
   // Tag: star
   getStaredChannels() {
-    return middleWare('getStaredChannels', () => {
-      return axios.get(`/api/1.0/users/me/stars`)
-    })
+    return middleWare('getStaredChannels', () => api.getStaredChannels())
   },
   starChannel(channelId) {
-    return middleWare('starChannel', () => {
-      return axios.put(`/api/1.0/users/me/stars/${channelId}`)
-    })
+    return middleWare('starChannel', () => api.starChannel(channelId))
   },
   unstarChannel(channelId) {
-    return middleWare('unstarChannel', () => {
-      return axios.delete(`/api/1.0/users/me/stars/${channelId}`)
-    })
+    return middleWare('unstarChannel', () => api.unstarChannel(channelId))
   },
 
   // Tag: unread
   getUnreadChannels() {
-    return middleWare('getUnreadChannels', () => {
-      return axios.get('/api/1.0/users/me/unread/channels')
-    })
+    return middleWare('getUnreadChannels', () => api.getUnreadChannels())
   },
   readMessages(channelId) {
-    return middleWare('readMessages', () => {
-      return axios.delete(`/api/1.0/users/me/unread/channels/${channelId}`)
-    })
+    return middleWare('readMessages', () => api.readMessages(channelId))
   },
 
   // Tag: mute
   getMutedChannels() {
-    return middleWare('getMutedChannels', () => {
-      return axios.get(`/api/1.0/users/me/mute`)
-    })
+    return middleWare('getMutedChannels', () => api.getMutedChannels())
   },
   muteChannel(channelId) {
-    return middleWare('muteChannel', () => {
-      return axios.post(`/api/1.0/users/me/mute/${channelId}`)
-    })
+    return middleWare('muteChannel', () => api.muteChannel(channelId))
   },
   unmuteChannel(channelId) {
-    return middleWare('unmuteChannel', () => {
-      return axios.delete(`/api/1.0/users/me/mute/${channelId}`)
-    })
+    return middleWare('unmuteChannel', () => api.unmuteChannel(channelId))
   },
 
   // Tag: stamp
   getStampHistory() {
-    return middleWare('getStampHistory', () => {
-      return axios.get('/api/1.0/users/me/stamp-history')
-    })
+    return middleWare('getStampHistory', () => api.getStampHistory())
   },
   getStamps() {
-    return middleWare('getStamps', () => {
-      return axios.get(`/api/1.0/stamps`)
-    })
+    return middleWare('getStamps', () => api.getStamps())
   },
   addStamp(name, file) {
-    return middleWare('addStamp', () => {
-      const form = new FormData()
-      form.enctype = 'multipart/form-data'
-      form.append('name', name)
-      form.append('file', file)
-      return axios.post(`/api/1.0/stamps`, form)
-    })
+    return middleWare('addStamp', () => api.createStamp(name, file))
   },
   getStampDetail(stampId) {
-    return middleWare('getStampDetail', () => {
-      return axios.get(`/api/1.0/stamps/${stampId}`)
-    })
+    return middleWare('getStampDetail', () => api.getStamp(stampId))
   },
   fixStamp(stampId, name, file) {
-    return middleWare('fixStamp', () => {
-      const form = new FormData()
-      form.enctype = 'multipart/form-data'
-      form.append('name', name)
-      form.append('file', file)
-      return axios.patch(`/api/1.0/stamps/${stampId}`, form)
-    })
+    return middleWare('fixStamp', () => api.editStamp(stampId, name, file))
   },
   deleteStamp(stampId) {
-    return middleWare('deleteStamp', () => {
-      return axios.delete(`/api/1.0/stamps/${stampId}`)
-    })
+    return middleWare('deleteStamp', () => api.deleteStamp(stampId))
   },
   getMessageStamp(messageId) {
-    return middleWare('getMessageStamp', () => {
-      return axios.get(`/api/1.0/messages/${messageId}/stamps`)
-    })
+    return middleWare('getMessageStamp', () => api.getMessageStamps(messageId))
   },
   stampMessage(messageId, stampId) {
-    return middleWare('stampMessage', () => {
-      return axios.post(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
-    })
+    return middleWare('stampMessage', () =>
+      api.stampMessage(messageId, stampId)
+    )
   },
   unstampMessage(messageId, stampId) {
-    return middleWare('unstampMessage', () => {
-      return axios.delete(`/api/1.0/messages/${messageId}/stamps/${stampId}`)
-    })
+    return middleWare('unstampMessage', () =>
+      api.unstampMessage(messageId, stampId)
+    )
   },
 
   // Tag: userTag
   getUserTags(userId) {
-    return middleWare('getUserTag', () => {
-      return axios.get(`/api/1.0/users/${userId}/tags`)
-    })
+    return middleWare('getUserTag', () => api.getUserTags(userId))
   },
   addUserTag(userId, tag) {
-    return middleWare('addUserTag', () => {
-      return axios.post(`/api/1.0/users/${userId}/tags`, { tag })
-    })
+    return middleWare('addUserTag', () => api.addUserTags(userId, { tag }))
   },
   changeLockUserTag(userId, tagId, isLocked) {
-    return middleWare('changeLockUserTag', () => {
-      return axios.patch(`/api/1.0/users/${userId}/tags/${tagId}`, { isLocked })
-    })
+    return middleWare('changeLockUserTag', () =>
+      api.changeLockUserTag(userId, tagId, { isLocked })
+    )
   },
   deleteUserTag(userId, tagId) {
-    return middleWare('deleteUserTag', () => {
-      return axios.delete(`/api/1.0/users/${userId}/tags/${tagId}`)
-    })
+    return middleWare('deleteUserTag', () => api.deleteUserTag(userId, tagId))
   },
   getTag(tagId) {
-    return middleWare('getTag', () => {
-      return axios.get(`/api/1.0/tags/${tagId}`)
-    })
+    return middleWare('getTag', () => api.getTag(tagId))
   },
 
   // Tag: file
   uploadFile(file, readableUsers, onUploadProgress) {
     return middleWare('uploadFile', () => {
-      const form = new FormData()
-      form.enctype = 'multipart/form-data'
-      form.append('file', file)
-      form.append('acl_readable', readableUsers.join(','))
-      return axios.post(
-        '/api/1.0/files',
-        form,
+      return api.uploadFile(
+        file,
+        readableUsers.join(','),
         onUploadProgress
           ? {
               onUploadProgress
@@ -462,19 +339,13 @@ const client = {
     })
   },
   deleteFile(fileId) {
-    return middleWare('deleteFile', () => {
-      return axios.delete(`/api/1.0/files/${fileId}`)
-    })
+    return middleWare('deleteFile', () => api.deleteFile(fileId))
   },
   getFileMeta(fileId) {
-    return middleWare('getFileMeta', () => {
-      return axios.get(`/api/1.0/files/${fileId}/meta`)
-    })
+    return middleWare('getFileMeta', () => api.getFileMeta(fileId))
   },
   getFileThumbnail(fileId) {
-    return middleWare('getFileThumbnail', () => {
-      return axios.get(`/api/1.0/files/${fileId}/thumbnail`)
-    })
+    return middleWare('getFileThumbnail', () => api.getFileThumbnail(fileId))
   },
 
   // Tag: search
@@ -484,65 +355,61 @@ const client = {
 
   // Tag: heartbeat
   getHeartbeat() {
-    return middleWare('getHeartbeat', () => {
-      return axios.get(`/api/1.0/heartbeat`)
-    })
+    return middleWare('getHeartbeat', () => api.getHeartbeat())
   },
   postHeartbeat(status, channelId) {
-    return axios.post(`/api/1.0/heartbeat`, { status, channelId })
+    return api.postHeartbeat({ status, channelId })
   },
 
   // Tag: activity
   getLatestMessages(limit, subscribe) {
-    return axios.get(
-      `/api/1.0/activity/latest-messages?limit=${limit}&subscribe=${subscribe}`
-    )
+    return api.getActivities(limit, subscribe)
   },
 
   // Tag: group
   getAllGroups() {
-    return axios.get('/api/1.0/groups')
+    return api.getGroups()
   },
   postGroup(name, description) {
-    return axios.post('/api/1.0/groups', { name, description })
+    return api.createGroups({ name, description })
   },
   getGroup(groupId) {
-    return axios.get(`/api/1.0/groups/${groupId}`)
+    return api.getGroup(groupId)
   },
   changeGroup(groupId, name, description, adminUserId) {
-    return axios.patch(`/api/1.0/groups/${groupId}`, {
+    return api.editGroup(groupId, {
       name,
       description,
       adminUserId
     })
   },
   deleteGroup(groupId) {
-    return axios.delete(`/api/1.0/groups/${groupId}`)
+    return api.deleteGroup(groupId)
   },
   getGroupMember(groupId) {
-    return axios.get(`/api/1.0/groups/${groupId}/members`)
+    return api.getGroupMembers(groupId)
   },
   addGroupMember(groupId, userId) {
-    return axios.post(`/api/1.0/groups/${groupId}/members`, { userId })
+    return api.addGroupMember(groupId, { userId })
   },
   deleteGroupMember(groupId, userId) {
-    return axios.delete(`/api/1.0/groups/${groupId}/members/${userId}`)
+    return api.deleteGroupMember(groupId, userId)
   },
   getMyGroups() {
-    return axios.get('/api/1.0/users/me/groups')
+    return api.getMyGroups()
   },
   getUserGroups(userId) {
-    return axios.get(`/api/1.0/users/${userId}/groups`)
+    return api.getUserGroups(userId)
   },
 
   // Tag: client
   getClient(clientId) {
-    return axios.get(`/api/1.0/clients/${clientId}`)
+    return api.getClient(clientId)
   },
 
   // Tag: Webhook
   getWebhooks() {
-    return axios.get(`/api/1.0/webhooks`)
+    return api.getWebhooks()
   }
 }
 
