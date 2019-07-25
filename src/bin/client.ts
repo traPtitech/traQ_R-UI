@@ -1,417 +1,464 @@
-import { Apis } from 'traq-api'
+import { Apis, NotificationUsers, FCMToken, HeartbeatStatus } from 'traq-api'
 
 const BASE_PATH = '/api/1.0'
+
+interface Window {
+  debug: boolean
+  client: Client
+}
+declare const window: Window
 
 const api = new Apis({
   basePath: BASE_PATH
 })
 
-const middleWare =
-  process.env.NODE_ENV === 'development' || window.debug
-    ? (name, fn) => {
-        return fn()
-          .then(res => {
-            console.info(name, res)
-            return Promise.resolve(res)
-          })
-          .catch(err => {
-            console.error(name, err)
-            return Promise.reject(err)
-          })
+function log(target: any, prop: string, descriptor: PropertyDescriptor) {
+  const orig = descriptor.value
+  if (typeof orig !== 'function') return orig
+  descriptor.value = async function(...args: any[]) {
+    try {
+      const res = await Reflect.apply(orig, this, args)
+      if (process.env.NODE_ENV === 'development' || window.debug) {
+        console.info(prop, res)
       }
-    : (name, fn) => {
-        return fn().catch(err => {
-          console.error(name, err)
-          return Promise.reject(err)
-        })
-      }
+      return res
+    } catch (err) {
+      console.error(prop, err)
+      throw err
+    }
+  }
+}
 
-const client = {
+class Client {
   // Tag: authorization
-  login(name, pass) {
-    return middleWare('login', () => api.login(undefined, { name, pass }))
-  },
+  @log
+  login(name: string, pass: string) {
+    return api.login(undefined, { name, pass })
+  }
+  @log
   logout() {
-    return middleWare('logout', () => api.logout())
-  },
-
+    return api.logout()
+  }
   // Tag: Session
+  @log
   getSessions() {
-    return middleWare('getSessions', () => api.getSessions())
-  },
+    return api.getSessions()
+  }
+  @log
   deleteSessions() {
-    return middleWare('deleteSessions', () => api.deleteSessions())
-  },
-  deleteSession(sessionId) {
-    return middleWare('deleteSession', () => api.deleteSession(sessionId))
-  },
+    return api.deleteSessions()
+  }
+  @log
+  deleteSession(sessionId: string) {
+    return api.deleteSession(sessionId)
+  }
 
   // Tag: channel
-  makeChannel(type, member, name, parent) {
-    return middleWare('makeChannel', () => {
-      return api.createChannel({
-        _private: type === 'private',
-        member,
-        name,
-        parent
-      })
+  @log
+  makeChannel(type: string, member: string[], name: string, parent: string) {
+    return api.createChannel({
+      _private: type === 'private',
+      member,
+      name,
+      parent
     })
-  },
+  }
+  @log
   getChannels() {
-    return middleWare('getChannels', () => api.getChannels())
-  },
-  getChannelInfo(channelId) {
-    return middleWare('getChannelInfo', () => api.getChannel(channelId))
-  },
-  changeChannelInfo(channelId, name, visibility, force) {
-    return middleWare('changeChannelName', () => {
-      return api.editChannel(channelId, {
-        name,
-        visibility,
-        force
-      })
+    return api.getChannels()
+  }
+  @log
+  getChannelInfo(channelId: string) {
+    return api.getChannel(channelId)
+  }
+  @log
+  changeChannelInfo(
+    channelId: string,
+    name: string,
+    visibility: boolean,
+    force: boolean
+  ) {
+    return api.editChannel(channelId, {
+      name,
+      visibility,
+      force
     })
-  },
-  changeChannelParent(channelId, parent) {
-    return middleWare('changeChannelParent', () =>
-      api.changeChannelParent(channelId, { parent })
-    )
-  },
-  deleteChannel(channelId) {
-    return middleWare('changeChannelName', () => api.deleteChannel(channelId))
-  },
+  }
+  @log
+  changeChannelParent(channelId: string, parent: string) {
+    return api.changeChannelParent(channelId, { parent })
+  }
+  @log
+  deleteChannel(channelId: string) {
+    return api.deleteChannel(channelId)
+  }
 
   // Tag: topic
-  getChannelTopic(channelId) {
-    return middleWare('getChannelTopic', () => api.getChannelTopic(channelId))
-  },
-  changeChannelTopic(channelId, text) {
-    return middleWare('changeChannelTopic', () =>
-      api.changeChannelTopic(channelId, { text })
-    )
-  },
+  @log
+  getChannelTopic(channelId: string) {
+    return api.getChannelTopic(channelId)
+  }
+  @log
+  changeChannelTopic(channelId: string, text: string) {
+    return api.changeChannelTopic(channelId, { text })
+  }
 
   // Tag: message
-  loadMessages(channelId, limit, offset) {
-    return middleWare('loadMessages', () =>
-      api.getMessages(channelId, limit, offset)
-    )
-  },
-  postMessage(channelId, text) {
-    return middleWare('postMessage', () => api.postMessage(channelId, { text }))
-  },
-  postDirectMessage(userId, text) {
-    return middleWare('postDirectMessage', () =>
-      api.postDirectMessage(userId, { text })
-    )
-  },
-  editMessage(messageId, text) {
-    return middleWare('editMessage', () => api.editMessage(messageId, { text }))
-  },
-  getMessage(messageId) {
-    return middleWare('getMessage', () => api.getMessage(messageId))
-  },
-  deleteMessage(messageId) {
-    return middleWare('deleteMessage', () => api.deleteMessage(messageId))
-  },
-  reportMessage(messageId, reason) {
-    return middleWare('reportMessage', () =>
-      api.reportMessage(messageId, { reason })
-    )
-  },
-  getReports(page) {
-    return middleWare('getReports', () => api.getReports(page))
-  },
+  @log
+  loadMessages(channelId: string, limit: number, offset: number) {
+    return api.getMessages(channelId, limit, offset)
+  }
+  @log
+  postMessage(channelId: string, text: string) {
+    return api.postMessage(channelId, { text })
+  }
+  @log
+  postDirectMessage(userId: string, text: string) {
+    return api.postDirectMessage(userId, { text })
+  }
+  @log
+  editMessage(messageId: string, text: string) {
+    return api.editMessage(messageId, { text })
+  }
+  @log
+  getMessage(messageId: string) {
+    return api.getMessage(messageId)
+  }
+  @log
+  deleteMessage(messageId: string) {
+    return api.deleteMessage(messageId)
+  }
+  @log
+  reportMessage(messageId: string, reason: string) {
+    return api.reportMessage(messageId, { reason })
+  }
+  @log
+  getReports(page: number) {
+    return api.getReports(page)
+  }
 
   // Tag: pin
-  getPinnedMessages(channelId) {
-    return middleWare('getPinnedMessages', () =>
-      api.getPinnedMessages(channelId)
-    )
-  },
-  pinMessage(messageId) {
-    return middleWare('pinMessage', () => api.pinMessage({ messageId }))
-  },
-  getPinnedMessage(pinId) {
-    return middleWare('getPinnedMessage', () => api.getPinnedMessage(pinId))
-  },
-  unpinMessage(pinId) {
-    return middleWare('unpinMessage', () => api.unpinMessage(pinId))
-  },
+  @log
+  getPinnedMessages(channelId: string) {
+    return api.getPinnedMessages(channelId)
+  }
+  @log
+  pinMessage(messageId: string) {
+    return api.pinMessage({ messageId })
+  }
+  @log
+  getPinnedMessage(pinId: string) {
+    return api.getPinnedMessage(pinId)
+  }
+  @log
+  unpinMessage(pinId: string) {
+    return api.unpinMessage(pinId)
+  }
 
   // Tag: notification
-  getNotifications(channelId) {
-    return middleWare('getNotifications', () => api.getNotifications(channelId))
-  },
-  changeNotifications(channelId, state) {
-    return middleWare('changeNotifications', () =>
-      api.changeNotifications(channelId, state)
-    )
-  },
-  getNotifiedChannels(userId) {
-    return middleWare('getNotifiedChannels', () =>
-      api.getUserNotifiedChannels(userId)
-    )
-  },
-  registerDevice(token) {
-    return middleWare('registerDevice', () =>
-      api.registerNotificationDevice(token)
-    )
-  },
+  @log
+  getNotifications(channelId: string) {
+    return api.getNotifications(channelId)
+  }
+  @log
+  changeNotifications(channelId: string, state: NotificationUsers) {
+    return api.changeNotifications(channelId, state)
+  }
+  @log
+  getNotifiedChannels(userId: string) {
+    return api.getUserNotifiedChannels(userId)
+  }
+  @log
+  registerDevice(token: FCMToken) {
+    return api.registerNotificationDevice(token)
+  }
+  @log
   getMyNotifiedChannels() {
-    return middleWare('getMyNotifiedChannels', () => api.getNotifiedChannels())
-  },
+    return api.getNotifiedChannels()
+  }
 
   // Tag: user
-  registerUser(name, password) {
-    return middleWare('registerUser', () =>
-      api.registerUser({ name, password })
-    )
-  },
+  @log
+  registerUser(name: string, password: string) {
+    return api.registerUser({ name, password })
+  }
+  @log
   getMembers() {
-    return middleWare('getMembers', () => api.getUsers())
-  },
+    return api.getUsers()
+  }
+  @log
   whoAmI() {
-    return middleWare('whoAmI', () => api.getMe())
-  },
+    return api.getMe()
+  }
   // deprecated
-  getUserIconUrl(userId) {
+  getUserIconUrl(userId: string) {
     return `${BASE_PATH}/users/${userId}/icon`
-  },
-  changeIcon(file) {
-    return middleWare('changeIcon', () => api.changeMyIcon(file))
-  },
-  changeDisplayName(name) {
-    return middleWare('changeDisplayName', () =>
-      api.changeMe({ displayName: name })
-    )
-  },
-  changeTwitterId(twitterId) {
-    return middleWare('changeTwitterId', () => api.changeMe({ twitterId }))
-  },
-  changePassword(pass, newPass) {
-    return middleWare('changePassword', () => {
-      return api.changePassword({
-        password: pass,
-        newPassword: newPass
-      })
+  }
+  @log
+  changeIcon(file: any) {
+    return api.changeMyIcon(file)
+  }
+  @log
+  changeDisplayName(name: string) {
+    return api.changeMe({ displayName: name })
+  }
+  @log
+  changeTwitterId(twitterId: string) {
+    return api.changeMe({ twitterId })
+  }
+  @log
+  changePassword(pass: string, newPass: string) {
+    return api.changePassword({
+      password: pass,
+      newPassword: newPass
     })
-  },
-  getUserDetail(userId) {
-    return middleWare('getUserDetail', () => api.getUser(userId))
-  },
-  loadDirectMessages(userId, limit, offset) {
-    return middleWare('loadDirectMessages', () =>
-      api.getDirectMessages(userId, limit, offset)
-    )
-  },
+  }
+  @log
+  getUserDetail(userId: string) {
+    return api.getUser(userId)
+  }
+  @log
+  loadDirectMessages(userId: string, limit: number, offset: number) {
+    return api.getDirectMessages(userId, limit, offset)
+  }
   getQRCodeUrl() {
     return `${BASE_PATH}/users/me/qr-code`
-  },
+  }
 
   // Tag: clip
+  @log
   getAllClipMessages() {
-    return middleWare('getAllClipMessages', () => api.getClips())
-  },
-  getClipMessages(folderId) {
-    return middleWare('getClipMessages', () => api.getClipFolder(folderId))
-  },
-  clipMessage(folderId, messageId) {
-    return middleWare('clipMessage', () =>
-      api.clipMessage({ folderId, messageId })
-    )
-  },
-  unclipMessage(clipId) {
-    return middleWare('unclipMessage', () => api.unclipMessage(clipId))
-  },
+    return api.getClips()
+  }
+  @log
+  getClipMessages(folderId: string) {
+    return api.getClipFolder(folderId)
+  }
+  @log
+  clipMessage(folderId: string, messageId: string) {
+    return api.clipMessage({ folderId, messageId })
+  }
+  @log
+  unclipMessage(clipId: string) {
+    return api.unclipMessage(clipId)
+  }
+  @log
   getClipFolders() {
-    return middleWare('getClipFolders', () => api.getClipFolders())
-  },
-  getClipFolderInfo(folderId) {
-    return middleWare('getClipFolder', () => api.getClipFolder(folderId))
-  },
-  renameClipFolder(folderId, name) {
-    return middleWare('renameClipFolder', () =>
-      api.editClipFolder(folderId, { name })
-    )
-  },
-  deleteClipFolder(folderId) {
-    return middleWare('deleteClipFolder', () => api.deleteClipFolder(folderId))
-  },
-  makeClipFolder(name) {
-    return middleWare('makeClipFolder', () => api.createClipFolders({ name }))
-  },
+    return api.getClipFolders()
+  }
+  @log
+  getClipFolderInfo(folderId: string) {
+    return api.getClipFolder(folderId)
+  }
+  @log
+  renameClipFolder(folderId: string, name: string) {
+    return api.editClipFolder(folderId, { name })
+  }
+  @log
+  deleteClipFolder(folderId: string) {
+    return api.deleteClipFolder(folderId)
+  }
+  @log
+  makeClipFolder(name: string) {
+    return api.createClipFolders({ name })
+  }
 
   // Tag: star
+  @log
   getStaredChannels() {
-    return middleWare('getStaredChannels', () => api.getStaredChannels())
-  },
-  starChannel(channelId) {
-    return middleWare('starChannel', () => api.starChannel(channelId))
-  },
-  unstarChannel(channelId) {
-    return middleWare('unstarChannel', () => api.unstarChannel(channelId))
-  },
+    return api.getStaredChannels()
+  }
+  @log
+  starChannel(channelId: string) {
+    return api.starChannel(channelId)
+  }
+  @log
+  unstarChannel(channelId: string) {
+    return api.unstarChannel(channelId)
+  }
 
   // Tag: unread
+  @log
   getUnreadChannels() {
-    return middleWare('getUnreadChannels', () => api.getUnreadChannels())
-  },
-  readMessages(channelId) {
-    return middleWare('readMessages', () => api.readMessages(channelId))
-  },
+    return api.getUnreadChannels()
+  }
+  @log
+  readMessages(channelId: string) {
+    return api.readMessages(channelId)
+  }
 
   // Tag: mute
+  @log
   getMutedChannels() {
-    return middleWare('getMutedChannels', () => api.getMutedChannels())
-  },
-  muteChannel(channelId) {
-    return middleWare('muteChannel', () => api.muteChannel(channelId))
-  },
-  unmuteChannel(channelId) {
-    return middleWare('unmuteChannel', () => api.unmuteChannel(channelId))
-  },
+    return api.getMutedChannels()
+  }
+  @log
+  muteChannel(channelId: string) {
+    return api.muteChannel(channelId)
+  }
+  @log
+  unmuteChannel(channelId: string) {
+    return api.unmuteChannel(channelId)
+  }
 
   // Tag: stamp
+  @log
   getStampHistory() {
-    return middleWare('getStampHistory', () => api.getStampHistory())
-  },
+    return api.getStampHistory()
+  }
+  @log
   getStamps() {
-    return middleWare('getStamps', () => api.getStamps())
-  },
-  addStamp(name, file) {
-    return middleWare('addStamp', () => api.createStamp(name, file))
-  },
-  getStampDetail(stampId) {
-    return middleWare('getStampDetail', () => api.getStamp(stampId))
-  },
-  fixStamp(stampId, name, file) {
-    return middleWare('fixStamp', () => api.editStamp(stampId, name, file))
-  },
-  deleteStamp(stampId) {
-    return middleWare('deleteStamp', () => api.deleteStamp(stampId))
-  },
-  getMessageStamp(messageId) {
-    return middleWare('getMessageStamp', () => api.getMessageStamps(messageId))
-  },
-  stampMessage(messageId, stampId) {
-    return middleWare('stampMessage', () =>
-      api.stampMessage(messageId, stampId)
-    )
-  },
-  unstampMessage(messageId, stampId) {
-    return middleWare('unstampMessage', () =>
-      api.unstampMessage(messageId, stampId)
-    )
-  },
+    return api.getStamps()
+  }
+  @log
+  addStamp(name: string, file: any) {
+    return api.createStamp(name, file)
+  }
+  @log
+  getStampDetail(stampId: string) {
+    return api.getStamp(stampId)
+  }
+  @log
+  fixStamp(stampId: string, name: string, file: any) {
+    return api.editStamp(stampId, name, file)
+  }
+  @log
+  deleteStamp(stampId: string) {
+    return api.deleteStamp(stampId)
+  }
+  @log
+  getMessageStamp(messageId: string) {
+    return api.getMessageStamps(messageId)
+  }
+  @log
+  stampMessage(messageId: string, stampId: string) {
+    return api.stampMessage(messageId, stampId)
+  }
+  @log
+  unstampMessage(messageId: string, stampId: string) {
+    return api.unstampMessage(messageId, stampId)
+  }
 
   // Tag: userTag
-  getUserTags(userId) {
-    return middleWare('getUserTag', () => api.getUserTags(userId))
-  },
-  addUserTag(userId, tag) {
-    return middleWare('addUserTag', () => api.addUserTags(userId, { tag }))
-  },
-  changeLockUserTag(userId, tagId, isLocked) {
-    return middleWare('changeLockUserTag', () =>
-      api.changeLockUserTag(userId, tagId, { isLocked })
-    )
-  },
-  deleteUserTag(userId, tagId) {
-    return middleWare('deleteUserTag', () => api.deleteUserTag(userId, tagId))
-  },
-  getTag(tagId) {
-    return middleWare('getTag', () => api.getTag(tagId))
-  },
+  @log
+  getUserTags(userId: string) {
+    return api.getUserTags(userId)
+  }
+  @log
+  addUserTag(userId: string, tag: string) {
+    return api.addUserTags(userId, { tag })
+  }
+  @log
+  changeLockUserTag(userId: string, tagId: string, isLocked: boolean) {
+    return api.changeLockUserTag(userId, tagId, { isLocked })
+  }
+  @log
+  deleteUserTag(userId: string, tagId: string) {
+    return api.deleteUserTag(userId, tagId)
+  }
+  @log
+  getTag(tagId: string) {
+    return api.getTag(tagId)
+  }
 
   // Tag: file
-  uploadFile(file, readableUsers, onUploadProgress) {
-    return middleWare('uploadFile', () => {
-      return api.uploadFile(
-        file,
-        readableUsers.join(','),
-        onUploadProgress
-          ? {
-              onUploadProgress
-            }
-          : {}
-      )
-    })
-  },
-  deleteFile(fileId) {
-    return middleWare('deleteFile', () => api.deleteFile(fileId))
-  },
-  getFileMeta(fileId) {
-    return middleWare('getFileMeta', () => api.getFileMeta(fileId))
-  },
-  getFileThumbnail(fileId) {
-    return middleWare('getFileThumbnail', () => api.getFileThumbnail(fileId))
-  },
+  @log
+  uploadFile(file: any, readableUsers: string[], onUploadProgress: Function) {
+    return api.uploadFile(
+      file,
+      readableUsers.join(','),
+      onUploadProgress
+        ? {
+            onUploadProgress
+          }
+        : {}
+    )
+  }
+  @log
+  deleteFile(fileId: string) {
+    return api.deleteFile(fileId)
+  }
+  @log
+  getFileMeta(fileId: string) {
+    return api.getFileMeta(fileId)
+  }
+  @log
+  getFileThumbnail(fileId: string) {
+    return api.getFileThumbnail(fileId)
+  }
 
   // Tag: search
   searchMessage() {
     Promise.reject(console.error(`not implement`))
-  },
+  }
 
   // Tag: heartbeat
-  getHeartbeat() {
-    return middleWare('getHeartbeat', () => api.getHeartbeat())
-  },
-  postHeartbeat(status, channelId) {
+  @log
+  getHeartbeat(channelId: string) {
+    return api.getHeartbeat(channelId)
+  }
+  postHeartbeat(status: HeartbeatStatus, channelId: string) {
     return api.postHeartbeat({ status, channelId })
-  },
+  }
 
   // Tag: activity
-  getLatestMessages(limit, subscribe) {
+  getLatestMessages(limit: number, subscribe: boolean) {
     return api.getActivities(limit, subscribe)
-  },
+  }
 
   // Tag: group
   getAllGroups() {
     return api.getGroups()
-  },
-  postGroup(name, description) {
+  }
+  postGroup(name: string, description: string) {
     return api.createGroups({ name, description })
-  },
-  getGroup(groupId) {
+  }
+  getGroup(groupId: string) {
     return api.getGroup(groupId)
-  },
-  changeGroup(groupId, name, description, adminUserId) {
+  }
+  changeGroup(
+    groupId: string,
+    name: string,
+    description: string,
+    adminUserId: string
+  ) {
     return api.editGroup(groupId, {
       name,
       description,
       adminUserId
     })
-  },
-  deleteGroup(groupId) {
+  }
+  deleteGroup(groupId: string) {
     return api.deleteGroup(groupId)
-  },
-  getGroupMember(groupId) {
+  }
+  getGroupMember(groupId: string) {
     return api.getGroupMembers(groupId)
-  },
-  addGroupMember(groupId, userId) {
+  }
+  addGroupMember(groupId: string, userId: string) {
     return api.addGroupMember(groupId, { userId })
-  },
-  deleteGroupMember(groupId, userId) {
+  }
+  deleteGroupMember(groupId: string, userId: string) {
     return api.deleteGroupMember(groupId, userId)
-  },
+  }
   getMyGroups() {
     return api.getMyGroups()
-  },
-  getUserGroups(userId) {
+  }
+  getUserGroups(userId: string) {
     return api.getUserGroups(userId)
-  },
+  }
 
   // Tag: client
-  getClient(clientId) {
+  getClient(clientId: string) {
     return api.getClient(clientId)
-  },
+  }
 
   // Tag: Webhook
   getWebhooks() {
     return api.getWebhooks()
   }
 }
+
+const client = new Client()
 
 if (process.env.NODE_ENV === 'development') {
   window.client = client
