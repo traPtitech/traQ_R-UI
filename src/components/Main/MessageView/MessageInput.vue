@@ -205,7 +205,7 @@ export default {
         })
     },
     replaceUser(message) {
-      return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
+      return message.replace(/[@＠]([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
         const user = this.$store.getters.getUserByName(name)
         if (user) {
           return `!{"type": "user", "raw": "${match}", "id": "${user.userId}"}`
@@ -215,7 +215,7 @@ export default {
       })
     },
     replaceChannel(message) {
-      return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
+      return message.replace(/[#＃]([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
           return `!{"type": "channel", "raw": "${match}", "id": "${
@@ -228,9 +228,10 @@ export default {
     },
     replaceGroup(message) {
       return message.replace(
-        /^"@([\S]+)|(?:@([\S]+))/g,
-        (match, userId, content) => {
-          if (userId) return match
+        /"[@＠]([\S]+)|(?:[@＠]([\S]+))/g,
+        (match, replacedUsername, content) => {
+          // すでにユーザーへのメンションに置換されているときは置換を行わない
+          if (replacedUsername) return match
           const group = this.$store.getters.getGroupByContent(content)
           if (group) {
             return `!{"type": "group", "raw": "${match}", "id": "${
