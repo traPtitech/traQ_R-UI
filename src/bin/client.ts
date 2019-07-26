@@ -158,15 +158,15 @@ class Client {
   // Tag: notification
   @log
   getNotifications(channelId: string) {
-    return api.getNotifications(channelId)
+    return api.getSubscribers(channelId)
   }
   @log
   changeNotifications(channelId: string, state: NotificationUsers) {
-    return api.changeNotifications(channelId, state)
+    return api.changeSubscribers(channelId, state)
   }
   @log
   getNotifiedChannels(userId: string) {
-    return api.getUserNotifiedChannels(userId)
+    return api.getUserSubscribeChannels(userId)
   }
   @log
   registerDevice(token: FCMToken) {
@@ -174,7 +174,7 @@ class Client {
   }
   @log
   getMyNotifiedChannels() {
-    return api.getNotifiedChannels()
+    return api.getMySubscribeChannels()
   }
 
   // Tag: user
@@ -260,7 +260,7 @@ class Client {
   }
   @log
   makeClipFolder(name: string) {
-    return api.createClipFolders({ name })
+    return api.createClipFolder({ name })
   }
 
   // Tag: star
@@ -346,7 +346,7 @@ class Client {
   }
   @log
   addUserTag(userId: string, tag: string) {
-    return api.addUserTags(userId, { tag })
+    return api.addUserTag(userId, { tag })
   }
   @log
   changeLockUserTag(userId: string, tagId: string, isLocked: boolean) {
@@ -411,7 +411,7 @@ class Client {
     return api.getGroups()
   }
   postGroup(name: string, description: string) {
-    return api.createGroups({ name, description })
+    return api.createGroup({ name, description })
   }
   getGroup(groupId: string) {
     return api.getGroup(groupId)
