@@ -29,7 +29,7 @@
             span.consent-scope-list-title 許可される項目:
             ul.consent-scope-items
               li.consent-scope-item(v-for="scope in scopes")
-                .consent-scope-circle(:style="{color: scope.color}") ●
+                .consent-scope-circle(:style="{color: scope.color}")
                 .consent-scope-name {{scope.name}}
                 button.consent-scope-button(:class="{open: scope.open}" @click="scope.open = !scope.open")
                 transition(name="consent-scope-description")
@@ -315,6 +315,10 @@ export default {
       .consent-scope-circle
         padding-right: 1rem
         pointer-events: none
+        &::before
+          content: '●'
+          font-size: 12px
+          display: inline
       .consent-scope-name
         flex: 1 0
       .consent-scope-button
