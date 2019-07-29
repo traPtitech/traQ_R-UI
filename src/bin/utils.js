@@ -219,3 +219,11 @@ export const isTouchDevice = () => {
     userAgent.includes('Android')
   )
 }
+
+export const changeHash = hash => {
+  let path = window.location.pathname
+  if (hash !== '') {
+    path += `#${hash}`
+  }
+  history.pushState('', document.title, path)
+}

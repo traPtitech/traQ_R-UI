@@ -1,4 +1,5 @@
 import client from '@/bin/client'
+import { changeHash } from '@/bin/utils'
 
 export default {
   namespaced: false,
@@ -21,6 +22,11 @@ export default {
     },
     setStampPickerActive(state, isActive) {
       state.stampPickerActive = isActive
+      if (isActive) {
+        changeHash('PickerModal')
+      } else if (location.hash === '#PickerModal') {
+        changeHash('')
+      }
     },
     setStampPickerModeAsMessage(state) {
       state.stampPickerMode = 'message'
