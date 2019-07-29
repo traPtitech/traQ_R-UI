@@ -64,7 +64,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import lottie from 'lottie-web'
+import lottie from 'lottie-web/build/player/lottie_light'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconAngleRight from '@/components/Icon/IconAngleRight'
