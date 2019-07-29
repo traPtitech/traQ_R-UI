@@ -305,7 +305,7 @@ export default {
             }
           } else {
             if (
-              this.$store.state.myNotifiedChannelSet.has(res.data.channelId)
+              !this.$store.state.myNotifiedChannelSet.has(res.data.channelId)
             ) {
               return
             }
