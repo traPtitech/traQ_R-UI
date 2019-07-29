@@ -21,11 +21,10 @@ export default {
   computed: {
     ...mapState('modal', ['data']),
     message() {
-      return (
-        this.$store.state.messages.find(
-          m => m.messageId === this.data.messageId
-        ) || this.data
+      const pinned = this.$store.state.currentChannelPinnedMessages.find(
+        ({ message }) => message.messageId === this.data.messageId
       )
+      return pinned ? pinned.message : this.data
     }
   }
 }
