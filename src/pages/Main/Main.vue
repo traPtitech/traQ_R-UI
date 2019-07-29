@@ -305,11 +305,12 @@ export default {
             }
           } else {
             if (
-              !this.$store.state.myNotifiedChannelSet.has(res.data.channelId)
+              this.$store.state.myNotifiedChannelSet.has(
+                res.data.parentChannelId
+              )
             ) {
-              return
+              this.$store.commit('addUnreadMessage', res.data)
             }
-            this.$store.commit('addUnreadMessage', res.data)
           }
         }
 
