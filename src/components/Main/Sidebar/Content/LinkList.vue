@@ -2,6 +2,12 @@
 div.links-list-wrap
   ul.links-list
     li
+      a(href="https://portal.trap.jp" target="_blank")
+        div.link-icon.flex-center
+          IconTraPortal(size="20")
+        p.link-title
+          | Portal
+    li
       a(href="https://trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogotraP(size="20")
@@ -67,6 +73,7 @@ import IconLogoShowcase from '@/components/Icon/IconLogoShowcase'
 import IconLogotraP from '@/components/Icon/IconLogotraP'
 import IconLogoAnketo from '@/components/Icon/IconLogoAnketo'
 import IconLogoBotConsole from '@/components/Icon/IconLogoBotConsole'
+import IconTraPortal from '@/components/Icon/IcontraPortal'
 
 export default {
   name: 'LinkList',
@@ -79,7 +86,8 @@ export default {
     IconLogoShowcase,
     IconLogotraP,
     IconLogoAnketo,
-    IconLogoBotConsole
+    IconLogoBotConsole,
+    IconTraPortal
   }
 }
 </script>

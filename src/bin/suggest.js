@@ -41,14 +41,24 @@ export default function(key, limit) {
         }
       })
   } else if (key.type === ':') {
+    let unicodeMatchName = []
+    // Array.fromならサロゲートペアが考慮される
+    if (Array.from(key.keyword).length === 1) {
+      unicodeMatchName = stampAltNameTable
+        .filter(stamp => stamp.code === key.keyword.codePointAt(0).toString(16))
+        .map(stamp => stamp.name)
+    }
+
     const stampAltNames = stampAltNameTable
-      .filter(stamp => match(stamp.altName, key.keyword))
+      .filter(stamp => stamp.altName && match(stamp.altName, key.keyword))
       .map(stamp => stamp.name)
 
     return store.state.stampData
       .filter(
         stamp =>
-          match(stamp.name, key.keyword) || stampAltNames.includes(key.keyword)
+          match(stamp.name, key.keyword) ||
+          stampAltNames.includes(stamp.name) ||
+          unicodeMatchName.includes(stamp.name)
       )
       .slice(0, limit)
       .map(stamp => {

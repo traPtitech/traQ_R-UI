@@ -17,6 +17,8 @@
               placeholder="ID"
               required
               :disabled="status === 'processing'"
+              autofocus
+              tabindex="0"
               @keydown.enter="loginPost")
             input.input-reset.login-input(
               v-model="pass"
@@ -25,15 +27,32 @@
               placeholder="PASSWORD"
               required
               :disabled="status === 'processing'"
+              tabindex="0"
               @keydown.enter="loginPost")
             p.login-failed-message(v-if="status === 'failed'")
-              | IDまたはパスワードが異なります
+              span(v-if="failType === 'empty_id'")
+                | IDが入力されていません
+              span(v-else-if="failType === 'empty_pass'")
+                | パスワードが入力されていません
+              span(v-else-if="failType === 'unconnected'")
+                | インターネットに接続されていません
+              span(v-else-if="failType === 'wrong_id_or_pass'")
+                | IDまたはパスワードが異なります
+              span(v-else)
+                | エラーが発生しました
           .login-button-wrap
             button.input-reset.login-button(
+              tabindex="0"
               @click="loginPost")
               | SIGN IN
-        a.login-trap-logo(href="https://trap.jp" target="_blank")
-          img(src="@/assets/img/icon/traP_logo.svg")
+          a.password-restpage-link(href="https://portal.trap.jp/reset-password" target="_blank") パスワードを忘れた方はこちら
+          .login-suspended-wrap(v-if="status === 'suspended'")
+            p.login-suspended-message
+              | このアカウントは部費が納入されていない等の理由により、traPの部員条件を満たさない事が確認された為に現在凍結されております。
+              | 復旧を希望する場合は、accounts@trap.jpへその旨をご連絡ください。
+              | 半期分の部費の支払い方法等について追ってご連絡いたします。その後支払いが確認でき次第アカウントを復旧いたします。
+        a.login-trap-logo(href="https://trap.jp" target="_blank" tabindex="-1")
+          IconLogotraPWide
   template(v-else)
     .login-page-inner-wrap-sp.is-scroll
       .top-background
@@ -50,6 +69,8 @@
             placeholder="ID"
             required
             :disabled="status === 'processing'"
+            autofocus
+            tabindex="0"
             @keydown.enter="loginPost")
           input.input-reset.login-input(
             v-model="pass"
@@ -58,24 +79,39 @@
             placeholder="PASSWORD"
             required
             :disabled="status === 'processing'"
+            tabindex="0"
             @keydown.enter="loginPost")
           p.login-failed-message(v-if="status === 'failed'")
-            span(v-if="failType === 'unconnected'")
+            span(v-if="failType === 'empty_id'")
+              | IDが入力されていません
+            span(v-else-if="failType === 'empty_pass'")
+              | パスワードが入力されていません
+            span(v-else-if="failType === 'unconnected'")
               | インターネットに接続されていません
-            span(v-else)
+            span(v-else-if="failType === 'wrong_id_or_pass'")
               | IDまたはパスワードが異なります
+            span(v-else)
+              | エラーが発生しました
         button.input-reset.login-button(
+          tabindex="0"
           @click="loginPost")
           | SIGN IN
-      a.login-trap-logo(href="https://trap.jp" target="_blank")
-        img(src="@/assets/img/icon/traP_logo.svg")
+        a.password-restpage-link(href="https://portal.trap.jp/reset-password" target="_blank") パスワードを忘れた方はこちら
+        .login-suspended-wrap(v-if="status === 'suspended'")
+          p.login-suspended-message
+            | このアカウントは部費が納入されていない等の理由により、traPの部員条件を満たさない事が確認された為に現在凍結されております。
+            | 復旧を希望する場合は、accounts@trap.jpへその旨をご連絡ください。
+            | 半期分の部費の支払い方法等について追ってご連絡いたします。その後支払いが確認でき次第アカウントを復旧いたします。
+      a.login-trap-logo(href="https://trap.jp" target="_blank"
+            tabindex="-1")
+        IconLogotraPWide
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import client from '@/bin/client'
 import IconLogo from '@/components/Icon/IconLogo'
-import IconLogotraP from '@/components/Icon/IconLogotraP'
+import IconLogotraPWide from '@/components/Icon/IconLogotraPWide'
 
 export default {
   name: 'login',
@@ -83,28 +119,33 @@ export default {
     return {
       name: '',
       pass: '',
+      // default / processing / succeed / failed / suspended
       status: 'default',
-      /*
-       * default: not in progress
-       * processing: in progress
-       * failed: missed login
-       * successed: success login
-       */
+      // empty_id / empty_pass / unconnected / wrong_id_or_pass
       failType: ''
     }
   },
   components: {
     IconLogo,
-    IconLogotraP
+    IconLogotraPWide
   },
   methods: {
     loginPost: function() {
+      if (this.name === '') {
+        this.status = 'failed'
+        this.failType = 'empty_id'
+        return
+      } else if (this.pass === '') {
+        this.status = 'failed'
+        this.failType = 'empty_pass'
+        return
+      }
+
       this.status = 'processing'
       client
         .login(this.name, this.pass)
         .then(res => {
-          this.status = 'successed'
-          console.log(res)
+          this.status = 'succeed'
           if (this.$store.state.baseURL === '') {
             document.location.href = this.redirect
           } else {
@@ -116,12 +157,22 @@ export default {
         })
         .catch(err => {
           this.status = 'failed'
-          if (err.message === 'Network Error') {
-            this.failType = 'unconnected'
-            return
-          }
           this.failType = ''
-          console.error(err)
+          const statusCode = /(\d{3})/.exec(err.message)[1]
+          switch (statusCode) {
+            case '500':
+              this.failType = 'unconnected'
+              break
+            case '401':
+              this.failType = 'wrong_id_or_pass'
+              break
+            case '403':
+              this.status = 'suspended'
+              break
+            default:
+              this.failType = 'unknown'
+              break
+          }
         })
     }
   },
@@ -237,6 +288,7 @@ export default {
 
   .login-failed-message
     position: absolute
+    text-align: center
     bottom: 0
     transform: translateY(calc(100% ))
     display: block
@@ -245,6 +297,18 @@ export default {
     right: 0
     color: var(--warning-color)
 
+  .password-restpage-link
+    display: block
+    color: #949494
+    text-align: center
+    text-decoration: underline
+    margin:
+      top: 30px
+      right: auto
+      left: auto
+    font-size: 0.8rem
+
+
   .login-trap-logo
     display: block
     margin:
@@ -252,6 +316,15 @@ export default {
       left: auto
       right: auto
     width: 150px
+
+  .login-suspended-wrap
+    border-radius: 16px
+    padding: 18px
+    margin-top: 12px
+    background-color: #ED8888
+
+  .login-suspended-message
+    color: white
 
 .login-page-inner-wrap-pc
   display: flex
@@ -351,6 +424,7 @@ export default {
 
   .login-failed-message
     position: absolute
+    text-align: center
     bottom: 0
     transform: translateY(calc(100% + 20px ))
     display: block
@@ -360,10 +434,26 @@ export default {
     right: 0
     color: var(--warning-color)
 
+  .password-restpage-link
+    color: #949494
+    text-align: center
+    text-decoration: underline
+    margin-top: 20px
+    font-size: 0.8rem
+
   .login-trap-logo
     display: block
     margin:
       top: auto
       bottom: 20px
     width: 150px
+
+  .login-suspended-wrap
+    border-radius: 16px
+    padding: 24px
+    margin: 40px 15%
+    background-color: #ED8888
+
+  .login-suspended-message
+    color: white
 </style>

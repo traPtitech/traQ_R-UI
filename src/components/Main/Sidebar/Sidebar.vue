@@ -117,8 +117,8 @@ export default {
     },
     isFilterVisibleTab() {
       return (
-        ['Channels', 'Members'].includes(this.menuContent) &&
-        this.channelView !== 'activity'
+        (this.menuContent === 'Channels' && this.channelView !== 'activity') ||
+        this.menuContent === 'Members'
       )
     },
     isChannelsActivityTab() {

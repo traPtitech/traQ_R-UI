@@ -185,13 +185,12 @@ export const withModifierKey = keyEvent => {
 export const isModifierKey = keyEvent => {
   return ['Shift', 'Alt', 'Control', 'Meta'].includes(keyEvent.key)
 }
-export const isSendKey = (keyEvent, messageSendKey) => {
-  if (keyEvent.key !== 'Enter') {
-    return false
-  }
+export const isSendKeyInput = (inputEvent, messageSendKey) => {
+  // modifierが押されているときはisBRKey()を利用してpreventされる
   return (
-    (messageSendKey === 'modifier' && withModifierKey(keyEvent)) ||
-    (messageSendKey === 'none' && !withModifierKey(keyEvent))
+    messageSendKey === 'none' &&
+    inputEvent.inputType === 'insertLineBreak' &&
+    !isTouchDevice()
   )
 }
 export const isBRKey = (keyEvent, messageSendKey) => {
@@ -200,6 +199,13 @@ export const isBRKey = (keyEvent, messageSendKey) => {
     keyEvent.key === 'Enter' &&
     withModifierKey(keyEvent)
   )
+}
+
+// https://github.com/ianstormtaylor/slate/blob/7377266b43451c4be44a1442aa1076ef3d13227e/packages/slate-dev-environment/src/index.js#L74-L79
+export const checkLevel2InputEventsSupport = () => {
+  const element = document.createElement('div')
+  element.contentEditable = true
+  return 'onbeforeinput' in element
 }
 
 export const isTouchDevice = () => {
@@ -212,4 +218,12 @@ export const isTouchDevice = () => {
     userAgent.includes('iPad') ||
     userAgent.includes('Android')
   )
+}
+
+export const changeHash = hash => {
+  let path = window.location.pathname
+  if (hash !== '') {
+    path += `#${hash}`
+  }
+  history.pushState('', document.title, path)
 }

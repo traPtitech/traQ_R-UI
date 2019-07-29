@@ -1,4 +1,5 @@
 import client from '@/bin/client'
+import { changeHash } from '@/bin/utils'
 
 export default {
   namespaced: true,
@@ -148,6 +149,7 @@ export default {
       }
     },
     open({ state, commit }, { name, data }) {
+      changeHash(name)
       if (state.name === 'UserModal') {
         // Transition from user modal
         commit('setLastUser', state.data)
@@ -156,6 +158,7 @@ export default {
       commit('setModalData', data)
     },
     close({ commit }) {
+      changeHash('')
       commit('setModalName', null)
       commit('setLastUser', null)
       commit('setModalData', null)

@@ -33,11 +33,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-plus(size="24")
       span
         | サブチャンネル作成
-    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage" @click="copyMessage")
-      .menu-icon
-        icon-copy(size="24")
-      span
-        | チャンネルリンクをコピー
+<<<<<<< HEAD
     .titlebar-menu-item(
       v-if="$store.state.rtc.isCalling && $store.state.rtc.activeMediaChannelId === $store.state.currentChannel.channelId"
       @click="$store.dispatch('rtc/closeConnection', $store.state.currentChannel.channelId)"
@@ -54,6 +50,13 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-call(size="24")
       span
         | Start Qall
+=======
+    .titlebar-menu-item.copy-channel-path(v-show="!isDirectMessage" @click="copyMessage")
+      .menu-icon
+        icon-copy(size="24")
+      span
+        | チャンネルリンクをコピー
+>>>>>>> origin/master
 </template>
 
 <script>
@@ -65,8 +68,11 @@ import IconNotification from '@/components/Icon/IconNotification'
 import IconStar from '@/components/Icon/IconStar'
 import IconStarFill from '@/components/Icon/IconStarFill'
 import IconPlus from '@/components/Icon/IconPlus'
-import IconCopy from '@/components/Icon/IconCopy'
+<<<<<<< HEAD
 import IconCall from '@/components/Icon/IconCall'
+=======
+import IconCopy from '@/components/Icon/IconCopy'
+>>>>>>> origin/master
 
 export default {
   name: 'Titlebar',
@@ -77,8 +83,11 @@ export default {
     IconStar,
     IconStarFill,
     IconPlus,
-    IconCopy,
+<<<<<<< HEAD
     IconCall
+=======
+    IconCopy
+>>>>>>> origin/master
   },
   data() {
     return {

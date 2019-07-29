@@ -40,7 +40,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       .message-text-wrap
         component(v-if="!isEditing" :is="renderedBody")
         .message-editing-wrap(v-if="isEditing")
-          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @keydown="editKeydown" @keyup="editKeyup")
+          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @beforeinput="editBeforeinput" @keydown="editKeydown" @keyup="editKeyup")
           button.edit-button.edit-cancel(@click.stop="editCancel")
             | Cancel
           button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -73,8 +73,9 @@ import {
   displayDateTime,
   withModifierKey,
   isModifierKey,
-  isSendKey,
-  isBRKey
+  isSendKeyInput,
+  isBRKey,
+  checkLevel2InputEventsSupport
 } from '@/bin/utils'
 import md from '@/bin/markdown-it'
 import client from '@/bin/client'
@@ -87,6 +88,8 @@ import IconPin from '@/components/Icon/IconPin'
 import IconStampPlus from '@/components/Icon/IconStampPlus'
 import IconPen from '@/components/Icon/IconPen'
 import autosize from 'autosize'
+
+const isLevel2InputEventsSupported = checkLevel2InputEventsSupport()
 
 export default {
   name: 'MessageElement',
@@ -106,7 +109,7 @@ export default {
   data() {
     return {
       isEditing: false,
-      edited: '',
+      editedTemp: '',
       files: [],
       messages: [],
       isRendered: false,
@@ -124,20 +127,44 @@ export default {
       this.isContextMenuActive = true
     },
     showStampPicker() {
-      this.$store.commit('setStampPickerModeAsMessage')
+      if (this.isEditing) {
+        this.$store.commit('setStampPickerModeAsEdit')
+      } else {
+        this.$store.commit('setStampPickerModeAsMessage')
+      }
       this.$store.commit('setStampPickerModel', {
         messageId: this.model.messageId
       })
       this.$store.commit('setStampPickerActive', true)
     },
+    editBeforeinput(event) {
+      if (isSendKeyInput(event, this.messageSendKey)) {
+        event.preventDefault()
+        this.editSubmit()
+      }
+    },
     editKeydown(event) {
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true
       }
-      if (isSendKey(event, this.messageSendKey)) {
-        this.editSubmit()
+      // #945
+      if (event.key === 'Enter' && !event.isComposing) {
+        if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
+          event.preventDefault()
+          this.editSubmit()
+          return
+        }
+        if (
+          this.messageSendKey === 'none' &&
+          !withModifierKey(event) &&
+          !isLevel2InputEventsSupported
+        ) {
+          event.preventDefault()
+          this.editSubmit()
+          return
+        }
       }
-      if (isBRKey(event, this.messageSendKey)) {
+      if (isBRKey(event, this.messageSendKey) && !event.isComposing) {
         event.preventDefault()
         const pre = this.edited.substring(0, this.$refs.editArea.selectionStart)
         const suf = this.edited.substring(this.$refs.editArea.selectionEnd)
@@ -157,6 +184,9 @@ export default {
     editMessage() {
       this.isEditing = true
       this.edited = this.model.content
+      this.$nextTick().then(() => {
+        this.$el.querySelector('textarea.input-reset.edit-area').focus()
+      })
     },
     editSubmit() {
       if (this.edited === this.model.content) {
@@ -164,6 +194,7 @@ export default {
         return
       }
       client.editMessage(this.model.messageId, this.edited)
+      this.edited = ''
       this.isEditing = false
       this.isPushedModifierKey = false
       this.getAttachments()
@@ -216,7 +247,7 @@ export default {
               })
           })
       )
-      this.messages = (await Promise.all(
+      this.messages = await Promise.all(
         this.attachedData
           .filter(e => e.type === 'message')
           .map(async e => {
@@ -225,7 +256,7 @@ export default {
               .then(res => res.data)
               .catch(() => null)
           })
-      )).filter(e => e)
+      )
       this.isRendered = true
 
       this.$nextTick(() => {
@@ -307,6 +338,17 @@ export default {
     },
     isEdited() {
       return this.model.createdAt !== this.model.updatedAt
+    },
+    edited: {
+      get() {
+        return this.$store.getters['messageEdit/edited'](this.model.messageId)
+      },
+      set(edited) {
+        this.$store.commit('messageEdit/setEdited', {
+          edited,
+          messageId: this.model.messageId
+        })
+      }
     },
     displayDateTime() {
       return displayDateTime(this.model.createdAt, this.model.updatedAt)

@@ -2,7 +2,14 @@
 const axios = require('axios')
 const fs = require('fs')
 
-Promise.all([axios.get('https://raw.githubusercontent.com/emojione/emojione/master/emoji.json'), axios.get('https://raw.githubusercontent.com/emojione/emojione/master/categories.json')])
+Promise.all([
+  axios.get(
+    'https://raw.githubusercontent.com/emojione/emojione/master/emoji.json'
+  ),
+  axios.get(
+    'https://raw.githubusercontent.com/emojione/emojione/master/categories.json'
+  )
+])
   .then(results => {
     const emojis = results[0].data
     const categories = results[1].data
@@ -25,7 +32,7 @@ Promise.all([axios.get('https://raw.githubusercontent.com/emojione/emojione/mast
       emojis: []
     }
 
-    const altNameTable = [];
+    const altNameTable = []
     Object.keys(emojis).forEach(key => {
       const e = emojis[key]
       if (e.category === 'modifier') {
@@ -35,15 +42,20 @@ Promise.all([axios.get('https://raw.githubusercontent.com/emojione/emojione/mast
         return
       }
 
+      const name = e.shortname.replace(/:/g, '')
       categoryMap[e.category].emojis.push({
-        name: e.shortname.replace(/:/g, ''),
+        name,
         order: e.order,
         code: key
+      })
+      altNameTable.push({
+        code: key,
+        name
       })
       e.shortname_alternates.forEach(altName => {
         altNameTable.push({
           altName: altName.replace(/:/g, ''),
-          name: e.shortname.replace(/:/g, '')
+          name
         })
       })
     })
@@ -52,15 +64,18 @@ Promise.all([axios.get('https://raw.githubusercontent.com/emojione/emojione/mast
     Object.keys(categoryMap).forEach(key => {
       const category = categoryMap[key]
       if (key === 'regional') {
-        category.emojis.sort((a, b) => a.order > b.order ? -1 : 1)
+        category.emojis.sort((a, b) => (a.order > b.order ? -1 : 1))
       } else {
-        category.emojis.sort((a, b) => a.order < b.order ? -1 : 1)
+        category.emojis.sort((a, b) => (a.order < b.order ? -1 : 1))
       }
       result.push(category)
     })
 
     fs.writeFileSync('./src/bin/unicode_emojis.json', JSON.stringify(result))
-    fs.writeFileSync('./src/bin/emoji_altname_table.json', JSON.stringify(altNameTable))
+    fs.writeFileSync(
+      './src/bin/emoji_altname_table.json',
+      JSON.stringify(altNameTable)
+    )
   })
   .catch(e => {
     console.error(e)

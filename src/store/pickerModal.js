@@ -1,4 +1,5 @@
 import client from '@/bin/client'
+import { changeHash } from '@/bin/utils'
 
 export default {
   namespaced: false,
@@ -21,23 +22,41 @@ export default {
     },
     setStampPickerActive(state, isActive) {
       state.stampPickerActive = isActive
+      if (isActive) {
+        changeHash('PickerModal')
+      } else if (location.hash === '#PickerModal') {
+        changeHash('')
+      }
     },
     setStampPickerModeAsMessage(state) {
       state.stampPickerMode = 'message'
     },
     setStampPickerModeAsInput(state) {
       state.stampPickerMode = 'input'
+    },
+    setStampPickerModeAsEdit(state) {
+      state.stampPickerMode = 'edit'
     }
   },
   actions: {
     execStamp({ state, commit, dispatch, rootState }, stamp) {
-      if (state.stampPickerMode === 'message') {
-        dispatch('addStampToMessage', stamp.id)
-      } else {
-        commit('messageInput/addStampToInputText', {
-          stampName: stamp.name,
-          channelId: rootState.currentChannel.channelId
-        })
+      switch (state.stampPickerMode) {
+        case 'message':
+          dispatch('addStampToMessage', stamp.id)
+          break
+        case 'input':
+          commit('messageInput/addStampToInputText', {
+            stampName: stamp.name,
+            channelId: rootState.currentChannel.channelId
+          })
+          break
+        case 'edit':
+          commit('messageEdit/addStampToEdited', {
+            stampName: stamp.name,
+            messageId: state.stampPickerModel.messageId
+          })
+          break
+        default:
       }
     },
     addStampToMessage({ state }, stampId) {

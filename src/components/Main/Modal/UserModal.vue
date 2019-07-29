@@ -92,6 +92,7 @@ $profile-area-width: 400px
   cursor: pointer
   &:hover
     opacity: 1
+  z-index: 1000
 
 .user-modal-expand-wrap
   position: absolute

@@ -38,6 +38,8 @@
         v-model="inputText"
         @focus="inputFocus"
         @blur="inputBlur"
+        @beforeinput="beforeinput"
+        @input="input"
         @keydown="keydown"
         @keyup="keyup"
         @click="clearKey"
@@ -60,8 +62,9 @@ import {
   isImage,
   withModifierKey,
   isModifierKey,
-  isSendKey,
-  isBRKey
+  isSendKeyInput,
+  isBRKey,
+  checkLevel2InputEventsSupport
 } from '@/bin/utils'
 import suggest from '@/bin/suggest'
 import stampAltNameTable from '@/bin/emoji_altname_table.json'
@@ -73,6 +76,8 @@ import IconHash from '@/components/Icon/IconHash'
 import IconProfile from '@/components/Icon/IconProfile'
 import IconFile from '@/components/Icon/IconFile'
 import IconClose from '@/components/Icon/IconClose'
+
+const isLevel2InputEventsSupported = checkLevel2InputEventsSupport()
 
 export default {
   name: 'MessageInput',
@@ -200,7 +205,7 @@ export default {
         })
     },
     replaceUser(message) {
-      return message.replace(/@([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
+      return message.replace(/[@＠]([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
         const user = this.$store.getters.getUserByName(name)
         if (user) {
           return `!{"type": "user", "raw": "${match}", "id": "${user.userId}"}`
@@ -210,7 +215,7 @@ export default {
       })
     },
     replaceChannel(message) {
-      return message.replace(/#([a-zA-Z0-9_/-]+)/g, (match, name) => {
+      return message.replace(/[#＃]([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
           return `!{"type": "channel", "raw": "${match}", "id": "${
@@ -223,9 +228,10 @@ export default {
     },
     replaceGroup(message) {
       return message.replace(
-        /^"@([\S]+)|(?:@([\S]+))/g,
-        (match, userId, content) => {
-          if (userId) return match
+        /"[@＠]([\S]+)|(?:[@＠]([\S]+))/g,
+        (match, replacedUsername, content) => {
+          // すでにユーザーへのメンションに置換されているときは置換を行わない
+          if (replacedUsername) return match
           const group = this.$store.getters.getGroupByContent(content)
           if (group) {
             return `!{"type": "group", "raw": "${match}", "id": "${
@@ -254,20 +260,45 @@ export default {
         keyword: ''
       }
     },
+    beforeinput(event) {
+      if (isSendKeyInput(event, this.messageSendKey)) {
+        event.preventDefault()
+        this.submit()
+      }
+    },
+    input(event) {
+      if (this.postStatus === 'processing') {
+        return
+      }
+      this.postStatus = 'default'
+    },
     keydown(event) {
       if (this.postStatus === 'processing') {
-        event.returnValue = false
+        event.preventDefault()
         return
       }
       this.postStatus = 'default'
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true
       }
-      if (isSendKey(event, this.messageSendKey)) {
-        this.submit()
-        event.returnValue = false
+      // #945
+      if (event.key === 'Enter' && !event.isComposing) {
+        if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
+          event.preventDefault()
+          this.submit()
+          return
+        }
+        if (
+          this.messageSendKey === 'none' &&
+          !withModifierKey(event) &&
+          !isLevel2InputEventsSupported
+        ) {
+          event.preventDefault()
+          this.submit()
+          return
+        }
       }
-      if (isBRKey(event, this.messageSendKey)) {
+      if (isBRKey(event, this.messageSendKey) && !event.isComposing) {
         event.preventDefault()
         const pre = this.inputText.substring(
           0,
@@ -290,7 +321,7 @@ export default {
           if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
             this.suggestMode = true
             this.suggestIndex = 0
-            event.returnValue = false
+            event.preventDefault()
             return
           }
         } else {
@@ -306,11 +337,11 @@ export default {
             if (this.suggestIndex >= this.suggests.length) {
               this.suggestIndex = this.suggests.length - 1
             }
-            event.returnValue = false
+            event.preventDefault()
             return
           } else if (event.key === 'Enter') {
             this.replaceSuggest(this.suggestIndex)
-            event.returnValue = false
+            event.preventDefault()
             return
           }
         }
@@ -325,7 +356,7 @@ export default {
         (event.ctrlKey || event.metaKey || event.shiftKey)
       ) {
         this.submit()
-        event.returnValue = false
+        event.preventDefault()
       } else {
         this.$nextTick(() => {
           const selectionStart = this.messageInput.selectionStart
