@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import traQRTClient from '@/lib/rtc/traQRTCClient'
+import AudioStreamMixer from '@/lib/rtc/AudioStreamMixer'
 import { MutationTree } from 'vuex'
 import { S } from './types'
 
@@ -10,6 +11,14 @@ const mutations: MutationTree<S> = {
   destroyClient(state) {
     state.client = undefined
   },
+
+  setMixer(state, instance: AudioStreamMixer) {
+    state.mixer = instance
+  },
+  destroyMixer(state) {
+    state.mixer = undefined
+  },
+
   setLocalStream(state, stream: MediaStream) {
     state.localStream = stream
   },
@@ -19,6 +28,7 @@ const mutations: MutationTree<S> = {
     }
     state.localStream = undefined
   },
+
   setIsActive(state, isActive: boolean) {
     state.isActive = isActive
   },
@@ -28,14 +38,19 @@ const mutations: MutationTree<S> = {
   setIsMicMuted(state, isMicMuted: boolean) {
     state.isMicMuted = isMicMuted
   },
+
   setActiveMediaChannelId(state, channelID: string) {
     state.activeMediaChannelId = channelID
   },
+
   setUserVolume(state, { userId, volume }: { userId: string; volume: number }) {
-    // Vue.set(state.userVolumeMap, userId, volume)
     state.userVolumeMap = { ...state.userVolumeMap, [userId]: volume }
+    if (state.mixer) {
+      state.mixer.setVolumeOf(userId, volume)
+    }
   },
-  addRemoteStream(state, stream: MediaStreamWithPeerId) {
+
+  addRemoteStreamToMap(state, stream: MediaStreamWithPeerId) {
     const peerId = stream.peerId
     if (peerId in state.remoteAudioStreamMap) {
       Vue.delete(state.remoteAudioStreamMap, peerId)
@@ -48,7 +63,7 @@ const mutations: MutationTree<S> = {
       Vue.set(state.remoteVideoStreamMap, stream.peerId, stream)
     }
   },
-  removeRemoteStream(state, peerId) {
+  removeRemoteStreamFromMap(state, peerId) {
     if (peerId in state.remoteAudioStreamMap) {
       Vue.delete(state.remoteAudioStreamMap, peerId)
     } else if (peerId in state.remoteVideoStreamMap) {

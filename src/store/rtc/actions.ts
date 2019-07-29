@@ -1,4 +1,5 @@
 import traQRTCClient from '@/lib/rtc/traQRTCClient'
+import AudioStreamMixer from '@/lib/rtc/AudioStreamMixer'
 import { getUserAudio, getUserDisplay } from '@/lib/rtc/utils'
 import { ActionTree } from 'vuex'
 import { S, TempRS } from './types'
@@ -13,7 +14,9 @@ const actions: ActionTree<S, TempRS> = {
       if (e.detail.error.startsWith('Error: PeerId')) {
         console.error(`[RTC] Peer Id already in use!`)
       }
-      console.log(`[RTC] Failed to establish connection, trying to reconnect...`)
+      console.log(
+        `[RTC] Failed to establish connection, trying to reconnect...`
+      )
       dispatch('closeConnection')
       dispatch('establishConnection')
     })
@@ -26,25 +29,39 @@ const actions: ActionTree<S, TempRS> = {
     while (!state.client) {
       await dispatch('establishConnection')
     }
+    dispatch('initializeMixer')
+    if (!state.mixer) {
+      return
+    }
+    ;(window as any).mixer = state.mixer
 
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User joined, ID: ${userId}`)
-      commit('setUserVolume', { userId, volume: 1 })
+      // commit('setUserVolume', { userId, volume: 1 })
     })
 
-    state.client.addEventListener('userleave', e => {
+    state.client.addEventListener('userleave', async e => {
       const userId = e.detail.userId
       console.log(`[RTC] User left, ID: ${userId}`)
-      commit('removeRemoteStream', userId)
+      commit('removeRemoteStreamFromMap', userId)
+
+      if (state.mixer) {
+        await state.mixer.removeStream(userId)
+      }
     })
 
-    state.client.addEventListener('streamchange', e => {
+    state.client.addEventListener('streamchange', async e => {
       const stream = e.detail.stream
       const userId = stream.peerId
       console.log(`[RTC] Recieved stream from ${stream.peerId}`)
+      commit('addRemoteStreamToMap', stream)
+
+      if (state.mixer) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        await state.mixer.addStream(stream.peerId, stream)
+      }
       commit('setUserVolume', { userId, volume: 1 })
-      commit('addRemoteStream', stream)
     })
 
     const localStream = await getUserAudio()
@@ -59,12 +76,25 @@ const actions: ActionTree<S, TempRS> = {
     if (!state.client) {
       return
     }
+    if (state.mixer) {
+      state.mixer.muteAll()
+    }
     state.client.closeConnection()
     commit('destroyClient')
+    commit('destroyMixer')
     commit('destroyLocalStream')
     commit('resetRemoteStreamsMap')
     commit('setIsActive', false)
     commit('setIsCalling', false)
+  },
+
+  initializeMixer({ state, commit }) {
+    const mixer = new AudioStreamMixer()
+    Object.keys(state.remoteAudioStreamMap).forEach(userId => {
+      const stream = state.remoteAudioStreamMap[userId]
+      mixer.addStream(userId, stream)
+    })
+    commit('setMixer', mixer)
   },
 
   async setStream({ state }, stream: MediaStream) {
@@ -96,7 +126,6 @@ const actions: ActionTree<S, TempRS> = {
     })
     commit('setIsMicMuted', true)
   },
-
   unmuteLocalStream({ state, commit }) {
     if (!state.localStream) {
       return

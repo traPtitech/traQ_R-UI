@@ -1,4 +1,5 @@
 import traQRTCClient from '@/lib/rtc/traQRTCClient'
+import AudioStreamMixer from '@/lib/rtc/AudioStreamMixer'
 
 // Temporary root state
 // [TODO] Type root state!
@@ -11,6 +12,7 @@ export interface TempRS {
 
 export interface S {
   client?: traQRTCClient
+  mixer?: AudioStreamMixer
   localStream?: MediaStream
   isActive: boolean
   isCalling: boolean

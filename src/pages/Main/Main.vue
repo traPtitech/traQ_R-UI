@@ -7,7 +7,7 @@ action-detector(
   :onDragStyle = "'{background-color: #fff;}'")
   picker-modal
   modal
-  audio-streams-player
+  // audio-streams-player
   .index(:data-enable-blur="name ? 'true' : 'false'")
     titlebar
     channel-information

@@ -146,7 +146,7 @@ export default class traQRTCClient implements EventTarget {
       throw 'Not joined to any room'
     }
     this.room.replaceStream(stream)
-    await this.dummyRoomJoin()
+    // await this.dummyRoomJoin()
   }
 
   get roomName() {
@@ -164,8 +164,7 @@ export default class traQRTCClient implements EventTarget {
       }
       const peer = new Peer(peerId, {
         key: skywayApiKey,
-        credential: res.data,
-        debug: 3
+        credential: res.data
       })
       if (!peer) {
         reject("Couldn't establish connection")
