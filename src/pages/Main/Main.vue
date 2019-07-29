@@ -304,7 +304,9 @@ export default {
               client.readMessages(res.data.parentChannelId)
             }
           } else {
-            if (this.$store.myNotifiedChannelSet.has(res.data.channelId)) {
+            if (
+              !this.$store.state.myNotifiedChannelSet.has(res.data.channelId)
+            ) {
               return
             }
             this.$store.commit('addUnreadMessage', res.data)
