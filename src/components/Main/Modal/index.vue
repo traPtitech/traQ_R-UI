@@ -2,7 +2,7 @@
 .modal-container(v-if="isActive")
   .modal-overlay(
     :style="overlayStyle"
-    @click.self="close"
+    @click.self="close('all')"
   )
   component.modal(
     :is="name"

@@ -21,6 +21,7 @@ import client from '@/bin/client'
 import ActionDetector from '@/components/Util/ActionDetector'
 import MessageView from '@/components/Main/MessageView'
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
+import { changeHash } from '../../bin/utils'
 
 export default {
   name: 'Main',
@@ -149,6 +150,15 @@ export default {
           this.$store.dispatch('getMessages', true)
           this.$store.dispatch('updateUnreadMessages')
         })
+      }
+    }
+
+    window.onpopstate = e => {
+      if (e.state && e.state.name) {
+        this.$store.dispatch('modal/open', e.state)
+      } else {
+        this.$store.commit('setStampPickerActive', false)
+        this.$store.dispatch('modal/close', {})
       }
     }
 
