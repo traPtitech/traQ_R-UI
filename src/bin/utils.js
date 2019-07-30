@@ -221,30 +221,30 @@ export const isTouchDevice = () => {
 }
 
 import store from '../store'
-export const changeHash = (hash, data) => {
+export const changeHash = (hash, data, option = {}) => {
   let path = window.location.pathname
   const curHash = window.location.hash
   console.log(data)
   if (hash !== '') {
     path += `#${hash}`
-    if (!data.fromState) {
+    if (!option.fromState) {
       if (curHash === '#PickerModal') {
         history.replaceState(
-          { name: hash, data: { fromState: true, ...data } },
+          { name: hash, data, option: { fromState: true } },
           document.title,
           path
         )
       } else {
         history.pushState(
-          { name: hash, data: { fromState: true, ...data } },
+          { name: hash, data, option: { fromState: true } },
           document.title,
           path
         )
       }
     }
   } else {
-    if (data.type) {
-      store.commit('modal/setClose', data.type)
+    if (option.type) {
+      store.commit('modal/setClose', option.type)
     }
 
     if (curHash !== '' && store.state.modal.close === 'all') {

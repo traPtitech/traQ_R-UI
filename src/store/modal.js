@@ -152,8 +152,8 @@ export default {
         })
       }
     },
-    open({ state, commit }, { name, data }) {
-      changeHash(name, data)
+    open({ state, commit }, { name, data, option }) {
+      changeHash(name, data, option)
       if (state.name === 'UserModal') {
         // Transition from user modal
         commit('setLastUser', state.data)
@@ -162,7 +162,7 @@ export default {
       commit('setModalData', data)
     },
     close({ commit }, type) {
-      changeHash('', { type })
+      changeHash('', null, { type })
       commit('setModalName', null)
       commit('setLastUser', null)
       commit('setModalData', null)

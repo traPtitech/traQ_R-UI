@@ -66,6 +66,10 @@ const router = new Router({
 router.beforeEach(async (to, from, next) => {
   store.dispatch('modal/close')
 
+  if (location.hash !== '') {
+    history.replaceState(null, document.title, location.pathname)
+  }
+
   if (!store.state.me) {
     await store.dispatch('whoAmI')
   }
