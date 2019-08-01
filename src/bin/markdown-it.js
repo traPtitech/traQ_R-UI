@@ -38,36 +38,77 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
   return from
 }
 
+const renderEmojiDomWithStyle = (stampName, imgTitle, style) =>
+  `<i class="emoji s24 message-emoji" title=":${imgTitle}:" style="${style};">:${md.utils.escapeHtml(
+    stampName
+  )}:</i>`
+
+const renderEmojiDom = (stampName, imgTitle, imgUrl) =>
+  renderEmojiDomWithStyle(
+    stampName,
+    imgTitle,
+    `background-image: url(${imgUrl})`
+  )
+
+const functionStampReg = /^(.+\(.+\))(.*)/
+
+const renderHslEmoji = match => {
+  // HSL: hsl(..., ...%, ...%)
+  return renderEmojiDomWithStyle(
+    match[1],
+    match[1],
+    `background-color: ${match[1]}`
+  )
+}
+
+const renderRgbEmoji = match => {
+  // RGB: 0x......
+  return renderEmojiDomWithStyle(
+    `0x${match[1]}`,
+    match[1],
+    `background-color: #${match[1]}`
+  )
+}
+
 const renderEmoji = match => {
-  if (store.state.stampNameMap[match[1]]) {
-    return `<i class="emoji s24 message-emoji" title=":${
-      store.state.stampNameMap[match[1]].name
-    }:" style="background-image: url(${store.state.baseURL}/api/1.0/files/${
-      store.state.stampNameMap[match[1]].fileId
-    });">:${md.utils.escapeHtml(match[1])}:</i>`
-  } else if (store.getters.getUserByName(match[1])) {
-    const user = store.getters.getUserByName(match[1])
-    return `<i class="emoji s24 message-emoji" title=":${
-      match[1]
-    }:" style="background-image: url(${store.state.baseURL}/api/1.0/files/${
-      user.iconFileId
-    });">:${md.utils.escapeHtml(match[1])}:</i>`
-  } else {
-    const colorReg = /0x([0-9a-f]{6})/
-    const cols = colorReg.exec(match[1])
-    if (cols) {
-      return `<i class="emoji s24 message-emoji" title=":0x${
-        cols[1]
-      }:" style="background-color: #${cols[1]}">:${md.utils.escapeHtml(
-        match[1]
-      )}:</i>`
-    }
-    return match[0]
+  const functionStampMatch = functionStampReg.exec(match[1])
+
+  const splitted = match[1].split('.')
+  const stampName = functionStampMatch ? functionStampMatch[1] : splitted[0]
+  const effects = functionStampMatch
+    ? functionStampMatch[2].split('.')
+    : splitted.length > 1
+    ? splitted.slice(1)
+    : []
+
+  if (store.state.stampNameMap[stampName]) {
+    // 通常スタンプ
+    return renderEmojiDom(
+      stampName,
+      store.state.stampNameMap[stampName].name,
+      `${store.state.baseURL}/api/1.0/files/${
+        store.state.stampNameMap[stampName].fileId
+      }`
+    )
+  } else if (store.getters.getUserByName(stampName)) {
+    // ユーザーアイコン
+    const user = store.getters.getUserByName(stampName)
+    return renderEmojiDom(
+      stampName,
+      stampName,
+      `${store.state.baseURL}/api/1.0/files/${user.iconFileId}`
+    )
   }
+
+  return match[0]
 }
 
 md.use(MarkdownItMark)
 md.use(json)
+md.use(
+  regexp(/:(hsl\(\d+,\s*[\d]+.?[\d]*%,\s*[\d]+.?[\d]*%\)):/, renderHslEmoji)
+)
+md.use(regexp(/:0x([0-9a-f]{6}):/, renderRgbEmoji))
 md.use(regexp(/:([a-zA-Z0-9+_-]{1,32}):/, renderEmoji))
 md.use(mila, {
   attrs: {
