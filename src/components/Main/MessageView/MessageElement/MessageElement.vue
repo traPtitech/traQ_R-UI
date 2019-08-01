@@ -599,6 +599,7 @@ export default {
   background-size: contain
   background-repeat: no-repeat
   background-position: center center
+  vertical-align: middle
 
 .message-button-drop-menu
   transform: rotate(90deg)
