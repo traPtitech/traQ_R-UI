@@ -56,7 +56,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { isTouchDevice } from '@/bin/utils'
+import {
+  isTouchDevice,
+  caseIntensiveIncludes,
+  caseIntensiveEquals
+} from '@/bin/utils'
 import stampAltNameTable from '@/bin/emoji_altname_table.json'
 import DebouncedInput from '@/components/Util/DebouncedInput'
 import IconSearch from '@/components/Icon/IconSearch'
@@ -151,7 +155,10 @@ export default {
       }
 
       const filteredAltName = stampAltNameTable
-        .filter(stamp => stamp.altName && stamp.altName.includes(this.search))
+        .filter(
+          stamp =>
+            stamp.altName && caseIntensiveIncludes(stamp.altName, this.search)
+        )
         .map(stamp => stamp.name)
 
       let filterFunc
@@ -160,7 +167,9 @@ export default {
         filterFunc = (a, b) => unicodeMatchName.includes(a)
       } else {
         filterFunc = (a, b) =>
-          a !== b && (a.includes(b) || filteredAltName.includes(a))
+          !caseIntensiveEquals(a, b) &&
+          (caseIntensiveIncludes(a, b) ||
+            filteredAltName.find(altName => caseIntensiveIncludes(altName, a)))
       }
 
       const stamps = this.stampCategolized
@@ -168,7 +177,9 @@ export default {
         .map(c => c.stamps)
         .flat()
 
-      const match = stamps.filter(stamp => stamp.name === this.search)
+      const match = stamps.filter(stamp =>
+        caseIntensiveEquals(stamp.name, this.search)
+      )
 
       return match.concat(
         stamps.filter(stamp => filterFunc(stamp.name, this.search))

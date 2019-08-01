@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
-import { detectMentions } from '@/bin/utils'
+import { detectMentions, caseIntensiveEquals } from '@/bin/utils'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -574,7 +574,7 @@ const store = new Vuex.Store({
         let channelId = ''
         channelLevels.forEach(name => {
           const levelChannels = getters.childrenChannels(channelId)
-          channel = levelChannels.find(ch => ch.name === name)
+          channel = levelChannels.find(ch => caseIntensiveEquals(ch.name, name))
           if (channel === undefined) return null
           channelId = channel.channelId
         })
@@ -586,7 +586,9 @@ const store = new Vuex.Store({
     },
     getUserByName(state, getters) {
       return userName => {
-        const user = getters.memberData.find(user => user.name === userName)
+        const user = getters.memberData.find(user =>
+          caseIntensiveEquals(user.name, userName)
+        )
         if (user) {
           return user
         } else {
@@ -767,7 +769,9 @@ const store = new Vuex.Store({
     },
     getGroupByContent(state) {
       return groupName =>
-        state.groupData.find(group => group.name === groupName)
+        state.groupData.find(group =>
+          caseIntensiveEquals(group.name, groupName)
+        )
     },
     userDisplayName(state) {
       return userId => state.memberMap[userId].displayName
