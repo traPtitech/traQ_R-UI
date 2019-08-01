@@ -206,7 +206,7 @@ export default {
     },
     replaceUser(message) {
       return message.replace(/[@＠]([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
-        const user = this.$store.getters.getUserByName(name.toLowerCase())
+        const user = this.$store.getters.getUserByName(name)
         if (user) {
           return `!{"type": "user", "raw": "${match}", "id": "${user.userId}"}`
         } else {
@@ -216,7 +216,7 @@ export default {
     },
     replaceChannel(message) {
       return message.replace(/[#＃]([a-zA-Z0-9_/-]+)/g, (match, name) => {
-        const channel = this.$store.getters.getChannelByName(name.toLowerCase())
+        const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
           return `!{"type": "channel", "raw": "${match}", "id": "${
             channel.channelId
@@ -232,9 +232,7 @@ export default {
         (match, replacedUsername, content) => {
           // すでにユーザーへのメンションに置換されているときは置換を行わない
           if (replacedUsername) return match
-          const group = this.$store.getters.getGroupByContent(
-            content.toLowerCase()
-          )
+          const group = this.$store.getters.getGroupByContent(content)
           if (group) {
             return `!{"type": "group", "raw": "${match}", "id": "${
               group.groupId
