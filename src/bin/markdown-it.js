@@ -22,6 +22,8 @@ function highlight(code, lang) {
   }
 }
 
+const effectSet = new Set(['rotate', 'rotate-inv', 'big', 'small'])
+
 const md = new MarkdownIt({
   breaks: true,
   linkify: true,
@@ -38,48 +40,71 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
   return from
 }
 
-const renderEmojiDomWithStyle = (stampName, imgTitle, style) =>
-  `<i class="emoji s24 message-emoji" title=":${imgTitle}:" style="${style};">:${md.utils.escapeHtml(
-    stampName
-  )}:</i>`
+const renderEmojiDomWithStyle = (stampName, imgTitle, style, effects) => {
+  const filteredEffects = effects.filter(e => effectSet.has(e))
+  const effectsClass =
+    effects.length > 0
+      ? ' ' + md.utils.escapeHtml(filteredEffects.join(' '))
+      : ''
+  const escapedTitle = md.utils.escapeHtml(imgTitle)
+  const escapedStyle = md.utils.escapeHtml(style)
+  const escapedName = md.utils.escapeHtml(stampName)
+  return `<i class="emoji s24 message-emoji${effectsClass}" title=":${escapedTitle}:" style="${escapedStyle};">:${escapedName}:</i>`
+}
 
-const renderEmojiDom = (stampName, imgTitle, imgUrl) =>
+const renderEmojiDom = (stampName, imgTitle, imgUrl, effects) =>
   renderEmojiDomWithStyle(
     stampName,
     imgTitle,
-    `background-image: url(${imgUrl})`
+    `background-image: url(${imgUrl})`,
+    effects
   )
 
-const functionStampReg = /^(.+\(.+\))(.*)/
+const emojiReg = /[a-zA-Z0-9+_-]{1,32}/
+const hslReg = /(hsl\(\d+,\s*[\d]+(?:\.[\d]+)?%,\s*[\d]+(?:\.[\d]+)?%\))(.*)/
+const hexReg = /0x([0-9a-f]{6})(.*)/
 
 const renderHslEmoji = match => {
   // HSL: hsl(..., ...%, ...%)
+  const effects = match[2] === '' ? [] : match[2].split('.')
   return renderEmojiDomWithStyle(
     match[1],
     match[1],
-    `background-color: ${match[1]}`
+    `background-color: ${match[1]}`,
+    effects
   )
 }
 
-const renderRgbEmoji = match => {
-  // RGB: 0x......
+const renderHexEmoji = match => {
+  // Hex: 0x......
+  const effects = match[2] === '' ? [] : match[2].split('.')
   return renderEmojiDomWithStyle(
     `0x${match[1]}`,
-    match[1],
-    `background-color: #${match[1]}`
+    `0x${match[1]}`,
+    `background-color: #${match[1]}`,
+    effects
   )
 }
 
 const renderEmoji = match => {
-  const functionStampMatch = functionStampReg.exec(match[1])
+  // match[1] は:を除いた部分
+  const hexMatch = hexReg.exec(match[1])
+  if (hexMatch) {
+    return renderHexEmoji(hexMatch)
+  }
+
+  const hslMatch = hslReg.exec(match[1])
+  if (hslMatch) {
+    return renderHslEmoji(hslMatch)
+  }
+
+  if (!emojiReg.exec(match[1])) {
+    return match[0]
+  }
 
   const splitted = match[1].split('.')
-  const stampName = functionStampMatch ? functionStampMatch[1] : splitted[0]
-  const effects = functionStampMatch
-    ? functionStampMatch[2].split('.')
-    : splitted.length > 1
-    ? splitted.slice(1)
-    : []
+  const stampName = splitted[0]
+  const effects = splitted.length > 1 ? splitted.slice(1) : []
 
   if (store.state.stampNameMap[stampName]) {
     // 通常スタンプ
@@ -88,7 +113,8 @@ const renderEmoji = match => {
       store.state.stampNameMap[stampName].name,
       `${store.state.baseURL}/api/1.0/files/${
         store.state.stampNameMap[stampName].fileId
-      }`
+      }`,
+      effects
     )
   } else if (store.getters.getUserByName(stampName)) {
     // ユーザーアイコン
@@ -96,20 +122,19 @@ const renderEmoji = match => {
     return renderEmojiDom(
       stampName,
       stampName,
-      `${store.state.baseURL}/api/1.0/files/${user.iconFileId}`
+      `${store.state.baseURL}/api/1.0/files/${user.iconFileId}`,
+      effects
     )
   }
+
+  console.error(match[1])
 
   return match[0]
 }
 
 md.use(MarkdownItMark)
 md.use(json)
-md.use(
-  regexp(/:(hsl\(\d+,\s*[\d]+.?[\d]*%,\s*[\d]+.?[\d]*%\)):/, renderHslEmoji)
-)
-md.use(regexp(/:0x([0-9a-f]{6}):/, renderRgbEmoji))
-md.use(regexp(/:([a-zA-Z0-9+_-]{1,32}):/, renderEmoji))
+md.use(regexp(/:([^:<>"'=+!?]+):/, renderEmoji))
 md.use(mila, {
   attrs: {
     target: '_blank',
