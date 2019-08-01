@@ -227,3 +227,11 @@ export const changeHash = hash => {
   }
   history.pushState('', document.title, path)
 }
+
+export const caseIntensiveIncludes = (a, b) => {
+  return a.toLowerCase().includes(b.toLowerCase())
+}
+
+export const caseIntensiveEquals = (a, b) => {
+  return a.toLowerCase() === b.toLowerCase()
+}
