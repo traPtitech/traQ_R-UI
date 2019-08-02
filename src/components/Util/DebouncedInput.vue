@@ -1,5 +1,5 @@
 <template lang="pug">
-input(@input="handleInput" :value="value" :placeholder="placeholder")
+input(@input="handleInput" :value="value" :placeholder="placeholder" @keydown="keydown")
 </template>
 
 <script>
@@ -38,6 +38,9 @@ export default {
       this.timerId = setTimeout(() => {
         this.$emit('input', event.target.value)
       }, this.intervalMilliSec)
+    },
+    keydown(event) {
+      this.$emit('keydown', event.key)
     }
   }
 }
