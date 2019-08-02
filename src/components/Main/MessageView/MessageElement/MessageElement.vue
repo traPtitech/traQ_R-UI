@@ -67,7 +67,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from "vuex";
+import { mapGetters, mapState, mapActions } from 'vuex'
 import {
   detectFiles,
   displayDateTime,
@@ -76,23 +76,23 @@ import {
   isSendKeyInput,
   isBRKey,
   checkLevel2InputEventsSupport
-} from "@/bin/utils";
-import md from "@/bin/markdown-it";
-import client from "@/bin/client";
-import MessageAttachedMessages from "./MessageAttachedMessages";
-import MessageAttachedFiles from "./MessageAttachedFiles";
-import MessageStampsList from "./MessageStampsList";
-import MessageContextDropMenu from "./MessageContextDropMenu";
-import IconDots from "@/components/Icon/IconDots";
-import IconPin from "@/components/Icon/IconPin";
-import IconStampPlus from "@/components/Icon/IconStampPlus";
-import IconPen from "@/components/Icon/IconPen";
-import autosize from "autosize";
+} from '@/bin/utils'
+import md from '@/bin/markdown-it'
+import client from '@/bin/client'
+import MessageAttachedMessages from './MessageAttachedMessages'
+import MessageAttachedFiles from './MessageAttachedFiles'
+import MessageStampsList from './MessageStampsList'
+import MessageContextDropMenu from './MessageContextDropMenu'
+import IconDots from '@/components/Icon/IconDots'
+import IconPin from '@/components/Icon/IconPin'
+import IconStampPlus from '@/components/Icon/IconStampPlus'
+import IconPen from '@/components/Icon/IconPen'
+import autosize from 'autosize'
 
-const isLevel2InputEventsSupported = checkLevel2InputEventsSupport();
+const isLevel2InputEventsSupported = checkLevel2InputEventsSupport()
 
 export default {
-  name: "MessageElement",
+  name: 'MessageElement',
   props: {
     model: Object
   },
@@ -109,7 +109,7 @@ export default {
   data() {
     return {
       isEditing: false,
-      editedTemp: "",
+      editedTemp: '',
       files: [],
       messages: [],
       isRendered: false,
@@ -117,154 +117,151 @@ export default {
       attachedData: null,
       renderedBody: null,
       isPushedModifierKey: false
-    };
+    }
   },
   methods: {
-    ...mapActions(["openUserModal"]),
+    ...mapActions(['openUserModal']),
     detectFiles,
     activeDropMenu() {
-      this.$store.commit("setActiveMessageContextMenu", this.model.messageId);
-      this.isContextMenuActive = true;
+      this.$store.commit('setActiveMessageContextMenu', this.model.messageId)
+      this.isContextMenuActive = true
     },
     showStampPicker() {
       if (this.isEditing) {
-        this.$store.commit("setStampPickerModeAsEdit");
+        this.$store.commit('setStampPickerModeAsEdit')
       } else {
-        this.$store.commit("setStampPickerModeAsMessage");
+        this.$store.commit('setStampPickerModeAsMessage')
       }
-      this.$store.commit("setStampPickerModel", {
+      this.$store.commit('setStampPickerModel', {
         messageId: this.model.messageId
-      });
-      this.$store.commit("setStampPickerActive", true);
+      })
+      this.$store.commit('setStampPickerActive', true)
     },
     editBeforeinput(event) {
       if (isSendKeyInput(event, this.messageSendKey)) {
-        event.preventDefault();
-        this.editSubmit();
+        event.preventDefault()
+        this.editSubmit()
       }
     },
     editKeydown(event) {
       if (withModifierKey(event)) {
-        this.isPushedModifierKey = true;
+        this.isPushedModifierKey = true
       }
       // #945
-      if (event.key === "Enter" && !event.isComposing) {
-        if (this.messageSendKey === "modifier" && withModifierKey(event)) {
-          event.preventDefault();
-          this.editSubmit();
-          return;
+      if (event.key === 'Enter' && !event.isComposing) {
+        if (this.messageSendKey === 'modifier' && withModifierKey(event)) {
+          event.preventDefault()
+          this.editSubmit()
+          return
         }
         if (
-          this.messageSendKey === "none" &&
+          this.messageSendKey === 'none' &&
           !withModifierKey(event) &&
           !isLevel2InputEventsSupported
         ) {
-          event.preventDefault();
-          this.editSubmit();
-          return;
+          event.preventDefault()
+          this.editSubmit()
+          return
         }
       }
       if (isBRKey(event, this.messageSendKey) && !event.isComposing) {
-        event.preventDefault();
-        const pre = this.edited.substring(
-          0,
-          this.$refs.editArea.selectionStart
-        );
-        const suf = this.edited.substring(this.$refs.editArea.selectionEnd);
-        this.edited = `${pre}\n${suf}`;
+        event.preventDefault()
+        const pre = this.edited.substring(0, this.$refs.editArea.selectionStart)
+        const suf = this.edited.substring(this.$refs.editArea.selectionEnd)
+        this.edited = `${pre}\n${suf}`
         this.$nextTick(() => {
           this.$refs.editArea.selectionStart = this.$refs.editArea.selectionEnd =
-            pre.length + 1;
-          autosize.update(this.$refs.editArea);
-        });
+            pre.length + 1
+          autosize.update(this.$refs.editArea)
+        })
       }
     },
     editKeyup(event) {
       if (isModifierKey(event)) {
-        this.isPushedModifierKey = false;
+        this.isPushedModifierKey = false
       }
     },
     editMessage() {
-      this.isEditing = true;
-      this.edited = this.model.content;
+      this.isEditing = true
+      this.edited = this.model.content
       this.$nextTick().then(() => {
-        this.$el.querySelector("textarea.input-reset.edit-area").focus();
-      });
+        this.$el.querySelector('textarea.input-reset.edit-area').focus()
+      })
     },
     editSubmit() {
       if (this.edited === this.model.content) {
-        this.isEditing = false;
-        return;
+        this.isEditing = false
+        return
       }
-      client.editMessage(this.model.messageId, this.edited);
-      this.edited = "";
-      this.isEditing = false;
-      this.isPushedModifierKey = false;
-      this.getAttachments();
+      client.editMessage(this.model.messageId, this.edited)
+      this.edited = ''
+      this.isEditing = false
+      this.isPushedModifierKey = false
+      this.getAttachments()
     },
     editCancel() {
-      this.isEditing = false;
+      this.isEditing = false
     },
     deleteMessage() {
-      if (window.confirm("このメッセージを削除してもよろしいですか？")) {
-        client.deleteMessage(this.model.messageId);
+      if (window.confirm('このメッセージを削除してもよろしいですか？')) {
+        client.deleteMessage(this.model.messageId)
       }
     },
     async pinMessage() {
-      await client.pinMessage(this.model.messageId);
+      await client.pinMessage(this.model.messageId)
       this.$store.dispatch(
-        "getCurrentChannelPinnedMessages",
+        'getCurrentChannelPinnedMessages',
         this.$store.state.currentChannel.channelId
-      );
+      )
     },
     async unpinMessage() {
-      await client.unpinMessage(this.pinned.pinId);
+      await client.unpinMessage(this.pinned.pinId)
       this.$store.dispatch(
-        "getCurrentChannelPinnedMessages",
+        'getCurrentChannelPinnedMessages',
         this.$store.state.currentChannel.channelId
-      );
+      )
     },
     clipMessage() {
-      client.clipMessage("", this.model.messageId);
+      client.clipMessage('', this.model.messageId)
     },
     async getAttachments() {
-      this.attachedData = detectFiles(this.model.content);
+      this.attachedData = detectFiles(this.model.content)
       this.files = await Promise.all(
         this.attachedData
-          .filter(e => e.type === "file")
+          .filter(e => e.type === 'file')
           .map(async e => {
             return client
               .getFileMeta(e.id)
               .then(res => res.data)
               .catch(() => {
                 return {
-                  fileId: "",
-                  name: "not found",
-                  mime: "none",
+                  fileId: '',
+                  name: 'not found',
+                  mime: 'none',
                   size: 0,
-                  dateTime: "2019-02-05T05:43:00.452Z",
+                  dateTime: '2019-02-05T05:43:00.452Z',
                   hasThumb: true,
                   thumbWidth: 0,
                   thumbHeight: 0
-                };
-              });
+                }
+              })
           })
-      );
+      )
       this.messages = await Promise.all(
         this.attachedData
-          .filter(e => e.type === "message")
+          .filter(e => e.type === 'message')
           .map(async e => {
             return client
               .getMessage(e.id)
               .then(res => res.data)
-              .catch(() => null);
+              .catch(() => null)
           })
-      );
-      this.isRendered = true;
+      )
+      this.isRendered = true
 
       this.$nextTick(() => {
-        this.$emit("rendered", this.$el.scrollHeight);
-      });
+        this.$emit('rendered', this.$el.scrollHeight)
+      })
     },
     render() {
       this.renderedBody = {
@@ -273,40 +270,40 @@ export default {
             ${md.render(this.model.content)}
           </div>`,
         props: this.$options.props
-      };
+      }
     },
     copyMessage() {
       this.$copyText(
         `!{"raw":"","type":"message","id":"${this.model.messageId}"}`
-      );
+      )
     },
     reportMessage() {
       const reason = window.prompt(
-        "このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください"
-      );
+        'このメッセージを不適切なメッセージとして通報しますか？\n通報理由を入力してください'
+      )
       if (reason) {
         client.reportMessage(this.model.messageId, reason).then(() => {
-          this.$store.commit("removeMessage", this.model.messageId);
-        });
+          this.$store.commit('removeMessage', this.model.messageId)
+        })
       }
     },
     grade() {
-      return this.$store.getters.gradeByUserMap[this.model.userId];
+      return this.$store.getters.gradeByUserMap[this.model.userId]
     },
     statusBadge(userId) {
       // grade or bot or undefined
       if (this.isBot) {
-        return "bot";
+        return 'bot'
       } else {
-        return this.grade(userId) ? this.grade(userId).name : undefined;
+        return this.grade(userId) ? this.grade(userId).name : undefined
       }
     },
     handleStatusClick() {
       if (!this.isBot) {
         this.$store.dispatch(
-          "openGroupModal",
+          'openGroupModal',
           this.grade(this.model.userId).groupId
-        );
+        )
       }
     },
     attachedMessageRendered() {
@@ -314,91 +311,91 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["fileUrl", "getMyId", "userDisplayName"]),
-    ...mapState(["messageSendKey"]),
+    ...mapGetters(['fileUrl', 'getMyId', 'userDisplayName']),
+    ...mapState(['messageSendKey']),
     showKeyGuide() {
       return (
         this.isPushedModifierKey &&
-        !(this.messageSendKey === "modifier" && !this.edited)
-      );
+        !(this.messageSendKey === 'modifier' && !this.edited)
+      )
     },
     userIconBackground() {
       return {
         backgroundImage: `url(${this.fileUrl(this.userDetail.iconFileId)})`
-      };
+      }
     },
     userDetail() {
-      return this.$store.state.memberMap[this.model.userId];
+      return this.$store.state.memberMap[this.model.userId]
     },
     userName() {
-      return this.userDetail.name;
+      return this.userDetail.name
     },
     isBot() {
-      return this.userDetail.bot;
+      return this.userDetail.bot
     },
     pinned() {
-      return this.$store.getters.isPinned(this.model.messageId);
+      return this.$store.getters.isPinned(this.model.messageId)
     },
     isEdited() {
-      return this.model.createdAt !== this.model.updatedAt;
+      return this.model.createdAt !== this.model.updatedAt
     },
     edited: {
       get() {
-        return this.$store.getters["messageEdit/edited"](this.model.messageId);
+        return this.$store.getters['messageEdit/edited'](this.model.messageId)
       },
       set(edited) {
-        this.$store.commit("messageEdit/setEdited", {
+        this.$store.commit('messageEdit/setEdited', {
           edited,
           messageId: this.model.messageId
-        });
+        })
       }
     },
     displayDateTime() {
-      return displayDateTime(this.model.createdAt, this.model.updatedAt);
+      return displayDateTime(this.model.createdAt, this.model.updatedAt)
     },
     hasAttachedMessage() {
-      return this.messages.length > 0;
+      return this.messages.length > 0
     },
     hasAttachedFile() {
-      return this.files.length > 0;
+      return this.files.length > 0
     },
     pinDetail() {
       return (
         this.$store.state.currentChannelPinnedMessages.find(
           pin => pin.message.messageId === this.model.messageId
         ) || null
-      );
+      )
     },
     pinnerName() {
       if (!this.pinDetail) {
-        return "";
+        return ''
       }
-      return this.$store.state.memberMap[this.pinDetail.userId].name;
+      return this.$store.state.memberMap[this.pinDetail.userId].name
     }
   },
   watch: {
     model() {
-      this.render();
-      this.getAttachments();
+      this.render()
+      this.getAttachments()
     },
     isEditing(newValue) {
       if (newValue) {
         this.$nextTick(() => {
-          autosize(this.$refs.editArea);
-        });
+          autosize(this.$refs.editArea)
+        })
       } else {
-        autosize.destroy(this.$refs.editArea);
+        autosize.destroy(this.$refs.editArea)
       }
     },
     edited() {
-      autosize.update(this.$refs.editArea);
+      autosize.update(this.$refs.editArea)
     }
   },
   mounted() {
-    this.render();
-    this.getAttachments();
+    this.render()
+    this.getAttachments()
   }
-};
+}
 </script>
 
 <style lang="sass">
