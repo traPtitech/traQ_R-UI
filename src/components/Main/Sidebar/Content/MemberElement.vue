@@ -3,7 +3,7 @@
   .member-element-icon-container(@click="openUserModal")
     .member-element-icon(:style="iconStyle" v-lazy:background-image="userIconSrc")
     .member-element-unread-indicator(v-if="unreadMessagesNum > 0" :style="borderStyle")
-    .member-element-online-indicator(v-if="!model.bot && model.isOnline" :style="borderStyle")
+    .member-element-online-indicator(v-if="model.isOnline" :style="borderStyle")
   .member-name-container(@click="openDMChannel")
     p.member-display-name.text-ellipsis
       | {{model.displayName}}
