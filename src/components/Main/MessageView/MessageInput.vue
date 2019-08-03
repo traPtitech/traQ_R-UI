@@ -131,6 +131,15 @@ export default {
       if (this.postLock || !this.canSubmit) {
         return
       }
+      if (this.$store.state.currentChannel.force) {
+        if (
+          !window.confirm(
+            'このチャンネルに投稿されたメッセージは全員に通知されます。メッセージを投稿しますか？'
+          )
+        ) {
+          return
+        }
+      }
       this.postLock = true
       if (this.files.length > 0) {
         this.uploadFiles()
