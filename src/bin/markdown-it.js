@@ -127,8 +127,6 @@ const renderEmoji = match => {
     )
   }
 
-  console.error(match[1])
-
   return match[0]
 }
 
