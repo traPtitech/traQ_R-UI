@@ -1,7 +1,7 @@
 <template lang="pug">
   div.stamp-picker-container
     div.stamp-picker-header
-      DebouncedInput.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
+      DebouncedInput.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder" @keydown="searchKeydown")
       div.stamp-picker-search-icon
         icon-search(color="gray")
     transition-group.stamp-picker-body.is-scroll(
@@ -201,6 +201,11 @@ export default {
     },
     categoryIcon(categoryIndex) {
       return this.categoryIcons[categoryIndex]
+    },
+    searchKeydown(key) {
+      if (key === 'Escape') {
+        this.search = ''
+      }
     }
   },
   watch: {

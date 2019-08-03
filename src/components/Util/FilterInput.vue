@@ -4,11 +4,13 @@
     v-if="useDebounce"
     :placeholder="placeholder"
     :value="filterText"
+    @keydown="keydownDebounce"
     @input="handleInput")
   input.input-reset.filter-input(
     v-else
     :placeholder="placeholder"
     :value="filterText"
+    @keydown="keydown"
     @input="handleInput")
   .filter-input-reset(v-if="filterText !== ''" @click="reset")
     icon-close(:color="isOnBg ? 'var(--primary-color-on-bg)' : 'white'")
@@ -49,6 +51,16 @@ export default {
   methods: {
     handleInput(event) {
       this.$emit('input', event)
+    },
+    keydownDebounce(key) {
+      if (key === 'Escape') {
+        this.reset()
+      }
+    },
+    keydown(event) {
+      if (event.key === 'Escape') {
+        this.reset()
+      }
     },
     reset() {
       this.$emit('input', '')
