@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
-import { detectMentions, caseIntensiveEquals } from '@/bin/utils'
+import { detectMentions, caseIntensiveEquals, Trie } from '@/bin/utils'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -66,6 +66,7 @@ const store = new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
+    channelTrie: null,
     activityMessages: [],
     activityChannelIdSet: new Set(),
     openChannels: {},
@@ -74,6 +75,7 @@ const store = new Vuex.Store({
     titlebarExpanded: false,
     memberData: [],
     memberMap: {},
+    memberTrie: null,
     groupData: [],
     groupMap: {},
     stampData: [],
@@ -155,12 +157,30 @@ const store = new Vuex.Store({
           )
         }
       })
+      const root = state.channelData.find(channel => channel.channelId === '')
+      const trie = new Trie()
+      const buildTrie = (channel, acc) => {
+        const path = (acc === '' ? '' : acc + '/') + channel.name
+        trie.update(path, 0)
+        if (channel.children) {
+          channel.children.forEach(childId => {
+            buildTrie(map[childId], path)
+          })
+        }
+      }
+      buildTrie(root, '')
+      state.channelTrie = trie
     },
     setMemberData(state, newMemberData) {
       state.memberData = newMemberData
+      let trie = new Trie()
       state.memberData.forEach(member => {
+        if (!member.suspended) {
+          trie.update(member.name, 0)
+        }
         state.memberMap[member.userId] = member
       })
+      state.memberTrie = trie
     },
     setGroupData(state, newGroupData) {
       newGroupData.forEach(group => {
@@ -798,6 +818,12 @@ const store = new Vuex.Store({
     },
     getWebhookUserIds(state) {
       return state.webhooks.map(w => w.botUserId)
+    },
+    getChannelPrefix(state) {
+      return s => state.channelTrie.query(s, 0, '')
+    },
+    getMemberPrefix(state) {
+      return s => state.memberTrie.query(s, 0, '')
     }
   },
   actions: {

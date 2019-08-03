@@ -283,6 +283,38 @@ export default {
         event.preventDefault()
         return
       }
+      if (event.key === 'Tab') {
+        event.preventDefault()
+        const endIndex = this.messageInput.selectionEnd - 1
+        for (let i = endIndex; i >= 0; i--) {
+          if (/[a-z0-9_/-]/i.test(this.inputText[i])) {
+            continue
+          } else if (/#|＃/.test(this.inputText[i])) {
+            const prefix = this.$store.getters.getChannelPrefix(
+              this.inputText.substring(i + 1, endIndex + 1)
+            )
+            this.inputText =
+              this.inputText.substring(0, i) +
+              '#' +
+              prefix +
+              this.inputText.substring(endIndex + 1)
+            return
+          } else if (/@|＠/.test(this.inputText[i])) {
+            const prefix = this.$store.getters.getMemberPrefix(
+              this.inputText.substring(i + 1, endIndex + 1)
+            )
+            this.inputText =
+              this.inputText.substring(0, i) +
+              '@' +
+              prefix +
+              this.inputText.substring(endIndex + 1)
+            return
+          } else {
+            return
+          }
+        }
+        return
+      }
       this.postStatus = 'default'
       if (withModifierKey(event)) {
         this.isPushedModifierKey = true

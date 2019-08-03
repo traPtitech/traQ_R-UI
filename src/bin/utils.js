@@ -235,3 +235,56 @@ export const caseIntensiveIncludes = (a, b) => {
 export const caseIntensiveEquals = (a, b) => {
   return a.toLowerCase() === b.toLowerCase()
 }
+
+export class Trie {
+  constructor() {
+    this.children = {}
+    this.base = ''
+    this.size = 0
+    this.fork = 0
+    this.next = ''
+  }
+  update(s, i) {
+    this.size++
+    if (s.length === i) {
+      this.fork++
+      this.base = s
+      return
+    }
+    let c = s[i].toLowerCase()
+    this.next = c
+    if (!this.children[c]) {
+      this.fork++
+      this.children[c] = new Trie()
+    }
+    this.children[c].update(s, i + 1)
+  }
+  // query(s, 0, '')
+  // sを接頭辞に持つ文字列が存在しない -> s
+  // sを接頭辞に持つ文字列が一意に定まる -> 一意に定まる元の文字列
+  // _ -> sを接頭辞に持つ文字列の最大共通接頭辞
+  query(s, i, acc) {
+    if (!acc) {
+      acc = ''
+    }
+    if (s.length === i) {
+      if (this.size === 1) {
+        if (this.base !== '') {
+          return this.base
+        } else {
+          return this.children[this.next].query(s, i, acc)
+        }
+      }
+      if (this.fork > 1) {
+        return acc
+      } else {
+        return this.children[this.next].query(s, i, acc + this.next)
+      }
+    }
+    let c = s[i].toLowerCase()
+    if (!this.children[c]) {
+      return s
+    }
+    return this.children[c].query(s, i + 1, acc + c)
+  }
+}
