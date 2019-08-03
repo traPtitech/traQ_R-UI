@@ -590,6 +590,42 @@ export default {
     width: 32px
     height: 32px
 
+@keyframes rotate
+  0%
+    transform: rotate(0)
+  100%
+    transform: rotate(1turn)
+
+@keyframes rotate-inv
+  0%
+    transform: rotate(0)
+  100%
+    transform: rotate(-1turn)
+
+@keyframes wiggle
+  0%
+    transform: translate(1px, 1px) rotate(0deg)
+  10%
+    transform: translate(-1px, -2px) rotate(-1deg)
+  20%
+    transform: translate(-3px, 0px) rotate(1deg)
+  30%
+    transform: translate(3px, 2px) rotate(0deg)
+  40%
+    transform: translate(1px, -1px) rotate(1deg)
+  50%
+    transform: translate(-1px, 2px) rotate(-1deg)
+  60%
+    transform: translate(-3px, 1px) rotate(0deg)
+  70%
+    transform: translate(3px, 1px) rotate(-1deg)
+  80%
+    transform: translate(-1px, -1px) rotate(1deg)
+  90%
+    transform: translate(1px, 2px) rotate(0deg)
+  100%
+    transform: translate(1px, -2px) rotate(-1deg)
+
 .emoji
   display: inline-block
   text-indent: 999%
@@ -600,6 +636,19 @@ export default {
   background-repeat: no-repeat
   background-position: center center
   vertical-align: middle
+
+  &.rotate
+    animation: rotate linear 1s infinite
+  &.rotate-inv
+    animation: rotate-inv linear 1s infinite
+  &.wiggle
+    animation: wiggle linear 0.3s infinite
+  &.large
+    width: 32px
+    height: 32px
+  &.small
+    width: 16px
+    height: 16px
 
 .message-button-drop-menu
   transform: rotate(90deg)
