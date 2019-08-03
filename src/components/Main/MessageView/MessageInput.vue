@@ -193,9 +193,6 @@ export default {
       postedMessage
         .then(() => {
           this.inputText = ''
-          this.$nextTick(() => {
-            autosize.update(this.messageInput)
-          })
           this.postStatus = 'succeeded'
           this.postLock = false
         })
@@ -309,7 +306,6 @@ export default {
         this.$nextTick(() => {
           this.messageInput.selectionStart = this.messageInput.selectionEnd =
             pre.length + 1
-          autosize.update(this.messageInput)
         })
       }
       /*
@@ -597,6 +593,9 @@ export default {
   watch: {
     inputText(newText) {
       this.$store.commit('setEditing', this.focused && newText.length > 0)
+      this.$nextTick(() => {
+        autosize.update(this.messageInput)
+      })
     },
     currentChannel() {
       this.$nextTick(() => {
