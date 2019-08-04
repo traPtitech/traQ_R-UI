@@ -22,7 +22,23 @@ function highlight(code, lang) {
   }
 }
 
-const effectSet = new Set(['rotate', 'rotate-inv', 'wiggle', 'large', 'small'])
+const effectSet = new Set([
+  'rotate',
+  'rotate-inv',
+  'wiggle',
+  'ex-large',
+  'large',
+  'small',
+  'parrot',
+  'zoom',
+  'inversion',
+  'turn',
+  'turn-v',
+  'happa',
+  'pyon',
+  'flashy',
+  'pull'
+])
 
 const md = new MarkdownIt({
   breaks: true,

@@ -626,6 +626,108 @@ export default {
   100%
     transform: translate(1px, -2px) rotate(-1deg)
 
+@keyframes parrot
+  0%
+    filter: hue-rotate(0)
+  100%
+    filter: hue-rotate(1turn)
+
+@keyframes zoom
+  0%
+    transform: scale(1.0)
+  25%
+    transform: scale(1.5)
+  50%
+    transform: scale(1.0)
+  75%
+    transform: scale(0.5)
+
+@keyframes invert
+  0%
+    filter: invert(0)
+  50%
+    filter: invert(1)
+
+@keyframes turn
+  0%
+    transform: rotateY(0)
+  100%
+    transform: rotateY(1turn)
+
+@keyframes turn-v
+  0%
+    transform: rotateX(0)
+  100%
+    transform: rotateX(1turn)
+
+@keyframes happa
+  0%
+    transform: translateY(0) rotateY(0)
+  12.5%
+    transform: translateY(-2px) rotateY(0)
+  25%
+    transform: translateY(0) rotateY(0)
+  37.5%
+    transform: translateY(-2px) rotateY(0)
+  50%
+    transform: translateY(0) rotateY(0.5turn)
+  67.5%
+    transform: translateY(-2px) rotateY(0.5turn)
+  75%
+    transform: translateY(0) rotateY(0.5turn)
+  87.5%
+    transform: translateY(-2px) rotateY(0.5turn)
+
+@keyframes pyon
+  0%
+    transform: translateY(0) scale(1, 1)
+  15%
+    transform: translateY(-2px) scale(1, 1)
+  30%
+    transform: translateY(0) scale(1, 1)
+  40%
+    transform: translateY(0) scale(1.1, 0.9)
+  50%
+    transform: translateY(0) scale(1, 1)
+  65%
+    transform: translateY(-2px) scale(1, 1)
+  80%
+    transform: translateY(0) scale(1, 1)
+  90%
+    transform: translateY(0) scale(1.1, 0.9)
+
+@keyframes flashy
+  0%
+    filter: drop-shadow(0 0 5px hsl(0.0*360,50%,50%))
+  10%
+    filter: drop-shadow(0 0 5px hsl(0.1*360,50%,50%))
+  20%
+    filter: drop-shadow(0 0 5px hsl(0.2*360,50%,50%))
+  30%
+    filter: drop-shadow(0 0 5px hsl(0.3*360,50%,50%))
+  40%
+    filter: drop-shadow(0 0 5px hsl(0.4*360,50%,50%))
+  50%
+    filter: drop-shadow(0 0 5px hsl(0.5*360,50%,50%))
+  60%
+    filter: drop-shadow(0 0 5px hsl(0.6*360,50%,50%))
+  70%
+    filter: drop-shadow(0 0 5px hsl(0.7*360,50%,50%))
+  80%
+    filter: drop-shadow(0 0 5px hsl(0.8*360,50%,50%))
+  90%
+    filter: drop-shadow(0 0 5px hsl(0.9*360,50%,50%))
+
+@keyframes pull
+  0%
+    transform: skew(0, 0)
+  25%
+    transform: skew(15deg, 15deg)
+  50%
+    transform: skew(0, 0)
+  75%
+    transform: skew(-15deg, -15deg)
+
 .emoji
   display: inline-block
   text-indent: 999%
@@ -643,12 +745,34 @@ export default {
     animation: rotate-inv linear 1s infinite
   &.wiggle
     animation: wiggle linear 0.3s infinite
+  &.ex-large
+    width: 48px
+    height: 48px
   &.large
     width: 32px
     height: 32px
   &.small
     width: 16px
     height: 16px
+  &.parrot
+    animation: parrot linear 0.5s infinite
+  &.zoom
+    animation: zoom linear 1s infinite
+  &.inversion
+    animation: invert linear 1.5s infinite
+  &.turn
+    animation: turn linear 1.5s infinite
+  &.turn-v
+    animation: turn-v linear 1.5s infinite
+  &.happa
+    animation: happa linear 1.5s infinite
+  &.pyon
+    animation: pyon linear 1.5s infinite
+    transform-origin: bottom center
+  &.flashy
+    animation: flashy linear 1s infinite
+  &.pull
+    animation: pull linear 0.5s infinite
 
 .message-button-drop-menu
   transform: rotate(90deg)
