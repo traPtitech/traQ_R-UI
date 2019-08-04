@@ -636,7 +636,7 @@ export default {
   0%
     transform: scale(1.0)
   25%
-    transform: scale(2.0)
+    transform: scale(1.5)
   50%
     transform: scale(1.0)
   75%
@@ -755,7 +755,7 @@ export default {
     width: 16px
     height: 16px
   &.parrot
-    animation: parrot linear 1s infinite
+    animation: parrot linear 0.5s infinite
   &.zoom
     animation: zoom linear 1s infinite
   &.invertion
@@ -770,7 +770,7 @@ export default {
     animation: pyon linear 1.5s infinite
     transform-origin: bottom center
   &.flashy
-    animation: flashy linear 1.5s infinite
+    animation: flashy linear 1s infinite
   &.pull
     animation: pull linear 0.5s infinite
 
