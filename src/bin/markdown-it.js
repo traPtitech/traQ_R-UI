@@ -132,7 +132,9 @@ const renderEmoji = match => {
 
 md.use(MarkdownItMark)
 md.use(json)
-md.use(regexp(/:([^:<>"'=+!?]+):/, renderEmoji))
+md.use(
+  regexp(/:((?:[a-zA-Z0-9+_-]{1,32}|\w+\([^:<>"'=+!?]+\))[.\w]*):/, renderEmoji)
+)
 md.use(mila, {
   attrs: {
     target: '_blank',
