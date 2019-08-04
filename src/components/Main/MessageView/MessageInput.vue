@@ -42,7 +42,6 @@
         @input="input"
         @keydown="keydown"
         @keyup="keyup"
-        @click="clearKey"
         @paste="pasteImage"
         ref="inputArea")
       .message-input-button.flex-center(@click.stop="showStampPicker")
@@ -99,13 +98,6 @@ export default {
       postLock: false,
       uploadedIds: [],
       messageInput: null,
-      key: {
-        keyword: '',
-        type: ''
-      },
-      limit: 5,
-      suggestMode: false,
-      suggestIndex: 0,
       uploadProgressSum: 0,
       isPushedModifierKey: false
     }
@@ -260,12 +252,6 @@ export default {
         return `:${stamp.name}:`
       })
     },
-    clearKey() {
-      this.key = {
-        type: '',
-        keyword: ''
-      }
-    },
     beforeinput(event) {
       if (isSendKeyInput(event, this.messageSendKey)) {
         event.preventDefault()
@@ -281,6 +267,12 @@ export default {
     keydown(event) {
       if (this.postStatus === 'processing') {
         event.preventDefault()
+        return
+      }
+      if (event.key === 'Tab') {
+        event.preventDefault()
+        this.replaceSuggest()
+        autosize.update(this.messageInput)
         return
       }
       this.postStatus = 'default'
@@ -317,117 +309,10 @@ export default {
             pre.length + 1
         })
       }
-      /*
-      if (this.suggests.length === 0) {
-        this.suggestMode = false
-        this.suggestIndex = 0
-      } else {
-        if (!this.suggestMode) {
-          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-            this.suggestMode = true
-            this.suggestIndex = 0
-            event.preventDefault()
-            return
-          }
-        } else {
-          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-            if (event.key === 'ArrowDown') {
-              this.suggestIndex++
-            } else {
-              this.suggestIndex--
-            }
-            if (this.suggestIndex < 0) {
-              this.suggestIndex = 0
-            }
-            if (this.suggestIndex >= this.suggests.length) {
-              this.suggestIndex = this.suggests.length - 1
-            }
-            event.preventDefault()
-            return
-          } else if (event.key === 'Enter') {
-            this.replaceSuggest(this.suggestIndex)
-            event.preventDefault()
-            return
-          }
-        }
-      }
-      this.key = {
-        type: '',
-        keyword: ''
-      }
-      this.suggestMode = false
-      if (
-        event.key === 'Enter' &&
-        (event.ctrlKey || event.metaKey || event.shiftKey)
-      ) {
-        this.submit()
-        event.preventDefault()
-      } else {
-        this.$nextTick(() => {
-          const selectionStart = this.messageInput.selectionStart
-          const selectionEnd = this.messageInput.selectionEnd
-          if (!selectionStart || selectionStart !== selectionEnd) {
-            return
-          }
-          const inputSubstr = this.inputText.substr(0, selectionStart)
-          inputSubstr.replace(/#([a-zA-Z0-9_/-]*)$/, (match, key) => {
-            this.key = {
-              keyword: key.toLowerCase(),
-              type: '#'
-            }
-            return match
-          })
-          inputSubstr.replace(/@([a-zA-Z0-9_-]*)$/, (match, key) => {
-            this.key = {
-              keyword: key.toLowerCase(),
-              type: '@'
-            }
-            return match
-          })
-          inputSubstr.replace(/:([a-zA-Z0-9+_-]*)$/, (match, key) => {
-            this.key = {
-              keyword: key.toLowerCase(),
-              type: ':'
-            }
-            return match
-          })
-        })
-      }
-      */
     },
     keyup(event) {
       if (isModifierKey(event)) {
         this.isPushedModifierKey = false
-      }
-    },
-    onmouseover(index) {
-      this.suggestMode = true
-      this.suggestIndex = index
-    },
-    replaceSuggest(index) {
-      this.suggestMode = false
-      this.suggestIndex = 0
-      const messageInput = document.getElementById('messageInput')
-      const startIndex = messageInput.selectionStart
-      const replaceSuffix = this.inputText.substr(startIndex)
-      const prefixes = this.inputText.substr(0, startIndex).split(this.key.type)
-      const lastSize = prefixes.pop().length + this.key.type.length
-      let replacePrefix = prefixes[0]
-      for (let i = 1; i < prefixes.length; i++) {
-        replacePrefix += this.key.type + prefixes[i]
-      }
-      const replace =
-        this.suggests[index].start +
-        this.suggests[index].replace +
-        this.suggests[index].suffix
-      this.inputText = replacePrefix + replace + replaceSuffix
-      this.$nextTick(() => {
-        messageInput.selectionStart = messageInput.selectionEnd =
-          startIndex - lastSize + replace.length
-      })
-      this.key = {
-        keyword: '',
-        type: ''
       }
     },
     addFiles(event) {
@@ -506,6 +391,36 @@ export default {
         const item = items[i]
         const file = item.getAsFile()
         this.addFile(file)
+      }
+    },
+    replaceSuggest() {
+      const endIndex = this.messageInput.selectionEnd - 1
+      for (let i = endIndex; i >= 0; i--) {
+        if (/[a-z0-9_/-]/i.test(this.inputText[i])) {
+          continue
+        } else if (/#|＃/.test(this.inputText[i])) {
+          const prefix = this.$store.getters.getChannelPrefix(
+            this.inputText.substring(i + 1, endIndex + 1)
+          )
+          this.inputText =
+            this.inputText.substring(0, i) +
+            '#' +
+            prefix +
+            this.inputText.substring(endIndex + 1)
+          return
+        } else if (/@|＠/.test(this.inputText[i])) {
+          const prefix = this.$store.getters.getMemberPrefix(
+            this.inputText.substring(i + 1, endIndex + 1)
+          )
+          this.inputText =
+            this.inputText.substring(0, i) +
+            '@' +
+            prefix +
+            this.inputText.substring(endIndex + 1)
+          return
+        } else {
+          return
+        }
       }
     }
   },
