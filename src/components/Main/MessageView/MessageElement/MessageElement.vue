@@ -745,6 +745,9 @@ export default {
     animation: rotate-inv linear 1s infinite
   &.wiggle
     animation: wiggle linear 0.3s infinite
+  &.ex-large
+    width: 48px
+    height: 48px
   &.large
     width: 32px
     height: 32px

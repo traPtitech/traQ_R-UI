@@ -26,6 +26,7 @@ const effectSet = new Set([
   'rotate',
   'rotate-inv',
   'wiggle',
+  'ex-large',
   'large',
   'small',
   'parrot',
