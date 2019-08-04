@@ -270,7 +270,7 @@ export class Trie {
     if (s.length === i) {
       if (this.size === 1) {
         if (this.base !== '') {
-          return this.base
+          return this.base + ' '
         } else {
           return this.children[this.next].query(s, i, acc)
         }
