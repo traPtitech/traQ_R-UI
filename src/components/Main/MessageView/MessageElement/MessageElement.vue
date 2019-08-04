@@ -758,7 +758,7 @@ export default {
     animation: parrot linear 0.5s infinite
   &.zoom
     animation: zoom linear 1s infinite
-  &.invertion
+  &.inversion
     animation: invert linear 1.5s infinite
   &.turn
     animation: turn linear 1.5s infinite

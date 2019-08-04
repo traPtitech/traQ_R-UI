@@ -31,7 +31,7 @@ const effectSet = new Set([
   'small',
   'parrot',
   'zoom',
-  'invertion',
+  'inversion',
   'turn',
   'turn-v',
   'happa',
