@@ -22,7 +22,7 @@ function highlight(code, lang) {
   }
 }
 
-const effectSet = new Set([
+const animeEffectSet = new Set([
   'rotate',
   'rotate-inv',
   'wiggle',
@@ -37,6 +37,8 @@ const effectSet = new Set([
   'pull'
 ])
 const sizeEffectSet = new Set(['ex-large', 'large', 'small'])
+
+const maxEffectCount = 5
 
 const md = new MarkdownIt({
   breaks: true,
@@ -54,27 +56,44 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
   return from
 }
 
-const wrapWithEffect = (stampHtml, effects) => {
-  const filteredEffects = effects.filter(e => effectSet.has(e))
-  const filterOpenTag = filteredEffects
+const wrapWithEffect = (stampHtml, animeEffects) => {
+  const filterOpenTag = animeEffects
     .map(e => `<div class="emoji-effect ${e}">`)
     .join('')
-  const filterCloseTag = '</div>'.repeat(filteredEffects.length)
+  const filterCloseTag = '</div>'.repeat(animeEffects.length)
   return filterOpenTag + stampHtml + filterCloseTag
 }
 
-const renderEmojiDomWithStyle = (stampName, imgTitle, style, effects) => {
-  const sizeEffects = effects.filter(e => sizeEffectSet.has(e))
-  const sizeEffectClass = sizeEffects[sizeEffects.length - 1] || ''
+const renderEmojiDomWithStyle = (
+  rawMatch,
+  stampName,
+  imgTitle,
+  style,
+  effects
+) => {
   const escapedTitle = md.utils.escapeHtml(imgTitle)
   const escapedStyle = md.utils.escapeHtml(style)
   const escapedName = md.utils.escapeHtml(stampName)
+
+  const sizeEffects = effects.filter(e => sizeEffectSet.has(e))
+  const animeEffects = effects.filter(e => animeEffectSet.has(e))
+
+  // アニメーション系エフェクトは5つまで
+  if (animeEffects.length > maxEffectCount) {
+    return rawMatch
+  }
+
+  // 複数サイズ指定が合った場合は最後のものを適用
+  const sizeEffectClass = sizeEffects[sizeEffects.length - 1] || ''
+
   const stampHtml = `<i class="emoji s24 message-emoji ${sizeEffectClass}" title=":${escapedTitle}:" style="${escapedStyle};">:${escapedName}:</i>`
-  return wrapWithEffect(stampHtml, effects)
+
+  return wrapWithEffect(stampHtml, animeEffects)
 }
 
-const renderEmojiDom = (stampName, imgTitle, imgUrl, effects) =>
+const renderEmojiDom = (rawMatch, stampName, imgTitle, imgUrl, effects) =>
   renderEmojiDomWithStyle(
+    rawMatch,
     stampName,
     imgTitle,
     `background-image: url(${imgUrl})`,
@@ -89,6 +108,7 @@ const renderHslEmoji = match => {
   // HSL: hsl(..., ...%, ...%)
   const effects = match[2] === '' ? [] : match[2].split('.')
   return renderEmojiDomWithStyle(
+    match[0],
     match[1],
     match[1],
     `background-color: ${match[1]}`,
@@ -100,6 +120,7 @@ const renderHexEmoji = match => {
   // Hex: 0x......
   const effects = match[2] === '' ? [] : match[2].split('.')
   return renderEmojiDomWithStyle(
+    match[0],
     `0x${match[1]}`,
     `0x${match[1]}`,
     `background-color: #${match[1]}`,
@@ -130,6 +151,7 @@ const renderEmoji = match => {
   if (store.state.stampNameMap[stampName]) {
     // 通常スタンプ
     return renderEmojiDom(
+      match[0],
       stampName,
       store.state.stampNameMap[stampName].name,
       `${store.state.baseURL}/api/1.0/files/${
@@ -141,6 +163,7 @@ const renderEmoji = match => {
     // ユーザーアイコン
     const user = store.getters.getUserByName(stampName)
     return renderEmojiDom(
+      match[0],
       stampName,
       stampName,
       `${store.state.baseURL}/api/1.0/files/${user.iconFileId}`,
