@@ -739,6 +739,10 @@ export default {
   background-position: center center
   vertical-align: middle
 
+.emoji-effect
+  display: inline-block
+
+.emoji, .emoji-effect
   &.rotate
     animation: rotate linear 1s infinite
   &.rotate-inv

@@ -26,9 +26,6 @@ const effectSet = new Set([
   'rotate',
   'rotate-inv',
   'wiggle',
-  'ex-large',
-  'large',
-  'small',
   'parrot',
   'zoom',
   'inversion',
@@ -39,6 +36,7 @@ const effectSet = new Set([
   'flashy',
   'pull'
 ])
+const sizeEffectSet = new Set(['ex-large', 'large', 'small'])
 
 const md = new MarkdownIt({
   breaks: true,
@@ -56,16 +54,23 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
   return from
 }
 
-const renderEmojiDomWithStyle = (stampName, imgTitle, style, effects) => {
+const wrapWithEffect = (stampHtml, effects) => {
   const filteredEffects = effects.filter(e => effectSet.has(e))
-  const effectsClass =
-    effects.length > 0
-      ? ' ' + md.utils.escapeHtml(filteredEffects.join(' '))
-      : ''
+  const filterOpenTag = filteredEffects
+    .map(e => `<div class="emoji-effect ${e}">`)
+    .join('')
+  const filterCloseTag = '</div>'.repeat(filteredEffects.length)
+  return filterOpenTag + stampHtml + filterCloseTag
+}
+
+const renderEmojiDomWithStyle = (stampName, imgTitle, style, effects) => {
+  const sizeEffects = effects.filter(e => sizeEffectSet.has(e))
+  const sizeEffectClass = sizeEffects[sizeEffects.length - 1] || ''
   const escapedTitle = md.utils.escapeHtml(imgTitle)
   const escapedStyle = md.utils.escapeHtml(style)
   const escapedName = md.utils.escapeHtml(stampName)
-  return `<i class="emoji s24 message-emoji${effectsClass}" title=":${escapedTitle}:" style="${escapedStyle};">:${escapedName}:</i>`
+  const stampHtml = `<i class="emoji s24 message-emoji ${sizeEffectClass}" title=":${escapedTitle}:" style="${escapedStyle};">:${escapedName}:</i>`
+  return wrapWithEffect(stampHtml, effects)
 }
 
 const renderEmojiDom = (stampName, imgTitle, imgUrl, effects) =>
