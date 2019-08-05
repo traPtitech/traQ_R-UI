@@ -78,6 +78,11 @@ const renderEmojiDomWithStyle = (
   const sizeEffects = effects.filter(e => sizeEffectSet.has(e))
   const animeEffects = effects.filter(e => animeEffectSet.has(e))
 
+  // 知らないエフェクトはダメ
+  if (sizeEffects.length + animeEffects.length < effects.length) {
+    return rawMatch
+  }
+
   // アニメーション系エフェクトは5つまで
   if (animeEffects.length > maxEffectCount) {
     return rawMatch
