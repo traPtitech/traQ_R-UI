@@ -169,7 +169,7 @@ export default {
         filterFunc = (a, b) =>
           !caseIntensiveEquals(a, b) &&
           (caseIntensiveIncludes(a, b) ||
-            filteredAltName.find(altName => caseIntensiveIncludes(altName, a)))
+            filteredAltName.some(altName => caseIntensiveEquals(altName, a)))
       }
 
       const stamps = this.stampCategolized
