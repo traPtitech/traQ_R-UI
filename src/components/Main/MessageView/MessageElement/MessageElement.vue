@@ -742,13 +742,7 @@ export default {
 .emoji-effect
   display: inline-block
 
-.emoji, .emoji-effect
-  &.rotate
-    animation: rotate linear 1s infinite
-  &.rotate-inv
-    animation: rotate-inv linear 1s infinite
-  &.wiggle
-    animation: wiggle linear 0.3s infinite
+.emoji
   &.ex-large
     width: 48px
     height: 48px
@@ -758,6 +752,14 @@ export default {
   &.small
     width: 16px
     height: 16px
+
+#app:not([data-eco-mode="true"]) .emoji-effect
+  &.rotate
+    animation: rotate linear 1s infinite
+  &.rotate-inv
+    animation: rotate-inv linear 1s infinite
+  &.wiggle
+    animation: wiggle linear 0.3s infinite
   &.parrot
     animation: parrot linear 0.5s infinite
   &.zoom

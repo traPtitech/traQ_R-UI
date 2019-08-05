@@ -123,7 +123,8 @@ const store = new Vuex.Store({
     filterText: '',
     isUnreadFiltered: false,
     webhooks: [],
-    messageSendKey: ''
+    messageSendKey: '',
+    ecoMode: false
   },
   mutations: {
     openSidebar(state) {
@@ -553,6 +554,9 @@ const store = new Vuex.Store({
     },
     setMessageSendKey(state, key) {
       state.messageSendKey = key
+    },
+    setEcoMode(state, ecoModeEnabled) {
+      state.ecoMode = ecoModeEnabled
     }
   },
   getters: {
@@ -1018,7 +1022,8 @@ const store = new Vuex.Store({
         dispatch('loadFilterSubscribedActivity'),
         dispatch('loadOpenUserLists'),
         dispatch('loadChannelView'),
-        dispatch('loadMessageSendKey')
+        dispatch('loadMessageSendKey'),
+        dispatch('loadEcoMode')
       ])
     },
     loadOpenMode({ commit, dispatch }) {
@@ -1095,6 +1100,16 @@ const store = new Vuex.Store({
         })
         .catch(async () => {
           await dispatch('updateMessageSendKey', 'modifier')
+        })
+    },
+    loadEcoMode({ commit, dispatch }) {
+      return db
+        .read('browserSetting', 'ecoMode')
+        .then(data => {
+          commit('setEcoMode', data)
+        })
+        .catch(async () => {
+          await dispatch('updateEcoMode', false)
         })
     },
     updateOpenMode({ commit }, mode) {
@@ -1184,6 +1199,13 @@ const store = new Vuex.Store({
     updateMessageSendKey({ commit }, key) {
       commit('setMessageSendKey', key)
       return db.write('browserSetting', { type: 'messageSendKey', data: key })
+    },
+    updateEcoMode({ commit }, ecoModeEnabled) {
+      commit('setEcoMode', ecoModeEnabled)
+      return db.write('browserSetting', {
+        type: 'ecoMode',
+        data: ecoModeEnabled
+      })
     }
   }
 })
