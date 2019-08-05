@@ -58,9 +58,9 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
 
 const wrapWithEffect = (stampHtml, animeEffects) => {
   const filterOpenTag = animeEffects
-    .map(e => `<div class="emoji-effect ${e}">`)
+    .map(e => `<span class="emoji-effect ${e}">`)
     .join('')
-  const filterCloseTag = '</div>'.repeat(animeEffects.length)
+  const filterCloseTag = '</span>'.repeat(animeEffects.length)
   return filterOpenTag + stampHtml + filterCloseTag
 }
 
