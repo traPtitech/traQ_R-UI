@@ -1,7 +1,7 @@
 <template lang="pug">
 .footer
   span.version-text
-    | traQ R {{ version }}
+    | traQ {{ version }}
   ul.footer-button-wrap
     li.menu-button(@click.prevent="$store.dispatch('openTourModal')")
       IconHelp
