@@ -36,7 +36,10 @@ const animeEffectSet = new Set([
   'happa',
   'pyon',
   'flashy',
-  'pull'
+  'pull',
+  'atumori',
+  'stretch',
+  'stretch-v'
 ])
 const sizeEffectSet = new Set(['ex-large', 'large', 'small'])
 
