@@ -5,6 +5,8 @@ import json from '@/bin/markdown-it-json'
 import regexp from 'markdown-it-regexp'
 import store from '@/store/index'
 import mila from 'markdown-it-link-attributes'
+import filter from 'markdown-it-image-filter'
+import whitelist from '@/bin/domain_whitelist.json'
 
 function highlight(code, lang) {
   const [langName, langCaption] = lang.split(':')
@@ -144,7 +146,7 @@ md.use(mila, {
     rel: 'nofollow noopener noreferrer'
   }
 })
-md.disable('image')
+md.use(filter(whitelist))
 
 export default md
 
