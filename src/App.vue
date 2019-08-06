@@ -1,5 +1,10 @@
 <template lang="pug">
-#app(:data-theme="theme" :style="appStyles" :class="appClasses")
+#app(
+  :data-theme="theme"
+  :data-eco-mode="$store.state.ecoMode"
+  :style="appStyles"
+  :class="appClasses"
+)
   Splash(v-if="isLoading")
   Favicon
   router-view

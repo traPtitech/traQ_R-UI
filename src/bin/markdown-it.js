@@ -111,9 +111,9 @@ const hexReg = /0x([0-9a-f]{6})(.*)/
 
 const renderHslEmoji = match => {
   // HSL: hsl(..., ...%, ...%)
-  const effects = match[2] === '' ? [] : match[2].split('.')
+  const effects = match[2] === '' ? [] : match[2].split('.').slice(1)
   return renderEmojiDomWithStyle(
-    match[0],
+    `:${match[0]}:`,
     match[1],
     match[1],
     `background-color: ${match[1]}`,
@@ -123,9 +123,9 @@ const renderHslEmoji = match => {
 
 const renderHexEmoji = match => {
   // Hex: 0x......
-  const effects = match[2] === '' ? [] : match[2].split('.')
+  const effects = match[2] === '' ? [] : match[2].split('.').slice(1)
   return renderEmojiDomWithStyle(
-    match[0],
+    `:${match[0]}:`,
     `0x${match[1]}`,
     `0x${match[1]}`,
     `background-color: #${match[1]}`,

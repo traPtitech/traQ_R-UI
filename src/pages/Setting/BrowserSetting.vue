@@ -46,7 +46,17 @@
       input(type="radio" value="none" v-model="messageSendKey")
       span.key Enter
       | で送信
-    SettingButton(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
+    SettingItemTitle
+      | 省エネモード
+    span.note
+      | 省エネモードがONの場合、スタンプエフェクトのアニメーションを表示しません
+    label.open-mode-selector
+      input(type="radio" value="enabled" v-model="ecoModeEnabled")
+      | ON
+    label.open-mode-selector.open-patiular-channel
+      input(type="radio" value="disabled" v-model="ecoModeEnabled" checked)
+      | OFF
+    SettingButton.update-button(v-if="isBrowserSettingChanged && isChannelNameValid" @click="updateBrowserSetting")
       | 更新
 </template>
 
@@ -74,7 +84,8 @@ export default {
       openMode: 'particular',
       openChannelName: 'random',
       messageSendKey: 'modifier',
-      notifyPermissionStatus: ''
+      notifyPermissionStatus: '',
+      ecoModeEnabled: 'disabled'
     }
   },
   computed: {
@@ -88,7 +99,8 @@ export default {
           this.$store.getters.getChannelPathById(
             this.$store.state.openChannelId
           ) ||
-        this.messageSendKey !== this.$store.state.messageSendKey
+        this.messageSendKey !== this.$store.state.messageSendKey ||
+        this.ecoMode !== this.$store.state.ecoMode
       )
     },
     isChannelNameValid() {
@@ -107,6 +119,9 @@ export default {
         granted: '許可',
         denied: '拒否'
       }[this.notifyPermissionStatus]
+    },
+    ecoMode() {
+      return this.ecoModeEnabled === 'enabled'
     }
   },
   methods: {
@@ -127,6 +142,7 @@ export default {
       const channel = this.$store.getters.getChannelByName(this.openChannelName)
       this.$store.dispatch('updateOpenChannelId', channel.channelId)
       this.$store.dispatch('updateMessageSendKey', this.messageSendKey)
+      this.$store.dispatch('updateEcoMode', this.ecoMode)
     },
     logout() {
       client.logout().then(() => {
@@ -149,6 +165,7 @@ export default {
       this.$store.state.openChannelId
     )
     this.messageSendKey = this.$store.state.messageSendKey
+    this.ecoModeEnabled = this.$store.state.ecoMode ? 'enabled' : 'disabled'
     this.updateNotifyPermissionStatus()
   }
 }
@@ -175,4 +192,10 @@ export default {
   padding: 4px 8px
   margin: 2px 4px
   box-shadow: 0px 1px var(--key-shadow-color)
+
+.note
+  font-size: 0.9rem
+
+.update-button
+  margin: 1rem 0
 </style>
