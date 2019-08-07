@@ -182,9 +182,8 @@ export default {
 .channel-recent-message-content
   display: inline-block
   .emoji
-    height: 1.4em
-    width: 1.4em
-    vertical-align: top;
+    font-size: 24px
+    vertical-align: top
 
 .channel-toggle
   border: solid 1px $text-light-color
