@@ -582,14 +582,6 @@ export default {
 .edit-submit
   background-color: #4e72d6
 
-.emoji
-  &.s24
-    width: 24px
-    height: 24px
-  &.s32
-    width: 32px
-    height: 32px
-
 @keyframes rotate
   0%
     transform: rotate(0)
@@ -665,7 +657,7 @@ export default {
   @for $i from 0 to $len
     $y: 0
     @if $i % 2 != 0
-      $y: -2px
+      $y: -0.2em
 
     $r: 0
     @if $i >= ($len / 2)
@@ -678,7 +670,7 @@ export default {
   0%
     transform: translateY(0) scale(1, 1)
   30%
-    transform: translateY(-2px) scale(1, 1)
+    transform: translateY(-0.2em) scale(1, 1)
   60%
     transform: translateY(0) scale(1, 1)
   80%
@@ -688,7 +680,7 @@ export default {
   $len: 10
   @for $i from 0 to $len
     #{percentage($i / $len)}
-      filter: drop-shadow(0 0 5px hsl($i / $len * 360, 50%, 50%))
+      filter: drop-shadow(0 0 0.3em hsl($i / $len * 360, 50%, 50%))
 
 @keyframes pull
   0%
@@ -715,15 +707,18 @@ export default {
   display: inline-block
 
 .emoji
+  width: 1em
+  height: 1em
+  &.s24
+    font-size: 24px
+  &.s32
+    font-size: 32px
   &.ex-large
-    width: 48px
-    height: 48px
+    font-size: 48px
   &.large
-    width: 32px
-    height: 32px
+    font-size: 32px
   &.small
-    width: 16px
-    height: 16px
+    font-size: 16px
 
 #app:not([data-eco-mode="true"]) .emoji-effect
   &.rotate
