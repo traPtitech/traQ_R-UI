@@ -661,62 +661,34 @@ export default {
     transform: rotateX(1turn)
 
 @keyframes happa
-  0%
-    transform: translateY(0) rotateY(0)
-  12.5%
-    transform: translateY(-2px) rotateY(0)
-  25%
-    transform: translateY(0) rotateY(0)
-  37.5%
-    transform: translateY(-2px) rotateY(0)
-  50%
-    transform: translateY(0) rotateY(0.5turn)
-  67.5%
-    transform: translateY(-2px) rotateY(0.5turn)
-  75%
-    transform: translateY(0) rotateY(0.5turn)
-  87.5%
-    transform: translateY(-2px) rotateY(0.5turn)
+  $len: 8
+  @for $i from 0 to $len
+    $y: 0
+    @if $i % 2 != 0
+      $y: -2px
+
+    $r: 0
+    @if $i >= ($len / 2)
+      $r: 0.5turn
+
+    #{percentage($i / $len)}
+      transform: translateY($y) rotateY($r)
 
 @keyframes pyon
   0%
     transform: translateY(0) scale(1, 1)
-  15%
-    transform: translateY(-2px) scale(1, 1)
   30%
-    transform: translateY(0) scale(1, 1)
-  40%
-    transform: translateY(0) scale(1.1, 0.9)
-  50%
-    transform: translateY(0) scale(1, 1)
-  65%
     transform: translateY(-2px) scale(1, 1)
-  80%
+  60%
     transform: translateY(0) scale(1, 1)
-  90%
+  80%
     transform: translateY(0) scale(1.1, 0.9)
 
 @keyframes flashy
-  0%
-    filter: drop-shadow(0 0 5px hsl(0.0*360,50%,50%))
-  10%
-    filter: drop-shadow(0 0 5px hsl(0.1*360,50%,50%))
-  20%
-    filter: drop-shadow(0 0 5px hsl(0.2*360,50%,50%))
-  30%
-    filter: drop-shadow(0 0 5px hsl(0.3*360,50%,50%))
-  40%
-    filter: drop-shadow(0 0 5px hsl(0.4*360,50%,50%))
-  50%
-    filter: drop-shadow(0 0 5px hsl(0.5*360,50%,50%))
-  60%
-    filter: drop-shadow(0 0 5px hsl(0.6*360,50%,50%))
-  70%
-    filter: drop-shadow(0 0 5px hsl(0.7*360,50%,50%))
-  80%
-    filter: drop-shadow(0 0 5px hsl(0.8*360,50%,50%))
-  90%
-    filter: drop-shadow(0 0 5px hsl(0.9*360,50%,50%))
+  $len: 10
+  @for $i from 0 to $len
+    #{percentage($i / $len)}
+      filter: drop-shadow(0 0 5px hsl($i / $len * 360, 50%, 50%))
 
 @keyframes pull
   0%
@@ -773,7 +745,7 @@ export default {
   &.happa
     animation: happa linear 1.5s infinite
   &.pyon
-    animation: pyon linear 1.5s infinite
+    animation: pyon linear 0.75s infinite
     transform-origin: bottom center
   &.flashy
     animation: flashy linear 1s infinite
