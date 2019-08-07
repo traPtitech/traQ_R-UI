@@ -758,6 +758,18 @@ export default {
   68%
     transform: scaleY(1.0)
 
+@keyframes conga
+  0%
+    background-position-x: 0
+  100%
+    background-position-x: 1em
+
+@keyframes conga-inv
+  0%
+    background-position-x: 0
+  100%
+    background-position-x: -1em
+
 .emoji
   display: inline-block
   text-indent: 999%
@@ -818,6 +830,14 @@ export default {
     animation: stretch linear 1s infinite
   &.stretch-v
     animation: stretch-v linear 1s infinite
+  &.conga
+    .emoji
+      background-repeat-x: repeat
+      animation: conga linear 1s infinite
+  &.conga-inv
+    .emoji
+      background-repeat-x: repeat
+      animation: conga-inv linear 1s infinite
 
 .message-button-drop-menu
   transform: rotate(90deg)

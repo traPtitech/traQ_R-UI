@@ -39,7 +39,9 @@ const animeEffectSet = new Set([
   'pull',
   'atumori',
   'stretch',
-  'stretch-v'
+  'stretch-v',
+  'conga',
+  'conga-inv'
 ])
 const sizeEffectSet = new Set(['ex-large', 'large', 'small'])
 
