@@ -830,14 +830,20 @@ export default {
     animation: stretch linear 1s infinite
   &.stretch-v
     animation: stretch-v linear 1s infinite
-  &.conga
-    .emoji
+
+  $s: ".conga"
+  @for $i from 1 through 5
+    &#{$s} .emoji
       background-repeat-x: repeat
-      animation: conga linear 1s infinite
-  &.conga-inv
-    .emoji
+      animation: conga linear #{1 / $i}s infinite
+    $s: #{$s ".conga"}
+
+  $s: ".conga-inv"
+  @for $i from 1 through 5
+    &#{$s} .emoji
       background-repeat-x: repeat
-      animation: conga-inv linear 1s infinite
+      animation: conga-inv linear #{1 / $i}s infinite
+    $s: #{$s ".conga-inv"}
 
 .message-button-drop-menu
   transform: rotate(90deg)
