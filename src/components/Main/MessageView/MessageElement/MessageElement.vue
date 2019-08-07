@@ -770,6 +770,24 @@ export default {
   100%
     background-position-x: -1em
 
+@keyframes rainbow
+  @for $i from 0 to 5
+    #{$i * 20}%
+      // 赤
+      filter: invert(1 - abs(1 - 0.4 * $i)) grayscale(1) brightness(0.4) sepia(1) hue-rotate(310deg) saturate(6) contrast(0.8)
+    #{$i * 20 + 1.528*2}%
+      // 黄
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.1528*2))) grayscale(1) brightness(0.7) sepia(1) hue-rotate(5deg) saturate(5) contrast(0.7)
+    #{$i * 20 + 2.778*2}%
+      // 緑
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.2778*2))) grayscale(1) brightness(0.4) sepia(1) hue-rotate(50deg) saturate(10) contrast(0.8)
+    #{$i * 20 + 6.389*2}%
+      // 青
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.6389*2))) grayscale(1) brightness(0.3) sepia(1) hue-rotate(180deg) saturate(7) contrast(0.8)
+  100%
+    // 赤
+    filter: invert(0) grayscale(1) brightness(0.4) sepia(1) hue-rotate(310deg) saturate(6) contrast(0.8)
+
 .emoji
   display: inline-block
   text-indent: 999%
@@ -844,6 +862,9 @@ export default {
       background-repeat-x: repeat
       animation: conga-inv linear #{1 / $i}s infinite
     $s: #{$s ".conga-inv"}
+
+  &.rainbow
+    animation: rainbow linear 3s infinite
 
 .message-button-drop-menu
   transform: rotate(90deg)
