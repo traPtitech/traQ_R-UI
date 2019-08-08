@@ -42,9 +42,16 @@ const animeEffectSet = new Set([
   'stretch-v',
   'conga',
   'conga-inv',
+  'marquee',
+  'marquee-inv',
   'rainbow'
 ])
 const sizeEffectSet = new Set(['ex-large', 'large', 'small'])
+
+const animeEffectAliasMap = new Map([
+  ['marquee', 'conga'],
+  ['marquee-inv', 'conga-inv']
+])
 
 const maxEffectCount = 5
 
@@ -101,12 +108,17 @@ const renderEmojiDomWithStyle = (
     return rawMatch
   }
 
+  // aliasの置き換え
+  const replacedAnimeEffects = animeEffects.map(e =>
+    animeEffectAliasMap.has(e) ? animeEffectAliasMap.get(e) : e
+  )
+
   // 複数サイズ指定が合った場合は最後のものを適用
   const sizeEffectClass = sizeEffects[sizeEffects.length - 1] || ''
 
   const stampHtml = `<i class="emoji s24 message-emoji ${sizeEffectClass}" title=":${escapedTitle}:" style="${escapedStyle};">:${escapedName}:</i>`
 
-  return wrapWithEffect(stampHtml, animeEffects, sizeEffectClass)
+  return wrapWithEffect(stampHtml, replacedAnimeEffects, sizeEffectClass)
 }
 
 const renderEmojiDom = (rawMatch, stampName, imgTitle, imgUrl, effects) =>
