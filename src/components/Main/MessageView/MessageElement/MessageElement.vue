@@ -852,14 +852,14 @@ export default {
   $s: ".conga"
   @for $i from 1 through 5
     &#{$s} .emoji
-      background-repeat-x: repeat
+      background-repeat: repeat-x
       animation: conga linear #{1 / $i}s infinite
     $s: #{$s ".conga"}
 
   $s: ".conga-inv"
   @for $i from 1 through 5
     &#{$s} .emoji
-      background-repeat-x: repeat
+      background-repeat: repeat-x
       animation: conga-inv linear #{1 / $i}s infinite
     $s: #{$s ".conga-inv"}
 
