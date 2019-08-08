@@ -220,12 +220,42 @@ export const isTouchDevice = () => {
   )
 }
 
-export const changeHash = hash => {
+import store from '../store'
+export const changeHash = (hash, data, option = {}) => {
   let path = window.location.pathname
+  const curHash = window.location.hash
+  console.log(data)
   if (hash !== '') {
     path += `#${hash}`
+    if (!option.fromState) {
+      if (curHash === '#PickerModal') {
+        history.replaceState(
+          { name: hash, data, option: { fromState: true } },
+          document.title,
+          path
+        )
+      } else {
+        history.pushState(
+          { name: hash, data, option: { fromState: true } },
+          document.title,
+          path
+        )
+      }
+    }
+  } else {
+    if (option.type) {
+      store.commit('modal/setClose', option.type)
+    }
+
+    if (curHash !== '' && store.state.modal.close === 'all') {
+      window.history.back()
+    } else if (curHash !== '' && store.state.modal.close === 'single') {
+      store.commit('modal/setClose', '')
+      window.history.back()
+    } else {
+      store.commit('modal/setClose', '')
+    }
   }
-  history.pushState('', document.title, path)
 }
 
 export const caseIntensiveIncludes = (a, b) => {

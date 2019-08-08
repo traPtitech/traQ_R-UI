@@ -28,7 +28,7 @@ export default {
       if (isActive) {
         changeHash('PickerModal')
       } else if (location.hash === '#PickerModal') {
-        changeHash('')
+        changeHash('', null, { type: 'all' })
       }
     },
     setStampPickerModeAsMessage(state) {

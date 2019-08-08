@@ -66,6 +66,10 @@ const router = new Router({
 router.beforeEach(async (to, from, next) => {
   store.dispatch('modal/close')
 
+  if (location.hash !== '') {
+    history.replaceState(null, document.title, location.pathname)
+  }
+
   if (!store.state.me) {
     await store.dispatch('whoAmI')
   }
@@ -129,6 +133,12 @@ router.beforeEach(async (to, from, next) => {
   }
 
   store.commit('setPinnedModal', false)
+
+  if (from.path === to.path) {
+    store.commit('loadEnd')
+    next(true)
+    return
+  }
 
   if (to.params.user) {
     const nextUser = store.getters.getUserByName(to.params.user)

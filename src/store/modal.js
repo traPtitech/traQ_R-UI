@@ -10,7 +10,8 @@ export default {
     currentTagUserIds: [],
     currentUserGroupIds: [],
     lastUser: null,
-    qrLastLoad: null
+    qrLastLoad: null,
+    close: ''
   },
   getters: {
     isActive: state => !!state.name,
@@ -57,6 +58,9 @@ export default {
     setCurrentUserGroupIds(state, groups) {
       groups = groups || []
       state.currentUserGroupIds = groups
+    },
+    setClose(state, close) {
+      state.close = close
     }
   },
   actions: {
@@ -148,8 +152,8 @@ export default {
         })
       }
     },
-    open({ state, commit }, { name, data }) {
-      changeHash(name)
+    open({ state, commit }, { name, data, option }) {
+      changeHash(name, data, option)
       if (state.name === 'UserModal') {
         // Transition from user modal
         commit('setLastUser', state.data)
@@ -157,8 +161,8 @@ export default {
       commit('setModalName', name)
       commit('setModalData', data)
     },
-    close({ commit }) {
-      changeHash('')
+    close({ commit }, type) {
+      changeHash('', null, { type })
       commit('setModalName', null)
       commit('setLastUser', null)
       commit('setModalData', null)

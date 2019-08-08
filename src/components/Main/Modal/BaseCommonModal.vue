@@ -4,7 +4,7 @@
     .common-modal-header(:class="{'common-modal-header-back': enableBack}" @click="handleHeaderClick")
       slot(name="header-icon")
       h1.common-modal-header-title {{ title }}
-    .common-modal-close(@click="close")
+    .common-modal-close(@click="close('all')")
       icon-close(color="var(--primary-color-on-bg)" size="12")
   .common-modal-content(:class="{'is-scroll': scroll}")
     slot
