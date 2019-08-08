@@ -824,6 +824,8 @@ export default {
     font-size: 32px
   &.small
     font-size: 16px
+  .emoji-effect
+    font-size: inherit
 
   &.rotate
     animation: rotate linear 1s infinite
