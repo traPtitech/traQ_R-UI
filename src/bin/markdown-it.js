@@ -64,9 +64,14 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
   return from
 }
 
-const wrapWithEffect = (stampHtml, animeEffects) => {
+const wrapWithEffect = (stampHtml, animeEffects, sizeEffect) => {
   const filterOpenTag = animeEffects
-    .map(e => `<span class="emoji-effect ${e}">`)
+    .map(
+      (e, i) =>
+        `<span class="emoji-effect ${e}${
+          i == 0 && sizeEffect ? ` ${sizeEffect}` : ''
+        }">`
+    )
     .join('')
   const filterCloseTag = '</span>'.repeat(animeEffects.length)
   return filterOpenTag + stampHtml + filterCloseTag
@@ -101,7 +106,7 @@ const renderEmojiDomWithStyle = (
 
   const stampHtml = `<i class="emoji s24 message-emoji ${sizeEffectClass}" title=":${escapedTitle}:" style="${escapedStyle};">:${escapedName}:</i>`
 
-  return wrapWithEffect(stampHtml, animeEffects)
+  return wrapWithEffect(stampHtml, animeEffects, sizeEffectClass)
 }
 
 const renderEmojiDom = (rawMatch, stampName, imgTitle, imgUrl, effects) =>

@@ -680,7 +680,7 @@ export default {
   $len: 10
   @for $i from 0 to $len
     #{percentage($i / $len)}
-      filter: drop-shadow(0 0 0.3em hsl($i / $len * 360, 50%, 50%))
+      filter: drop-shadow(0 0 0.2em hsl($i / $len * 360, 50%, 50%))
 
 @keyframes pull
   0%
@@ -817,6 +817,14 @@ export default {
     font-size: 16px
 
 #app:not([data-eco-mode="true"]) .emoji-effect
+  font-size: 24px
+  &.ex-large
+    font-size: 48px
+  &.large
+    font-size: 32px
+  &.small
+    font-size: 16px
+
   &.rotate
     animation: rotate linear 1s infinite
   &.rotate-inv
