@@ -692,6 +692,102 @@ export default {
   75%
     transform: skew(-15deg, -15deg)
 
+@keyframes atumori
+  0%
+    transform: scale(2)
+    filter: blur(0.3em) opacity(0) saturate(0.4) drop-shadow(0 0 0 rgba(255,255,255,0))
+  15%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(0.4) drop-shadow(0 0 0 rgba(255,255,255,0))
+  20%
+    transform: scale(1.3)
+    filter: blur(0) opacity(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0))
+  25%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.1em -0.1em 0.3em rgba(255,255,255,0.5))
+  35%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.5em -0.5em 0 rgba(255,255,255,0))
+  100%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(0 0 0 rgba(255,255,255,0))
+
+@keyframes stretch
+  0%
+    transform: scaleX(1.0)
+  20%
+    transform: scaleX(1.75)
+
+  $start: 22
+  $end: 50
+  @for $i from 0 through ($end - $start) / 2
+    $s: 1.65
+    @if $i % 2 != 0
+      $s: 1.85
+
+    #{$start + $i*2}%
+      transform: scaleX($s)
+
+  52%
+    transform: scaleX(1.75)
+  62%
+    transform: scaleX(0.8)
+  68%
+    transform: scaleX(1.0)
+
+@keyframes stretch-v
+  0%
+    transform: scaleY(1.0)
+  20%
+    transform: scaleY(1.75)
+
+  $start: 22
+  $end: 50
+  @for $i from 0 through ($end - $start) / 2
+    $s: 1.65
+    @if $i % 2 != 0
+      $s: 1.85
+
+    #{$start + $i*2}%
+      transform: scaleY($s)
+
+  52%
+    transform: scaleY(1.75)
+  62%
+    transform: scaleY(0.8)
+  68%
+    transform: scaleY(1.0)
+
+@keyframes conga
+  0%
+    background-position-x: 0
+  100%
+    background-position-x: 1em
+
+@keyframes conga-inv
+  0%
+    background-position-x: 0
+  100%
+    background-position-x: -1em
+
+@keyframes rainbow
+  @for $i from 0 to 5
+    #{$i * 20}%
+      // 赤
+      filter: invert(1 - abs(1 - 0.4 * $i)) grayscale(1) brightness(0.4) sepia(1) hue-rotate(310deg) saturate(6) contrast(0.8)
+    #{$i * 20 + 1.528*2}%
+      // 黄
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.1528*2))) grayscale(1) brightness(0.7) sepia(1) hue-rotate(5deg) saturate(5) contrast(0.7)
+    #{$i * 20 + 2.778*2}%
+      // 緑
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.2778*2))) grayscale(1) brightness(0.4) sepia(1) hue-rotate(50deg) saturate(10) contrast(0.8)
+    #{$i * 20 + 6.389*2}%
+      // 青
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.6389*2))) grayscale(1) brightness(0.3) sepia(1) hue-rotate(180deg) saturate(7) contrast(0.8)
+  100%
+    // 赤
+    filter: invert(0) grayscale(1) brightness(0.4) sepia(1) hue-rotate(310deg) saturate(6) contrast(0.8)
+
 .emoji
   display: inline-block
   text-indent: 999%
@@ -746,6 +842,29 @@ export default {
     animation: flashy linear 1s infinite
   &.pull
     animation: pull linear 0.5s infinite
+  &.atumori
+    animation: atumori linear 2s infinite
+  &.stretch
+    animation: stretch linear 1s infinite
+  &.stretch-v
+    animation: stretch-v linear 1s infinite
+
+  $s: ".conga"
+  @for $i from 1 through 5
+    &#{$s} .emoji
+      background-repeat-x: repeat
+      animation: conga linear #{1 / $i}s infinite
+    $s: #{$s ".conga"}
+
+  $s: ".conga-inv"
+  @for $i from 1 through 5
+    &#{$s} .emoji
+      background-repeat-x: repeat
+      animation: conga-inv linear #{1 / $i}s infinite
+    $s: #{$s ".conga-inv"}
+
+  &.rainbow
+    animation: rainbow linear 3s infinite
 
 .message-button-drop-menu
   transform: rotate(90deg)
