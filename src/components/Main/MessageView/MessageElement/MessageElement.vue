@@ -695,22 +695,22 @@ export default {
 @keyframes atsumori
   0%
     transform: scale(2)
-    filter: blur(0.3em) opacity(0) saturate(0.4) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0.3em) opacity(0) saturate(0.4) drop-shadow(0 0 0 rgba(136,136,136,0))
   15%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(0.4) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(0.4) drop-shadow(0 0 0 rgba(136,136,136,0))
   20%
     transform: scale(1.3)
-    filter: blur(0) opacity(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(1) drop-shadow(0 0 0 rgba(136,136,136,0))
   25%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.1em -0.1em 0.3em rgba(255,255,255,0.5))
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.1em -0.1em 0.3em rgba(136,136,136,0.5))
   35%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.5em -0.5em 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.5em -0.5em 0 rgba(136,136,136,0))
   100%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(0 0 0 rgba(136,136,136,0))
 
 @keyframes stretch
   0%
