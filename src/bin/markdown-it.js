@@ -37,7 +37,7 @@ const animeEffectSet = new Set([
   'pyon',
   'flashy',
   'pull',
-  'atumori',
+  'atsumori',
   'stretch',
   'stretch-v',
   'conga',

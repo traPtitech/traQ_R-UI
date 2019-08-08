@@ -692,7 +692,7 @@ export default {
   75%
     transform: skew(-15deg, -15deg)
 
-@keyframes atumori
+@keyframes atsumori
   0%
     transform: scale(2)
     filter: blur(0.3em) opacity(0) saturate(0.4) drop-shadow(0 0 0 rgba(255,255,255,0))
@@ -842,8 +842,8 @@ export default {
     animation: flashy linear 1s infinite
   &.pull
     animation: pull linear 0.5s infinite
-  &.atumori
-    animation: atumori linear 2s infinite
+  &.atsumori
+    animation: atsumori linear 2s infinite
   &.stretch
     animation: stretch linear 1s infinite
   &.stretch-v
