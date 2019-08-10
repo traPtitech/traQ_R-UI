@@ -87,30 +87,32 @@ export default {
           regisration.update()
           const messaging = window.firebase.messaging()
           messaging.useServiceWorker(regisration)
-          messaging
-            .requestPermission()
-            .then(() => {
-              console.log('permission granted')
-              messaging.getToken().then(currentToken => {
-                client.registerDevice(currentToken)
-              })
-
-              messaging.onMessage(payload => {
-                const notification = this.notify(
-                  payload.data.title || 'traQ',
-                  payload.data
-                )
-                if (notification) {
-                  notification.onclick = () => {
-                    window.focus()
-                    this.$router.push(payload.data.path)
-                  }
-                }
-              })
-            })
-            .catch(() => {
+          Notification.requestPermission(result => {
+            if (result === 'denied') {
               console.error('permission denied')
+              return
+            } else if (result === 'default') {
+              console.error('permission default')
+              return
+            }
+            console.log('permission granted')
+            messaging.getToken().then(currentToken => {
+              client.registerDevice(currentToken)
             })
+
+            messaging.onMessage(payload => {
+              const notification = this.notify(
+                payload.data.title || 'traQ',
+                payload.data
+              )
+              if (notification) {
+                notification.onclick = () => {
+                  window.focus()
+                  this.$router.push(payload.data.path)
+                }
+              }
+            })
+          })
 
           messaging.onTokenRefresh(() => {
             messaging.getToken().then(currentToken => {
