@@ -1,4 +1,4 @@
-import { Apis, NotificationUsers, FCMToken, HeartbeatStatus } from 'traq-api'
+import { Apis, NotificationUsers, HeartbeatStatus } from 'traq-api'
 
 const BASE_PATH = '/api/1.0'
 
@@ -169,8 +169,10 @@ class Client {
     return api.getUserSubscribeChannels(userId)
   }
   @log
-  registerDevice(token: FCMToken) {
-    return api.registerNotificationDevice(token)
+  registerDevice(token: string) {
+    return api.registerNotificationDevice({
+      token
+    })
   }
   @log
   getMyNotifiedChannels() {
