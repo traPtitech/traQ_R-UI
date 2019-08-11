@@ -1,6 +1,5 @@
 <template lang="pug">
 .message-input(:class="{'input-focused':focused}")
-  .message-input-progress-bar(:style="{'width': uploadProgress * 100 + '%'}")
   transition(name="typing-slide-in")
     message-typing-users(v-if="isAnyoneTyping" :typingUsers="typingUsers")
   .message-input-key-guide(v-if="showKeyGuide")
@@ -10,6 +9,7 @@
       | + Enterを押して改行
   input.upload-button(id="upload" style="display:none" type="file" multiple="multiple" @change="addFiles")
   .message-input-body
+    .message-input-progress-bar(:style="{'width': uploadProgress * 100 + '%'}")
     .message-input-buttons-wrapper
       .message-input-button.flex-center(@click="clickUploadButton")
         icon-upload(size="24" color="var(--tertiary-color-on-bg)")
@@ -560,6 +560,7 @@ $message-input-button-height-pc: 40px - 2px
   display: flex
   flex-flow: column
   background: var(--background-color)
+  position: relative  // for progres bar
   +mq(sp)
     border:
       top:
@@ -584,10 +585,7 @@ $message-input-button-height-pc: 40px - 2px
 .message-input-progress-bar
   position: absolute
   height: 5px
-  +mq(sp)
-    top: 0
-  +mq(pc)
-    bottom: 0
+  top: 0
   left: 0
   background-color: var(--primary-color-transparent)
 
