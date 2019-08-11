@@ -78,9 +78,7 @@ export default {
       if (!this.$store.state.me) {
         return ''
       }
-      return `${this.$store.state.baseURL}/api/1.0/files/${
-        this.$store.state.me.iconFileId
-      }`
+      return `/api/1.0/files/${this.$store.state.me.iconFileId}`
     },
     isChanged() {
       if (this.icon) return true

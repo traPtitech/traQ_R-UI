@@ -101,10 +101,6 @@ const store = new Vuex.Store({
     menuContent: 'Channels',
     channelView: 'tree',
     heartbeatStatus: { userStatuses: [] },
-    baseURL:
-      process.env.NODE_ENV === 'development'
-        ? 'https://traq-dev.tokyotech.org'
-        : '',
     files: [],
     userModal: null,
     tagModal: null,
@@ -740,7 +736,7 @@ const store = new Vuex.Store({
     },
     fileUrl(state) {
       return fileId => {
-        return `${state.baseURL}/api/1.0/files/${fileId}`
+        return `/api/1.0/files/${fileId}`
       }
     },
     grades(state) {

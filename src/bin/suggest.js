@@ -68,11 +68,9 @@ export default function(key, limit) {
           suffix: ': ',
           html: `<i class="emoji s16" title=":${
             stamp.name
-          }:" style="background-image: url(${
-            store.state.baseURL
-          }/api/1.0/files/${stamp.fileId});">:${stamp.name}:</i>:${
+          }:" style="background-image: url(/api/1.0/files/${stamp.fileId});">:${
             stamp.name
-          }: `
+          }:</i>:${stamp.name}: `
         }
       })
   }

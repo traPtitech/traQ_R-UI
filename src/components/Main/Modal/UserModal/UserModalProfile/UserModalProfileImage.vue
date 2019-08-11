@@ -54,9 +54,7 @@ export default {
     },
     profileImgStyle() {
       return {
-        backgroundImage: `url(${this.$store.state.baseURL}/api/1.0/users/${
-          this.data.userId
-        }/icon)`
+        backgroundImage: `url(/api/1.0/users/${this.data.userId}/icon)`
       }
     },
     onlineIndicatorStyle() {
