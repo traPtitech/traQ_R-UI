@@ -1,5 +1,4 @@
 /* eslint-disable */
-import firebase from 'firebase/messaging'
 workbox.skipWaiting()
 workbox.clientsClaim()
 workbox.routing.registerNavigationRoute('/index.html', {
@@ -157,7 +156,7 @@ firebase.initializeApp({
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
-const messaging = firebase.messaging()
+const messaging = window.firebase.messaging()
 
 messaging.setBackgroundMessageHandler(async payload => {
   console.log(
