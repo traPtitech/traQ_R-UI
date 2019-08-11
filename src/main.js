@@ -7,6 +7,21 @@ import App from './App'
 import store from './store'
 import router from './router'
 import VueLazyload from 'vue-lazyload'
+import Firebase from 'firebase'
+
+try {
+  const config = {
+    apiKey: 'AIzaSyDee_VkrRtByJCrCZAX3nTSDPl8AaHlWfY',
+    authDomain: 'traq-r.firebaseapp.com',
+    databaseURL: 'https://traq-r.firebaseio.com',
+    projectId: 'traq-r',
+    storageBucket: 'traq-r.appspot.com',
+    messagingSenderId: '993645413001'
+  }
+  Firebase.initializeApp(config)
+} catch (e) {
+  console.log('failed initialize firebase', e)
+}
 
 Vue.config.productionTip = false
 
