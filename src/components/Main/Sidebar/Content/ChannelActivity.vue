@@ -9,6 +9,7 @@
 import ChannelActivityElement from '@/components/Main/Sidebar/Content/ChannelActivityElement'
 
 export default {
+  name: 'ChannelActivity',
   components: {
     ChannelActivityElement
   },
