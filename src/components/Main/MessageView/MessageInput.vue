@@ -1,5 +1,6 @@
 <template lang="pug">
 .message-input(:class="{'input-focused':focused}")
+  .message-input-progress-bar(:style="{'width': uploadProgress * 100 + '%'}")
   transition(name="typing-slide-in")
     message-typing-users(v-if="isAnyoneTyping" :typingUsers="typingUsers")
   .message-input-key-guide(v-if="showKeyGuide")
@@ -579,6 +580,16 @@ $message-input-button-height-pc: 40px - 2px
   +mq(pc)
     width: calc(100% - 20px)
     margin: 0 auto 0
+
+.message-input-progress-bar
+  position: absolute
+  height: 5px
+  +mq(sp)
+    top: 0
+  +mq(pc)
+    bottom: 0
+  left: 0
+  background-color: var(--primary-color-transparent)
 
 .message-input-buttons-wrapper
   +mq(pc)
