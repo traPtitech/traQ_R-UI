@@ -21,7 +21,7 @@ import client from '@/bin/client'
 import ActionDetector from '@/components/Util/ActionDetector'
 import MessageView from '@/components/Main/MessageView'
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
-import firebase from 'firebase/messaging'
+import firebase from 'firebase/app'
 
 export default {
   name: 'Main',
