@@ -37,14 +37,21 @@ const animeEffectSet = new Set([
   'pyon',
   'flashy',
   'pull',
-  'atumori',
+  'atsumori',
   'stretch',
   'stretch-v',
   'conga',
   'conga-inv',
+  'marquee',
+  'marquee-inv',
   'rainbow'
 ])
 const sizeEffectSet = new Set(['ex-large', 'large', 'small'])
+
+const animeEffectAliasMap = new Map([
+  ['marquee', 'conga'],
+  ['marquee-inv', 'conga-inv']
+])
 
 const maxEffectCount = 5
 
@@ -64,9 +71,14 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
   return from
 }
 
-const wrapWithEffect = (stampHtml, animeEffects) => {
+const wrapWithEffect = (stampHtml, animeEffects, sizeEffect) => {
   const filterOpenTag = animeEffects
-    .map(e => `<span class="emoji-effect ${e}">`)
+    .map(
+      (e, i) =>
+        `<span class="emoji-effect ${e}${
+          i == 0 && sizeEffect ? ` ${sizeEffect}` : ''
+        }">`
+    )
     .join('')
   const filterCloseTag = '</span>'.repeat(animeEffects.length)
   return filterOpenTag + stampHtml + filterCloseTag
@@ -96,12 +108,17 @@ const renderEmojiDomWithStyle = (
     return rawMatch
   }
 
+  // aliasの置き換え
+  const replacedAnimeEffects = animeEffects.map(e =>
+    animeEffectAliasMap.has(e) ? animeEffectAliasMap.get(e) : e
+  )
+
   // 複数サイズ指定が合った場合は最後のものを適用
   const sizeEffectClass = sizeEffects[sizeEffects.length - 1] || ''
 
   const stampHtml = `<i class="emoji s24 message-emoji ${sizeEffectClass}" title=":${escapedTitle}:" style="${escapedStyle};">:${escapedName}:</i>`
 
-  return wrapWithEffect(stampHtml, animeEffects)
+  return wrapWithEffect(stampHtml, replacedAnimeEffects, sizeEffectClass)
 }
 
 const renderEmojiDom = (rawMatch, stampName, imgTitle, imgUrl, effects) =>

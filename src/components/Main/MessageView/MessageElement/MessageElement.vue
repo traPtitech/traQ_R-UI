@@ -680,7 +680,7 @@ export default {
   $len: 10
   @for $i from 0 to $len
     #{percentage($i / $len)}
-      filter: drop-shadow(0 0 0.3em hsl($i / $len * 360, 50%, 50%))
+      filter: drop-shadow(0 0 0.2em hsl($i / $len * 360, 50%, 50%))
 
 @keyframes pull
   0%
@@ -692,25 +692,25 @@ export default {
   75%
     transform: skew(-15deg, -15deg)
 
-@keyframes atumori
+@keyframes atsumori
   0%
     transform: scale(2)
-    filter: blur(0.3em) opacity(0) saturate(0.4) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0.3em) opacity(0) saturate(0.4) drop-shadow(0 0 0 rgba(136,136,136,0))
   15%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(0.4) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(0.4) drop-shadow(0 0 0 rgba(136,136,136,0))
   20%
     transform: scale(1.3)
-    filter: blur(0) opacity(1) saturate(1) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(1) drop-shadow(0 0 0 rgba(136,136,136,0))
   25%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.1em -0.1em 0.3em rgba(255,255,255,0.5))
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.1em -0.1em 0.3em rgba(136,136,136,0.5))
   35%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.5em -0.5em 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.5em -0.5em 0 rgba(136,136,136,0))
   100%
     transform: scale(1)
-    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(0 0 0 rgba(255,255,255,0))
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(0 0 0 rgba(136,136,136,0))
 
 @keyframes stretch
   0%
@@ -817,6 +817,16 @@ export default {
     font-size: 16px
 
 #app:not([data-eco-mode="true"]) .emoji-effect
+  font-size: 24px
+  &.ex-large
+    font-size: 48px
+  &.large
+    font-size: 32px
+  &.small
+    font-size: 16px
+  .emoji-effect
+    font-size: inherit
+
   &.rotate
     animation: rotate linear 1s infinite
   &.rotate-inv
@@ -842,8 +852,8 @@ export default {
     animation: flashy linear 1s infinite
   &.pull
     animation: pull linear 0.5s infinite
-  &.atumori
-    animation: atumori linear 2s infinite
+  &.atsumori
+    animation: atsumori linear 2s infinite
   &.stretch
     animation: stretch linear 1s infinite
   &.stretch-v
@@ -852,14 +862,14 @@ export default {
   $s: ".conga"
   @for $i from 1 through 5
     &#{$s} .emoji
-      background-repeat-x: repeat
+      background-repeat: repeat-x
       animation: conga linear #{1 / $i}s infinite
     $s: #{$s ".conga"}
 
   $s: ".conga-inv"
   @for $i from 1 through 5
     &#{$s} .emoji
-      background-repeat-x: repeat
+      background-repeat: repeat-x
       animation: conga-inv linear #{1 / $i}s infinite
     $s: #{$s ".conga-inv"}
 
