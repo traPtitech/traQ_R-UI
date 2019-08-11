@@ -1,4 +1,5 @@
 /* eslint-disable */
+import firebase from 'firebase/messaging'
 workbox.skipWaiting()
 workbox.clientsClaim()
 workbox.routing.registerNavigationRoute('/index.html', {
