@@ -50,7 +50,7 @@ jobs:
       - install_module
       - run:
           name: build
-          command: npm run build --morden
+          command: npm run build
 
   build-image:
     machine: true
