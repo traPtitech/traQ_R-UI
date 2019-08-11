@@ -7,8 +7,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 import VueLazyload from 'vue-lazyload'
-import Firebase from 'firebase/app'
-import 'firebase/messaging'
+import Firebase from 'firebase'
 
 try {
   const config = {
