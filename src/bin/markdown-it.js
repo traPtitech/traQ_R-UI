@@ -184,9 +184,7 @@ const renderEmoji = match => {
       match[0],
       stampName,
       store.state.stampNameMap[stampName].name,
-      `${store.state.baseURL}/api/1.0/files/${
-        store.state.stampNameMap[stampName].fileId
-      }`,
+      `/api/1.0/files/${store.state.stampNameMap[stampName].fileId}`,
       effects
     )
   } else if (store.getters.getUserByName(stampName)) {
@@ -196,7 +194,7 @@ const renderEmoji = match => {
       match[0],
       stampName,
       stampName,
-      `${store.state.baseURL}/api/1.0/files/${user.iconFileId}`,
+      `/api/1.0/files/${user.iconFileId}`,
       effects
     )
   }

@@ -85,7 +85,7 @@ const transform = (state, data) => {
 
     let t = state.push('traq_extends_link_open', 'a', 1)
     t.attrs = [
-      ['href', `${store.state.baseURL}/api/1.0/files/${data['id']}`],
+      ['href', `/api/1.0/files/${data['id']}`],
       ['download', data['id']]
     ]
     t.meta = meta
