@@ -12,11 +12,11 @@
     "gen-unicode_emojis": "node build/gen-unicode_emojis"
   },
   "dependencies": {
+    "core-js": "^2.6.9",
     "firebase": "^6.3.5",
     "lodash": "^4.17.15",
     "lottie-web": "^5.5.7",
     "markdown-it-image-filter": "^1.0.1",
-    "regenerator-runtime": "^0.13.3",
     "scroll-behavior-polyfill": "^2.0.10",
     "skyway-js": "^2.0.3",
     "traq-api": "github:traPtitech/node-traq#2.7.3-2",
