@@ -628,7 +628,7 @@ $message-input-button-height-pc: 40px - 2px
   overflow:
     x: scroll
   margin:
-    top: 6px
+    top: 8px
 
 .message-input-file
   position: relative
