@@ -21,6 +21,7 @@ import client from '@/bin/client'
 import ActionDetector from '@/components/Util/ActionDetector'
 import MessageView from '@/components/Main/MessageView'
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
+import firebase from 'firebase/messaging'
 
 export default {
   name: 'Main',
@@ -85,7 +86,7 @@ export default {
         .then(regisration => {
           console.log('Service Worker Registered!')
           regisration.update()
-          const messaging = window.firebase.messaging()
+          const messaging = firebase.messaging()
           messaging.useServiceWorker(regisration)
           Notification.requestPermission(result => {
             if (result === 'denied') {
