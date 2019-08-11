@@ -228,9 +228,6 @@ export default {
   padding: 1rem
   +mq(sp)
     width: 95vw
-
-+mq(sp)
-  width: 95vw
   max-height: 90vh
 
 .tour-modal-horizontal-scroller
@@ -253,7 +250,7 @@ export default {
   padding-top: 0.5rem
   +mq(sp)
     padding-top: 0.5rem
-  overflow: scroll
+  overflow: hidden
   scroll-snap-align: start
 
 .tour-anim-container
