@@ -14,21 +14,6 @@ import UserModalProfileImage from '@/components/Main/Modal/UserModal/UserModalPr
 import UserModalProfileInfo from '@/components/Main/Modal/UserModal/UserModalProfile/UserModalProfileInfo'
 import UserModalProfileInfoExpanded from '@/components/Main/Modal/UserModal/UserModalProfile/UserModalProfileInfoExpanded'
 
-function paddingNumber(n, k) {
-  let ret = `${n}`
-  for (let i = 0; i < k; i++) ret = '0' + ret
-  return ret.slice(-k)
-}
-function dateParse(date) {
-  return `${date.getFullYear()}/${paddingNumber(
-    date.getMonth(),
-    2
-  )}/${paddingNumber(date.getDate(), 2)} ${paddingNumber(
-    date.getHours(),
-    2
-  )}:${paddingNumber(date.getMinutes(), 2)}`
-}
-
 export default {
   name: 'UserModalProfile',
   components: {
@@ -42,45 +27,7 @@ export default {
       required: false,
       default: false
     }
-  },
-  computed: {
-    ...mapState('modal', ['data']),
-    ...mapGetters('modal', {
-      tags: 'currentUserTagsSorted'
-    }),
-    wikiUserPageUrl() {
-      return `https://wiki.trapti.tech/user/${this.data.name}`
-    },
-    twitterProfileUrl() {
-      return this.data.twitterId !== ''
-        ? `https://twitter.com/${this.data.twitterId}`
-        : null
-    },
-    twitterLinkStyle() {
-      return {
-        color: this.twitterProfileUrl
-          ? 'rgba(255, 255, 255, 1.0)'
-          : 'rgba(255, 255, 255, 0.5)'
-      }
-    },
-    lastOnline() {
-      return dateParse(new Date(this.data.lastOnline))
-    },
-    directMessageChannel() {
-      if (this.data.userId === this.$store.state.me.userId) {
-        return this.$store.getters.getDirectMessageChannels.find(
-          channel => channel.member && channel.member.length === 1
-        )
-      } else {
-        return this.$store.getters.getDirectMessageChannels.find(
-          channel =>
-            channel.member &&
-            channel.member.some(userId => userId === this.data.userId)
-        )
-      }
-    }
-  },
-  methods: {}
+  }
 }
 </script>
 
