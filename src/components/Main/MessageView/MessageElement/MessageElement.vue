@@ -817,6 +817,8 @@ export default {
     font-size: 16px
 
 #app:not([data-eco-mode="true"]) .emoji-effect
+  line-height: 0
+
   font-size: 24px
   &.ex-large
     font-size: 48px
