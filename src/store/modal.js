@@ -139,11 +139,11 @@ export default {
         dispatch('open', { name: 'ChannelNotificationModal' })
       }
     },
-    openPinnedModal: {
+    openMessageModal: {
       root: true,
       handler({ dispatch }, message) {
         dispatch('open', {
-          name: 'PinnedModal',
+          name: 'MessageModal',
           data: message
         })
       }

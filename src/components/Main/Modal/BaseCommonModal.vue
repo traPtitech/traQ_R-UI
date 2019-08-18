@@ -80,7 +80,7 @@ export default {
     align-items: center
     justify-content: space-between
     padding: 0 0.5rem
-    margin-bottom: 2rem
+    margin-bottom: 1.5rem
 .common-modal-header
     display: flex
     align-items: center

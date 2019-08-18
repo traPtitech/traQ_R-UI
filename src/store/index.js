@@ -106,7 +106,7 @@ const store = new Vuex.Store({
     tagModal: null,
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
     editing: false,
-    isActivePinnedModal: false,
+    isActiveMessageModal: false,
     openMode: 'particular',
     openChannelId: '',
     lastChannelId: '',
@@ -467,8 +467,8 @@ const store = new Vuex.Store({
         message => message.messageId !== messageId
       )
     },
-    setPinnedModal(state, isActive) {
-      state.isActivePinnedModal = isActive
+    setMessageModal(state, isActive) {
+      state.isActiveMessageModal = isActive
     },
     setUserOnline(state, { userId, isOnline }) {
       const user = state.memberMap[userId]
