@@ -1,6 +1,8 @@
 <template lang="pug">
   div.message-attached-messages-wrap
-    div.attached-message(v-for="(m, index) in messages" :class="{'attached-message-not-found': !m}")
+    div.attached-message(
+      v-for="(m, index) in messages"
+      :class="{'attached-message-not-found': !m}")
       template(v-if="m")
         div.attached-message-detail-wrap
           div.attached-message-user-icon(
@@ -13,6 +15,8 @@
           | from
           router-link(:to="parentChannel(m.parentChannelId).to")
             | {{parentChannel(m.parentChannelId).name}}
+          a.attached-message-modal-link(@click="$store.dispatch('openMessageModal', m)")
+            | View Message
       template(v-else)
         p
           | Message Not Found
@@ -134,6 +138,11 @@ export default {
     size: 0.8em
   margin:
     top: 12px
+
+.attached-message-modal-link
+  color: $link-color
+  margin-left: 8px
+  cursor: pointer
 
 .attached-message-not-found
   color: var(--warning-color)
