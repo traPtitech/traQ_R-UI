@@ -16,7 +16,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import UserModal from './UserModal'
 import GroupModal from './GroupModal'
 import TagModal from './TagModal'
-import PinnedModal from './PinnedModal'
+import MessageModal from './MessageModal'
 import FileModal from './FileModal'
 import TourModal from './TourModal'
 import CodeModal from './CodeModal'
@@ -29,7 +29,7 @@ export default {
     UserModal,
     GroupModal,
     TagModal,
-    PinnedModal,
+    MessageModal,
     FileModal,
     TourModal,
     CodeModal,

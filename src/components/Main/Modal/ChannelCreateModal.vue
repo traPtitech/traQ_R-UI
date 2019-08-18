@@ -26,7 +26,7 @@ import SettingInput from '@/components/Setting/SettingInput'
 import IconPlus from '@/components/Icon/IconPlus'
 
 export default {
-  name: 'PinnedModal',
+  name: 'MessageModal',
   components: {
     MessageElement,
     BaseCommonModal,
