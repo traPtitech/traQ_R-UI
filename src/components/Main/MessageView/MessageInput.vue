@@ -588,6 +588,8 @@ $message-input-button-height-pc: 40px - 2px
   top: 0
   left: 0
   background-color: var(--primary-color-transparent)
+  +mq(pc)
+    border-top-left-radius: 8px
 
 .message-input-buttons-wrapper
   +mq(pc)
