@@ -12,54 +12,6 @@ export default class AudioStreamMixer {
   constructor() {
     this.context = new ((window as any).AudioContext ||
       (window as any).webkitAudioContext)() as AudioContext
-    ;(window as any).showVisualizer = (analyser?: AnalyserNode) => {
-      const canvas = document.createElement('canvas')
-      const canvas2 = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')!
-      const ctx2 = canvas2.getContext('2d')!
-      document.querySelector('.message-view')!.appendChild(canvas)
-      document.querySelector('.message-view')!.appendChild(canvas2)
-      const { width, height } = canvas.getClientRects()[0]
-      canvas.width = width
-      canvas.height = height
-      canvas2.width = width
-      canvas2.height = height
-      analyser = analyser || Object.values(this.analyserNodeMap)[0]
-      const draw = () => {
-        ctx.clearRect(0, 0, width, height)
-        ctx.strokeStyle = 'rgb(20, 107, 226)'
-
-        const bufferLength = analyser!.frequencyBinCount
-        const dataArray = new Uint8Array(bufferLength)
-        analyser!.getByteTimeDomainData(dataArray)
-
-        ctx.beginPath()
-        dataArray.forEach((value, index) => {
-          const x = (index / bufferLength) * width
-          const y = ((value / 128) * height) / 2
-          if (index === 0) {
-            ctx.moveTo(x, y)
-          } else {
-            ctx.lineTo(x, y)
-          }
-        })
-        ctx.lineTo(width, height / 2)
-        ctx.stroke()
-
-        ctx2.clearRect(0, 0, width, height)
-        ctx2.fillStyle = 'rgb(235, 156, 88)'
-        analyser!.getByteFrequencyData(dataArray)
-
-        dataArray.forEach((value, index) => {
-          const x = (index / bufferLength) * width
-          const h = (value / 256) * height
-          ctx2.fillRect(x, height - h, width / bufferLength, h)
-        })
-
-        requestAnimationFrame(() => draw())
-      }
-      draw()
-    }
   }
 
   private createNodeGraph(mediaStream: MediaStream) {
