@@ -45,7 +45,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       .menu-icon
         icon-call(size="24")
       span
-        | Quit Qall
+        | 通話を終了
     .titlebar-menu-item(
       v-if="!$store.state.rtc.isCalling"
       @click="$store.dispatch('rtc/joinVoiceChannel', $store.state.currentChannel.channelId)"
@@ -53,7 +53,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       .menu-icon
         icon-call(size="24")
       span
-        | Start Qall
+        | 通話を開始
 </template>
 
 <script>
