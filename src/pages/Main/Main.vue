@@ -271,6 +271,8 @@ export default {
     getStatus() {
       if (this.$store.state.editing) {
         this.nowStatus = 'editing'
+      } else if (this.$store.state.rtc.isCalling) {
+        this.nowStatus = 'calling'
       } else if (document.hasFocus()) {
         this.nowStatus = 'monitoring'
       } else {
