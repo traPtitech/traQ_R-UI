@@ -7,6 +7,9 @@ const getters: GetterTree<S, TempRS> = {
   },
   remoteVideoStreams({ remoteVideoStreamMap }) {
     return Object.values(remoteVideoStreamMap)
+  },
+  isCallingOnCurrentChannel({ activeMediaChannelId }, _, { currentChannel }) {
+    return activeMediaChannelId === currentChannel.channelId
   }
 }
 

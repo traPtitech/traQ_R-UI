@@ -7,6 +7,9 @@ export interface TempRS {
   me: {
     name: string
     userId: string
+  },
+  currentChannel: {
+    channelId: string
   }
 }
 

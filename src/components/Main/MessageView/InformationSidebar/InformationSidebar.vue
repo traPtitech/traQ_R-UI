@@ -14,23 +14,30 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
         div.icon-close-wrap
           icon-close
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
-        div.information-sidebar-content-item.separator-line(v-if="$store.state.rtc.isActive")
+        div.information-sidebar-content-item.separator-line(
+          v-if="showQallSection"
+        )
           div.information-sidebar-content-header
             icon-call(size="24")
             span
               | QALL
             .indormation-sidebar-topic-edit-button(
+              v-if="$store.getters['rtc/isCallingOnCurrentChannel']"
               :class="{ 'information-sidebar-action-cancel': isAdjustingCallVolumes }"
               :title="isAdjustingCallVolumes ? '音量を調整する' : 'キャンセル'"
-              @click="toggleCallVolumeAdjust")
+              @click="toggleCallVolumeAdjust"
+            )
               icon-check(v-if="isAdjustingCallVolumes")
               icon-volume(v-else)
           div.information-sidebar-content-body
-            .information-sidebar-call-item
-              slim-member-element(:member="$store.state.me" :style="{ opacity: isAdjustingCallVolumes ? 0.5 : 1 }" )
-            .information-sidebar-call-item(v-for="stream in $store.getters['rtc/remoteAudioStreams']")
+            .information-sidebar-call-item(
+              v-if="$store.getters['rtc/isCallingOnCurrentChannel']"
+              :style="{ opacity: isAdjustingCallVolumes ? 0.5 : 1 }"
+            )
+              slim-member-element(:member="$store.state.me")
+            .information-sidebar-call-item(v-for="id in callingMemberIds")
               calling-member-element(
-                :member="$store.state.memberMap[stream.peerId]"
+                :member="$store.state.memberMap[id]"
                 :adjustVolume="isAdjustingCallVolumes"
               )
 
@@ -142,6 +149,20 @@ export default {
         'is-opened': this.isOpened,
         'is-closed': this.isNotFirst && !this.isOpened
       }
+    },
+    callingMemberIds() {
+      return this.$store.state.heartbeatStatus.userStatuses
+        .filter(user => user.userId !== this.$store.state.me.userId)
+        .filter(user => user.status === 'calling')
+        .map(user => user.userId)
+    },
+    showQallSection() {
+      // コネクションが現在のチャンネルで開いている時か、現在のチャンネルで誰かが通話中のときは表示
+      return (
+        (this.$store.state.rtc.isActive &&
+          this.$store.getters['rtc/isCallingOnCurrentChannel']) ||
+        this.callingMemberIds.length >= 1
+      )
     }
   },
   methods: {
