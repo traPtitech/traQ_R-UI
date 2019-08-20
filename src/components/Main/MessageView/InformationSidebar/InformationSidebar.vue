@@ -19,12 +19,15 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
             icon-call(size="24")
             span
               | QALL
-            .indormation-sidebar-topic-edit-button(:class="{'information-sidebar-action-cancel': isAdjustingCallVolumes}" @click="toggleCallVolumeAdjust")
+            .indormation-sidebar-topic-edit-button(
+              :class="{ 'information-sidebar-action-cancel': isAdjustingCallVolumes }"
+              :title="isAdjustingCallVolumes ? '音量を調整する' : 'キャンセル'"
+              @click="toggleCallVolumeAdjust")
               icon-check(v-if="isAdjustingCallVolumes")
-              icon-edit(v-else)
+              icon-volume(v-else)
           div.information-sidebar-content-body
             .information-sidebar-call-item
-              slim-member-element(:member="$store.state.me")
+              slim-member-element(:member="$store.state.me" :style="{ opacity: isAdjustingCallVolumes ? 0.5 : 1 }" )
             .information-sidebar-call-item(v-for="stream in $store.getters['rtc/remoteAudioStreams']")
               calling-member-element(
                 :member="$store.state.memberMap[stream.peerId]"
@@ -68,6 +71,7 @@ import IconClose from '@/components/Icon/IconClose'
 import IconTopic from '@/components/Icon/IconTopic'
 import IconPin from '@/components/Icon/IconPin'
 import IconEdit from '@/components/Icon/IconEdit'
+import IconVolume from '@/components/Icon/IconVolume'
 import IconCall from '@/components/Icon/IconCall'
 import IconCheck from '@/components/Icon/IconCheck'
 import SlimMessageElement from '@/components/Main/MessageView/InformationSidebar/SlimMessageElement'
@@ -82,6 +86,7 @@ export default {
     IconTopic,
     IconPin,
     IconEdit,
+    IconVolume,
     IconCall,
     IconCheck,
     SlimMessageElement,
