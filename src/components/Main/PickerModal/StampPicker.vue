@@ -1,7 +1,7 @@
 <template lang="pug">
   div.stamp-picker-container
     div.stamp-picker-header
-      DebouncedInput.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder")
+      DebouncedInput.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder" @keydown="searchKeydown")
       div.stamp-picker-search-icon
         icon-search(color="gray")
     transition-group.stamp-picker-body.is-scroll(
@@ -56,7 +56,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { isTouchDevice } from '@/bin/utils'
+import {
+  isTouchDevice,
+  caseIntensiveIncludes,
+  caseIntensiveEquals
+} from '@/bin/utils'
 import stampAltNameTable from '@/bin/emoji_altname_table.json'
 import DebouncedInput from '@/components/Util/DebouncedInput'
 import IconSearch from '@/components/Icon/IconSearch'
@@ -71,6 +75,7 @@ import IconLightBulb from '@/components/Icon/IconLightBulb'
 import IconHeart from '@/components/Icon/IconHeart'
 import IconFlag from '@/components/Icon/IconFlag'
 import IconRegional from '@/components/Icon/IconRegional'
+import IconMembers from '@/components/Icon/IconMembers'
 
 export default {
   name: 'StampPicker',
@@ -95,7 +100,8 @@ export default {
         IconLightBulb,
         IconHeart,
         IconFlag,
-        IconRegional
+        IconRegional,
+        IconMembers
       ]
     }
   },
@@ -104,16 +110,37 @@ export default {
     active() {
       return this.$store.getters.stampPickerActive
     },
+    mode() {
+      return this.$store.getters.stampPickerMode
+    },
     model() {
       return this.$store.getters.stampPickerModel
     },
     stampCategolized() {
-      return [this.stampHistory].concat(this.$store.state.stampCategolized)
+      return [this.stampHistory].concat(
+        this.$store.state.stampCategolized,
+        this.mode !== 'message' ? this.stampMembers : []
+      )
     },
     stampHistory() {
       return {
         category: 'history',
         stamps: this.$store.getters.stampHistory
+      }
+    },
+    stampMembers() {
+      return {
+        category: 'members',
+        stamps: this.$store.getters.nonBotUsers.map(user => {
+          return {
+            createdAt: null,
+            creatorId: user.userId,
+            fileId: user.iconFileId,
+            id: null,
+            name: user.name,
+            updatedAt: null
+          }
+        })
       }
     },
     filteredStamps() {
@@ -128,7 +155,10 @@ export default {
       }
 
       const filteredAltName = stampAltNameTable
-        .filter(stamp => stamp.altName && stamp.altName.includes(this.search))
+        .filter(
+          stamp =>
+            stamp.altName && caseIntensiveIncludes(stamp.altName, this.search)
+        )
         .map(stamp => stamp.name)
 
       let filterFunc
@@ -137,7 +167,9 @@ export default {
         filterFunc = (a, b) => unicodeMatchName.includes(a)
       } else {
         filterFunc = (a, b) =>
-          a !== b && (a.includes(b) || filteredAltName.includes(a))
+          !caseIntensiveEquals(a, b) &&
+          (caseIntensiveIncludes(a, b) ||
+            filteredAltName.some(altName => caseIntensiveEquals(altName, a)))
       }
 
       const stamps = this.stampCategolized
@@ -145,7 +177,9 @@ export default {
         .map(c => c.stamps)
         .flat()
 
-      const match = stamps.filter(stamp => stamp.name === this.search)
+      const match = stamps.filter(stamp =>
+        caseIntensiveEquals(stamp.name, this.search)
+      )
 
       return match.concat(
         stamps.filter(stamp => filterFunc(stamp.name, this.search))
@@ -167,6 +201,11 @@ export default {
     },
     categoryIcon(categoryIndex) {
       return this.categoryIcons[categoryIndex]
+    },
+    searchKeydown(key) {
+      if (key === 'Escape') {
+        this.search = ''
+      }
     }
   },
   watch: {

@@ -22,6 +22,7 @@ import client from '@/bin/client'
 import ActionDetector from '@/components/Util/ActionDetector'
 import MessageView from '@/components/Main/MessageView'
 import Sidebar from '@/components/Main/Sidebar/Sidebar'
+import firebase from 'firebase/app'
 
 export default {
   name: 'Main',
@@ -89,32 +90,34 @@ export default {
         .then(regisration => {
           console.log('Service Worker Registered!')
           regisration.update()
-          const messaging = window.firebase.messaging()
+          const messaging = firebase.messaging()
           messaging.useServiceWorker(regisration)
-          messaging
-            .requestPermission()
-            .then(() => {
-              console.log('permission granted')
-              messaging.getToken().then(currentToken => {
-                client.registerDevice(currentToken)
-              })
-
-              messaging.onMessage(payload => {
-                const notification = this.notify(
-                  payload.data.title || 'traQ',
-                  payload.data
-                )
-                if (notification) {
-                  notification.onclick = () => {
-                    window.focus()
-                    this.$router.push(payload.data.path)
-                  }
-                }
-              })
-            })
-            .catch(() => {
+          Notification.requestPermission(result => {
+            if (result === 'denied') {
               console.error('permission denied')
+              return
+            } else if (result === 'default') {
+              console.error('permission default')
+              return
+            }
+            console.log('permission granted')
+            messaging.getToken().then(currentToken => {
+              client.registerDevice(currentToken)
             })
+
+            messaging.onMessage(payload => {
+              const notification = this.notify(
+                payload.data.title || 'traQ',
+                payload.data
+              )
+              if (notification) {
+                notification.onclick = () => {
+                  window.focus()
+                  this.$router.push(payload.data.path)
+                }
+              }
+            })
+          })
 
           messaging.onTokenRefresh(() => {
             messaging.getToken().then(currentToken => {
@@ -308,7 +311,13 @@ export default {
               client.readMessages(res.data.parentChannelId)
             }
           } else {
-            this.$store.commit('addUnreadMessage', res.data)
+            if (
+              this.$store.state.myNotifiedChannelSet.has(
+                res.data.parentChannelId
+              )
+            ) {
+              this.$store.commit('addUnreadMessage', res.data)
+            }
           }
         }
 

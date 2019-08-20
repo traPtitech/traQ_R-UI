@@ -45,10 +45,20 @@ module.exports = {
   },
   pwa: {
     name: 'traQ',
-    themeColor: '#ffffff',
-    msTileColor: '#ffffff',
+    themeColor: '#0D67EA',
+    msTileColor: '#0D67EA',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
+    assetsVersion: require('./package.json').version,
+
+    manifestPath: 'static/manifest.json',
+    iconPaths: {
+      favicon32: 'static/favicon-32x32.png',
+      favicon16: 'static/favicon-16x16.png',
+      appleTouchIcon: 'static/apple-touch-icon.png',
+      maskIcon: 'static/safari-pinned-tab.svg',
+      msTileImage: 'static/mstile-150x150.png'
+    },
 
     // configure the workbox plugin
     workboxPluginMode: 'InjectManifest',

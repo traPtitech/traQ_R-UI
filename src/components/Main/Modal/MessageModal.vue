@@ -1,5 +1,5 @@
 <template lang="pug">
-base-common-modal(title="PINNED" small scroll)
+base-common-modal(title="MESSAGE" small scroll)
   icon-pin(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
   .message-item
     message-element(:model="message")
@@ -12,7 +12,7 @@ import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
 import IconPin from '@/components/Icon/IconPin'
 
 export default {
-  name: 'PinnedModal',
+  name: 'MessageModal',
   components: {
     MessageElement,
     BaseCommonModal,
@@ -30,4 +30,7 @@ export default {
 }
 </script>
 
-<style lang="sass"></style>
+<style lang="sass">
+.message-item
+  padding: -1rem
+</style>

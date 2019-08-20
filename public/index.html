@@ -4,48 +4,12 @@
     <meta charset="utf-8"/>
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" id="favicon"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" id="favicon"/>
-    <link rel="manifest" href="/static/manifest.json"/>
-    <link rel="mask-icon" href="/static/safari-pinned-tab.svg" color="#0D67EA"/>
-    <meta name="msapplication-TileColor" content="#0D67EA"/>
-    <link rel="manifest" href="/static/manifest.json"/>
     <title>traQ</title>
-    <style>
-      .initial-splash {
-        position: fixed;
-        top: 0;
-        right: 0;
-        background-color: #0D67EA;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-      }
-    </style>
+    <link rel="stylesheet" href="/static/splash.css" >
   </head>
   <body>
     <div id="app"></div>
     <div class="initial-splash"></div>
     <!-- built files will be auto injected -->
   </body>
-  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-messaging.js"></script>
-  <script>
-    try{
-      var config = {
-        apiKey: "AIzaSyDee_VkrRtByJCrCZAX3nTSDPl8AaHlWfY",
-        authDomain: "traq-r.firebaseapp.com",
-        databaseURL: "https://traq-r.firebaseio.com",
-        projectId: "traq-r",
-        storageBucket: "traq-r.appspot.com",
-        messagingSenderId: "993645413001"
-      };
-      firebase.initializeApp(config);
-    }catch(e){
-      console.log('failed initialize firebase', e)
-    }
-  </script>
 </html>

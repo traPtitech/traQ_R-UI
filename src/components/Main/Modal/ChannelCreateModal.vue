@@ -7,15 +7,17 @@ base-common-modal(title="CREATE" tiny)
       setting-input(:prefix="`#${fullChannelName}/`" type="textarea" v-model="channelName")
     p.channel-create-status(v-if="state === 'failed'")
       | 失敗しました
-    p.channel-create-status(v-if="state === 'successed'")
+    p.channel-create-status(v-if="state === 'succeeded'")
       | 作成されました
     .channel-create-button-wrap
-      setting-button(@click="createChannel")
+      setting-button.channel-create-button(v-if="state === 'succeeded'" @click="changeChannel")
+        | 開く
+      setting-button.channel-create-button(@click="createChannel")
         | 作成
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import client from '@/bin/client'
 import MessageElement from '@/components/Main/MessageView/MessageElement/MessageElement'
 import BaseCommonModal from '@/components/Main/Modal/BaseCommonModal'
@@ -24,7 +26,7 @@ import SettingInput from '@/components/Setting/SettingInput'
 import IconPlus from '@/components/Icon/IconPlus'
 
 export default {
-  name: 'PinnedModal',
+  name: 'MessageModal',
   components: {
     MessageElement,
     BaseCommonModal,
@@ -35,7 +37,8 @@ export default {
   data() {
     return {
       channelName: '',
-      state: 'default'
+      state: 'default',
+      createdChannel: {}
     }
   },
   computed: {
@@ -50,6 +53,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('modal', ['close']),
     channelNameById(channelId) {
       return this.$store.state.channelMap[channelId].name
     },
@@ -62,12 +66,17 @@ export default {
           this.channelName,
           this.$store.state.currentChannel.channelId
         )
-        .then(() => {
-          this.state = 'successed'
+        .then(res => {
+          this.state = 'succeeded'
+          this.createdChannel = res.data
         })
         .catch(() => {
           this.state = 'failed'
         })
+    },
+    changeChannel() {
+      this.$store.commit('changeChannel', this.createdChannel)
+      this.close()
     }
   }
 }
@@ -88,4 +97,7 @@ export default {
   width: 100%
   display: flex
   justify-content: flex-end
+
+.channel-create-button
+  margin-left: 12px
 </style>

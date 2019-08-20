@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
-import { detectMentions } from '@/bin/utils'
+import { detectMentions, caseIntensiveEquals, Trie } from '@/bin/utils'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -68,6 +68,7 @@ const store = new Vuex.Store({
     loadedComponent: false,
     channelData: [],
     channelMap: {},
+    channelTrie: null,
     activityMessages: [],
     activityChannelIdSet: new Set(),
     openChannels: {},
@@ -76,6 +77,7 @@ const store = new Vuex.Store({
     titlebarExpanded: false,
     memberData: [],
     memberMap: {},
+    memberTrie: null,
     groupData: [],
     groupMap: {},
     stampData: [],
@@ -101,16 +103,12 @@ const store = new Vuex.Store({
     menuContent: 'Channels',
     channelView: 'tree',
     heartbeatStatus: { userStatuses: [] },
-    baseURL:
-      process.env.NODE_ENV === 'development'
-        ? 'https://traq-dev.tokyotech.org'
-        : '',
     files: [],
     userModal: null,
     tagModal: null,
     directMessageId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
     editing: false,
-    isActivePinnedModal: false,
+    isActiveMessageModal: false,
     openMode: 'particular',
     openChannelId: '',
     lastChannelId: '',
@@ -123,7 +121,8 @@ const store = new Vuex.Store({
     filterText: '',
     isUnreadFiltered: false,
     webhooks: [],
-    messageSendKey: ''
+    messageSendKey: '',
+    ecoMode: false
   },
   mutations: {
     openSidebar(state) {
@@ -157,12 +156,30 @@ const store = new Vuex.Store({
           )
         }
       })
+      const root = state.channelData.find(channel => channel.channelId === '')
+      const trie = new Trie()
+      const buildTrie = (channel, acc) => {
+        const path = (acc === '' ? '' : acc + '/') + channel.name
+        trie.update(path, 0)
+        if (channel.children) {
+          channel.children.forEach(childId => {
+            buildTrie(map[childId], path)
+          })
+        }
+      }
+      buildTrie(root, '')
+      state.channelTrie = trie
     },
     setMemberData(state, newMemberData) {
       state.memberData = newMemberData
+      let trie = new Trie()
       state.memberData.forEach(member => {
+        if (!member.suspended) {
+          trie.update(member.name, 0)
+        }
         state.memberMap[member.userId] = member
       })
+      state.memberTrie = trie
     },
     setGroupData(state, newGroupData) {
       newGroupData.forEach(group => {
@@ -452,8 +469,8 @@ const store = new Vuex.Store({
         message => message.messageId !== messageId
       )
     },
-    setPinnedModal(state, isActive) {
-      state.isActivePinnedModal = isActive
+    setMessageModal(state, isActive) {
+      state.isActiveMessageModal = isActive
     },
     setUserOnline(state, { userId, isOnline }) {
       const user = state.memberMap[userId]
@@ -535,6 +552,9 @@ const store = new Vuex.Store({
     },
     setMessageSendKey(state, key) {
       state.messageSendKey = key
+    },
+    setEcoMode(state, ecoModeEnabled) {
+      state.ecoMode = ecoModeEnabled
     }
   },
   getters: {
@@ -576,7 +596,7 @@ const store = new Vuex.Store({
         let channelId = ''
         channelLevels.forEach(name => {
           const levelChannels = getters.childrenChannels(channelId)
-          channel = levelChannels.find(ch => ch.name === name)
+          channel = levelChannels.find(ch => caseIntensiveEquals(ch.name, name))
           if (channel === undefined) return null
           channelId = channel.channelId
         })
@@ -588,7 +608,9 @@ const store = new Vuex.Store({
     },
     getUserByName(state, getters) {
       return userName => {
-        const user = getters.memberData.find(user => user.name === userName)
+        const user = getters.memberData.find(user =>
+          caseIntensiveEquals(user.name, userName)
+        )
         if (user) {
           return user
         } else {
@@ -716,7 +738,7 @@ const store = new Vuex.Store({
     },
     fileUrl(state) {
       return fileId => {
-        return `${state.baseURL}/api/1.0/files/${fileId}`
+        return `/api/1.0/files/${fileId}`
       }
     },
     grades(state) {
@@ -769,7 +791,9 @@ const store = new Vuex.Store({
     },
     getGroupByContent(state) {
       return groupName =>
-        state.groupData.find(group => group.name === groupName)
+        state.groupData.find(group =>
+          caseIntensiveEquals(group.name, groupName)
+        )
     },
     userDisplayName(state) {
       return userId => state.memberMap[userId].displayName
@@ -796,6 +820,12 @@ const store = new Vuex.Store({
     },
     getWebhookUserIds(state) {
       return state.webhooks.map(w => w.botUserId)
+    },
+    getChannelPrefix(state) {
+      return s => state.channelTrie.query(s, 0, '')
+    },
+    getMemberPrefix(state) {
+      return s => state.memberTrie.query(s, 0, '')
     }
   },
   actions: {
@@ -990,7 +1020,8 @@ const store = new Vuex.Store({
         dispatch('loadFilterSubscribedActivity'),
         dispatch('loadOpenUserLists'),
         dispatch('loadChannelView'),
-        dispatch('loadMessageSendKey')
+        dispatch('loadMessageSendKey'),
+        dispatch('loadEcoMode')
       ])
     },
     loadOpenMode({ commit, dispatch }) {
@@ -1067,6 +1098,16 @@ const store = new Vuex.Store({
         })
         .catch(async () => {
           await dispatch('updateMessageSendKey', 'modifier')
+        })
+    },
+    loadEcoMode({ commit, dispatch }) {
+      return db
+        .read('browserSetting', 'ecoMode')
+        .then(data => {
+          commit('setEcoMode', data)
+        })
+        .catch(async () => {
+          await dispatch('updateEcoMode', false)
         })
     },
     updateOpenMode({ commit }, mode) {
@@ -1156,6 +1197,13 @@ const store = new Vuex.Store({
     updateMessageSendKey({ commit }, key) {
       commit('setMessageSendKey', key)
       return db.write('browserSetting', { type: 'messageSendKey', data: key })
+    },
+    updateEcoMode({ commit }, ecoModeEnabled) {
+      commit('setEcoMode', ecoModeEnabled)
+      return db.write('browserSetting', {
+        type: 'ecoMode',
+        data: ecoModeEnabled
+      })
     }
   }
 })

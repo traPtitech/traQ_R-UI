@@ -12,6 +12,9 @@ export default {
     stampPickerActive(state) {
       return state.stampPickerActive
     },
+    stampPickerMode(state) {
+      return state.stampPickerMode
+    },
     stampPickerModel(state) {
       return state.stampPickerModel
     }

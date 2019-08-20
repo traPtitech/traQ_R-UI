@@ -582,13 +582,211 @@ export default {
 .edit-submit
   background-color: #4e72d6
 
-.emoji
-  &.s24
-    width: 24px
-    height: 24px
-  &.s32
-    width: 32px
-    height: 32px
+@keyframes rotate
+  0%
+    transform: rotate(0)
+  100%
+    transform: rotate(1turn)
+
+@keyframes rotate-inv
+  0%
+    transform: rotate(0)
+  100%
+    transform: rotate(-1turn)
+
+@keyframes wiggle
+  0%
+    transform: translate(1px, 1px) rotate(0deg)
+  10%
+    transform: translate(-1px, -2px) rotate(-1deg)
+  20%
+    transform: translate(-3px, 0px) rotate(1deg)
+  30%
+    transform: translate(3px, 2px) rotate(0deg)
+  40%
+    transform: translate(1px, -1px) rotate(1deg)
+  50%
+    transform: translate(-1px, 2px) rotate(-1deg)
+  60%
+    transform: translate(-3px, 1px) rotate(0deg)
+  70%
+    transform: translate(3px, 1px) rotate(-1deg)
+  80%
+    transform: translate(-1px, -1px) rotate(1deg)
+  90%
+    transform: translate(1px, 2px) rotate(0deg)
+  100%
+    transform: translate(1px, -2px) rotate(-1deg)
+
+@keyframes parrot
+  0%
+    filter: hue-rotate(0)
+  100%
+    filter: hue-rotate(1turn)
+
+@keyframes zoom
+  0%
+    transform: scale(1.0)
+  25%
+    transform: scale(1.5)
+  50%
+    transform: scale(1.0)
+  75%
+    transform: scale(0.5)
+
+@keyframes invert
+  0%
+    filter: invert(0)
+  50%
+    filter: invert(1)
+
+@keyframes turn
+  0%
+    transform: rotateY(0)
+  100%
+    transform: rotateY(1turn)
+
+@keyframes turn-v
+  0%
+    transform: rotateX(0)
+  100%
+    transform: rotateX(1turn)
+
+@keyframes happa
+  $len: 8
+  @for $i from 0 to $len
+    $y: 0
+    @if $i % 2 != 0
+      $y: -0.2em
+
+    $r: 0
+    @if $i >= ($len / 2)
+      $r: 0.5turn
+
+    #{percentage($i / $len)}
+      transform: translateY($y) rotateY($r)
+
+@keyframes pyon
+  0%
+    transform: translateY(0) scale(1, 1)
+  30%
+    transform: translateY(-0.2em) scale(1, 1)
+  60%
+    transform: translateY(0) scale(1, 1)
+  80%
+    transform: translateY(0) scale(1.1, 0.9)
+
+@keyframes flashy
+  $len: 10
+  @for $i from 0 to $len
+    #{percentage($i / $len)}
+      filter: drop-shadow(0 0 0.2em hsl($i / $len * 360, 50%, 50%))
+
+@keyframes pull
+  0%
+    transform: skew(0, 0)
+  25%
+    transform: skew(15deg, 15deg)
+  50%
+    transform: skew(0, 0)
+  75%
+    transform: skew(-15deg, -15deg)
+
+@keyframes atsumori
+  0%
+    transform: scale(2)
+    filter: blur(0.3em) opacity(0) saturate(0.4) drop-shadow(0 0 0 rgba(136,136,136,0))
+  15%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(0.4) drop-shadow(0 0 0 rgba(136,136,136,0))
+  20%
+    transform: scale(1.3)
+    filter: blur(0) opacity(1) saturate(1) drop-shadow(0 0 0 rgba(136,136,136,0))
+  25%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.1em -0.1em 0.3em rgba(136,136,136,0.5))
+  35%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(-0.5em -0.5em 0 rgba(136,136,136,0))
+  100%
+    transform: scale(1)
+    filter: blur(0) opacity(1) saturate(1.5) drop-shadow(0 0 0 rgba(136,136,136,0))
+
+@keyframes stretch
+  0%
+    transform: scaleX(1.0)
+  20%
+    transform: scaleX(1.75)
+
+  $start: 22
+  $end: 50
+  @for $i from 0 through ($end - $start) / 2
+    $s: 1.65
+    @if $i % 2 != 0
+      $s: 1.85
+
+    #{$start + $i*2}%
+      transform: scaleX($s)
+
+  52%
+    transform: scaleX(1.75)
+  62%
+    transform: scaleX(0.8)
+  68%
+    transform: scaleX(1.0)
+
+@keyframes stretch-v
+  0%
+    transform: scaleY(1.0)
+  20%
+    transform: scaleY(1.75)
+
+  $start: 22
+  $end: 50
+  @for $i from 0 through ($end - $start) / 2
+    $s: 1.65
+    @if $i % 2 != 0
+      $s: 1.85
+
+    #{$start + $i*2}%
+      transform: scaleY($s)
+
+  52%
+    transform: scaleY(1.75)
+  62%
+    transform: scaleY(0.8)
+  68%
+    transform: scaleY(1.0)
+
+@keyframes conga
+  0%
+    background-position-x: 0
+  100%
+    background-position-x: 1em
+
+@keyframes conga-inv
+  0%
+    background-position-x: 0
+  100%
+    background-position-x: -1em
+
+@keyframes rainbow
+  @for $i from 0 to 5
+    #{$i * 20}%
+      // 赤
+      filter: invert(1 - abs(1 - 0.4 * $i)) grayscale(1) brightness(0.4) sepia(1) hue-rotate(310deg) saturate(6) contrast(0.8)
+    #{$i * 20 + 1.528*2}%
+      // 黄
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.1528*2))) grayscale(1) brightness(0.7) sepia(1) hue-rotate(5deg) saturate(5) contrast(0.7)
+    #{$i * 20 + 2.778*2}%
+      // 緑
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.2778*2))) grayscale(1) brightness(0.4) sepia(1) hue-rotate(50deg) saturate(10) contrast(0.8)
+    #{$i * 20 + 6.389*2}%
+      // 青
+      filter: invert(1 - abs(1 - 0.4 * ($i + 0.6389*2))) grayscale(1) brightness(0.3) sepia(1) hue-rotate(180deg) saturate(7) contrast(0.8)
+  100%
+    // 赤
+    filter: invert(0) grayscale(1) brightness(0.4) sepia(1) hue-rotate(310deg) saturate(6) contrast(0.8)
 
 .emoji
   display: inline-block
@@ -599,6 +797,86 @@ export default {
   background-size: contain
   background-repeat: no-repeat
   background-position: center center
+  vertical-align: middle
+
+.emoji-effect
+  display: inline-block
+
+.emoji
+  width: 1em
+  height: 1em
+  &.s24
+    font-size: 24px
+  &.s32
+    font-size: 32px
+  &.ex-large
+    font-size: 48px
+  &.large
+    font-size: 32px
+  &.small
+    font-size: 16px
+
+#app:not([data-eco-mode="true"]) .emoji-effect
+  line-height: 0
+
+  font-size: 24px
+  &.ex-large
+    font-size: 48px
+  &.large
+    font-size: 32px
+  &.small
+    font-size: 16px
+  .emoji-effect
+    font-size: inherit
+
+  &.rotate
+    animation: rotate linear 1s infinite
+  &.rotate-inv
+    animation: rotate-inv linear 1s infinite
+  &.wiggle
+    animation: wiggle linear 0.3s infinite
+  &.parrot
+    animation: parrot linear 0.5s infinite
+  &.zoom
+    animation: zoom linear 1s infinite
+  &.inversion
+    animation: invert linear 1.5s infinite
+  &.turn
+    animation: turn linear 1.5s infinite
+  &.turn-v
+    animation: turn-v linear 1.5s infinite
+  &.happa
+    animation: happa linear 1.5s infinite
+  &.pyon
+    animation: pyon linear 0.75s infinite
+    transform-origin: bottom center
+  &.flashy
+    animation: flashy linear 1s infinite
+  &.pull
+    animation: pull linear 0.5s infinite
+  &.atsumori
+    animation: atsumori linear 2s infinite
+  &.stretch
+    animation: stretch linear 1s infinite
+  &.stretch-v
+    animation: stretch-v linear 1s infinite
+
+  $s: ".conga"
+  @for $i from 1 through 5
+    &#{$s} .emoji
+      background-repeat: repeat-x
+      animation: conga linear #{1 / $i}s infinite
+    $s: #{$s ".conga"}
+
+  $s: ".conga-inv"
+  @for $i from 1 through 5
+    &#{$s} .emoji
+      background-repeat: repeat-x
+      animation: conga-inv linear #{1 / $i}s infinite
+    $s: #{$s ".conga-inv"}
+
+  &.rainbow
+    animation: rainbow linear 3s infinite
 
 .message-button-drop-menu
   transform: rotate(90deg)

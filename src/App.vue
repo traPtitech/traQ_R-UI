@@ -1,5 +1,10 @@
 <template lang="pug">
-#app(:data-theme="$store.getters.theme" :style="appStyles" :class="appClasses")
+#app(
+  :data-theme="theme"
+  :data-eco-mode="$store.state.ecoMode"
+  :style="appStyles"
+  :class="appClasses"
+)
   Splash(v-if="isLoading")
   Favicon
   router-view
@@ -78,8 +83,19 @@ export default {
         'app-loaded': !this.isLoading
       }
     },
+    theme() {
+      return this.$store.state.theme
+    },
     themeColor() {
-      return this.$store.state.theme === 'light' ? '#0D67EA' : '#232C36'
+      return this.theme === 'light' ? '#0D67EA' : '#232C36'
+    }
+  },
+  watch: {
+    theme(val) {
+      const $themeColor = document.querySelector('meta[name="theme-color"]')
+      if ($themeColor.content !== this.themeColor) {
+        $themeColor.content = this.themeColor
+      }
     }
   },
   mounted() {
