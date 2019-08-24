@@ -7,11 +7,21 @@ export default class AudioStreamMixer {
   private context: AudioContext
   private masterVolume = 1
   private previousVolumeMap: Record<string, number> = {}
+  private audioOutputElement: HTMLAudioElement
+  private streamDestination: MediaStreamAudioDestinationNode
   readonly analyserFftSize = 128
 
-  constructor() {
+  constructor(audioSinkId?: string) {
     this.context = new ((window as any).AudioContext ||
       (window as any).webkitAudioContext)() as AudioContext
+    this.streamDestination = this.context.createMediaStreamDestination()
+    this.audioOutputElement = new Audio()
+    this.audioOutputElement.src = URL.createObjectURL(
+      this.streamDestination.stream
+    )
+    if ('setSinkId' in this.audioOutputElement && audioSinkId) {
+      ;(this.audioOutputElement as any).setSinkId(audioSinkId)
+    }
   }
 
   private createNodeGraph(mediaStream: MediaStream) {
@@ -99,6 +109,12 @@ export default class AudioStreamMixer {
       this.setVolumeOf(key, this.previousVolumeMap[key])
     })
     this.previousVolumeMap = {}
+  }
+
+  public setSinkId(sinkId?: string) {
+    if ('setSinkId' in this.audioOutputElement && sinkId) {
+      ;(this.audioOutputElement as any).setSinkId(sinkId)
+    }
   }
 
   set volume(v: number) {

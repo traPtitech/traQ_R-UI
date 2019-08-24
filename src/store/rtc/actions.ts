@@ -92,12 +92,19 @@ const actions: ActionTree<S, TempRS> = {
   },
 
   initializeMixer({ state, commit }) {
-    const mixer = new AudioStreamMixer()
+    const mixer = new AudioStreamMixer(state.audioOutputDeviceId)
     Object.keys(state.remoteAudioStreamMap).forEach(userId => {
       const stream = state.remoteAudioStreamMap[userId]
       mixer.addStream(userId, stream)
     })
     commit('setMixer', mixer)
+  },
+
+  setMixerSinkId({ state }) {
+    if (!state.mixer) {
+      return
+    }
+    state.mixer.setSinkId(state.audioOutputDeviceId)
   },
 
   async setStream({ state, commit }, stream: MediaStream) {
@@ -119,7 +126,7 @@ const actions: ActionTree<S, TempRS> = {
     if (!state.localStream) {
       return
     }
-    ( state.localStream as any ).userMuted = true
+    ;(state.localStream as any).userMuted = true
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = false
     })
@@ -129,7 +136,7 @@ const actions: ActionTree<S, TempRS> = {
     if (!state.localStream) {
       return
     }
-    ( state.localStream as any ).userMuted = false
+    ;(state.localStream as any).userMuted = false
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = true
     })
@@ -208,8 +215,12 @@ const actions: ActionTree<S, TempRS> = {
       data: deviceId
     })
   },
-  updateAudioOutputDeviceId({ commit }, deviceId) {
+  updateAudioOutputDeviceId({ commit, dispatch }, deviceId) {
     commit('setAudioOutputDeviceId', deviceId)
+
+    // 出力を切り替える
+    dispatch('setUserAudio')
+
     return db.write('browserSetting', {
       type: 'rtc/audioOutputDeviceId',
       data: deviceId

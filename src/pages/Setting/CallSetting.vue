@@ -30,17 +30,17 @@
       setting-description(v-else)
         | デバイスが取得できませんでした
     setting-item
-      // setting-item-title
-      //   | 出力デバイス
-      // setting-select(
-      //   v-if="!deviceFerchFailed"
-      //   :value="$store.state.rtc.audioOutputDeviceId"
-      //   @input="$store.dispatch('rtc/updateAudioOutputDeviceId', $event)"
-      // )
-      //   option( v-for="device in audioOutputDevices" :key="device.deviceId" :value="device.deviceId")
-      //     | {{ device.label }}
-      // setting-description(v-else)
-      //   | デバイスが取得できませんでした
+      setting-item-title
+        | 出力デバイス
+      setting-select(
+        v-if="!deviceFerchFailed"
+        :value="$store.state.rtc.audioOutputDeviceId"
+        @input="$store.dispatch('rtc/updateAudioOutputDeviceId', $event)"
+      )
+        option( v-for="device in audioOutputDevices" :key="device.deviceId" :value="device.deviceId")
+          | {{ device.label }}
+      setting-description(v-else)
+        | デバイスが取得できませんでした
 
 </template>
 
