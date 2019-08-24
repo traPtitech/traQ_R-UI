@@ -92,19 +92,12 @@ const actions: ActionTree<S, TempRS> = {
   },
 
   initializeMixer({ state, commit }) {
-    const mixer = new AudioStreamMixer(state.audioOutputDeviceId)
+    const mixer = new AudioStreamMixer()
     Object.keys(state.remoteAudioStreamMap).forEach(userId => {
       const stream = state.remoteAudioStreamMap[userId]
       mixer.addStream(userId, stream)
     })
     commit('setMixer', mixer)
-  },
-
-  setMixerSinkId({ state }) {
-    if (!state.mixer) {
-      return
-    }
-    state.mixer.setSinkId(state.audioOutputDeviceId)
   },
 
   async setStream({ state, commit }, stream: MediaStream) {
@@ -215,12 +208,8 @@ const actions: ActionTree<S, TempRS> = {
       data: deviceId
     })
   },
-  updateAudioOutputDeviceId({ commit, dispatch }, deviceId) {
+  updateAudioOutputDeviceId({ commit }, deviceId) {
     commit('setAudioOutputDeviceId', deviceId)
-
-    // 出力を切り替える
-    dispatch('setUserAudio')
-
     return db.write('browserSetting', {
       type: 'rtc/audioOutputDeviceId',
       data: deviceId

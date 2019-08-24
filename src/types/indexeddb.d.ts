@@ -1,1 +1,1 @@
-declare module '@/bin/indexeddb.js';
+declare module '@/bin/indexeddb.js'
