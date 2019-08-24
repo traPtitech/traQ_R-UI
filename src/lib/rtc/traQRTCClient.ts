@@ -90,7 +90,16 @@ export default class traQRTCClient implements EventTarget {
    * @returns a Promise instance to be resolved when a connection has been established.
    */
   public async establishConnection() {
-    this.peer = await this.createPeer(this.id)
+    try {
+      this.peer = await this.createPeer(this.id)
+    } catch (e) {
+      this.handlePeerError(e)
+    }
+    if (!this.peer) {
+      this.handlePeerError('poyo')
+      return
+    }
+
     this.dispatchEvent(new Event('connect'))
 
     this.peer.on('close', this.handlePeerClose.bind(this))

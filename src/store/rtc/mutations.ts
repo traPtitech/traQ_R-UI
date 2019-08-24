@@ -29,6 +29,9 @@ const mutations: MutationTree<S> = {
     state.localStream = undefined
   },
 
+  setIsRtcEnabled(state, enabed: boolean) {
+    state.isRtcEnabled = enabed
+  },
   setIsActive(state, isActive: boolean) {
     state.isActive = isActive
   },
@@ -73,6 +76,12 @@ const mutations: MutationTree<S> = {
   resetRemoteStreamsMap(state) {
     state.remoteAudioStreamMap = {}
     state.remoteVideoStreamMap = {}
+  },
+  setAudioInputDeviceId(state, deviceId) {
+    state.audioInputDeviceId = deviceId
+  },
+  setAudioOutputDeviceId(state, deviceId) {
+    state.audioOutputDeviceId = deviceId
   }
 }
 

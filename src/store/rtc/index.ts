@@ -7,13 +7,16 @@ import getters from './getters'
 const namespaced = true
 
 const state: S = {
+  isRtcEnabled: false,
   isActive: false,
   isCalling: false,
   isMicMuted: false,
   activeMediaChannelId: '',
   userVolumeMap: {},
   remoteAudioStreamMap: {},
-  remoteVideoStreamMap: {}
+  remoteVideoStreamMap: {},
+  audioInputDeviceId: 'default',
+  audioOutputDeviceId: 'default'
 }
 
 const rtc: Module<S, TempRS> = {

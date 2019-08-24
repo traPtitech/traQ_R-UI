@@ -1021,7 +1021,8 @@ const store = new Vuex.Store({
         dispatch('loadOpenUserLists'),
         dispatch('loadChannelView'),
         dispatch('loadMessageSendKey'),
-        dispatch('loadEcoMode')
+        dispatch('loadEcoMode'),
+        dispatch('rtc/loadSetting')
       ])
     },
     loadOpenMode({ commit, dispatch }) {

@@ -4,6 +4,9 @@ import { getUserAudio, getUserDisplay } from '@/lib/rtc/utils'
 import { ActionTree } from 'vuex'
 import { S, TempRS } from './types'
 
+import indexedDB from '@/bin/indexeddb.js'
+const db = indexedDB.db
+
 const actions: ActionTree<S, TempRS> = {
   async establishConnection({ state, commit, rootState, dispatch }) {
     if (state.client) {
@@ -134,6 +137,82 @@ const actions: ActionTree<S, TempRS> = {
       track.enabled = true
     })
     commit('setIsMicMuted', false)
+  },
+
+  loadSetting({ dispatch }) {
+    return Promise.all([
+      dispatch('loadIsRtcEnabled'),
+      dispatch('loadIsMicMuted'),
+      dispatch('loadAudioInputDeviceId'),
+      dispatch('loadAudioOutputDeviceId')
+    ])
+  },
+
+  loadIsRtcEnabled({ commit, dispatch }) {
+    return db
+      .read('browserSetting', 'rtc/isRtcEnabled')
+      .then((data: any) => {
+        commit('setIsRtcEnabled', data)
+      })
+      .catch(async () => {
+        await dispatch('updateIsRtcEnabled', false)
+      })
+  },
+  loadIsMicMuted({ commit, dispatch }) {
+    return db
+      .read('browserSetting', 'rtc/isMicMuted')
+      .then((data: any) => {
+        commit('setIsMicMuted', data)
+      })
+      .catch(async () => {
+        await dispatch('updateIsMicMuted', false)
+      })
+  },
+  loadAudioInputDeviceId({ commit, dispatch }) {
+    return db
+      .read('browserSetting', 'rtc/audioInputDeviceId')
+      .then((data: any) => {
+        commit('setAudioInputDeviceId', data)
+      })
+      .catch(async () => {
+        await dispatch('updateAudioInputDeviceId', 'default')
+      })
+  },
+  loadAudioOutputDeviceId({ commit, dispatch }) {
+    return db
+      .read('browserSetting', 'rtc/audioOutputDeviceId')
+      .then((data: any) => {
+        commit('setAudioOutputDeviceId', data)
+      })
+      .catch(async () => {
+        await dispatch('updateAudioOutputDeviceId', 'default')
+      })
+  },
+
+  updateIsRtcEnabled({ commit }, enabled) {
+    commit('setIsRtcEnabled', enabled)
+    return db.write('browserSetting', {
+      type: 'rtc/isRtcEnabled',
+      data: enabled
+    })
+  },
+  updateIsMicMuted({ commit }, muted) {
+    commit('setIsMicMuted', muted)
+    return db.write('browserSetting', { type: 'rtc/isMicMuted', data: muted })
+  },
+  updateAudioInputDeviceId({ commit }, deviceId) {
+    commit('setAudioInputDeviceId', deviceId)
+    return db.write('browserSetting', {
+      type: 'rtc/audioInputDeviceId',
+      data: deviceId
+    })
+  },
+  updateAudioOutputDeviceId({ commit }, deviceId) {
+    commit('setAudioOutputDeviceId', deviceId)
+    return db.write('browserSetting', {
+      type: 'rtc/audioOutputDeviceId',
+      data: deviceId
+    })
   }
 }
 

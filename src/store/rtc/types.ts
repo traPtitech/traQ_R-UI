@@ -17,6 +17,7 @@ export interface S {
   client?: traQRTCClient
   mixer?: AudioStreamMixer
   localStream?: MediaStream
+  isRtcEnabled: boolean
   isActive: boolean
   isCalling: boolean
   isMicMuted: boolean
@@ -24,4 +25,6 @@ export interface S {
   userVolumeMap: Record<string, number>
   remoteAudioStreamMap: Record<string, MediaStream>
   remoteVideoStreamMap: Record<string, MediaStream>
+  audioInputDeviceId: string,
+  audioOutputDeviceId: string
 }
