@@ -1,0 +1,30 @@
+import { Module } from 'vuex'
+import { S, TempRS } from './types'
+import actions from './actions'
+import mutations from './mutations'
+import getters from './getters'
+
+const namespaced = true
+
+const state: S = {
+  isRtcEnabled: false,
+  isActive: false,
+  isCalling: false,
+  isMicMuted: false,
+  activeMediaChannelId: '',
+  userVolumeMap: {},
+  remoteAudioStreamMap: {},
+  remoteVideoStreamMap: {},
+  audioInputDeviceId: 'default',
+  audioOutputDeviceId: 'default'
+}
+
+const rtc: Module<S, TempRS> = {
+  namespaced,
+  state,
+  mutations,
+  actions,
+  getters
+}
+
+export default rtc
