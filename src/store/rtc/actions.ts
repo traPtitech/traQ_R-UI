@@ -67,7 +67,7 @@ const actions: ActionTree<S, TempRS> = {
       commit('setUserVolume', { userId, volume: 1 })
     })
 
-    const localStream = await getUserAudio()
+    const localStream = await getUserAudio(state.audioInputDeviceId)
     commit('setLocalStream', localStream)
 
     await state.client.joinRoom(room, localStream)
@@ -100,43 +100,38 @@ const actions: ActionTree<S, TempRS> = {
     commit('setMixer', mixer)
   },
 
-  async setStream({ state }, stream: MediaStream) {
+  async setStream({ state, commit }, stream: MediaStream) {
     if (!state.client) {
       return
     }
     state.client.setStream(stream)
+    commit('setLocalStream', stream)
   },
-  async setUserAudio({ state }) {
-    if (!state.client) {
-      return
-    }
-    state.client.setStream(await getUserAudio())
+  async setUserAudio({ state, dispatch }) {
+    dispatch('setStream', await getUserAudio(state.audioInputDeviceId))
   },
-  async setUserDisplay({ state }) {
-    if (!state.client) {
-      return
-    }
-    state.client.setStream(await getUserDisplay())
+  async setUserDisplay({ dispatch }) {
+    dispatch('setStream', await getUserDisplay())
   },
   async sendData() {},
 
-  muteLocalStream({ state, commit }) {
+  muteLocalStream({ state, dispatch }) {
     if (!state.localStream) {
       return
     }
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = false
     })
-    commit('setIsMicMuted', true)
+    dispatch('updateIsMicMuted', true)
   },
-  unmuteLocalStream({ state, commit }) {
+  unmuteLocalStream({ state, dispatch }) {
     if (!state.localStream) {
       return
     }
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = true
     })
-    commit('setIsMicMuted', false)
+    dispatch('updateIsMicMuted', false)
   },
 
   loadSetting({ dispatch }) {
@@ -200,8 +195,12 @@ const actions: ActionTree<S, TempRS> = {
     commit('setIsMicMuted', muted)
     return db.write('browserSetting', { type: 'rtc/isMicMuted', data: muted })
   },
-  updateAudioInputDeviceId({ commit }, deviceId) {
+  updateAudioInputDeviceId({ commit, dispatch }, deviceId) {
     commit('setAudioInputDeviceId', deviceId)
+
+    // 入力を切り替える
+    dispatch('setUserAudio')
+
     return db.write('browserSetting', {
       type: 'rtc/audioInputDeviceId',
       data: deviceId

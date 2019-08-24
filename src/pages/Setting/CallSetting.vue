@@ -21,26 +21,26 @@
       setting-item-title
         | 入力デバイス
       setting-select(
-        v-if="!deviceFerchFailed"
+        v-if="!deviceFerchFailed && audioInputDevices.length > 0"
         :value="$store.state.rtc.audioInputDeviceId"
         @input="$store.dispatch('rtc/updateAudioInputDeviceId', $event)"
       )
-        option( v-for="device in audioInputDevices" :key="device.deviceId" :value="device.deviceId")
+        option(v-for="device in audioInputDevices" :key="device.deviceId" :value="device.deviceId")
           | {{ device.label }}
       setting-description(v-else)
         | デバイスが取得できませんでした
     setting-item
-      setting-item-title
-        | 出力デバイス
-      setting-select(
-        v-if="!deviceFerchFailed"
-        :value="$store.state.rtc.audioOutputDeviceId"
-        @input="$store.dispatch('rtc/updateAudioOutputDeviceId', $event)"
-      )
-        option( v-for="device in audioOutputDevices" :key="device.deviceId" :value="device.deviceId")
-          | {{ device.label }}
-      setting-description(v-else)
-        | デバイスが取得できませんでした
+      // setting-item-title
+      //   | 出力デバイス
+      // setting-select(
+      //   v-if="!deviceFerchFailed"
+      //   :value="$store.state.rtc.audioOutputDeviceId"
+      //   @input="$store.dispatch('rtc/updateAudioOutputDeviceId', $event)"
+      // )
+      //   option( v-for="device in audioOutputDevices" :key="device.deviceId" :value="device.deviceId")
+      //     | {{ device.label }}
+      // setting-description(v-else)
+      //   | デバイスが取得できませんでした
 
 </template>
 
@@ -103,6 +103,10 @@ export default class CallSetting extends Vue {
 
   get enabled() {
     return this.$store.state.rtc.isRtcEnabled
+  }
+
+  get audioInputDeviceId() {
+    return this.$store.state.rtc.audioInputDeviceId
   }
 
   get audioInputDevices() {

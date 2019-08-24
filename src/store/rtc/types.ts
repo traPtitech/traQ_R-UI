@@ -7,7 +7,7 @@ export interface TempRS {
   me: {
     name: string
     userId: string
-  },
+  }
   currentChannel: {
     channelId: string
   }
@@ -25,6 +25,6 @@ export interface S {
   userVolumeMap: Record<string, number>
   remoteAudioStreamMap: Record<string, MediaStream>
   remoteVideoStreamMap: Record<string, MediaStream>
-  audioInputDeviceId: string,
+  audioInputDeviceId: string
   audioOutputDeviceId: string
 }

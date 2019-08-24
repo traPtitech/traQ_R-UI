@@ -47,7 +47,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       span
         | 通話を終了
     .titlebar-menu-item(
-      v-if="!$store.state.rtc.isCalling"
+      v-if="!$store.state.rtc.isCalling && $store.state.rtc.isRtcEnabled"
       @click="$store.dispatch('rtc/joinVoiceChannel', $store.state.currentChannel.channelId)"
     )
       .menu-icon

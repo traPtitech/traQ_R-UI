@@ -1,12 +1,13 @@
-export const getUserAudio = async () => {
-  const rawAudio = await (navigator.mediaDevices.getUserMedia as any)({
-    audio: {
-      noiseSuppression: false,
-      echoCancellation: false,
-      audioGainControl: false
-    },
-    video: false
-  })
+export const getUserAudio = async (deviceId?: string) => {
+  const baseAudioConstraint = {
+    audioGainControl: true,
+    echoCancellation: true,
+    noiseSuppression: true
+  }
+  const constraint = deviceId
+    ? { audio: { ...baseAudioConstraint, deviceId }, video: false }
+    : { audio: baseAudioConstraint, video: false }
+  const rawAudio = await navigator.mediaDevices.getUserMedia(constraint)
   return rawAudio
 }
 
