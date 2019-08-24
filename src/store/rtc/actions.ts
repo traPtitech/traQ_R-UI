@@ -119,6 +119,7 @@ const actions: ActionTree<S, TempRS> = {
     if (!state.localStream) {
       return
     }
+    ( state.localStream as any ).userMuted = true
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = false
     })
@@ -128,6 +129,7 @@ const actions: ActionTree<S, TempRS> = {
     if (!state.localStream) {
       return
     }
+    ( state.localStream as any ).userMuted = false
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = true
     })

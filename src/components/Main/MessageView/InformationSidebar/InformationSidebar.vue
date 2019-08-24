@@ -14,9 +14,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
         div.icon-close-wrap
           icon-close
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
-        div.information-sidebar-content-item.separator-line(
-          v-if="showQallSection"
-        )
+        div.information-sidebar-content-item.separator-line(v-if="showQallSection")
           div.information-sidebar-content-header
             icon-call(size="24")
             span
@@ -35,7 +33,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
               :style="{ opacity: isAdjustingCallVolumes ? 0.5 : 1 }"
             )
               slim-member-element(:member="$store.state.me")
-            .information-sidebar-call-item(v-for="id in callingMemberIds")
+            .information-sidebar-call-item(v-for="id in callingMemberIdSet")
               calling-member-element(
                 :member="$store.state.memberMap[id]"
                 :adjustVolume="isAdjustingCallVolumes"
@@ -150,18 +148,22 @@ export default {
         'is-closed': this.isNotFirst && !this.isOpened
       }
     },
-    callingMemberIds() {
-      return this.$store.state.heartbeatStatus.userStatuses
+    callingMemberIdSet() {
+      const heartbeatBased = this.$store.state.heartbeatStatus.userStatuses
         .filter(user => user.userId !== this.$store.state.me.userId)
         .filter(user => user.status === 'calling')
         .map(user => user.userId)
+      const streamBased = this.$store.state.rtc.isCalling
+        ? Object.keys(this.$store.state.rtc.remoteAudioStreamMap)
+        : []
+      return new Set(heartbeatBased.concat(streamBased))
     },
     showQallSection() {
       // コネクションが現在のチャンネルで開いている時か、現在のチャンネルで誰かが通話中のときは表示
       return (
         (this.$store.state.rtc.isActive &&
           this.$store.getters['rtc/isCallingOnCurrentChannel']) ||
-        this.callingMemberIds.length >= 1
+        this.callingMemberIdSet.size > 0
       )
     }
   },
