@@ -56,7 +56,7 @@ import {
 import IconAttach from '@/components/Icon/IconAttach'
 
 export default {
-  name: 'MessageAttachedFiles',
+  name: 'AttachedFiles',
   props: {
     files: {
       type: Array,

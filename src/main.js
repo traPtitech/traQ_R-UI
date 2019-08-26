@@ -3,12 +3,18 @@
 import Vue from 'vue'
 import Meta from 'vue-meta'
 import VueClipboard from 'vue-clipboard2'
-import App from './App'
-import store from './store'
-import router from './router'
 import VueLazyload from 'vue-lazyload'
 import Firebase from 'firebase/app'
 import 'firebase/messaging'
+
+import App from './App'
+import store from './store'
+import router from './router'
+
+Vue.config.productionTip = false
+Vue.use(Meta)
+Vue.use(VueClipboard)
+Vue.use(VueLazyload)
 
 try {
   const config = {
@@ -23,12 +29,6 @@ try {
 } catch (e) {
   console.log('failed initialize firebase', e)
 }
-
-Vue.config.productionTip = false
-
-Vue.use(Meta)
-Vue.use(VueClipboard)
-Vue.use(VueLazyload)
 
 window.asyncLoadComponents = component => {
   return () => {

@@ -27,7 +27,7 @@ import { mapGetters, mapActions } from 'vuex'
 import md from '@/bin/markdown-it'
 
 export default {
-  name: 'MessageAttachedMessages',
+  name: 'AttachedMessages',
   props: {
     messages: {
       type: Array,
