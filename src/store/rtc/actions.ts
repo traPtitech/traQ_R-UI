@@ -70,6 +70,12 @@ const actions: ActionTree<S, TempRS> = {
     const localStream = await getUserAudio(state.audioInputDeviceId)
     commit('setLocalStream', localStream)
 
+    if (state.isMicMuted) {
+      dispatch('muteLocalStream')
+    } else {
+      dispatch('unmuteLocalstream')
+    }
+
     await state.client.joinRoom(room, localStream)
     commit('setIsCalling', true)
     commit('setActiveMediaChannelId', state.client.roomName)
