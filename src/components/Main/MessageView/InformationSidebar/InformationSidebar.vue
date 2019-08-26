@@ -149,10 +149,7 @@ export default {
       }
     },
     callingMemberIdSet() {
-      const heartbeatBased = this.$store.state.heartbeatStatus.userStatuses
-        .filter(user => user.userId !== this.$store.state.me.userId)
-        .filter(user => user.status === 'calling')
-        .map(user => user.userId)
+      const heartbeatBased = []
       const streamBased = this.$store.state.rtc.isCalling
         ? Object.keys(this.$store.state.rtc.remoteAudioStreamMap)
         : []
