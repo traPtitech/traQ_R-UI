@@ -1,21 +1,21 @@
-<template>
-  <div class="message-content markdown-body" v-html="render(text)"></div>
+<template lang="pug">
+  .message-content.markdown-body(v-html="renderedContent")
 </template>
 
 <script>
 import md from '@/bin/markdown-it'
 
 export default {
-  name: 'MessageContentBody',
   props: {
-    text: String
+    content: {
+      type: String,
+      default: ''
+    }
   },
   computed: {
-    html() {
-      return md.render(this.text)
+    renderedContent() {
+      return md.render(this.content)
     }
   }
 }
 </script>
-
-<style lang="sass"></style>

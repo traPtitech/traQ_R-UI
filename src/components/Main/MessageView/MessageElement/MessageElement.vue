@@ -1,73 +1,68 @@
 <template lang="pug">
 article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned':pinned}")
-  template(v-if="!isRendered")
-    .message-dummy-user-icon-wrap
-      .message-dummy-user-icon
-    .message-dummy-detail-wrap
-      .message-dummy-detail-username
-      .message-dummy-detail-etc
-    .message-dummy-content-wrap
-      .message-dummy-content
-      .message-dummy-content-attached(v-for="i in attachedData")
-  template(v-else)
-    .message-pin-detail(v-if="pinned")
-      icon-pin(color="#F2994A")
-      .message-pin-detail-text
-        | {{ pinnerName }}さんがピン留めしました
-    .message-user-icon-wrap
-      .message-user-icon(
-        :style="userIconBackground"
-        @click="openUserModal(model.userId)")
-    .message-detail-wrap
-      .message-user-info-wrap
-        .text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
-          | {{userDisplayName(model.userId)}}
-        .message-user-status-badge(v-if="statusBadge(model.userId) !== undefined" @click="handleStatusClick")
-          | {{statusBadge(model.userId)}}
-        .text-ellipsis.message-user-id
-          | @{{userName}}
-      time.message-date
-        .message-display-date-time
-          | {{displayDateTime}}
-        .message-edited-icon(v-if="isEdited")
-          icon-pen(size="12" color="var(--text-color)")
-      ul.message-buttons-wrap
-        li(@click.stop="showStampPicker")
-          icon-stamp-plus(size="20" color="var(--text-color)")
-        li.message-button-drop-menu(@click.stop="activeDropMenu")
-          icon-dots(size="18" color="var(--text-color)")
-    .message-contents-wrap
-      .message-text-wrap
-        component(v-if="!isEditing" :is="renderedBody")
-        .message-editing-wrap(v-if="isEditing")
-          textarea.input-reset.edit-area(v-model="edited" ref="editArea" @beforeinput="editBeforeinput" @keydown="editKeydown" @keyup="editKeyup")
-          button.edit-button.edit-cancel(@click.stop="editCancel")
-            | Cancel
-          button.edit-button.edit-submit(@click.stop="editSubmit")
-            | Edit
-          .message-edit-key-guide(v-if="showKeyGuide")
-            span(v-if="messageSendKey === 'modifier'")
-              | + Enterを押して確定
-            span(v-else)
-              | + Enterを押して改行
-      message-attached-messages(v-if="hasAttachedMessage" :messages="messages" @rendered="attachedMessageRendered")
-      message-attached-files(v-if="hasAttachedFile" :files="files")
-      message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
-    .message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
-      message-context-drop-menu(:userId="model.userId"
-        :messageId="model.messageId"
-        @deactive="isContextMenuActive = false"
-        @pin="pinMessage"
-        @unpin="unpinMessage"
-        @edit="editMessage"
-        @copy="copyMessage"
-        @delete="deleteMessage"
-        @report="reportMessage"
-        )
+  .message-pin-detail(v-if="pinned")
+    icon-pin(color="#F2994A")
+    .message-pin-detail-text
+      | {{ pinnerName }}さんがピン留めしました
+  .message-user-icon-wrap
+    .message-user-icon(
+      :style="userIconBackground"
+      @click="openUserModal(model.userId)")
+  .message-detail-wrap
+    .message-user-info-wrap
+      .text-ellipsis.message-user-name(@click="openUserModal(model.userId)")
+        | {{userDisplayName(model.userId)}}
+      .message-user-status-badge(v-if="statusBadge(model.userId) !== undefined" @click="handleStatusClick")
+        | {{statusBadge(model.userId)}}
+      .text-ellipsis.message-user-id
+        | @{{userName}}
+    time.message-date
+      .message-display-date-time
+        | {{displayDateTime}}
+      .message-edited-icon(v-if="isEdited")
+        icon-pen(size="12" color="var(--text-color)")
+    ul.message-buttons-wrap
+      li(@click.stop="showStampPicker")
+        icon-stamp-plus(size="20" color="var(--text-color)")
+      li.message-button-drop-menu(@click.stop="activeDropMenu")
+        icon-dots(size="18" color="var(--text-color)")
+  .message-contents-wrap
+    .message-text-wrap
+      message-content-body(v-if="!isEditing" :content="model.content")
+      .message-editing-wrap(v-if="isEditing")
+        textarea.input-reset.edit-area(
+          v-model="edited"
+          ref="editArea"
+          @beforeinput="editBeforeinput"
+          @keydown="editKeydown"
+          @keyup="editKeyup")
+        button.edit-button.edit-cancel(@click.stop="editCancel")
+          | Cancel
+        button.edit-button.edit-submit(@click.stop="editSubmit")
+          | Edit
+        .message-edit-key-guide(v-if="showKeyGuide")
+          span(v-if="messageSendKey === 'modifier'")
+            | + Enterを押して確定
+          span(v-else)
+            | + Enterを押して改行
+    message-attachments(:attached="attachedData")
+    message-stamps-list(:stampList="model.stampList" :messageId="model.messageId")
+  .message-context-menu-on-pc.drop-shadow(v-if="isContextMenuActive")
+    message-context-drop-menu(:userId="model.userId"
+      :messageId="model.messageId"
+      @deactive="isContextMenuActive = false"
+      @pin="pinMessage"
+      @unpin="unpinMessage"
+      @edit="editMessage"
+      @copy="copyMessage"
+      @delete="deleteMessage"
+      @report="reportMessage"
+      )
 </template>
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
+import autosize from 'autosize'
 import {
   detectFiles,
   displayDateTime,
@@ -77,28 +72,30 @@ import {
   isBRKey,
   checkLevel2InputEventsSupport
 } from '@/bin/utils'
-import md from '@/bin/markdown-it'
 import client from '@/bin/client'
-import MessageAttachedMessages from './MessageAttachedMessages'
-import MessageAttachedFiles from './MessageAttachedFiles'
+
+import MessageContentBody from './MessageContentBody'
+import MessageAttachments from './MessageAttachments'
 import MessageStampsList from './MessageStampsList'
 import MessageContextDropMenu from './MessageContextDropMenu'
 import IconDots from '@/components/Icon/IconDots'
 import IconPin from '@/components/Icon/IconPin'
 import IconStampPlus from '@/components/Icon/IconStampPlus'
 import IconPen from '@/components/Icon/IconPen'
-import autosize from 'autosize'
 
 const isLevel2InputEventsSupported = checkLevel2InputEventsSupport()
 
 export default {
   name: 'MessageElement',
   props: {
-    model: Object
+    model: {
+      type: Object,
+      required: true
+    }
   },
   components: {
-    MessageAttachedMessages,
-    MessageAttachedFiles,
+    MessageContentBody,
+    MessageAttachments,
     MessageStampsList,
     MessageContextDropMenu,
     IconDots,
@@ -109,13 +106,8 @@ export default {
   data() {
     return {
       isEditing: false,
-      editedTemp: '',
-      files: [],
-      messages: [],
-      isRendered: false,
       isContextMenuActive: false,
-      attachedData: null,
-      renderedBody: null,
+      attachedData: [],
       isPushedModifierKey: false
     }
   },
@@ -224,53 +216,8 @@ export default {
     clipMessage() {
       client.clipMessage('', this.model.messageId)
     },
-    async getAttachments() {
+    detectAttachments() {
       this.attachedData = detectFiles(this.model.content)
-      this.files = await Promise.all(
-        this.attachedData
-          .filter(e => e.type === 'file')
-          .map(async e => {
-            return client
-              .getFileMeta(e.id)
-              .then(res => res.data)
-              .catch(() => {
-                return {
-                  fileId: '',
-                  name: 'not found',
-                  mime: 'none',
-                  size: 0,
-                  dateTime: '2019-02-05T05:43:00.452Z',
-                  hasThumb: true,
-                  thumbWidth: 0,
-                  thumbHeight: 0
-                }
-              })
-          })
-      )
-      this.messages = await Promise.all(
-        this.attachedData
-          .filter(e => e.type === 'message')
-          .map(async e => {
-            return client
-              .getMessage(e.id)
-              .then(res => res.data)
-              .catch(() => null)
-          })
-      )
-      this.isRendered = true
-
-      this.$nextTick(() => {
-        this.$emit('rendered', this.$el.scrollHeight)
-      })
-    },
-    render() {
-      this.renderedBody = {
-        template: `
-          <div class="message-content markdown-body" v-pre>
-            ${md.render(this.model.content)}
-          </div>`,
-        props: this.$options.props
-      }
     },
     copyMessage() {
       this.$copyText(
@@ -305,9 +252,6 @@ export default {
           this.grade(this.model.userId).groupId
         )
       }
-    },
-    attachedMessageRendered() {
-      // this.$emit('rendered')
     }
   },
   computed: {
@@ -353,12 +297,6 @@ export default {
     displayDateTime() {
       return displayDateTime(this.model.createdAt, this.model.updatedAt)
     },
-    hasAttachedMessage() {
-      return this.messages.length > 0
-    },
-    hasAttachedFile() {
-      return this.files.length > 0
-    },
     pinDetail() {
       return (
         this.$store.state.currentChannelPinnedMessages.find(
@@ -375,8 +313,7 @@ export default {
   },
   watch: {
     model() {
-      this.render()
-      this.getAttachments()
+      this.detectAttachments()
     },
     isEditing(newValue) {
       if (newValue) {
@@ -392,8 +329,7 @@ export default {
     }
   },
   mounted() {
-    this.render()
-    this.getAttachments()
+    this.detectAttachments()
   }
 }
 </script>
@@ -880,78 +816,6 @@ export default {
 
 .message-button-drop-menu
   transform: rotate(90deg)
-
-.message-dummy-user-icon-wrap
-  grid-area: user-icon
-
-.message-dummy-user-icon
-  opacity: 0.6
-  width: 40px
-  height: 40px
-  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
-    size: 400% 100%
-  // animation: dummy-gradient 15s ease infinite
-  border-radius: 100%
-
-.message-dummy-detail-wrap
-  grid-area: detail
-  display: flex
-  align-items: center
-
-.message-dummy-detail-username
-  opacity: 0.6
-  width: 30%
-  height: 10px
-  border-radius: 10px
-  margin-left: 10px
-  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
-    size: 400% 100%
-  // animation: dummy-gradient 15s ease infinite
-
-.message-dummy-detail-etc
-  opacity: 0.6
-  width: 10%
-  height: 10px
-  border-radius: 10px
-  margin-left: 10px
-  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
-    size: 400% 100%
-  // animation: dummy-gradient 15s ease infinite
-
-.message-dummy-content-wrap
-  grid-area: contents
-
-.message-dummy-content
-  opacity: 0.6
-  width: 40%
-  height: 10px
-  border-radius: 10px
-  margin:
-    top: 5px
-    left: 10px
-  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
-    size: 400% 100%
-  // animation: dummy-gradient 15s ease infinite
-
-.message-dummy-content-attached
-  opacity: 0.6
-  width: 60%
-  height: 120px
-  border-radius: 4px
-  margin:
-    top: 10px
-    left: 10px
-  background: linear-gradient(to right, #a7a7a7, #d6d6d6, #a7a7a7)
-    size: 400% 100%
-  // animation: dummy-gradient 15s ease infinite
-
-@keyframes dummy-gradient
-	0%
-		background-position: 0% 50%
-	50%
-		background-position: 100% 50%
-	100%
-		background-position: 0% 50%
 
 .message-edit-key-guide
   position: absolute
