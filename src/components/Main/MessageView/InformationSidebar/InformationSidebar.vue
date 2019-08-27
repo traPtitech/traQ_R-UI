@@ -33,7 +33,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
               :style="{ opacity: isAdjustingCallVolumes ? 0.5 : 1 }"
             )
               slim-member-element(:member="$store.state.me")
-            .information-sidebar-call-item(v-for="id in callingMemberIdSet")
+            .information-sidebar-call-item(v-for="id in callingMemberIds")
               calling-member-element(
                 :member="$store.state.memberMap[id]"
                 :adjustVolume="isAdjustingCallVolumes"
@@ -148,20 +148,12 @@ export default {
         'is-closed': this.isNotFirst && !this.isOpened
       }
     },
-    callingMemberIdSet() {
-      const heartbeatBased = []
-      const streamBased = this.$store.state.rtc.isCalling
-        ? Object.keys(this.$store.state.rtc.remoteAudioStreamMap)
-        : []
-      return new Set(heartbeatBased.concat(streamBased))
+    callingMemberIds() {
+      return this.$store.getters['rtc/currentChannelCallingMemberIds']
     },
     showQallSection() {
       // コネクションが現在のチャンネルで開いている時か、現在のチャンネルで誰かが通話中のときは表示
-      return (
-        (this.$store.state.rtc.isActive &&
-          this.$store.getters['rtc/isCallingOnCurrentChannel']) ||
-        this.callingMemberIdSet.size > 0
-      )
+      return this.callingMemberIds.length > 0
     }
   },
   methods: {

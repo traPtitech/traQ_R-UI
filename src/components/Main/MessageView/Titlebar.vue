@@ -39,7 +39,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       span
         | チャンネルリンクをコピー
     .titlebar-menu-item(
-      v-if="$store.state.rtc.isCalling && $store.state.rtc.activeMediaChannelId === $store.state.currentChannel.channelId"
+      v-if="$store.getters['rtc/isCalling'] && $store.state.rtc.activeMediaChannelId === $store.state.currentChannel.channelId"
       @click="$store.dispatch('rtc/closeConnection', $store.state.currentChannel.channelId)"
     )
       .menu-icon
@@ -47,7 +47,7 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
       span
         | 通話を終了
     .titlebar-menu-item(
-      v-if="!$store.state.rtc.isCalling && $store.state.rtc.isRtcEnabled"
+      v-if="!$store.getters['rtc/isCalling'] && $store.state.rtc.isRtcEnabled"
       @click="$store.dispatch('rtc/joinVoiceChannel', $store.state.currentChannel.channelId)"
     )
       .menu-icon

@@ -1,6 +1,6 @@
 <template lang="pug">
 .footer
-  footer-calling(v-if="$store.state.rtc.isCalling")
+  footer-calling(v-if="$store.getters['rtc/isCalling']")
   footer-main
 </template>
 

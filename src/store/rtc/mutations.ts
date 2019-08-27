@@ -3,6 +3,7 @@ import traQRTClient from '@/lib/rtc/traQRTCClient'
 import AudioStreamMixer from '@/lib/rtc/AudioStreamMixer'
 import { MutationTree } from 'vuex'
 import { S } from './types'
+import { WebRTCUserState } from 'traq-api'
 
 const mutations: MutationTree<S> = {
   setClient(state, instance: traQRTClient) {
@@ -32,18 +33,36 @@ const mutations: MutationTree<S> = {
   setIsRtcEnabled(state, enabed: boolean) {
     state.isRtcEnabled = enabed
   },
-  setIsActive(state, isActive: boolean) {
-    state.isActive = isActive
+
+  addRtcState({ rtcState }, state) {
+    if (rtcState.includes(state)) {
+      return
+    }
+    rtcState.push(state)
   },
-  setIsCalling(state, isCalling: boolean) {
-    state.isCalling = isCalling
+  removeRtcState({ rtcState }, state) {
+    const index = rtcState.findIndex(state)
+    if (index !== -1) {
+      rtcState.splice(index, 1)
+    }
   },
+  clearRtcState({ rtcState }) {
+    rtcState.splice(0, rtcState.length)
+  },
+
   setIsMicMuted(state, isMicMuted: boolean) {
     state.isMicMuted = isMicMuted
   },
 
   setActiveMediaChannelId(state, channelID: string) {
     state.activeMediaChannelId = channelID
+  },
+
+  setUserState(state, payload: WebRTCUserState) {
+    if (!payload.userId) {
+      return
+    }
+    Vue.set(state.userStateMap, payload.userId, payload)
   },
 
   setUserVolume(state, { userId, volume }: { userId: string; volume: number }) {
