@@ -104,7 +104,7 @@ const actions: ActionTree<S, TempRS> = {
     if (state.isMicMuted) {
       dispatch('muteLocalStream')
     } else {
-      dispatch('unmuteLocalstream')
+      dispatch('unmuteLocalStream')
     }
 
     await state.client.joinRoom(room, localStream)
