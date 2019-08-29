@@ -2,7 +2,7 @@ import { GetterTree } from 'vuex'
 import { S, TempRS } from './types'
 
 const getters: GetterTree<S, TempRS> = {
-  currentChannelCallingMemberIds({ userStateMap }, _, { me, currentChannel }) {
+  currentChannelCallingUserStates({ userStateMap }, _, { me, currentChannel }) {
     return Object.values(userStateMap)
       .filter(
         user =>
@@ -11,7 +11,6 @@ const getters: GetterTree<S, TempRS> = {
           user.state &&
           user.state.includes('calling')
       )
-      .map(user => user.userId)
   },
   remoteAudioStreams({ remoteAudioStreamMap }) {
     return Object.values(remoteAudioStreamMap)

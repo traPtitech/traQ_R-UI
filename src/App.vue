@@ -49,6 +49,11 @@ export default {
     window.addEventListener('online', () => {
       this.$store.commit('changeNetwork', true)
     })
+    window.addEventListener('beforeunload', () => {
+      if (this.$store.getters['rtc/isActive']) {
+        this.$store.dispatch('rtc/closeConnection')
+      }
+    })
   },
   methods: {
     handleResizeWindow() {
