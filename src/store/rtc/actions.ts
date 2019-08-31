@@ -20,8 +20,10 @@ const actions: ActionTree<S, TempRS> = {
       mixer.addStream(userId, stream)
     })
 
-    mixer.addFileSource('qall_joined', '/static/qall_joined.m4a')
-    mixer.addFileSource('qall_left', '/static/qall_left.m4a')
+    mixer.addFileSource('qall_start', '/static/qall_start.mp3')
+    mixer.addFileSource('qall_end', '/static/qall_end.mp3')
+    mixer.addFileSource('qall_joined', '/static/qall_joined.mp3')
+    mixer.addFileSource('qall_left', '/static/qall_left.mp3')
 
     commit('setMixer', mixer)
   },
@@ -35,14 +37,12 @@ const actions: ActionTree<S, TempRS> = {
     }
     const client = new traQRTCClient(rootState.me.userId)
     client.addEventListener('connectionerror', e => {
-      if (e.detail.error.startsWith('Error: PeerId')) {
+      console.error(`[RTC] Failed to establish connection`)
+      if (e.detail.err.type === 'unavailable-id') {
         console.error(`[RTC] Peer Id already in use!`)
       }
-      console.log(
-        `[RTC] Failed to establish connection, trying to reconnect...`
-      )
+      window.alert('接続に失敗しました')
       dispatch('closeConnection')
-      dispatch('establishConnection')
     })
     await client.establishConnection()
     commit('setClient', client)
@@ -53,7 +53,7 @@ const actions: ActionTree<S, TempRS> = {
       return
     }
     if (state.mixer) {
-      state.mixer.playFileSource('qall_left')
+      state.mixer.playFileSource('qall_end')
       state.mixer.muteAll()
     }
     state.client.closeConnection()
@@ -66,6 +66,9 @@ const actions: ActionTree<S, TempRS> = {
     dispatch('notifyMyState')
   },
   async joinVoiceChannel({ state, commit, dispatch }, room) {
+    if (!state.isRtcEnabled) {
+      return
+    }
     while (!state.client) {
       await dispatch('establishConnection')
     }
@@ -121,7 +124,7 @@ const actions: ActionTree<S, TempRS> = {
     commit('setActiveMediaChannelId', state.client.roomName)
     dispatch('notifyMyState')
 
-    state.mixer.playFileSource('qall_joined')
+    state.mixer.playFileSource('qall_start')
   },
 
   /*

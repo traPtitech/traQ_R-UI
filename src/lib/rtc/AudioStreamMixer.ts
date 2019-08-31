@@ -1,6 +1,6 @@
 const fileSourcePrefix = '__file-'
 
-export const maxGain = 3
+export const maxGain = 5
 export const maxMasterGain = 3
 export const talkingThreshould = 500
 
@@ -11,7 +11,7 @@ export default class AudioStreamMixer {
   private gainNodeMap: Record<string, GainNode> = {}
   private context: AudioContext
   private masterVolume = 1
-  private fileVolume = 0.5
+  private fileVolume = 0.25
   private previousVolumeMap: Record<string, number> = {}
   readonly analyserFftSize = 128
 
@@ -54,10 +54,8 @@ export default class AudioStreamMixer {
   }
 
   public async addStream(key: string, mediaStream: MediaStream) {
-    console.log('will add stream')
     if (this.context.state === 'suspended') {
       await this.context.resume()
-      console.log('audio context resumed')
     }
     if (mediaStream.getAudioTracks().length === 0) {
       throw 'Invalid audio stream'
