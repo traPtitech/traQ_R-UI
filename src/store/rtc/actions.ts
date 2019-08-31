@@ -66,6 +66,9 @@ const actions: ActionTree<S, TempRS> = {
     dispatch('notifyMyState')
   },
   async joinVoiceChannel({ state, commit, dispatch }, room) {
+    if (!state.isRtcEnabled) {
+      return
+    }
     while (!state.client) {
       await dispatch('establishConnection')
     }
