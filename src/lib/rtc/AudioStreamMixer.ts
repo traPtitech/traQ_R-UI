@@ -54,10 +54,8 @@ export default class AudioStreamMixer {
   }
 
   public async addStream(key: string, mediaStream: MediaStream) {
-    console.log('will add stream')
     if (this.context.state === 'suspended') {
       await this.context.resume()
-      console.log('audio context resumed')
     }
     if (mediaStream.getAudioTracks().length === 0) {
       throw 'Invalid audio stream'
