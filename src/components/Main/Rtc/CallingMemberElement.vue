@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       volume:
-        this.$store.state.rtc.userVolumeMap[this.member.userId] * 100 || 100,
+        this.$store.state.rtc.userVolumeMap[this.member.userId] * 100 || 50,
       debounceDelay: 100,
       debounceLastTime: 0,
       debounceTimerId: -1

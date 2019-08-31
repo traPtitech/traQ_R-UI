@@ -3,14 +3,13 @@ import { S, TempRS } from './types'
 
 const getters: GetterTree<S, TempRS> = {
   currentChannelCallingUserStates({ userStateMap }, _, { me, currentChannel }) {
-    return Object.values(userStateMap)
-      .filter(
-        user =>
-          user.userId !== me.userId &&
-          user.channelId === currentChannel.channelId &&
-          user.state &&
-          user.state.includes('calling')
-      )
+    return Object.values(userStateMap).filter(
+      user =>
+        user.userId !== me.userId &&
+        user.channelId === currentChannel.channelId &&
+        user.state &&
+        user.state.includes('calling')
+    )
   },
   remoteAudioStreams({ remoteAudioStreamMap }) {
     return Object.values(remoteAudioStreamMap)

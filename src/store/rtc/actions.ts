@@ -1,7 +1,7 @@
 import traQRTCClient from '@/lib/rtc/traQRTCClient'
-import AudioStreamMixer from '@/lib/rtc/AudioStreamMixer'
+import AudioStreamMixer, { maxGain } from '@/lib/rtc/AudioStreamMixer'
 import { getUserAudio, getUserDisplay } from '@/lib/rtc/utils'
-import { ActionTree, ActionContext } from 'vuex'
+import { ActionTree } from 'vuex'
 import { S, TempRS } from './types'
 import client from '@/bin/client'
 
@@ -72,7 +72,6 @@ const actions: ActionTree<S, TempRS> = {
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User joined, ID: ${userId}`)
-      // commit('setUserVolume', { userId, volume: 1 })
     })
 
     state.client.addEventListener('userleave', async e => {
@@ -95,7 +94,7 @@ const actions: ActionTree<S, TempRS> = {
         await new Promise(resolve => setTimeout(resolve, 1000))
         await state.mixer.addStream(stream.peerId, stream)
       }
-      commit('setUserVolume', { userId, volume: 1 })
+      commit('setUserVolume', { userId, volume: 1 / maxGain })
     })
 
     const localStream = await getUserAudio(state.audioInputDeviceId)
@@ -117,12 +116,13 @@ const actions: ActionTree<S, TempRS> = {
    * User state management
    */
   async notifyMyState({ state }) {
+    const disconnecting =
+      state.rtcState.length === 0 || state.activeMediaChannelId === ''
     client.putWebRtcState({
-      channelId:
-        state.rtcState.length === 0 || state.activeMediaChannelId === ''
-          ? undefined
-          : state.activeMediaChannelId,
-      state: [...state.rtcState, ...(state.isMicMuted ? ['micmuted'] : [])]
+      channelId: disconnecting ? undefined : state.activeMediaChannelId,
+      state: disconnecting
+        ? []
+        : [...state.rtcState, ...(state.isMicMuted ? ['micmuted'] : [])]
     })
   },
   async fetchCurrentChannelRtcState({ commit, rootState }) {

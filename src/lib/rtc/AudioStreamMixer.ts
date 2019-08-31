@@ -1,5 +1,8 @@
 const fileSourcePrefix = '__file-'
 
+export const maxGain = 3
+export const maxMasterGain = 3
+
 export default class AudioStreamMixer {
   private sourceNodeMap: Record<string, MediaStreamAudioSourceNode> = {}
   private analyserNodeMap: Record<string, AnalyserNode> = {}
@@ -18,7 +21,7 @@ export default class AudioStreamMixer {
     const source = this.context.createMediaStreamSource(mediaStream)
     const analyser = this.context.createAnalyser()
     const gain = this.context.createGain()
-    gain.gain.value = 0.5
+    gain.gain.value = 1 / maxGain
     analyser.fftSize = this.analyserFftSize
 
     gain.connect(this.context.destination)
@@ -81,7 +84,8 @@ export default class AudioStreamMixer {
   }
 
   public setVolumeOf(key: string, volume: number) {
-    this.gainNodeMap[key].gain.value = Math.max(0, Math.min(1, volume))
+    this.gainNodeMap[key].gain.value =
+      Math.max(0, Math.min(1, volume)) * maxGain
   }
 
   public muteAll() {
@@ -102,7 +106,7 @@ export default class AudioStreamMixer {
   }
 
   set volume(v: number) {
-    const newMasterVolume = Math.max(0, Math.min(1, v))
+    const newMasterVolume = Math.max(0, Math.min(1, v)) * maxMasterGain
     Object.values(this.gainNodeMap).forEach(
       gainNode =>
         (gainNode.gain.value =

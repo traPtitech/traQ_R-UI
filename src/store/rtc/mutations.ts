@@ -65,6 +65,10 @@ const mutations: MutationTree<S> = {
     Vue.set(state.userStateMap, payload.userId, payload)
   },
 
+  /**
+   * @param volume 0-1で指定するボリューム
+   *               (0がミュート、1がAudioStreamMixer.maxGainに相当するゲイン)
+   */
   setUserVolume(state, { userId, volume }: { userId: string; volume: number }) {
     state.userVolumeMap = { ...state.userVolumeMap, [userId]: volume }
     if (state.mixer) {
