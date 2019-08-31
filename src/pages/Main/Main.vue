@@ -7,7 +7,6 @@ action-detector(
   :onDragStyle = "'{background-color: #fff;}'")
   picker-modal
   modal
-  // audio-streams-player
   .index(:data-enable-blur="name ? 'true' : 'false'")
     titlebar
     channel-information
@@ -58,10 +57,7 @@ export default {
     Sidebar,
     MessageView,
     Modal: window.asyncLoadComponents(import('@/components/Main/Modal')),
-    ActionDetector,
-    AudioStreamsPlayer: window.asyncLoadComponents(
-      import('@/components/Main/Rtc/AudioStreamsPlayer')
-    )
+    ActionDetector
   },
   async created() {
     if (!this.$route.params.channel) {
