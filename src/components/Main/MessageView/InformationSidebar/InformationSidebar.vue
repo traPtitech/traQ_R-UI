@@ -14,36 +14,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
         div.icon-close-wrap
           icon-close
       div.information-sidebar-content-scroller.is-scroll(ref="scroller")
-        div.information-sidebar-content-item.separator-line(v-if="showQallSection")
-          div.information-sidebar-content-header
-            icon-call(size="24")
-            span
-              | QALL
-            .indormation-sidebar-topic-edit-button(
-              v-if="$store.getters['rtc/isCallingOnCurrentChannel']"
-              :class="{ 'information-sidebar-action-cancel': isAdjustingCallVolumes }"
-              :title="isAdjustingCallVolumes ? '音量を調整する' : 'キャンセル'"
-              @click="toggleCallVolumeAdjust"
-            )
-              icon-check(v-if="isAdjustingCallVolumes")
-              icon-volume(v-else)
-          div.information-sidebar-content-body
-            .information-sidebar-call-item(
-              v-if="$store.getters['rtc/isCallingOnCurrentChannel']"
-              :style="{ opacity: isAdjustingCallVolumes ? 0.5 : 1 }"
-            )
-              calling-member-element(
-                :member="$store.state.me"
-                :adjust-volume="false"
-                :mic-muted="$store.state.rtc.isMicMuted"
-              )
-            .information-sidebar-call-item(v-for="state in callingUserStates")
-              calling-member-element(
-                :member="$store.state.memberMap[state.userId]"
-                :adjust-volume="isAdjustingCallVolumes"
-                :mic-muted="state.state.includes('micmuted')"
-              )
-
+        information-side-bar-qall.information-sidebar-content-item.separator-line(v-if="showQallSection")
         div.information-sidebar-content-item.separator-line(v-if="isChannel")
           div.information-sidebar-content-header
             icon-topic(size="24")
@@ -86,6 +57,7 @@ import IconCall from '@/components/Icon/IconCall'
 import IconCheck from '@/components/Icon/IconCheck'
 import SlimMessageElement from '@/components/Main/MessageView/InformationSidebar/SlimMessageElement'
 import SlimMemberElement from '@/components/Main/MessageView/InformationSidebar/SlimMemberElement'
+import InformationSideBarQall from '@/components/Main/MessageView/InformationSidebar/InformationSideBarQall'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
 import CallingMemberElement from '@/components/Main/Rtc/CallingMemberElement'
 
@@ -102,7 +74,8 @@ export default {
     SlimMessageElement,
     SlimMemberElement,
     MemberElement,
-    CallingMemberElement
+    CallingMemberElement,
+    InformationSideBarQall
   },
   data() {
     return {
@@ -110,8 +83,7 @@ export default {
       isNotFirst: false,
       isScrolled: false,
       isTopicEditing: false,
-      newTopic: '',
-      isAdjustingCallVolumes: false
+      newTopic: ''
     }
   },
   computed: {
@@ -153,14 +125,11 @@ export default {
         'is-closed': this.isNotFirst && !this.isOpened
       }
     },
-    callingUserStates() {
-      return this.$store.getters['rtc/currentChannelCallingUserStates']
-    },
     showQallSection() {
       // コネクションが現在のチャンネルで開いている時か、現在のチャンネルで誰かが通話中のときは表示
       return (
         this.$store.getters['rtc/isCallingOnCurrentChannel'] ||
-        this.callingUserStates.length > 0
+        this.$store.getters['rtc/currentChannelCallingUserStates'].length > 0
       )
     }
   },
@@ -186,9 +155,6 @@ export default {
     async updateTopic() {
       await this.$store.dispatch('updateCurrentChannelTopic', this.newTopic)
       this.isTopicEditing = false
-    },
-    toggleCallVolumeAdjust() {
-      this.isAdjustingCallVolumes = !this.isAdjustingCallVolumes
     },
     listen: function(target, eventType, callback) {
       if (!this._eventRemovers) {

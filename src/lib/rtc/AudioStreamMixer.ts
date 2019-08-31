@@ -2,6 +2,7 @@ const fileSourcePrefix = '__file-'
 
 export const maxGain = 3
 export const maxMasterGain = 3
+export const talkingThreshould = 500
 
 export default class AudioStreamMixer {
   private streamSourceNodeMap: Record<string, MediaStreamAudioSourceNode> = {}
@@ -129,6 +130,19 @@ export default class AudioStreamMixer {
 
   public setfileVolume(volume: number) {
     this.fileVolume = volume
+  }
+
+  public getByteFrequencyDataOf(key: string) {
+    if (!this.analyserNodeMap[key]) {
+      return new Uint8Array()
+    }
+    const arr = new Uint8Array(this.analyserFftSize / 2)
+    this.analyserNodeMap[key].getByteFrequencyData(arr)
+    return arr
+  }
+
+  public getLevelOf(key: string) {
+    return this.getByteFrequencyDataOf(key).reduce((acc, cur) => acc + cur, 0)
   }
 
   public muteAll() {

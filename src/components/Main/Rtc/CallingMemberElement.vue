@@ -1,6 +1,7 @@
 <template lang="pug">
   .calling-member-element
     .calling-member-element__icon-container(@click="openUserModal")
+      .calling-member-element__talking-indicator(v-if="talking")
       img.calling-member-element__icon(:src="userIconSrc")
     .calling-member-element__volume-adjust(v-if="adjustVolume")
       InputSlider(
@@ -8,7 +9,7 @@
         :min="0"
         :max="100"
       )
-    .calling-member-element__user(v-else @click="openUserModal")
+    .calling-member-element__user(v-else)
       span.calling-member-element__username.text-ellipsis
         | {{userName}}
       span.calling-member-element__mic-muted-indicator(v-if='micMuted')
@@ -32,7 +33,8 @@ export default {
         this.$store.state.rtc.userVolumeMap[this.member.userId] * 100 || 50,
       debounceDelay: 100,
       debounceLastTime: 0,
-      debounceTimerId: -1
+      debounceTimerId: -1,
+      indicatorAnimationFrameRequestId: 0
     }
   },
   props: {
@@ -44,11 +46,11 @@ export default {
       type: Boolean,
       required: true
     },
-    talking: {
+    micMuted: {
       type: Boolean,
       default: false
     },
-    micMuted: {
+    talking: {
       type: Boolean,
       default: false
     }
@@ -108,16 +110,35 @@ export default {
     right: 4px
     bottom: 2px
 
-  &:hover
-    background: rgba(0,0,0,0.1)
-
-.calling-member-element__icon
-  min-width: 30px
+.calling-member-element__icon-container
+  position: relative
   width: 30px
   height: 30px
+  min-width: 30px
+  flex: 30px 0 0
+
+.calling-member-element__talking-indicator
+  $indicator-size: 2px
+  position: absolute
+  top: -$indicator-size
+  left: -$indicator-size
+
+  background-color: $online-color
+  border-radius: 100vw
+
+  width: 30px + $indicator-size * 2
+  height: 30px + $indicator-size * 2
+
+.calling-member-element__icon
+  position: absolute
+  top: 0
+  left: 0
+
+  width: 30px
+  height: 30px
+
   border:
     radius: 100%
-  cursor: pointer
 
 .calling-member-element__user
   display: flex
