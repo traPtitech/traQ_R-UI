@@ -1,18 +1,17 @@
 <template lang="pug">
-.message-container
-  .content-wrap.is-scroll(
-    @scroll.passive="onScroll"
-    ref="scroller")
-    .message-list(:class="{'is-fixed': isFixed}")
-      .message-item(v-for="(message, index) in messages" :key="message.messageId")
-        time.date-partition(v-if="index === messages.length - 1 || date(messages[index + 1].createdAt) !== date(message.createdAt)")
-          | {{date(message.createdAt)}}
-        .new-message-partition(v-if="new Date(message.createdAt) - updateDate === 0")
-          span
-            | 新規メッセージ
-        message-element(:model="message")
-      .message-no-more-message(v-if="noMoreMessage")
-        | これ以上メッセージはありません
+.content-wrap.is-scroll(
+  @scroll.passive="onScroll"
+  ref="scroller")
+  .message-list(:class="{'is-fixed': isFixed}")
+    .message-item(v-for="(message, index) in messages" :key="message.messageId")
+      time.date-partition(v-if="index === messages.length - 1 || date(messages[index + 1].createdAt) !== date(message.createdAt)")
+        | {{date(message.createdAt)}}
+      .new-message-partition(v-if="new Date(message.createdAt) - updateDate === 0")
+        span
+          | 新規メッセージ
+      message-element(:model="message")
+    .message-no-more-message(v-if="noMoreMessage")
+      | これ以上メッセージはありません
   transition(name="transition-loading-indicator")
     .message-loading-indicator(v-if="messageLoading")
       span
@@ -54,9 +53,7 @@ export default {
           state.messages[state.messages.length - 1].userId === state.me.userId
         ) {
           //自分がメッセージ投稿時
-          this.$nextTick(() => {
-            this.$refs.scroller.scrollTop = this.$refs.scroller.scrollHeight
-          })
+          this.$el.scrollTop = this.$el.scrollHeight
         }
       }
     })
@@ -77,8 +74,8 @@ export default {
       this.isFixed = true
       this.noMoreMessage = false
 
-      const currentScrollTop = this.$refs.scroller.scrollTop
-      const currentScrollHeight = this.$refs.scroller.scrollHeight
+      const currentScrollTop = this.$el.scrollTop
+      const currentScrollHeight = this.$el.scrollHeight
 
       await this.$store.dispatch('getMessages').then(res => {
         console.log('getMessages:', res)
@@ -89,8 +86,9 @@ export default {
       })
 
       this.$nextTick(() => {
-        const newScrollHeight = this.$refs.scroller.scrollHeight
-        this.$refs.scroller.scrollTop =
+        const newScrollHeight = this.$el.scrollHeight
+        console.log(currentScrollTop, currentScrollHeight, newScrollHeight)
+        this.$el.scrollTop =
           currentScrollTop + (newScrollHeight - currentScrollHeight)
         this.isFixed = false
       })
@@ -100,8 +98,9 @@ export default {
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
     },
     scrollToBottom() {
+      console.log('scrollToBottom!', this.$el.scrollTop, this.$el.scrollHeight)
       if (this.isFirstView) {
-        this.$refs.scroller.scrollTop = this.$refs.scroller.scrollHeight
+        this.$el.scrollTop = this.$el.scrollHeight
         this.isFirstView = false
       }
     }
@@ -122,26 +121,18 @@ export default {
       this.messageLoading = false
       this.noMoreMessage = false
       this.isFirstView = true
-      this.$nextTick(() => {
-        this.$refs.scroller.scrollTop = this.$refs.scroller.scrollHeight
-      })
     }
   }
 }
 </script>
 
 <style lang="sass">
-.message-container
-  position: relative
+.content-wrap
   display: block
+  position: relative
+  background-color: $background-color
   width: 100%
   height: 100%
-
-.content-wrap
-  position: relative
-  display: block
-  height: 100%
-  background-color: $background-color
   overflow-x: hidden
   overflow-y: scroll
   overflow-anchor: auto
