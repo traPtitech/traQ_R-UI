@@ -53,7 +53,9 @@ export default {
           state.messages[state.messages.length - 1].userId === state.me.userId
         ) {
           //自分がメッセージ投稿時
-          this.$el.scrollTop = this.$el.scrollHeight
+          this.$nextTick(() => {
+            this.$el.scrollTop = this.$el.scrollHeight
+          })
         }
       }
     })
