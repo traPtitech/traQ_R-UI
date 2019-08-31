@@ -94,7 +94,7 @@ export default class CallSetting extends Vue {
 
   @Watch('enabled')
   async onEnabledChange(val: boolean) {
-    if (val) {
+    if (val && this.$store.state.rtc.isRtcEnabled) {
       // offからonになったときは許可を求める
       await navigator.mediaDevices.getUserMedia({ audio: true })
       this.updateDeviceList()

@@ -14,10 +14,15 @@ const actions: ActionTree<S, TempRS> = {
    */
   initializeMixer({ state, commit }) {
     const mixer = new AudioStreamMixer()
+
     Object.keys(state.remoteAudioStreamMap).forEach(userId => {
       const stream = state.remoteAudioStreamMap[userId]
       mixer.addStream(userId, stream)
     })
+
+    mixer.addFileSource('qall_joined', '/static/qall_joined.m4a')
+    mixer.addFileSource('qall_left', '/static/qall_left.m4a')
+
     commit('setMixer', mixer)
   },
 
@@ -48,6 +53,7 @@ const actions: ActionTree<S, TempRS> = {
       return
     }
     if (state.mixer) {
+      state.mixer.playFileSource('qall_left')
       state.mixer.muteAll()
     }
     state.client.closeConnection()
@@ -72,6 +78,9 @@ const actions: ActionTree<S, TempRS> = {
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User joined, ID: ${userId}`)
+      if (state.mixer) {
+        state.mixer.playFileSource('qall_joined')
+      }
     })
 
     state.client.addEventListener('userleave', async e => {
@@ -81,6 +90,7 @@ const actions: ActionTree<S, TempRS> = {
 
       if (state.mixer) {
         await state.mixer.removeStream(userId)
+        state.mixer.playFileSource('qall_left')
       }
     })
 
@@ -110,6 +120,8 @@ const actions: ActionTree<S, TempRS> = {
     commit('addRtcState', 'calling')
     commit('setActiveMediaChannelId', state.client.roomName)
     dispatch('notifyMyState')
+
+    state.mixer.playFileSource('qall_joined')
   },
 
   /*
