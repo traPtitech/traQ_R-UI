@@ -16,7 +16,8 @@ const state: S = {
   remoteAudioStreamMap: {},
   remoteVideoStreamMap: {},
   audioInputDeviceId: 'default',
-  audioOutputDeviceId: 'default'
+  audioOutputDeviceId: 'default',
+  talkingStateUpdateIntervalId: 0
 }
 
 const rtc: Module<S, TempRS> = {

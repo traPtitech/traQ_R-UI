@@ -28,4 +28,5 @@ export interface S {
   remoteVideoStreamMap: Record<string, MediaStream>
   audioInputDeviceId: string
   audioOutputDeviceId: string
+  talkingStateUpdateIntervalId: number
 }
