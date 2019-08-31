@@ -139,6 +139,7 @@ export default {
 
   border:
     radius: 100%
+  background: $tertiary-color
 
 .calling-member-element__user
   display: flex

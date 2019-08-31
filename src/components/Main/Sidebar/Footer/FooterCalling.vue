@@ -39,8 +39,11 @@ export default {
       )
     },
     callingFullPath() {
-      return this.$store.getters.getChannelPathById(
-        this.$store.state.rtc.activeMediaChannelId
+      return (
+        '/channels/' +
+        this.$store.getters.getChannelPathById(
+          this.$store.state.rtc.activeMediaChannelId
+        )
       )
     }
   }
