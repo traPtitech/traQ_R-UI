@@ -116,6 +116,7 @@ export default {
   height: 30px
   min-width: 30px
   flex: 30px 0 0
+  user-select: none
 
 .calling-member-element__talking-indicator
   $indicator-size: 2px
@@ -137,6 +138,7 @@ export default {
   width: 30px
   height: 30px
 
+  cursor: pointer
   border:
     radius: 100%
   background: $tertiary-color
@@ -151,7 +153,6 @@ export default {
   margin:
     left: 6px
   line-height: 1.4em
-  cursor: pointer
 
 .calling-member-element__mic-muted-indicator
   margin-right: -4px

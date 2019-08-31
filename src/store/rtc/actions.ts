@@ -76,7 +76,6 @@ const actions: ActionTree<S, TempRS> = {
     if (!state.mixer) {
       return
     }
-    ;(window as any).mixer = state.mixer
 
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
@@ -183,7 +182,6 @@ const actions: ActionTree<S, TempRS> = {
     if (!state.localStream) {
       return
     }
-    ;(state.localStream as any).userMuted = false
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = true
     })
