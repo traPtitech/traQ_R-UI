@@ -2,7 +2,7 @@ const fileSourcePrefix = '__file-'
 
 export const maxGain = 5
 export const maxMasterGain = 3
-export const talkingThreshould = 500
+export const talkingThreshould = 300
 
 export default class AudioStreamMixer {
   private streamSourceNodeMap: Record<string, MediaStreamAudioSourceNode> = {}

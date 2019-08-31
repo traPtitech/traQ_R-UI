@@ -1,6 +1,6 @@
 <template lang="pug">
-  .calling-member-element
-    .calling-member-element__icon-container(@click="openUserModal")
+  .calling-member-element(@click="openUserModal")
+    .calling-member-element__icon-container
       .calling-member-element__talking-indicator(v-if="talking")
       img.calling-member-element__icon(:src="userIconSrc")
     .calling-member-element__volume-adjust(v-if="adjustVolume")
@@ -109,6 +109,7 @@ export default {
     left: 4px
     right: 4px
     bottom: 2px
+  cursor: pointer
 
 .calling-member-element__icon-container
   position: relative
@@ -116,6 +117,7 @@ export default {
   height: 30px
   min-width: 30px
   flex: 30px 0 0
+  user-select: none
 
 .calling-member-element__talking-indicator
   $indicator-size: 2px
@@ -139,6 +141,7 @@ export default {
 
   border:
     radius: 100%
+  background: $tertiary-color
 
 .calling-member-element__user
   display: flex
@@ -150,7 +153,6 @@ export default {
   margin:
     left: 6px
   line-height: 1.4em
-  cursor: pointer
 
 .calling-member-element__mic-muted-indicator
   margin-right: -4px
