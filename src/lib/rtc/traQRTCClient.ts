@@ -30,7 +30,7 @@ interface QRTCUserLeaveEvent extends Event {
 }
 interface QRTCConnectionErrorEvent extends Event {
   detail: {
-    error: any
+    err: any
   }
 }
 
