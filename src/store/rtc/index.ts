@@ -8,10 +8,10 @@ const namespaced = true
 
 const state: S = {
   isRtcEnabled: false,
-  isActive: false,
-  isCalling: false,
+  rtcState: [],
   isMicMuted: false,
   activeMediaChannelId: '',
+  userStateMap: {},
   userVolumeMap: {},
   remoteAudioStreamMap: {},
   remoteVideoStreamMap: {},

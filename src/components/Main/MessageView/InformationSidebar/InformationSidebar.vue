@@ -32,11 +32,16 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
               v-if="$store.getters['rtc/isCallingOnCurrentChannel']"
               :style="{ opacity: isAdjustingCallVolumes ? 0.5 : 1 }"
             )
-              slim-member-element(:member="$store.state.me")
-            .information-sidebar-call-item(v-for="id in callingMemberIdSet")
               calling-member-element(
-                :member="$store.state.memberMap[id]"
-                :adjustVolume="isAdjustingCallVolumes"
+                :member="$store.state.me"
+                :adjust-volume="false"
+                :mic-muted="$store.state.rtc.isMicMuted"
+              )
+            .information-sidebar-call-item(v-for="state in callingUserStates")
+              calling-member-element(
+                :member="$store.state.memberMap[state.userId]"
+                :adjust-volume="isAdjustingCallVolumes"
+                :mic-muted="state.state.includes('micmuted')"
               )
 
         div.information-sidebar-content-item.separator-line(v-if="isChannel")
@@ -148,22 +153,14 @@ export default {
         'is-closed': this.isNotFirst && !this.isOpened
       }
     },
-    callingMemberIdSet() {
-      const heartbeatBased = this.$store.state.heartbeatStatus.userStatuses
-        .filter(user => user.userId !== this.$store.state.me.userId)
-        .filter(user => user.status === 'calling')
-        .map(user => user.userId)
-      const streamBased = this.$store.state.rtc.isCalling
-        ? Object.keys(this.$store.state.rtc.remoteAudioStreamMap)
-        : []
-      return new Set(heartbeatBased.concat(streamBased))
+    callingUserStates() {
+      return this.$store.getters['rtc/currentChannelCallingUserStates']
     },
     showQallSection() {
       // コネクションが現在のチャンネルで開いている時か、現在のチャンネルで誰かが通話中のときは表示
       return (
-        (this.$store.state.rtc.isActive &&
-          this.$store.getters['rtc/isCallingOnCurrentChannel']) ||
-        this.callingMemberIdSet.size > 0
+        this.$store.getters['rtc/isCallingOnCurrentChannel'] ||
+        this.callingUserStates.length > 0
       )
     }
   },

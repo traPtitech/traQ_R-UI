@@ -1,4 +1,10 @@
-import { Apis, NotificationUsers, HeartbeatStatus } from 'traq-api'
+import {
+  Apis,
+  NotificationUsers,
+  HeartbeatStatus,
+  WebRTCUserState,
+  PutWebRTCState
+} from 'traq-api'
 
 const BASE_PATH = '/api/1.0'
 
@@ -457,6 +463,17 @@ class Client {
   // Tag: Webhook
   getWebhooks() {
     return api.getWebhooks()
+  }
+
+  // Tag: WebRTC
+  getChannelWebRtcState(channelId: string) {
+    return api.getChannelWebRTCState(channelId)
+  }
+  getWebRtcState() {
+    return api.getWebRTCState()
+  }
+  putWebRtcState(state: PutWebRTCState) {
+    return api.putWebRTCState(state)
   }
 }
 

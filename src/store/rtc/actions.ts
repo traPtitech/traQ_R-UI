@@ -1,13 +1,29 @@
 import traQRTCClient from '@/lib/rtc/traQRTCClient'
-import AudioStreamMixer from '@/lib/rtc/AudioStreamMixer'
+import AudioStreamMixer, { maxGain } from '@/lib/rtc/AudioStreamMixer'
 import { getUserAudio, getUserDisplay } from '@/lib/rtc/utils'
 import { ActionTree } from 'vuex'
 import { S, TempRS } from './types'
+import client from '@/bin/client'
 
 import indexedDB from '@/bin/indexeddb.js'
 const db = indexedDB.db
 
 const actions: ActionTree<S, TempRS> = {
+  /*
+   * Initialization
+   */
+  initializeMixer({ state, commit }) {
+    const mixer = new AudioStreamMixer()
+    Object.keys(state.remoteAudioStreamMap).forEach(userId => {
+      const stream = state.remoteAudioStreamMap[userId]
+      mixer.addStream(userId, stream)
+    })
+    commit('setMixer', mixer)
+  },
+
+  /*
+   * Connections
+   */
   async establishConnection({ state, commit, rootState, dispatch }) {
     if (state.client) {
       state.client.closeConnection()
@@ -25,9 +41,24 @@ const actions: ActionTree<S, TempRS> = {
     })
     await client.establishConnection()
     commit('setClient', client)
-    commit('setIsActive', true)
+    commit('addRtcState', 'calling')
   },
-
+  closeConnection({ state, commit, dispatch }) {
+    if (!state.client) {
+      return
+    }
+    if (state.mixer) {
+      state.mixer.muteAll()
+    }
+    state.client.closeConnection()
+    commit('destroyClient')
+    commit('destroyMixer')
+    commit('destroyLocalStream')
+    commit('resetRemoteStreamsMap')
+    commit('clearRtcState')
+    commit('setActiveMediaChannelId', '')
+    dispatch('notifyMyState')
+  },
   async joinVoiceChannel({ state, commit, dispatch }, room) {
     while (!state.client) {
       await dispatch('establishConnection')
@@ -41,7 +72,6 @@ const actions: ActionTree<S, TempRS> = {
     state.client.addEventListener('userjoin', e => {
       const userId = e.detail.userId
       console.log(`[RTC] User joined, ID: ${userId}`)
-      // commit('setUserVolume', { userId, volume: 1 })
     })
 
     state.client.addEventListener('userleave', async e => {
@@ -64,42 +94,52 @@ const actions: ActionTree<S, TempRS> = {
         await new Promise(resolve => setTimeout(resolve, 1000))
         await state.mixer.addStream(stream.peerId, stream)
       }
-      commit('setUserVolume', { userId, volume: 1 })
+      commit('setUserVolume', { userId, volume: 1 / maxGain })
     })
 
     const localStream = await getUserAudio(state.audioInputDeviceId)
     commit('setLocalStream', localStream)
 
+    if (state.isMicMuted) {
+      dispatch('muteLocalStream')
+    } else {
+      dispatch('unmuteLocalStream')
+    }
+
     await state.client.joinRoom(room, localStream)
-    commit('setIsCalling', true)
+    commit('addRtcState', 'calling')
     commit('setActiveMediaChannelId', state.client.roomName)
+    dispatch('notifyMyState')
   },
 
-  closeConnection({ state, commit }) {
-    if (!state.client) {
+  /*
+   * User state management
+   */
+  async notifyMyState({ state }) {
+    const disconnecting =
+      state.rtcState.length === 0 || state.activeMediaChannelId === ''
+    client.putWebRtcState({
+      channelId: disconnecting ? undefined : state.activeMediaChannelId,
+      state: disconnecting
+        ? []
+        : [...state.rtcState, ...(state.isMicMuted ? ['micmuted'] : [])]
+    })
+  },
+  async fetchCurrentChannelRtcState({ commit, rootState }) {
+    const res = await client.getChannelWebRtcState(
+      rootState.currentChannel.channelId
+    )
+    if (!res.data.users) {
       return
     }
-    if (state.mixer) {
-      state.mixer.muteAll()
-    }
-    state.client.closeConnection()
-    commit('destroyClient')
-    commit('destroyMixer')
-    commit('destroyLocalStream')
-    commit('resetRemoteStreamsMap')
-    commit('setIsActive', false)
-    commit('setIsCalling', false)
-  },
-
-  initializeMixer({ state, commit }) {
-    const mixer = new AudioStreamMixer()
-    Object.keys(state.remoteAudioStreamMap).forEach(userId => {
-      const stream = state.remoteAudioStreamMap[userId]
-      mixer.addStream(userId, stream)
+    res.data.users.forEach(payload => {
+      commit('setUserState', payload)
     })
-    commit('setMixer', mixer)
   },
 
+  /*
+   * Stream modification
+   */
   async setStream({ state, commit }, stream: MediaStream) {
     if (!state.client) {
       return
@@ -113,9 +153,7 @@ const actions: ActionTree<S, TempRS> = {
   async setUserDisplay({ dispatch }) {
     dispatch('setStream', await getUserDisplay())
   },
-  async sendData() {},
-
-  muteLocalStream({ state, dispatch }) {
+  async muteLocalStream({ state, dispatch }) {
     if (!state.localStream) {
       return
     }
@@ -123,9 +161,10 @@ const actions: ActionTree<S, TempRS> = {
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = false
     })
-    dispatch('updateIsMicMuted', true)
+    await dispatch('updateIsMicMuted', true)
+    dispatch('notifyMyState')
   },
-  unmuteLocalStream({ state, dispatch }) {
+  async unmuteLocalStream({ state, dispatch }) {
     if (!state.localStream) {
       return
     }
@@ -133,9 +172,15 @@ const actions: ActionTree<S, TempRS> = {
     state.localStream.getAudioTracks().forEach(track => {
       track.enabled = true
     })
-    dispatch('updateIsMicMuted', false)
+    await dispatch('updateIsMicMuted', false)
+    dispatch('notifyMyState')
   },
 
+  async sendData() {},
+
+  /*
+   * Settings
+   */
   loadSetting({ dispatch }) {
     return Promise.all([
       dispatch('loadIsRtcEnabled'),
@@ -144,7 +189,6 @@ const actions: ActionTree<S, TempRS> = {
       dispatch('loadAudioOutputDeviceId')
     ])
   },
-
   loadIsRtcEnabled({ commit, dispatch }) {
     return db
       .read('browserSetting', 'rtc/isRtcEnabled')
@@ -185,7 +229,6 @@ const actions: ActionTree<S, TempRS> = {
         await dispatch('updateAudioOutputDeviceId', 'default')
       })
   },
-
   updateIsRtcEnabled({ commit }, enabled) {
     commit('setIsRtcEnabled', enabled)
     return db.write('browserSetting', {

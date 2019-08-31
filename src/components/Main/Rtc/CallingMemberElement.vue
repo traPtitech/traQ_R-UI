@@ -8,24 +8,28 @@
         :min="0"
         :max="100"
       )
-    .calling-member-element__username.text-ellipsis(v-else @click="openUserModal")
-      span
+    .calling-member-element__user(v-else @click="openUserModal")
+      span.calling-member-element__username.text-ellipsis
         | {{userName}}
+      span.calling-member-element__mic-muted-indicator(v-if='micMuted')
+        icon-mic-off(size='16')
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import InputSlider from '@/components/Atom/InputSlider'
+import IconMicOff from '@/components/Icon/IconMicOff'
 
 export default {
   name: 'CallingMemberElement',
   components: {
-    InputSlider
+    InputSlider,
+    IconMicOff
   },
   data() {
     return {
       volume:
-        this.$store.state.rtc.userVolumeMap[this.member.userId] * 100 || 100,
+        this.$store.state.rtc.userVolumeMap[this.member.userId] * 100 || 50,
       debounceDelay: 100,
       debounceLastTime: 0,
       debounceTimerId: -1
@@ -40,7 +44,11 @@ export default {
       type: Boolean,
       required: true
     },
-    isTalking: {
+    talking: {
+      type: Boolean,
+      default: false
+    },
+    micMuted: {
       type: Boolean,
       default: false
     }
@@ -111,11 +119,21 @@ export default {
     radius: 100%
   cursor: pointer
 
+.calling-member-element__user
+  display: flex
+  align-items: center
+  justify-content: space-between
+  width: 100%
+
 .calling-member-element__username
   margin:
     left: 6px
   line-height: 1.4em
   cursor: pointer
+
+.calling-member-element__mic-muted-indicator
+  margin-right: -4px
+  opacity: 0.5
 
 .calling-member-element__volume-adjust
   width: 100%

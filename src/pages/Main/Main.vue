@@ -7,7 +7,6 @@ action-detector(
   :onDragStyle = "'{background-color: #fff;}'")
   picker-modal
   modal
-  // audio-streams-player
   .index(:data-enable-blur="name ? 'true' : 'false'")
     titlebar
     channel-information
@@ -58,10 +57,7 @@ export default {
     Sidebar,
     MessageView,
     Modal: window.asyncLoadComponents(import('@/components/Main/Modal')),
-    ActionDetector,
-    AudioStreamsPlayer: window.asyncLoadComponents(
-      import('@/components/Main/Rtc/AudioStreamsPlayer')
-    )
+    ActionDetector
   },
   async created() {
     if (!this.$route.params.channel) {
@@ -229,6 +225,13 @@ export default {
       sse.on('STAMP_CREATED', data => this.$store.dispatch('addStamp', data.id))
       sse.on('STAMP_DELETED', () => this.$store.dispatch('updateStamps'))
       sse.on('TRAQ_UPDATED', () => location.reload(true))
+      sse.on('USER_WEBRTC_STATE_CHANGED', data =>
+        this.$store.commit('rtc/setUserState', {
+          userId: data['user_id'],
+          state: data['state'],
+          channelId: data['channel_id']
+        })
+      )
     }
 
     this.heartbeat = setInterval(() => {
@@ -256,6 +259,8 @@ export default {
       }
     }, 3000)
 
+    this.$store.dispatch('rtc/fetchCurrentChannelRtcState')
+
     while (!this.$el) {
       await this.$nextTick()
     }
@@ -271,11 +276,6 @@ export default {
     getStatus() {
       if (this.$store.state.editing) {
         this.nowStatus = 'editing'
-      } else if (
-        this.$store.state.rtc.isCalling &&
-        this.$store.getters['rtc/isCallingOnCurrentChannel']
-      ) {
-        this.nowStatus = 'calling'
       } else if (document.hasFocus()) {
         this.nowStatus = 'monitoring'
       } else {
@@ -426,6 +426,9 @@ export default {
           this.$store.state.currentChannel.channelId
         )
       }
+    },
+    '$store.state.currentChannel': function() {
+      this.$store.dispatch('rtc/fetchCurrentChannelRtcState')
     }
   },
   computed: {
