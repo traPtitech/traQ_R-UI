@@ -249,8 +249,7 @@ export default {
     transition: opacity .5s
 
 .menu-content-wrapper
-  flex-grow: 1
-  flex-shrink: 1
+  flex-basis: 100%
   background-color: $primary-color
   position: relative
   overflow: hidden
