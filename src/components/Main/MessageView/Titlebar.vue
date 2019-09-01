@@ -38,22 +38,22 @@ header.titlebar(ref="titlebar" :class="titlebarClass")
         icon-copy(size="24")
       span
         | チャンネルリンクをコピー
-    // .titlebar-menu-item(
-    //   v-if="$store.getters['rtc/isCalling'] && $store.state.rtc.activeMediaChannelId === $store.state.currentChannel.channelId"
-    //   @click="$store.dispatch('rtc/closeConnection', $store.state.currentChannel.channelId)"
-    // )
-    //   .menu-icon
-    //     icon-call(size="24")
-    //   span
-    //     | 通話を終了
-    // .titlebar-menu-item(
-    //   v-if="!$store.getters['rtc/isCalling'] && $store.state.rtc.isRtcEnabled"
-    //   @click="$store.dispatch('rtc/joinVoiceChannel', $store.state.currentChannel.channelId)"
-    // )
-    //   .menu-icon
-    //     icon-call(size="24")
-    //   span
-    //     | 通話を開始
+    .titlebar-menu-item(
+      v-if="$store.getters['rtc/isCalling'] && $store.state.rtc.activeMediaChannelId === $store.state.currentChannel.channelId"
+      @click="$store.dispatch('rtc/closeConnection', $store.state.currentChannel.channelId)"
+    )
+      .menu-icon
+        icon-call(size="24")
+      span
+        | 通話を終了
+    .titlebar-menu-item(
+      v-if="!$store.getters['rtc/isCalling'] && $store.state.rtc.isRtcEnabled"
+      @click="$store.dispatch('rtc/joinVoiceChannel', $store.state.currentChannel.channelId)"
+    )
+      .menu-icon
+        icon-call(size="24")
+      span
+        | 通話を開始
 </template>
 
 <script>
