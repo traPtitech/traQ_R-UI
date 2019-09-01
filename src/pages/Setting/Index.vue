@@ -21,10 +21,10 @@
             .setting-page-list-item-icon
               IconWrench(color="white" size="22")
             | ブラウザ設定
-          // li.setting-page-list-item(:class="{active: active === 'call'}" @click="active = 'call'")
-          //   .setting-page-list-item-icon
-          //     IconCall(color="white" size="22")
-          //   | 通話設定
+          li.setting-page-list-item(:class="{active: active === 'call'}" @click="active = 'call'")
+            .setting-page-list-item-icon
+              IconCall(color="white" size="22")
+            | 通話設定
           li.setting-page-list-item(:class="{active: active === 'stamp'}" @click="active = 'stamp'")
             .setting-page-list-item-icon
               IconStamp(color="white" size="22")
@@ -39,7 +39,7 @@
       .setting-page-all-container.is-scroll
           ProfileSetting
           BrowserSetting
-          // CallSetting
+          CallSetting
           StampSetting
 </template>
 
