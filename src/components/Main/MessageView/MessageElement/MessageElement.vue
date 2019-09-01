@@ -737,6 +737,7 @@ export default {
 
 .emoji-effect
   display: inline-block
+  vertical-align: middle
 
 .emoji
   width: 1em
