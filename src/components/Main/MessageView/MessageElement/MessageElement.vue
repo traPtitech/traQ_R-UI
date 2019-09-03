@@ -107,7 +107,6 @@ export default {
     return {
       isEditing: false,
       isContextMenuActive: false,
-      attachedData: [],
       isPushedModifierKey: false
     }
   },
@@ -216,9 +215,6 @@ export default {
     clipMessage() {
       client.clipMessage('', this.model.messageId)
     },
-    detectAttachments() {
-      this.attachedData = detectFiles(this.model.content)
-    },
     copyMessage() {
       this.$copyText(
         `!{"raw":"","type":"message","id":"${this.model.messageId}"}`
@@ -309,12 +305,12 @@ export default {
         return ''
       }
       return this.$store.state.memberMap[this.pinDetail.userId].name
+    },
+    attachedData() {
+      return detectFiles(this.model.content) || []
     }
   },
   watch: {
-    model() {
-      this.detectAttachments()
-    },
     isEditing(newValue) {
       if (newValue) {
         this.$nextTick(() => {
@@ -327,9 +323,6 @@ export default {
     edited() {
       autosize.update(this.$refs.editArea)
     }
-  },
-  mounted() {
-    this.detectAttachments()
   }
 }
 </script>

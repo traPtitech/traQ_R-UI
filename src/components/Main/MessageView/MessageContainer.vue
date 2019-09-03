@@ -1,17 +1,19 @@
 <template lang="pug">
-.content-wrap.is-scroll(
-  @scroll.passive="onScroll"
-  ref="scroller")
-  .message-list(:class="{'is-fixed': isFixed}")
-    .message-item(v-for="(message, index) in messages" :key="message.messageId")
-      time.date-partition(v-if="index === messages.length - 1 || date(messages[index + 1].createdAt) !== date(message.createdAt)")
-        | {{date(message.createdAt)}}
-      .new-message-partition(v-if="new Date(message.createdAt) - updateDate === 0")
-        span
-          | 新規メッセージ
-      message-element(:model="message")
-    .message-no-more-message(v-if="noMoreMessage")
-      | これ以上メッセージはありません
+.message-container
+  .content-wrap.is-scroll(
+    @scroll.passive="onScroll"
+    :class="{'is-fixed': isFixed && !supportOverflowAnchor}"
+    ref="scroller")
+    .message-list
+      .message-item(v-for="(message, index) in messages" :key="message.messageId")
+        time.date-partition(v-if="index === messages.length - 1 || date(messages[index + 1].createdAt) !== date(message.createdAt)")
+          | {{date(message.createdAt)}}
+        .new-message-partition(v-if="new Date(message.createdAt) - updateDate === 0")
+          span
+            | 新規メッセージ
+        message-element(:model="message")
+      .message-no-more-message(v-if="noMoreMessage")
+        | これ以上メッセージはありません
   transition(name="transition-loading-indicator")
     .message-loading-indicator(v-if="messageLoading")
       span
@@ -20,7 +22,7 @@
 
 <script>
 import MessageElement from './MessageElement/MessageElement'
-import { throttle, debounce } from 'lodash'
+import { throttle } from 'lodash'
 
 export default {
   name: 'MessageContainer',
@@ -67,7 +69,7 @@ export default {
         this.loadMessages()
       }
     }, 300),
-    loadMessages: debounce(async function() {
+    loadMessages: throttle(async function() {
       if (this.messageLoading) return
 
       this.messageLoading = true
@@ -82,7 +84,6 @@ export default {
         if (!res) {
           this.noMoreMessage = true
         }
-        this.messageLoading = false
       })
 
       this.$nextTick(() => {
@@ -91,8 +92,9 @@ export default {
         this.$el.scrollTop =
           currentScrollTop + (newScrollHeight - currentScrollHeight)
         this.isFixed = false
+        this.messageLoading = false
       })
-    }, 300),
+    }, 800),
     date(datetime) {
       const d = new Date(datetime)
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
@@ -114,6 +116,9 @@ export default {
     },
     messages() {
       return this.$store.state.messages.slice().reverse()
+    },
+    supportOverflowAnchor() {
+      return CSS.supports('overflow-anchor', 'auto')
     }
   },
   watch: {
@@ -127,6 +132,13 @@ export default {
 </script>
 
 <style lang="sass">
+.message-container
+  position: relative
+  display: block
+  width: 100%
+  height: 100%
+  overflow: hidden
+
 .content-wrap
   display: block
   position: relative
