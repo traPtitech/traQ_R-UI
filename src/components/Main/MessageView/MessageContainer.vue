@@ -55,7 +55,9 @@ export default {
           state.messages[state.messages.length - 1].userId === state.me.userId
         ) {
           //自分がメッセージ投稿時
-          this.$el.scrollTop = this.$el.scrollHeight
+          this.$nextTick(() => {
+            this.$refs.scroller.scrollTop = this.$refs.scroller.scrollHeight
+          })
         }
       }
     })
@@ -76,8 +78,8 @@ export default {
       this.isFixed = true
       this.noMoreMessage = false
 
-      const currentScrollTop = this.$el.scrollTop
-      const currentScrollHeight = this.$el.scrollHeight
+      const currentScrollTop = this.$refs.scroller.scrollTop
+      const currentScrollHeight = this.$refs.scroller.scrollHeight
 
       await this.$store.dispatch('getMessages').then(res => {
         console.log('getMessages:', res)
@@ -87,9 +89,9 @@ export default {
       })
 
       this.$nextTick(() => {
-        const newScrollHeight = this.$el.scrollHeight
+        const newScrollHeight = this.$refs.scroller.scrollHeight
         console.log(currentScrollTop, currentScrollHeight, newScrollHeight)
-        this.$el.scrollTop =
+        this.$refs.scroller.scrollTop =
           currentScrollTop + (newScrollHeight - currentScrollHeight)
         this.isFixed = false
         this.messageLoading = false
@@ -100,9 +102,8 @@ export default {
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
     },
     scrollToBottom() {
-      console.log('scrollToBottom!', this.$el.scrollTop, this.$el.scrollHeight)
       if (this.isFirstView) {
-        this.$el.scrollTop = this.$el.scrollHeight
+        this.$refs.scroller.scrollTop = this.$refs.scroller.scrollHeight
         this.isFirstView = false
       }
     }
