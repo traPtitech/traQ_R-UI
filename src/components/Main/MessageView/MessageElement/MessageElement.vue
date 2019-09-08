@@ -188,7 +188,6 @@ export default {
       this.edited = ''
       this.isEditing = false
       this.isPushedModifierKey = false
-      this.getAttachments()
     },
     editCancel() {
       this.isEditing = false
