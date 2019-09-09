@@ -74,7 +74,7 @@ export default {
         default:
       }
     },
-    addStampToMessage({ state, commit, dispatch }, stampId) {
+    async addStampToMessage({ state, commit, dispatch }, stampId) {
       const { messageId } = state.stampPickerModel
       commit('updateMessageStampTemporary', { messageId, stampId })
 
@@ -82,7 +82,7 @@ export default {
       if (temp.messageId === messageId && temp.stampId === stampId) {
         commit('setStampPickerTemp', { ...temp, count: temp.count + 1 })
       } else {
-        if (temp.messageId !== '') dispatch('syncMessageStamp')
+        if (temp.messageId !== '') await dispatch('syncMessageStamp')
         commit('setStampPickerTemp', {
           messageId,
           stampId,
