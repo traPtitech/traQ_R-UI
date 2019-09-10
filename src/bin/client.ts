@@ -39,7 +39,7 @@ class Client {
   // Tag: authorization
   @log
   login(name: string, pass: string) {
-    return api.login(undefined, { name, pass })
+    return api.login({ name, pass })
   }
   @log
   logout() {

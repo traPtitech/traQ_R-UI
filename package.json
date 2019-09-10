@@ -19,7 +19,7 @@
     "markdown-it-image-filter": "^1.0.1",
     "scroll-behavior-polyfill": "^2.0.11",
     "skyway-js": "^2.0.3",
-    "traq-api": "github:traPtitech/node-traq#2.7.4-0",
+    "traq-api": "github:traPtitech/node-traq#2.7.4-1",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.2.2",
