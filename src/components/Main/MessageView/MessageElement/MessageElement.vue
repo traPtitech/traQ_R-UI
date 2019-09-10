@@ -428,6 +428,8 @@ export default {
   margin-left: 4px
 
 .message-contents-wrap
+  /* https://qiita.com/mpyw/items/dfc63c1fed5dfc5eda26 */
+  min-width: 0
   grid-area: contents
   display: flex
   flex-flow: column

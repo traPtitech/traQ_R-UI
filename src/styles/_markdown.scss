@@ -95,10 +95,38 @@
   }
 
   blockquote {
-    padding: 0 1em;
-    border-left: 0.25em solid;
+    position: relative;
+    padding-left: 1.25em;
     font-style: italic;
     background: transparent;
+    &::before {
+      content: "";
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      width: 0.25em;
+      height: 1.25em;
+    }
+  }
+
+  > blockquote,
+  :not(blockquote) > blockquote {
+    overflow: {
+      x: auto;
+      y: hidden;
+    }
+    padding-bottom: 5px;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    overflow: {
+      x: auto;
+      y: hidden;
+    }
+    padding-bottom: 5px;
   }
 }
 
@@ -143,13 +171,9 @@
 
   blockquote {
     color: #777;
-    border-color: #ddd;
-  }
-
-  table {
-    display: block;
-    width: 100%;
-    overflow: auto;
+    &::before {
+      background-color: #ddd;
+    }
   }
 
   table th {
@@ -200,12 +224,6 @@
     background-color: #2c323c;
   }
 
-  table {
-    display: block;
-    width: 100%;
-    overflow: auto;
-  }
-
   table th {
     font-weight: 600;
   }
@@ -237,6 +255,8 @@
 
   blockquote {
     color: #5c6370;
-    border-color: #2c323c;
+    &::before {
+      background-color: #2c323c;
+    }
   }
 }
