@@ -124,9 +124,11 @@ export default {
       }
     },
     isContainSelfStamp(stampId) {
-      return this.stamps
-        .find(e => e.stampId === stampId)
-        .user.find(e => e.userId === this.$store.state.me.userId)
+      return this.stamps.some(
+        e =>
+          e.stampId === stampId &&
+          e.user.some(e => e.userId === this.$store.state.me.userId)
+      )
     },
     toggleExpand() {
       this.isExpanded = !this.isExpanded
