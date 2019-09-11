@@ -339,8 +339,10 @@ class Client {
     return api.getMessageStamps(messageId)
   }
   @log
-  stampMessage(messageId: string, stampId: string) {
-    return api.stampMessage(messageId, stampId)
+  stampMessage(messageId: string, stampId: string, count: number = 1) {
+    return api.stampMessage(messageId, stampId, {
+      count
+    })
   }
   @log
   unstampMessage(messageId: string, stampId: string) {
