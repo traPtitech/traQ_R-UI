@@ -344,8 +344,9 @@ export default {
     size: contain
     repeat: no-repeat
     position: center center
-  width: 28px
-  height: 28px
+  margin: 2px
+  width: 100%
+  height: 100%
 
 .stamp-picker-stamp-item-dummy
   width: 32px
