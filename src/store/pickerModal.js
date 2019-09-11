@@ -98,12 +98,14 @@ export default {
       },
       commit
     }) {
-      await client.stampMessage(messageId, stampId, count)
+      if (messageId === '') return
+      const promise = client.stampMessage(messageId, stampId, count)
       commit('setStampPickerTemp', {
         messageId: '',
         stampId: '',
-        count: 1
+        count: 0
       })
+      await promise
     },
     throttledSyncMessageStamp: throttle(
       ({ dispatch }) => {
