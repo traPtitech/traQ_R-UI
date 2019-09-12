@@ -94,4 +94,7 @@ export default {
 .footer-calling-channel-name
   color: white
   font-size: 0.8rem
+  max-width: 5.4rem
+  overflow: hidden
+  text-overflow: ellipsis
 </style>
