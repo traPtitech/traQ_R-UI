@@ -71,6 +71,17 @@
     margin-top: 0.25em;
   }
 
+  > ul,
+  > ol,
+  :not(li) > ul,
+  :not(li) > ol {
+    overflow: {
+      x: auto;
+      y: hidden;
+    }
+    padding-bottom: 5px;
+  }
+
   dl {
     padding: 0;
   }
