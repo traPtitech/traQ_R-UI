@@ -36,6 +36,9 @@ export default {
       isLoadingAttachements: true
     }
   },
+  async mounted() {
+    await this.getAttachments()
+  },
   methods: {
     async getAttachments() {
       this.isLoadingAttachements = true

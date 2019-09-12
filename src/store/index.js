@@ -5,6 +5,7 @@ import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import { detectMentions, caseIntensiveEquals, Trie } from '@/bin/utils'
+import { rendererManager, inlineRenderer } from '@/bin/markdown'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -53,6 +54,29 @@ const stringSortGen = key => (lhs, rhs) => {
     return 1
   } else {
     return 0
+  }
+}
+
+;(async () => {
+  const states = await rendererManager.getImportStates()
+  const data = Object.entries(store.state).filter(([key]) =>
+    states.includes(key)
+  )
+  rendererManager.initialize(data)
+  inlineRenderer.initialize(data)
+})()
+
+const markdownDataPlugin = async store => {
+  const states = await rendererManager.getImportStates()
+  for (const name of states) {
+    store.watch(
+      state => state[name],
+      newVal => {
+        console.log('update', name, newVal)
+        rendererManager.updateData(name, newVal)
+        inlineRenderer.updateData(name, newVal)
+      }
+    )
   }
 }
 
@@ -454,6 +478,71 @@ const store = new Vuex.Store({
             )
           }
         }
+      }
+    },
+    updateMessageStampTemporary(state, { messageId, stampId }) {
+      const myUserId = state.me.userId
+      const index = state.messages.findIndex(e => e.messageId === messageId)
+      if (index >= 0) {
+        const message = state.messages[index]
+        if (message.stampList) {
+          const userData = message.stampList.find(
+            e => e.userId === myUserId && e.stampId === stampId
+          )
+          if (userData) {
+            userData.count++
+          } else {
+            message.stampList.push({
+              userId: myUserId,
+              stampId: stampId,
+              count: 1,
+              createdAt: new Date().toISOString()
+            })
+          }
+        } else {
+          message.stampList = [
+            {
+              userId: myUserId,
+              stampId: stampId,
+              count: 1,
+              createdAt: new Date().toISOString()
+            }
+          ]
+        }
+        Vue.set(state.messages, index, message)
+      }
+      const pinnedIndex = state.currentChannelPinnedMessages.findIndex(
+        e => e.message.messageId === messageId
+      )
+      if (pinnedIndex >= 0) {
+        const message = state.currentChannelPinnedMessages[pinnedIndex].message
+        if (message.stampList) {
+          const userData = message.stampList.find(
+            e => e.userId === myUserId && e.stampId === stampId
+          )
+          if (userData) {
+            userData.count++
+          } else {
+            message.stampList.push({
+              userId: myUserId,
+              stampId: stampId,
+              count: 1
+            })
+          }
+        } else {
+          message.stampList = [
+            {
+              userId: myUserId,
+              stampId: stampId,
+              count: 1
+            }
+          ]
+        }
+        Vue.set(
+          state.currentChannelPinnedMessages,
+          pinnedIndex,
+          state.currentChannelPinnedMessages[pinnedIndex]
+        )
       }
     },
     setFiles(state, files) {
@@ -1207,7 +1296,8 @@ const store = new Vuex.Store({
         data: ecoModeEnabled
       })
     }
-  }
+  },
+  plugins: [markdownDataPlugin]
 })
 
 window.openUserModal = userId => {

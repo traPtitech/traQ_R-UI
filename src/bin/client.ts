@@ -2,7 +2,6 @@ import {
   Apis,
   NotificationUsers,
   HeartbeatStatus,
-  WebRTCUserState,
   PutWebRTCState
 } from 'traq-api'
 
@@ -39,7 +38,7 @@ class Client {
   // Tag: authorization
   @log
   login(name: string, pass: string) {
-    return api.login(undefined, { name, pass })
+    return api.login({ name, pass })
   }
   @log
   logout() {
@@ -198,10 +197,6 @@ class Client {
   whoAmI() {
     return api.getMe()
   }
-  // deprecated
-  getUserIconUrl(userId: string) {
-    return `${BASE_PATH}/users/${userId}/icon`
-  }
   @log
   changeIcon(file: any) {
     return api.changeMyIcon(file)
@@ -339,8 +334,10 @@ class Client {
     return api.getMessageStamps(messageId)
   }
   @log
-  stampMessage(messageId: string, stampId: string) {
-    return api.stampMessage(messageId, stampId)
+  stampMessage(messageId: string, stampId: string, count: number = 1) {
+    return api.stampMessage(messageId, stampId, {
+      count
+    })
   }
   @log
   unstampMessage(messageId: string, stampId: string) {
