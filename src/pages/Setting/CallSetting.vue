@@ -9,6 +9,7 @@
     template(#right)
       setting-input-toggle(
         :value="$store.state.rtc.isRtcEnabled"
+        :disabled="!!$store.state.rtc.client"
         @input="$store.dispatch('rtc/updateIsRtcEnabled', $event)"
       )
     template(#note)

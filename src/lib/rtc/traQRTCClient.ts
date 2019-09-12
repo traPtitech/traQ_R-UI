@@ -82,7 +82,7 @@ export default class traQRTCClient implements EventTarget {
     )
   }
 
-  public dispatchEvent(event: Event) {
+  public dispatchEvent<K extends keyof QRTCEventMap>(event: QRTCEventMap[K]) {
     return this.eventTargetDeligator.dispatchEvent(event)
   }
 

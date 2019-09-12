@@ -7,7 +7,7 @@
       .indormation-sidebar-topic-edit-button(
         v-if="$store.getters['rtc/isCallingOnCurrentChannel']"
         :class="{ 'information-sidebar-action-cancel': isAdjustingCallVolumes }"
-        :title="isAdjustingCallVolumes ? '音量を調整する' : 'キャンセル'"
+        :title="isAdjustingCallVolumes ? 'キャンセル' : '音量を調整する'"
         @click="toggleCallVolumeAdjust"
       )
         icon-check(v-if="isAdjustingCallVolumes")
