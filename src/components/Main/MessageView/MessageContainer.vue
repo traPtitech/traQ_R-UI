@@ -1,5 +1,5 @@
 <template lang="pug">
-.message-container
+.message-container(ref="container")
   .content-wrap.is-scroll(
     @scroll.passive="onScroll"
     :class="{'is-fixed': isFixed && !supportOverflowAnchor}"
@@ -24,6 +24,11 @@
 import { rendererManager } from '@/bin/markdown'
 import MessageElement from './MessageElement/MessageElement'
 import { throttle } from 'lodash'
+
+const toggleSpoiler = e => {
+  if (!e.target.classList.contains('spoiler')) return
+  e.target.toggleAttribute('shown')
+}
 
 export default {
   name: 'MessageContainer',
@@ -62,6 +67,10 @@ export default {
         }
       }
     })
+    this.$refs.container.addEventListener('click', toggleSpoiler)
+  },
+  beforeDestroy() {
+    this.$refs.container.removeEventListener('click', toggleSpoiler)
   },
   methods: {
     onScroll: throttle(function(event) {

@@ -1,6 +1,7 @@
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import MarkdownItMark from 'markdown-it-mark'
+import spoiler from 'markdown-it-spoiler'
 import json from '@/worker/markdown-it-json'
 import regexp from 'markdown-it-regexp'
 import mila from 'markdown-it-link-attributes'
@@ -222,6 +223,7 @@ const renderEmoji = match => {
 }
 
 md.use(MarkdownItMark)
+md.use(spoiler)
 md.use(json)
 md.use(
   regexp(
@@ -249,6 +251,10 @@ export const renderInline = text => {
     if (token.type === 'regexp-0') {
       // emoji
       rendered.push(renderEmoji(token.meta.match))
+    } else if (token.type === 'spoiler_open') {
+      rendered.push('<span class="spoiler">')
+    } else if (token.type === 'spoiler_close') {
+      rendered.push('</span>')
     } else if (token.type === 'softbreak') {
       // newline
       rendered.push(' ')
