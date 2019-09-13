@@ -1,10 +1,9 @@
 <template lang="pug">
   .calling-member-element
     .calling-member-element__icon-container(@click="openUserModal")
-      .calling-member-element__talking-indicator(v-if="talking")
-      img.calling-member-element__icon(:src="userIconSrc")
+      talking-indicator(:user="member" :mic-muted="micMuted")
     .calling-member-element__volume-adjust(v-if="adjustVolume")
-      InputSlider(
+      input-slider(
         v-model="volume"
         :min="0"
         :max="100"
@@ -18,14 +17,16 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import InputSlider from '@/components/Atom/InputSlider'
 import IconMicOff from '@/components/Icon/IconMicOff'
+import InputSlider from '@/components/Atoms/InputSlider'
+import TalkingIndicator from '@/components/Molecules/TalkingIndicator'
 
 export default {
   name: 'CallingMemberElement',
   components: {
+    IconMicOff,
     InputSlider,
-    IconMicOff
+    TalkingIndicator
   },
   data() {
     return {
@@ -33,8 +34,7 @@ export default {
         this.$store.state.rtc.userVolumeMap[this.member.userId] * 100 || 50,
       debounceDelay: 100,
       debounceLastTime: 0,
-      debounceTimerId: -1,
-      indicatorAnimationFrameRequestId: 0
+      debounceTimerId: -1
     }
   },
   props: {
@@ -47,10 +47,6 @@ export default {
       required: true
     },
     micMuted: {
-      type: Boolean,
-      default: false
-    },
-    talking: {
       type: Boolean,
       default: false
     }
@@ -118,30 +114,6 @@ export default {
   min-width: 30px
   flex: 30px 0 0
   user-select: none
-
-.calling-member-element__talking-indicator
-  $indicator-size: 2px
-  position: absolute
-  top: -$indicator-size
-  left: -$indicator-size
-
-  background-color: $online-color
-  border-radius: 100vw
-
-  width: 30px + $indicator-size * 2
-  height: 30px + $indicator-size * 2
-
-.calling-member-element__icon
-  position: absolute
-  top: 0
-  left: 0
-
-  width: 30px
-  height: 30px
-
-  border:
-    radius: 100%
-  background: $tertiary-color
 
 .calling-member-element__user
   display: flex

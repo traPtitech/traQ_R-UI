@@ -4,6 +4,7 @@ div.information-sidebar.drop-shadow(:class="sidebarClass")
     div.information-sidebar-button(v-if="!isOpened" @click="openSidebar" key="close")
       div.online-users-number
         | {{onlineUsersNumber}}
+      information-sidebar-qalling-display(v-if="$store.getters['rtc/isCallingOnCurrentChannel']")
     div.information-sidebar-content(v-else key="open")
       div.information-sidebar-online-users.separator-line(@click="closeSidebar" :class="{'drop-shadow': isScrolled}")
         div.online-information-container
@@ -58,8 +59,8 @@ import IconCheck from '@/components/Icon/IconCheck'
 import SlimMessageElement from '@/components/Main/MessageView/InformationSidebar/SlimMessageElement'
 import SlimMemberElement from '@/components/Main/MessageView/InformationSidebar/SlimMemberElement'
 import InformationSideBarQall from '@/components/Main/MessageView/InformationSidebar/InformationSideBarQall'
+import InformationSidebarQallingDisplay from '@/components/Main/MessageView/InformationSidebar/InformationSidebarQallingDisplay'
 import MemberElement from '@/components/Main/Sidebar/Content/MemberElement'
-import CallingMemberElement from '@/components/Main/Rtc/CallingMemberElement'
 
 export default {
   name: 'InformationSidebar',
@@ -74,8 +75,8 @@ export default {
     SlimMessageElement,
     SlimMemberElement,
     MemberElement,
-    CallingMemberElement,
-    InformationSideBarQall
+    InformationSideBarQall,
+    InformationSidebarQallingDisplay
   },
   data() {
     return {
@@ -207,7 +208,7 @@ export default {
   position: absolute
   z-index: $information-sidebar-index
   width: $information-sidebar-button-width
-  height: 60px
+  // height: 60px
   cursor: pointer
   background: $tertiary-color
   overflow: hidden
@@ -244,11 +245,11 @@ export default {
     right: 0
     top: 0
     width: $information-sidebar-button-width
-    height: 60px
+    // height: 60px
   +mq(sp)
     right: 0
     width: $information-sidebar-button-width
-    height: 50px
+    // height: 50px
 
 @keyframes open-info-sidebar-pc
   0%
