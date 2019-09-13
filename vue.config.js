@@ -14,6 +14,10 @@ module.exports = {
     }
   },
   chainWebpack: config => {
+    config.plugin('prefetch').tap(options => {
+      options[0].include = 'allAssets'
+      return options
+    })
   },
   configureWebpack: {
     entry: {
