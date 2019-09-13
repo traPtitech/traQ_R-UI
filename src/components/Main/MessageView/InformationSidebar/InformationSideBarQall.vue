@@ -27,7 +27,6 @@
           :member="$store.state.memberMap[state.userId]"
           :adjust-volume="isAdjustingCallVolumes"
           :mic-muted="state.state.includes('micmuted')"
-          :talking="userIdTalkingMap[state.userId]"
         )
 </template>
 
@@ -37,7 +36,7 @@ import { talkingThreshould } from '@/lib/rtc/AudioStreamMixer'
 import IconVolume from '@/components/Icon/IconVolume.vue'
 import IconCall from '@/components/Icon/IconCall.vue'
 import IconCheck from '@/components/Icon/IconCheck.vue'
-import CallingMemberElement from '@/components/Main/Rtc/CallingMemberElement.vue'
+import CallingMemberElement from '@/components/Main/MessageView/InformationSidebar/CallingMemberElement.vue'
 import { WebRTCUserState } from 'traq-api'
 
 @Component({
@@ -50,41 +49,6 @@ import { WebRTCUserState } from 'traq-api'
 })
 export default class InformationSideBarQall extends Vue {
   private isAdjustingCallVolumes = false
-  private userIdTalkingMap: Record<string, boolean> = {}
-  private indicatorAnimationFrameRequestId = 0
-
-  mounted() {
-    this.updateIndicators()
-  }
-
-  beforeDestroy() {
-    cancelAnimationFrame(this.indicatorAnimationFrameRequestId)
-  }
-
-  updateIsTalking(state: WebRTCUserState) {
-    if (!state.userId) {
-      return
-    }
-    const talking =
-      this.$store.state.rtc.mixer.getLevelOf(state.userId) > talkingThreshould
-    this.$set(this.userIdTalkingMap, state.userId, talking)
-  }
-
-  updateIndicators() {
-    if (
-      !this.$store.state.rtc.mixer ||
-      !this.$store.getters['rtc/isCallingOnCurrentChannel']
-    ) {
-      return
-    }
-    this.$store.getters['rtc/currentChannelCallingUserStates'].forEach(
-      this.updateIsTalking
-    )
-
-    this.indicatorAnimationFrameRequestId = requestAnimationFrame(
-      this.updateIndicators
-    )
-  }
 
   toggleCallVolumeAdjust() {
     this.isAdjustingCallVolumes = !this.isAdjustingCallVolumes
