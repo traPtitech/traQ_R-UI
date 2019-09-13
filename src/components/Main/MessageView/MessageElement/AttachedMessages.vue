@@ -24,7 +24,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { rendererManager } from '@/bin/markdown'
+import md from '@/bin/markdown-it'
 
 export default {
   name: 'AttachedMessages',
@@ -39,10 +39,11 @@ export default {
       renderedBodies: []
     }
   },
-  async mounted() {
-    this.renderedBodies = await Promise.all(
-      this.messages.map(m => this.mark(m.content))
-    )
+  mounted() {
+    this.renderedBodies = this.messages
+      .filter(m => m)
+      .map(m => this.mark(m.content))
+    this.$emit('rendered')
   },
   computed: {
     ...mapGetters(['userDisplayName', 'fileUrl'])
@@ -59,10 +60,9 @@ export default {
     userDetail(userId) {
       return this.$store.state.memberMap[userId]
     },
-    async mark(text) {
+    mark(text) {
       return {
-        template: `<div class="message-content markdown-body" v-pre>${await rendererManager.render(
-          this.$store.state.currentChannel.channelId,
+        template: `<div class="message-content markdown-body" v-pre>${md.render(
           text
         )}</div>`,
         props: this.$options.props

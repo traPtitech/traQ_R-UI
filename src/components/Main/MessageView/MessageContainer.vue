@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import { rendererManager } from '@/bin/markdown'
 import MessageElement from './MessageElement/MessageElement'
 import { throttle } from 'lodash'
 
@@ -124,11 +123,10 @@ export default {
     }
   },
   watch: {
-    currentChannel(val, oldVal) {
+    currentChannel() {
       this.messageLoading = false
       this.noMoreMessage = false
       this.isFirstView = true
-      rendererManager.stop(oldVal.channelId)
     }
   }
 }

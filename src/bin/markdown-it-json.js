@@ -1,4 +1,4 @@
-import * as store from '@/worker/store'
+import store from '@/store/index'
 import json from 'markdown-it-json'
 
 const validate = data => {
@@ -9,11 +9,11 @@ const validate = data => {
   ) {
     return false
   }
-  if (data['type'] === 'user' && store.getMember(data['id'])) {
+  if (data['type'] === 'user' && store.state.memberMap[data['id']]) {
     return true
-  } else if (data['type'] === 'channel' && store.getChannel(data['id'])) {
+  } else if (data['type'] === 'channel' && store.state.channelMap[data['id']]) {
     return true
-  } else if (data['type'] === 'group' && store.getGroup(data['id'])) {
+  } else if (data['type'] === 'group' && store.state.groupMap[data['id']]) {
     return true
   } else if (data['type'] === 'file' || data['type'] === 'message') {
     return true
@@ -24,10 +24,10 @@ const validate = data => {
 const transform = (state, data) => {
   const attributes = []
   const meta = { type: data['type'], data: '' }
-  if (data['type'] === 'user' && store.getMember(data['id'])) {
+  if (data['type'] === 'user' && store.state.memberMap[data['id']]) {
     attributes.push(['href', `javascript:openUserModal('${data['id']}')`])
     meta.data = data['id']
-    if (data['id'] === store.getMe().userId) {
+    if (data['id'] === store.state.me.userId) {
       attributes.push([
         'class',
         'message-user-link-highlight message-user-link'
@@ -42,11 +42,11 @@ const transform = (state, data) => {
     t = state.push('text', '', 0)
     t.content = data['raw']
     state.push('traq_extends_link_close', 'a', -1)
-  } else if (data['type'] === 'channel' && store.getChannel(data['id'])) {
+  } else if (data['type'] === 'channel' && store.state.channelMap[data['id']]) {
     attributes.push([
       'href',
-      `javascript:changeChannel('${store.getChannelPath(
-        store.getChannel(data['id']).channelId
+      `javascript:changeChannel('${store.getters.getChannelPathById(
+        store.state.channelMap[data['id']].channelId
       )}')`
     ])
     attributes.push(['class', 'message-channel-link'])
@@ -58,12 +58,12 @@ const transform = (state, data) => {
     t = state.push('text', '', 0)
     t.content = data['raw']
     state.push('traq_extends_link_close', 'a', -1)
-  } else if (data['type'] === 'group' && store.getGroup(data['id'])) {
+  } else if (data['type'] === 'group' && store.state.groupMap[data['id']]) {
     attributes.push(['href', `javascript:openGroupModal('${data['id']}')`])
     if (
-      store
-        .getGroup(data['id'])
-        .members.filter(userId => userId === store.getMe().userId).length > 0
+      store.state.groupMap[data['id']].members.filter(
+        userId => userId === store.state.me.userId
+      ).length > 0
     ) {
       attributes.push([
         'class',

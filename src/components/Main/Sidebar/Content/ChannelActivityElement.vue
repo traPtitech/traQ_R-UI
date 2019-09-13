@@ -19,7 +19,7 @@ div.channel-activity-wrap
 </template>
 
 <script>
-import { renderInline } from '@/bin/markdown'
+import { renderInline } from '@/bin/markdown-it'
 import { detectFiles } from '@/bin/utils'
 import IconAttach from '@/components/Icon/IconAttach'
 import IconSpeechBalloon from '@/components/Icon/IconSpeechBalloon'
@@ -35,11 +35,6 @@ export default {
   props: {
     model: Object
   },
-  data() {
-    return {
-      sanitizedMessage: ''
-    }
-  },
   methods: {
     channelLink() {
       this.$store.commit('closeSidebar')
@@ -49,9 +44,6 @@ export default {
           this.model.parentChannelId
         )}`
       )
-    },
-    async render() {
-      this.sanitizedMessage = await renderInline(this.content)
     }
   },
   computed: {
@@ -81,7 +73,7 @@ export default {
       return { 'has-unread': this.unreadNum > 0 }
     },
     attachments() {
-      return detectFiles(this.content)
+      return detectFiles(this.model.content)
     },
     hasMessage() {
       return this.attachments.filter(a => a.type === 'message').length > 0
@@ -89,17 +81,9 @@ export default {
     hasFile() {
       return this.attachments.filter(a => a.type === 'file').length > 0
     },
-    content() {
-      return this.model.content
+    sanitizedMessage() {
+      return renderInline(this.model.content)
     }
-  },
-  watch: {
-    content() {
-      this.render()
-    }
-  },
-  created() {
-    this.render()
   }
 }
 </script>

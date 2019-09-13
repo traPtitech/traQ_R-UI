@@ -1,6 +1,6 @@
 <template lang="pug">
   div.slim-message-element(
-    :class="{'is-overflow': isOverflow}"
+    :class="{'is-overflow': isOverflow}" 
     @click.stop.prevent="openModal")
     div
       | {{userName}}
@@ -8,8 +8,7 @@
 </template>
 
 <script>
-import { rendererManager } from '@/bin/markdown'
-
+import md from '@/bin/markdown-it'
 export default {
   name: 'SlimMessageElement',
   props: {
@@ -20,8 +19,7 @@ export default {
   },
   data() {
     return {
-      height: 0,
-      renderedContent: null
+      height: 0
     }
   },
   computed: {
@@ -33,6 +31,13 @@ export default {
     },
     content() {
       return this.message.content
+    },
+    renderedContent() {
+      return {
+        template: `<div class="slim-message-content markdown-body" v-pre>${md.render(
+          this.content
+        )}</div>`
+      }
     },
     isOverflow() {
       return this.height >= 110
@@ -46,24 +51,10 @@ export default {
     },
     openModal() {
       this.$store.dispatch('openMessageModal', this.message)
-    },
-    async setContent(val) {
-      this.renderedContent = {
-        template: `<div class="slim-message-content markdown-body" v-pre>${await rendererManager.render(
-          this.$store.state.currentChannel.channelId,
-          val
-        )}</div>`
-      }
-    }
-  },
-  watch: {
-    content(val) {
-      this.setContent(val)
     }
   },
   mounted() {
     this.height = this.$el.offsetHeight
-    this.setContent(this.content)
   }
 }
 </script>

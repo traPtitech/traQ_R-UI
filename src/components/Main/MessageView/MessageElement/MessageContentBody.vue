@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { rendererManager } from '@/bin/markdown'
+import md from '@/bin/markdown-it'
 
 export default {
   props: {
@@ -12,26 +12,10 @@ export default {
       default: ''
     }
   },
-  data() {
-    return {
-      renderedContent: ''
+  computed: {
+    renderedContent() {
+      return md.render(this.content)
     }
-  },
-  methods: {
-    async render() {
-      this.renderedContent = await rendererManager.render(
-        this.$store.state.currentChannel.channelId,
-        this.content
-      )
-    }
-  },
-  watch: {
-    content() {
-      this.render()
-    }
-  },
-  created() {
-    this.render()
   }
 }
 </script>
