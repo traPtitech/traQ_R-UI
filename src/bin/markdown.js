@@ -43,6 +43,8 @@ class RendererManager {
     }
   }
   updateData(key, val) {
+    this.states[key] = val
+
     for (const r of this.renderers.values()) {
       r.updateData(key, val)
     }

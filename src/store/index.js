@@ -59,9 +59,10 @@ const stringSortGen = key => (lhs, rhs) => {
 
 ;(async () => {
   const states = await rendererManager.getImportStates()
-  const data = Object.entries(store.state).filter(([key]) =>
-    states.includes(key)
-  )
+  const data = states.reduce((data, key) => {
+    data[key] = store.state[key]
+    return data
+  }, {})
   rendererManager.initialize(data)
   inlineRenderer.initialize(data)
 })()

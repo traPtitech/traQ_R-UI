@@ -16,7 +16,7 @@ export const update = (key, val) => {
 }
 
 export const initialize = states => {
-  for (const [key, val] of states) {
+  for (const [key, val] of Object.entries(states)) {
     update(key, val)
   }
   initializeTarget.dispatchEvent(new Event('initialized'))
