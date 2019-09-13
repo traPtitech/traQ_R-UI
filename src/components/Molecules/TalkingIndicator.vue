@@ -58,8 +58,8 @@ $indicator-size: 2px
 
 .talking-indicator
   position: relative
-  width: 30px + $indicator-size * 2
-  height: 30px + $indicator-size * 2
+  width: 30px
+  height: 30px
 
 .talking-indicator__indicator
   position: absolute
@@ -74,5 +74,7 @@ $indicator-size: 2px
 
 .talking-indicator__icon
   position: absolute
+  top: 0
+  left: 0
   background: $tertiary-color
 </style>
