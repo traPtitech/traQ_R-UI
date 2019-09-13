@@ -75,6 +75,11 @@ const md = new MarkdownIt({
   highlight: highlight
 })
 
+md.renderer.rules.table_open = () => '<table class="is-scroll">'
+md.renderer.rules.blockquote_open = () => '<blockquote class="is-scroll">'
+md.renderer.rules.bullet_list_open = () => '<ul class="is-scroll">'
+md.renderer.rules.ordered_list_open = () => '<ol class="is-scroll">'
+
 md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
   for (var max = this.lineMax; from < max; from++) {
     if (this.bMarks[from] + this.tShift[from] < this.eMarks[from]) {
