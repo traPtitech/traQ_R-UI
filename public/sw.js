@@ -129,7 +129,7 @@ self.addEventListener('notificationclick', event => {
       .matchAll({ type: 'window', includeUncontrolled: true })
       .then(clientsArr => {
         if (clientsArr.length > 0) {
-          return clientsArr[0].focus().then(function(client) {
+          return clientsArr[0].focus().then(function (client) {
             const data = {
               type: 'navigate',
               to: event.notification.data.path
@@ -167,6 +167,8 @@ messaging.setBackgroundMessageHandler(async payload => {
   const notificationTitle = payload.data.title || 'traQ'
   const notificationOptions = payload.data
   notificationOptions.data = payload.data
+  notificationOptions.renotify = true
+  notificationOptions.badge = '/static/badge.png'
 
   return self.registration.showNotification(
     notificationTitle,
