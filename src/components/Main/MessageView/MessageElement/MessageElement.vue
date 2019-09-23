@@ -35,7 +35,8 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
           ref="editArea"
           @beforeinput="editBeforeinput"
           @keydown="editKeydown"
-          @keyup="editKeyup")
+          @keyup="editKeyup"
+          @blur="editBlur")
         button.edit-button.edit-cancel(@click.stop="editCancel")
           | Cancel
         button.edit-button.edit-submit(@click.stop="editSubmit")
@@ -247,6 +248,12 @@ export default {
           this.grade(this.model.userId).groupId
         )
       }
+    },
+    editBlur() {
+      this.$store.commit('messageEdit/setSelect', {
+        messageId: this.model.messageId,
+        selectionEnd: this.$refs.editArea.selectionEnd
+      })
     }
   },
   computed: {

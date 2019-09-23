@@ -1,10 +1,12 @@
 import Vue from 'vue'
+import { valueOrDefault } from '../bin/utils'
 
 export default {
   namespaced: true,
   state: {
-    inputTextMap: {}, // channelId => textString´
-    inputFilesMap: {} // channelId => filesArray
+    inputTextMap: {}, // channelId => textString
+    inputFilesMap: {}, // channelId => filesArray
+    inputSelectMap: {} // channelId => SelectionEnd
   },
   getters: {
     inputText: state => channelId => {
@@ -12,6 +14,10 @@ export default {
     },
     inputFiles: state => channelId => {
       return state.inputFilesMap[channelId] || []
+    },
+    inputSelect: state => channelId => {
+      const textSize = (state.inputText[channelId] || '').length
+      return valueOrDefault(state.inputSelectMap[channelId], textSize)
     }
   },
   mutations: {
@@ -21,9 +27,21 @@ export default {
     setInputFiles(state, { channelId, files }) {
       Vue.set(state.inputFilesMap, channelId, files)
     },
+    setInputSelect(state, { channelId, selectionEnd }) {
+      Vue.set(state.inputSelectMap, channelId, selectionEnd)
+    },
     addStampToInputText(state, { stampName, channelId }) {
-      if (state.inputTextMap[channelId]) {
-        state.inputTextMap[channelId] += `:${stampName}:`
+      const inputText = state.inputTextMap[channelId]
+      if (inputText) {
+        const insertPos = valueOrDefault(
+          state.inputSelectMap[channelId],
+          inputText.length
+        )
+        state.inputTextMap[channelId] = `${inputText.slice(
+          0,
+          insertPos
+        )}:${stampName}:${inputText.slice(insertPos)}`
+        state.inputSelectMap[channelId] = insertPos + stampName.length + 2
       } else {
         Vue.set(state.inputTextMap, channelId, `:${stampName}:`)
       }

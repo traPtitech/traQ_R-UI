@@ -117,6 +117,10 @@ export default {
       this.focused = true
     },
     inputBlur() {
+      this.$store.commit('messageInput/setInputSelect', {
+        channelId: this.currentChannel.channelId,
+        selectionEnd: this.messageInput.selectionEnd
+      })
       this.focused = false
       this.$store.commit('setEditing', false)
     },

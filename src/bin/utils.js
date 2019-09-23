@@ -288,3 +288,10 @@ export class Trie {
     return this.children[c].query(s, i + 1, acc + c)
   }
 }
+
+export const valueOrDefault = (v, d) => {
+  if (typeof v === 'undefined') {
+    return d
+  }
+  return v
+}
