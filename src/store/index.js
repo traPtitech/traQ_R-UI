@@ -203,7 +203,7 @@ const store = new Vuex.Store({
         if (!member.suspended) {
           trie.update(member.name, 0)
         }
-        state.memberMap[member.userId] = member
+        Vue.set(state.memberMap, member.userId, member)
       })
       state.memberTrie = trie
     },
