@@ -30,7 +30,7 @@ export default {
     openDMChannel() {
       this.$store.commit('closeSidebar')
       this.$store.commit('contractTitlebar')
-      if (this.model.bot) {
+      if (this.model.name.startsWith('Webhook#')) {
         return
       }
       this.$router.push(`/users/${this.model.name}`)
