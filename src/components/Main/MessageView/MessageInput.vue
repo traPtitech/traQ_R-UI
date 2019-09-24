@@ -127,33 +127,37 @@ export default {
       if (this.$store.state.currentChannel.force) {
         if (
           !window.confirm(
-            'このチャンネルに投稿されたメッセージは全員に通知されます。メッセージを投稿しますか？'
+            `#${this.$store.getters.getChannelPathById(
+              this.$store.state.currentChannel.channelId
+            )}に投稿されたメッセージは全員に通知されます。メッセージを投稿しますか？`
           )
         ) {
           return
         }
       }
+      this.postMessage()
+    },
+    async postMessage() {
+      const postChannel = this.$store.state.currentChannel
       this.postLock = true
+      this.postStatus = 'processing'
+      let message = this.inputText
+
       if (this.files.length > 0) {
-        this.uploadFiles()
+        await this.uploadFiles()
           .then(() => {
             this.files = []
-            this.postMessage()
           })
           .catch(err => {
             console.log(err)
             this.postStatus = 'failed'
             this.postLock = false
           })
-      } else {
-        this.postMessage()
+        if (this.postStatus === 'failed') {
+          return
+        }
       }
-    },
-    postMessage() {
-      this.postStatus = 'processing'
-      let nowChannel = this.$store.state.currentChannel
-      let message = this.inputText
-      // temporary format
+
       this.uploadedIds.forEach(id => {
         message += `\n!{"type": "file", "raw": "", "id": "${id}"}`
       })
@@ -186,15 +190,27 @@ export default {
           }
         })
         .join('\n')
-      const postedMessage = !nowChannel.dm
-        ? client.postMessage(nowChannel.channelId, message)
+      const postedMessage = !postChannel.dm
+        ? client.postMessage(postChannel.channelId, message)
         : client.postDirectMessage(
-            this.$store.getters.getUserIdByDirectMessageChannel(nowChannel),
+            this.$store.getters.getUserIdByDirectMessageChannel(postChannel),
             message
           )
       postedMessage
         .then(() => {
-          this.inputText = ''
+          if (
+            this.$store.state.currentChannel.channelId === postChannel.channelId
+          ) {
+            this.inputText = ''
+          }
+          this.$store.commit('messageInput/setInputText', {
+            channelId: postChannel.channelId,
+            inputText: ''
+          })
+          this.$store.commit('messageInput/setInputFiles', {
+            channelId: postChannel.channelId,
+            files: []
+          })
           this.postStatus = 'succeeded'
           this.postLock = false
         })
