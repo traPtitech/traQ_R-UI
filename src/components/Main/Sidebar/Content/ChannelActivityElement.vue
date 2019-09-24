@@ -200,6 +200,10 @@ export default {
   .emoji
     font-size: 24px
     vertical-align: top
+  .spoiler
+    color: transparent
+    background-color: black
+    user-select: none
 
 .channel-toggle
   border: solid 1px $text-light-color

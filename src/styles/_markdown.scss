@@ -139,6 +139,17 @@
     }
     padding-bottom: 5px;
   }
+
+  .spoiler {
+    color: transparent;
+    background-color: black;
+    user-select: none;
+    cursor: pointer;
+    &[shown] {
+      color: inherit;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
 }
 
 #app[data-theme="light"] .markdown-body {
