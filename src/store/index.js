@@ -5,6 +5,7 @@ import client from '@/bin/client'
 import indexedDB from '@/bin/indexeddb'
 import stampCategorizer from '@/bin/stampCategorizer'
 import { detectMentions, caseIntensiveEquals, Trie } from '@/bin/utils'
+import { rendererManager, inlineRenderer } from '@/bin/markdown'
 import modal from './modal'
 import pickerModal from './pickerModal'
 import messageInput from './messageInput'
@@ -53,6 +54,30 @@ const stringSortGen = key => (lhs, rhs) => {
     return 1
   } else {
     return 0
+  }
+}
+
+;(async () => {
+  const states = await rendererManager.getImportStates()
+  const data = states.reduce((data, key) => {
+    data[key] = store.state[key]
+    return data
+  }, {})
+  rendererManager.initialize(data)
+  inlineRenderer.initialize(data)
+})()
+
+const markdownDataPlugin = async store => {
+  const states = await rendererManager.getImportStates()
+  for (const name of states) {
+    store.watch(
+      state => state[name],
+      newVal => {
+        console.log('update', name, newVal)
+        rendererManager.updateData(name, newVal)
+        inlineRenderer.updateData(name, newVal)
+      }
+    )
   }
 }
 
@@ -1272,7 +1297,8 @@ const store = new Vuex.Store({
         data: ecoModeEnabled
       })
     }
-  }
+  },
+  plugins: [markdownDataPlugin]
 })
 
 window.openUserModal = userId => {
