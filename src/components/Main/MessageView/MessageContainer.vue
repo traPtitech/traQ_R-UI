@@ -21,19 +21,9 @@
 </template>
 
 <script>
-import { rendererManager } from '@/bin/markdown'
+import { rendererManager, toggleSpoiler } from '@/bin/markdown'
 import MessageElement from './MessageElement/MessageElement'
 import { throttle } from 'lodash'
-
-const toggleSpoiler = e => {
-  let { target } = e
-  while (target && !target.classList.contains('spoiler')) {
-    target = target.parentElement
-  }
-  if (!target) return
-
-  target.toggleAttribute('shown')
-}
 
 export default {
   name: 'MessageContainer',
