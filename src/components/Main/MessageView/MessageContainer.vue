@@ -26,8 +26,13 @@ import MessageElement from './MessageElement/MessageElement'
 import { throttle } from 'lodash'
 
 const toggleSpoiler = e => {
-  if (!e.target.classList.contains('spoiler')) return
-  e.target.toggleAttribute('shown')
+  let { target } = e
+  while (target && !target.classList.contains('spoiler')) {
+    target = target.parentElement
+  }
+  if (!target) return
+
+  target.toggleAttribute('shown')
 }
 
 export default {
