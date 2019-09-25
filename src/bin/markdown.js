@@ -1,4 +1,4 @@
-import Md from 'workerize-loader?import!@/worker/markdown-it'
+import Md from 'workerize-loader!@/worker/markdown-it'
 
 class Renderer {
   constructor() {
