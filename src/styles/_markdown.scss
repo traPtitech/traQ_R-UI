@@ -145,6 +145,13 @@
     background-color: black;
     user-select: none;
     cursor: pointer;
+
+    &:not([shown]) {
+      * {
+        visibility: hidden;
+      }
+    }
+
     &[shown] {
       color: inherit;
       background-color: rgba(0, 0, 0, 0.1);
