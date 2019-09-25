@@ -1,8 +1,8 @@
 <template lang="pug">
-base-common-modal(title="MESSAGE" small scroll)
+base-common-modal(title="MESSAGE" small :scroll="isScrollable")
   icon-pin(color="var(--primary-color-on-bg)" slot="header-icon" size="24")
-  .message-item
-    message-element(:model="message")
+  .message-item(ref="message")
+    message-element(:model="message" @rendered="messageRendered")
 </template>
 
 <script>
@@ -18,6 +18,11 @@ export default {
     BaseCommonModal,
     IconPin
   },
+  data() {
+    return {
+      isScrollable: false
+    }
+  },
   computed: {
     ...mapState('modal', ['data']),
     message() {
@@ -25,6 +30,13 @@ export default {
         ({ message }) => message.messageId === this.data.messageId
       )
       return pinned ? pinned.message : this.data
+    }
+  },
+  methods: {
+    messageRendered() {
+      this.isScrollable =
+        this.$refs.message.clientHeight >
+        this.$refs.message.parentElement.clientHeight
     }
   }
 }
