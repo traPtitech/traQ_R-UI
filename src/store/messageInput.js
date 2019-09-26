@@ -37,13 +37,21 @@ export default {
           state.inputSelectMap[channelId],
           inputText.length
         )
-        state.inputTextMap[channelId] = `${inputText.slice(
-          0,
-          insertPos
-        )}:${stampName}:${inputText.slice(insertPos)}`
-        state.inputSelectMap[channelId] = insertPos + stampName.length + 2
+        Vue.set(
+          state.inputTextMap,
+          channelId,
+          `${inputText.slice(0, insertPos)}:${stampName}:${inputText.slice(
+            insertPos
+          )}`
+        )
+        Vue.set(
+          state.inputSelectMap,
+          channelId,
+          insertPos + stampName.length + 2
+        )
       } else {
         Vue.set(state.inputTextMap, channelId, `:${stampName}:`)
+        Vue.set(state.inputSelectMap, channelId, stampName.length + 2)
       }
     }
   }
