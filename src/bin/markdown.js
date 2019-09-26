@@ -81,3 +81,12 @@ export const renderInline = async text => {
   const ir = await inlineRenderer.getInitializedWorker()
   return ir.renderInline(text)
 }
+
+export const toggleSpoiler = ({ target }) => {
+  while (target && !target.classList.contains('spoiler')) {
+    target = target.parentElement
+  }
+  if (!target) return
+
+  target.toggleAttribute('shown')
+}
