@@ -50,7 +50,7 @@ div.links-list-wrap
         p.link-title
           | HackMD
     li
-      a(href="http://anke-to.sysad.trap.show/" target="_blank")
+      a(href="https://anke-to.trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogoAnketo(size="20")
         p.link-title
