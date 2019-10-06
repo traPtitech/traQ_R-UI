@@ -204,6 +204,8 @@ export default {
     color: transparent
     background-color: black
     user-select: none
+    *
+      visibility: hidden
 
 .channel-toggle
   border: solid 1px $text-light-color
