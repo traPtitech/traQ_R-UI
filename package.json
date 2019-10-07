@@ -46,7 +46,7 @@
     "markdown-it": "^10.0.0",
     "markdown-it-image-filter": "^1.0.1",
     "markdown-it-json": "^1.0.2",
-    "markdown-it-link-attributes": "^2.1.0",
+    "markdown-it-link-attributes": "^3.0.0",
     "markdown-it-mark": "^3.0.0",
     "markdown-it-regexp": "^0.4.0",
     "markdown-it-spoiler": "^1.0.0",
