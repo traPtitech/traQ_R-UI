@@ -44,7 +44,7 @@ div.links-list-wrap
         p.link-title
           | Showcase
     li
-      a(href="https://md.trapti.tech" target="_blank")
+      a(href="https://md.trap.jp/" target="_blank")
         div.link-icon.flex-center
           IconLogoHackMD(size="20")
         p.link-title
