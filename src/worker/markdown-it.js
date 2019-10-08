@@ -237,7 +237,7 @@ md.use(mila, {
     rel: 'nofollow noopener noreferrer'
   }
 })
-md.use(filter(whitelist))
+md.use(filter(whitelist, { httpsOnly: true }))
 
 export const render = text => {
   return md.render(text, {})
