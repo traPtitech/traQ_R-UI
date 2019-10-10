@@ -14,7 +14,7 @@
   "dependencies": {
     "@ungap/event-target": "^0.1.0",
     "core-js": "^2.6.9",
-    "firebase": "^7.0.0",
+    "firebase": "^7.1.0",
     "lodash": "^4.17.15",
     "lottie-web": "^5.5.7",
     "scroll-behavior-polyfill": "^2.0.11",
