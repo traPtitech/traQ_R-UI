@@ -56,6 +56,12 @@ div.links-list-wrap
         p.link-title
           | anke-to
     li
+      a(href="https://booq.trap.jp" target="_blank")
+        div.link-icon.flex-center
+          IconLogoBooQ(size="20")
+        p.link-title
+          | booQ
+    li
       a(href="https://bot-console.trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogoBotConsole(size="20")
@@ -72,6 +78,7 @@ import IconLogoNextCloud from '@/components/Icon/IconLogoNextCloud'
 import IconLogoShowcase from '@/components/Icon/IconLogoShowcase'
 import IconLogotraP from '@/components/Icon/IconLogotraP'
 import IconLogoAnketo from '@/components/Icon/IconLogoAnketo'
+import IconLogoBooQ from '@/components/Icon/IconLogoBooQ'
 import IconLogoBotConsole from '@/components/Icon/IconLogoBotConsole'
 import IconTraPortal from '@/components/Icon/IcontraPortal'
 
@@ -85,6 +92,7 @@ export default {
     IconLogoNextCloud,
     IconLogoShowcase,
     IconLogotraP,
+    IconLogoBooQ,
     IconLogoAnketo,
     IconLogoBotConsole,
     IconTraPortal
