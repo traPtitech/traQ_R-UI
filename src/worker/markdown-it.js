@@ -223,7 +223,7 @@ const renderEmoji = match => {
 }
 
 md.use(MarkdownItMark)
-md.use(spoiler)
+md.use(spoiler, true)
 md.use(json)
 md.use(
   regexp(
