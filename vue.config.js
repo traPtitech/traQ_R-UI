@@ -58,6 +58,9 @@ module.exports = {
     assetsVersion: require('./package.json').version,
 
     manifestPath: 'static/manifest.json',
+    manifestOptions: {
+      start_url: '/'
+    },
     iconPaths: {
       favicon32: 'static/favicon-32x32.png',
       favicon16: 'static/favicon-16x16.png',
