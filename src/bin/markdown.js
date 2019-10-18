@@ -25,6 +25,7 @@ class Renderer {
 class RendererManager {
   renderers = new Map()
   constructor() {
+    this.inlineRenderer = new Renderer()
     this.spareRenderer = new Renderer()
   }
   initialize(states) {
@@ -33,6 +34,7 @@ class RendererManager {
     for (const r of this.renderers.values()) {
       r.initialize(this.states)
     }
+    this.inlineRenderer.initialize(this.states)
     this.spareRenderer.initialize(this.states)
   }
   createRenderer(scope) {
@@ -48,6 +50,7 @@ class RendererManager {
     for (const r of this.renderers.values()) {
       r.updateData(key, val)
     }
+    this.inlineRenderer.updateData(key, val)
     this.spareRenderer.updateData(key, val)
   }
   async getImportStates() {
@@ -58,6 +61,10 @@ class RendererManager {
       this.createRenderer(scope)
     }
     return this.renderers.get(scope).render(text)
+  }
+  async renderInline(text) {
+    const ir = await this.inlineRenderer.getInitializedWorker()
+    return ir.renderInline(text)
   }
   stop(scope) {
     if (this.renderers.has(scope)) {
@@ -78,8 +85,7 @@ export const rendererManager = new RendererManager()
 export const inlineRenderer = new Renderer()
 
 export const renderInline = async text => {
-  const ir = await inlineRenderer.getInitializedWorker()
-  return ir.renderInline(text)
+  return rendererManager.renderInline(text)
 }
 
 export const toggleSpoiler = ({ target }) => {
