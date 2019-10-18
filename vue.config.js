@@ -8,8 +8,10 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: '@import "~@/styles/_main.sass"',
-        indentedSyntax: true
+        prependData: '@import "~@/styles/_main.sass"',
+        sassOptions: {
+          indentedSyntax: true
+        }
       }
     }
   },
