@@ -5,15 +5,15 @@
   "author": "traP",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "serve-https": "vue-cli-service serve --https",
     "build": "vue-cli-service build --morden",
     "lint": "vue-cli-service lint",
     "fix": "vue-cli-service lint --fix",
-    "gen-unicode_emojis": "node build/gen-unicode_emojis"
+    "gen-unicode_emojis": "node build/gen-unicode_emojis",
+    "serve-https": "vue-cli-service serve --https"
   },
   "dependencies": {
     "@ungap/event-target": "^0.1.0",
-    "core-js": "^2.6.9",
+    "core-js": "^3.1.2",
     "firebase": "^7.1.0",
     "lodash": "^4.17.15",
     "lottie-web": "^5.5.7",
@@ -27,11 +27,13 @@
     "vuex": "^3.1.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.11.0",
-    "@vue/cli-plugin-eslint": "^3.11.0",
-    "@vue/cli-plugin-pwa": "^3.11.0",
-    "@vue/cli-plugin-typescript": "^3.11.0",
-    "@vue/cli-service": "^3.11.0",
+    "@vue/cli-plugin-babel": "^4.0.3",
+    "@vue/cli-plugin-eslint": "^4.0.3",
+    "@vue/cli-plugin-pwa": "^4.0.3",
+    "@vue/cli-plugin-router": "^4.0.3",
+    "@vue/cli-plugin-typescript": "^4.0.3",
+    "@vue/cli-plugin-vuex": "^4.0.3",
+    "@vue/cli-service": "^4.0.3",
     "@vue/eslint-config-prettier": "^5.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
     "autosize": "^4.0.2",
