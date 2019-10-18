@@ -7,13 +7,13 @@ module.exports = {
     node: true
   },
 
-  extends: [
-    'plugin:vue/essential',
-    '@vue/prettier',
-    '@vue/typescript'
-  ],
+  plugins: ['@typescript-eslint'],
+
+  extends: ['plugin:vue/essential', '@vue/prettier'],
 
   rules: {
+    'no-undef': 'off',
+    'no-unused-vars': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'prettier/prettier': [
@@ -27,7 +27,6 @@ module.exports = {
   },
 
   parserOptions: {
-    parser: '@typescript-eslint/parser',
-    project: resolve(__dirname, './tsconfig.json')
+    parser: '@typescript-eslint/parser'
   }
 }

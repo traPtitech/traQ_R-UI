@@ -49,7 +49,9 @@ export default {
       import('@/components/Main/MessageView/Titlebar')
     ),
     ChannelInformation: window.asyncLoadComponents(
-      import('@/components/Main/MessageView/InformationSidebar/InformationSidebar')
+      import(
+        '@/components/Main/MessageView/InformationSidebar/InformationSidebar'
+      )
     ),
     PickerModal: window.asyncLoadComponents(
       import('@/components/Main/PickerModal')

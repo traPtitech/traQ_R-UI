@@ -98,9 +98,9 @@ export default {
       Object.keys(map).forEach(key => {
         map[key].title = `:${map[key].name}: from`
         map[key].user.forEach(user => {
-          map[key].title += ` ${
-            this.$store.state.memberMap[user.userId].name
-          }(${user.count})`
+          map[
+            key
+          ].title += ` ${this.$store.state.memberMap[user.userId].name}(${user.count})`
         })
       })
       const stamps = Object.values(map)

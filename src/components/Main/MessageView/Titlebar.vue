@@ -124,9 +124,7 @@ export default {
     },
     copyMessage() {
       this.$copyText(
-        `[#${this.$route.params.channel}](${location.origin}${
-          this.$route.path
-        })`
+        `[#${this.$route.params.channel}](${location.origin}${this.$route.path})`
       )
     },
     removeWidth() {

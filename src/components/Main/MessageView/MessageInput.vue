@@ -237,9 +237,7 @@ export default {
       return message.replace(/[#＃]([a-zA-Z0-9_/-]+)/g, (match, name) => {
         const channel = this.$store.getters.getChannelByName(name)
         if (channel) {
-          return `!{"type": "channel", "raw": "${match}", "id": "${
-            channel.channelId
-          }"}`
+          return `!{"type": "channel", "raw": "${match}", "id": "${channel.channelId}"}`
         } else {
           return match
         }
@@ -253,9 +251,7 @@ export default {
           if (replacedUsername) return match
           const group = this.$store.getters.getGroupByContent(content)
           if (group) {
-            return `!{"type": "group", "raw": "${match}", "id": "${
-              group.groupId
-            }"}`
+            return `!{"type": "group", "raw": "${match}", "id": "${group.groupId}"}`
           } else {
             return match
           }
