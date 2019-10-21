@@ -66,11 +66,7 @@ export default function(key, limit) {
           replace: stamp.name,
           start: ':',
           suffix: ': ',
-          html: `<i class="emoji s16" title=":${
-            stamp.name
-          }:" style="background-image: url(/api/1.0/files/${stamp.fileId});">:${
-            stamp.name
-          }:</i>:${stamp.name}: `
+          html: `<i class="emoji s16" title=":${stamp.name}:" style="background-image: url(/api/1.0/files/${stamp.fileId});">:${stamp.name}:</i>:${stamp.name}: `
         }
       })
   }

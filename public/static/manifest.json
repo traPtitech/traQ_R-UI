@@ -1,6 +1,5 @@
 {
-  "name": "traQ",
-  "short_name": "traQ",
+  "background_color": "0D67EA",
   "icons": [
     {
       "src": "/static/android-chrome-192x192.png",
@@ -13,9 +12,5 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/",
-  "theme_color": "#0D67EA",
-  "background_color": "#0D67EA",
-  "display": "standalone",
   "gcm_sender_id": "103953800507"
 }

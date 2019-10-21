@@ -165,16 +165,12 @@ export default {
     contentStyle() {
       return this.contentAspectRetio === 0
         ? {
-            transform: `translate(${this.contentX}px, ${
-              this.contentY
-            }px) scale(${this.contentScale})`
+            transform: `translate(${this.contentX}px, ${this.contentY}px) scale(${this.contentScale})`
           }
         : {
             top: `${this.contentInitialTop}px`,
             left: `${this.contentInitialLeft}px`,
-            transform: `translate(${this.contentX}px, ${
-              this.contentY
-            }px) scale(${this.contentScale})`,
+            transform: `translate(${this.contentX}px, ${this.contentY}px) scale(${this.contentScale})`,
             transition: this.isFlicking
               ? `transform ${this.flickDuration / 1000}s ease-out`
               : ''

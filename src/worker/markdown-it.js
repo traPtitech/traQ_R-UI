@@ -28,14 +28,10 @@ function highlight(code, lang) {
   const citeTag = langCaption ? `<cite>${langCaption}</cite>` : ''
   if (hljs.getLanguage(langName)) {
     const result = hljs.highlight(langName, code)
-    return `<pre class="traq-code traq-lang">${citeTag}<code class="lang-${
-      result.language
-    }">${result.value}</code></pre>`
+    return `<pre class="traq-code traq-lang">${citeTag}<code class="lang-${result.language}">${result.value}</code></pre>`
   } else {
     const result = hljs.highlightAuto(code)
-    return `<pre class="traq-code traq-lang">${citeTag}<code class="lang-${
-      result.language
-    }">${result.value}</code></pre>`
+    return `<pre class="traq-code traq-lang">${citeTag}<code class="lang-${result.language}">${result.value}</code></pre>`
   }
 }
 

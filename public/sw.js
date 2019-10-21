@@ -1,6 +1,6 @@
 /* eslint-disable */
-workbox.skipWaiting()
-workbox.clientsClaim()
+workbox.core.skipWaiting()
+workbox.core.clientsClaim()
 workbox.routing.registerNavigationRoute('/index.html', {
   whitelist: [new RegExp('/channels/'), new RegExp('/users/')],
   blacklist: [new RegExp('/pipeline')]
@@ -9,7 +9,7 @@ workbox.routing.registerNavigationRoute('/index.html', {
 // ファイルAPIのキャッシュ設定
 workbox.routing.registerRoute(
   new RegExp('/api/1\\.0/files/[0-9a-fA-F-]{36}$'),
-  workbox.strategies.cacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: 'files-cache',
     plugins: [
       new workbox.cacheableResponse.Plugin({
@@ -23,7 +23,7 @@ workbox.routing.registerRoute(
 )
 workbox.routing.registerRoute(
   new RegExp('/api/1\\.0/files/[0-9a-fA-F-]{36}/thumbnail$'),
-  workbox.strategies.cacheFirst({
+  new workbox.strategies.CacheFirst({
     cacheName: 'thumbnail-cache',
     plugins: [
       new workbox.cacheableResponse.Plugin({
@@ -145,8 +145,8 @@ self.addEventListener('notificationclick', event => {
 // Give the service worker access to Firebase Messaging.
 // Note that you can only use Firebase Messaging here, other Firebase libraries
 // are not available in the service worker.
-importScripts('https://www.gstatic.com/firebasejs/6.3.5/firebase-app.js')
-importScripts('https://www.gstatic.com/firebasejs/6.3.5/firebase-messaging.js')
+importScripts('https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js')
+importScripts('https://www.gstatic.com/firebasejs/7.2.1/firebase-messaging.js')
 
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
