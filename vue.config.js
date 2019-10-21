@@ -31,6 +31,9 @@ module.exports = {
         vue$: 'vue/dist/vue.esm.js'
       }
     },
+    output: {
+      globalObject: 'self'
+    },
     plugins:
       process.env.NODE_ENV === 'production'
         ? [
