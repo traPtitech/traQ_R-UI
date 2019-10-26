@@ -8,6 +8,8 @@
       | 編集
     li(v-if="!isDirectMessage" @click="$emit('copy')")
       | リンクをコピー
+    li(@click="$emit('copy-md')")
+      | Markdownをコピー
     //- li(@click="clipMessae")
     //-   | クリップ
     li(v-if="isEditable(userId)" @click="$emit('delete')")

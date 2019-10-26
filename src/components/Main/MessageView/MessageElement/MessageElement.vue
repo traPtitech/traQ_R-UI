@@ -56,6 +56,7 @@ article.message(v-if="!model.reported" ontouchstart="" :class="{'message-pinned'
       @unpin="unpinMessage"
       @edit="editMessage"
       @copy="copyMessage"
+      @copy-md="copyMarkdown"
       @delete="deleteMessage"
       @report="reportMessage"
       )
@@ -219,6 +220,9 @@ export default {
       this.$copyText(
         `!{"raw":"","type":"message","id":"${this.model.messageId}"}`
       )
+    },
+    copyMarkdown() {
+      this.$copyText(this.model.content)
     },
     reportMessage() {
       const reason = window.prompt(
