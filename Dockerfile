@@ -1,5 +1,5 @@
 # ビルド環境
-FROM node:11.11.0-alpine as build
+FROM node:12.13.0-alpine as build
 WORKDIR /app
 RUN apk add --no-cache git
 COPY package*.json ./
