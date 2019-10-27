@@ -58,4 +58,6 @@ export default {
     size: contain
     position: center
     repeat: no-repeat
+  image-rendering: pixelated
+  image-rendering: crisp-edges
 </style>
