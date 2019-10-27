@@ -23,7 +23,8 @@ try {
     databaseURL: 'https://traq-r.firebaseio.com',
     projectId: 'traq-r',
     storageBucket: 'traq-r.appspot.com',
-    messagingSenderId: '993645413001'
+    messagingSenderId: '993645413001',
+    appId: '1:993645413001:web:b253ea3776d6cf85163c58'
   }
   Firebase.initializeApp(config)
 } catch (e) {
