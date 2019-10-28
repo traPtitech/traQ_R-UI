@@ -80,6 +80,12 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
+  if (to.path === '/login' && to.query.redirect) {
+    document.location.href = `/pipeline?redirect=${encodeURIComponent(
+      to.query.redirect
+    )}`
+  }
+
   if (!store.state.loaded) {
     // 起動後すぐ必要なもの
     await Promise.all([
@@ -100,12 +106,6 @@ router.beforeEach(async (to, from, next) => {
       store.dispatch('updateWebhooks'),
       store.dispatch('getStampHistory')
     ])
-  }
-
-  if (to.path === '/login' && to.query.redirect) {
-    document.location.href = `/pipeline?redirect=${encodeURIComponent(
-      to.query.redirect
-    )}`
   }
 
   // ここ以下はログインしている
