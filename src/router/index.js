@@ -84,6 +84,12 @@ router.beforeEach(async (to, from, next) => {
     document.location.href = `/pipeline?redirect=${encodeURIComponent(
       to.query.redirect
     )}`
+    return
+  }
+
+  if (to.path === '/consent') {
+    next(true)
+    return
   }
 
   if (!store.state.loaded) {
