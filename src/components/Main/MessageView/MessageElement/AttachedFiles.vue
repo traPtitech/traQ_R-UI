@@ -2,7 +2,7 @@
 .message-files-wrap
   .message-file-wrap(v-for="file in files")
     .message-file-inner-wrap(v-if="file.fileId !== ''")
-      div(v-if="isGif(file.mime)")
+      div(v-if="isGif(file.mime) && file.hasThumb")
         img.attached-gif-image(
           :src="`${fileUrl(file.fileId)}/thumbnail`"
           @click.prevent="onAttachedImageClick(file)"
@@ -11,7 +11,7 @@
         :style="backgroundImageStyle(`${fileUrl(file.fileId)}`)"
         @click.prevent="onAttachedImageClick(file)")
       .attached-image(
-        v-else-if="isImage(file.mime)"
+        v-else-if="isImage(file.mime) && file.hasThumb"
         @click.prevent="onAttachedImageClick(file)"
         :style="backgroundImageStyle(`${fileUrl(file.fileId)}/thumbnail`)")
       video.attached-video(
