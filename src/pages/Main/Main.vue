@@ -134,13 +134,13 @@ export default {
     const userAgent = window.navigator.userAgent
     if (userAgent.includes('traQ-Android')) {
       const token = window.Bridge.getFCMToken()
-      if (token) {
+      if (token && token !== 'No Token') {
         console.log('register:' + token)
         client.registerDevice(token)
       }
     } else if (userAgent.includes('traQ-iOS')) {
       const token = window.iOSToken
-      if (token) {
+      if (token && token !== 'No Token') {
         console.log('register:' + token)
         client.registerDevice(token)
       }
