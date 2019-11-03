@@ -65,7 +65,21 @@ module.exports = {
 
     manifestPath: 'static/manifest.json',
     manifestOptions: {
-      start_url: '/'
+      start_url: '/',
+      background_color: '0D67EA',
+      icons: [
+        {
+          src: '/static/android-chrome-192x192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/static/android-chrome-512x512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ],
+      gcm_sender_id: '103953800507'
     },
     iconPaths: {
       favicon32: 'static/favicon-32x32.png',
