@@ -66,7 +66,7 @@ module.exports = {
     manifestPath: 'static/manifest.json',
     manifestOptions: {
       start_url: '/',
-      background_color: '0D67EA',
+      background_color: '#0D67EA',
       icons: [
         {
           src: '/static/android-chrome-192x192.png',
