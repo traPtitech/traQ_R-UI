@@ -8,7 +8,7 @@
     channel-detail-element(v-for="channel in filteredChannels" :key="channel.channelId" :model="channel")
     .channel-empty-message(v-if="filteredChannels.length === 0")
       | 見つかりませんでした
-  template(v-else)
+  .stared-channels-root(v-show="!isUnreadFiltered && filterText === ''")
     channel-element(v-for="channel in duplicateCheckedChannels" :key="channel.channelId" :model="channel")
     .channel-empty-message(v-if="duplicateCheckedChannels.length === 0")
       | お気に入りのチャンネルがまだないようです
@@ -71,4 +71,7 @@ export default {
 }
 </script>
 
-<style lang="sass"></style>
+<style lang="sass">
+.stared-channels-root
+  display: contents
+</style>
