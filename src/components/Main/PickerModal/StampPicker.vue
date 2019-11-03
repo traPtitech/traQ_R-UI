@@ -320,6 +320,7 @@ export default {
   display: flex
   flex-wrap: wrap
   justify-content: center
+  contain: content
 
 .stamp-picker-category-name
   font-weight: bold
@@ -334,6 +335,7 @@ export default {
 .stamp-picker-stamp-item-wrapper
   width: 32px
   height: 32px
+  contain: strict
 
   &:hover
     background-color: var(--background-hover-color)
