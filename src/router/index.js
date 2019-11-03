@@ -88,6 +88,10 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.path === '/consent') {
+    await Promise.all([store.dispatch('updateMembers')]).then(() =>
+      store.dispatch('loadSetting')
+    )
+    store.commit('loadEnd')
     next(true)
     return
   }
