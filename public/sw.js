@@ -1,10 +1,16 @@
 /* eslint-disable */
 workbox.core.skipWaiting()
 workbox.core.clientsClaim()
-workbox.routing.registerNavigationRoute('/index.html', {
-  whitelist: [new RegExp('/channels/'), new RegExp('/users/')],
-  blacklist: [new RegExp('/pipeline')]
-})
+
+workbox.precaching.precacheAndRoute(self.__precacheManifest)
+
+workbox.routing.registerNavigationRoute(
+  workbox.precaching.getCacheKeyForURL("/index.html"),
+  {
+    whitelist: [new RegExp("/channels/"), new RegExp("/users/")],
+    blacklist: [new RegExp("/pipeline")]
+  }
+)
 
 // ファイルAPIのキャッシュ設定
 workbox.routing.registerRoute(
@@ -32,8 +38,6 @@ workbox.routing.registerRoute(
     ]
   })
 )
-
-workbox.precaching.precacheAndRoute(self.__precacheManifest)
 
 const openDB = () => {
   return new Promise((resolve, reject) => {
