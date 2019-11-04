@@ -1,5 +1,5 @@
 <template lang="pug">
-  .message-content.markdown-body(v-html="renderedContent")
+  .message-content.markdown-body(v-html="renderedContent" ref="message")
 </template>
 
 <script>
@@ -32,6 +32,9 @@ export default {
   },
   created() {
     this.render()
+  },
+  beforeDestroy() {
+    this.$refs.message.innerHTML = ''
   }
 }
 </script>
