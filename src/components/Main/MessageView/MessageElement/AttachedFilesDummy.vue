@@ -1,6 +1,6 @@
 <template lang="pug">
   .attached-files-dummy-container
-    .attached-file-wrap(v-for="n in count")
+    .attached-file-wrap(v-for="n in count" :key="n")
       .attached-file-dummy-content
       .attached-file-dummy-info
 </template>

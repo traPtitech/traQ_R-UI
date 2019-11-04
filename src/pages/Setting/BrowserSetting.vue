@@ -36,7 +36,7 @@
     label.message-send-key-selector
       input(type="radio" value="modifier" v-model="messageSendKey" checked)
       | 修飾キー(
-      span(v-for="(key, i) in messageSendModifierKeys")
+      span(v-for="(key, i) in messageSendModifierKeys" :key="key")
         span.key {{key}}
         span(v-if="i + 1 !== messageSendModifierKeys.length") /
       | ) +

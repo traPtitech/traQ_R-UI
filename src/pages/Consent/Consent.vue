@@ -28,13 +28,13 @@
           .consent-scope-list
             span.consent-scope-list-title 許可される項目:
             ul.consent-scope-items
-              li.consent-scope-item(v-for="scope in scopes")
+              li.consent-scope-item(v-for="scope in scopes" :key="scope.name")
                 .consent-scope-circle(:style="{color: scope.color}")
                 .consent-scope-name {{scope.name}}
                 button.consent-scope-button(:class="{open: scope.open}" @click="scope.open = !scope.open")
                 transition(name="consent-scope-description")
                   ul.consent-scope-description(v-show="scope.open")
-                    li(v-for="desc in scope.description") {{ desc }}
+                    li(v-for="desc in scope.description" :key="desc") {{ desc }}
         form.consent-buttons(method="post" action="/api/1.0/oauth2/authorize/decide")
           .consent-button-wrap
             button.cancel-button(

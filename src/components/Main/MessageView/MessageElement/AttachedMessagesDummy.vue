@@ -1,6 +1,6 @@
 <template lang="pug">
   .attached-messages-dummy-container
-    .attached-message-dummy-wrap(v-for="n in count")
+    .attached-message-dummy-wrap(v-for="n in count" :key="n")
       .attached-message-dummy-detail-wrap
         .attached-message-dummy-icon
         .attached-message-dummy-user-name

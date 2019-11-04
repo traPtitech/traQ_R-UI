@@ -51,7 +51,7 @@
         icon-back(color="var(--primary-color)" size="14")
       | 戻る
     .tour-page-indicator
-      .tour-page-indicator-dot(v-for="(_, i) in anims" :class="{'tour-indicator-active': i === page}" @click="goToPage(i)")
+      .tour-page-indicator-dot(v-for="(_, i) in anims" :class="{'tour-indicator-active': i === page}" @click="goToPage(i)" :key="i")
     .tour-link.tour-go-next(v-if="page === anims.length - 1" @click="closeModal")
       | OK!
       .tour-link-icon

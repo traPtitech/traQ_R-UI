@@ -22,7 +22,7 @@
           :adjust-volume="false"
           :mic-muted="$store.state.rtc.isMicMuted"
         )
-      .information-sidebar-call-item(v-for="state in callingUserStates")
+      .information-sidebar-call-item(v-for="state in callingUserStates" :key="state.userId")
         calling-member-element(
           :member="$store.state.memberMap[state.userId]"
           :adjust-volume="isAdjustingCallVolumes"

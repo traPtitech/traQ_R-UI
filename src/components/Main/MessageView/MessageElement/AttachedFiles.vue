@@ -1,7 +1,7 @@
 <template lang="pug">
 .message-files-wrap
   .message-file-wrap(v-for="file in files")
-    .message-file-inner-wrap(v-if="file.fileId !== ''")
+    .message-file-inner-wrap(v-if="file.fileId !== ''" :key="file.fileId")
       div(v-if="isGif(file.mime) && file.hasThumb")
         img.attached-gif-image(
           :src="`${fileUrl(file.fileId)}/thumbnail`"

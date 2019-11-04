@@ -2,6 +2,7 @@
   div.message-attached-messages-wrap
     div.attached-message(
       v-for="(m, index) in messages"
+      :key="m.messageId"
       :class="{'attached-message-not-found': !m}")
       template(v-if="m")
         div.attached-message-detail-wrap
