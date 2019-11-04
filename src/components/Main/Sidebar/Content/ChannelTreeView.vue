@@ -10,7 +10,7 @@
       | さらに検索する
     .channel-empty-message(v-if="visibleChannels.length === 0")
       | 見つかりませんでした
-  template(v-else)
+  .list-channels-root(v-show="!isUnreadFiltered && filterText === ''")
     channel-element(v-for="channel in channels" :key="channel.channelId" :model="channel")
 </template>
 
@@ -84,6 +84,9 @@ export default {
 </script>
 
 <style lang="sass">
+.list-channels-root
+  display: contents
+
 .channel-remove-limit
   text-align: center
   padding: 8px
