@@ -152,6 +152,7 @@ $header-height: 3rem
   flex: 1
   display: block
   -webkit-overflow-scrolling: touch
+  contain: strict
   @media (max-width: 750px)
     display: none
 

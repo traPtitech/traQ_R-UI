@@ -211,6 +211,7 @@ export default {
   background-color: white
   z-index: $sidebar-index
   width: $sidebar-width
+  contain: strict
   +mq(pc)
     height: 100%
     // height: vh(100)

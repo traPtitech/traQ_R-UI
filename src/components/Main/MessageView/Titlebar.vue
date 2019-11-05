@@ -251,6 +251,7 @@ $topic-height: 18px
   z-index: $titlebar-index
   transition: max-width .3s ease, min-width .3s ease
   will-change: max-width, min-width
+  contain: layout
   +mq(pc)
     left: $sidebar-width
     min-width: 260px
@@ -371,6 +372,7 @@ $topic-height: 18px
   will-change: transform
   transform: translateY(-100%)
   user-select: none
+  contain: content
   .is-expanded &
     top: 0
     transform: translateY(-60px)

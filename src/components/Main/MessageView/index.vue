@@ -25,6 +25,7 @@ export default {
 <style lang="sass">
 .message-view
   position: relative
+  contain: strict
   +mq(pc)
     flex-grow: 1
     display: flex

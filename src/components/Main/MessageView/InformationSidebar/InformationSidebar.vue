@@ -213,6 +213,7 @@ export default {
   background: $tertiary-color
   overflow: hidden
   color: $text-light-color
+  contain: content
 
   &.is-closed
     user-select: none
