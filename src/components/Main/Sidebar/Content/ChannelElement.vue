@@ -20,7 +20,7 @@
       @after-leave="zeroHeight")
       .channel-children-space(v-show="isOpened" @click="toggle" key="space")
       .channel-children-container(ref="childrenContainer" v-show="isOpened" key="container")
-        div(v-for="child in children")
+        div(v-for="child in children" :key="child.channelId")
           ChannelElement(:model="child" :isChild="true")
 </template>
 

@@ -25,7 +25,7 @@
                 div.stamp-picker-stamp-item(
                   v-lazy:background-image="fileUrl(stamp.fileId)"
                   :title="`:${stamp.name}:`")
-              div.stamp-picker-stamp-item-dummy(v-for="i in 20")
+              div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
         template(
           v-else)
           div.stamp-picker-body-container(
@@ -47,7 +47,8 @@
           div.stamp-category-item.flex-center(
             v-for="(category,idx) in stampCategolized"
             @click="currentCategoryIndex = idx"
-            :class="{'stamp-picker-category-selected': idx === currentCategoryIndex}")
+            :class="{'stamp-picker-category-selected': idx === currentCategoryIndex}"
+            :key="category.id")
             component(
               :is="categoryIcon(idx)"
               :size="idx <= 1 ? '20' : '28'"
