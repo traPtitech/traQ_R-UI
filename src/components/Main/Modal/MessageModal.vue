@@ -40,5 +40,4 @@ export default {
 <style lang="sass">
 .message-item
   padding: -1rem
-  contain: layout
 </style>
