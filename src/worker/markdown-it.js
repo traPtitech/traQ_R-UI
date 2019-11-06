@@ -4,7 +4,7 @@ import MarkdownItMark from 'markdown-it-mark'
 import spoiler from 'markdown-it-spoiler'
 import stamp, { renderStamp } from '@/worker/markdown-it-stamp'
 import json from '@/worker/markdown-it-json'
-import katex from '@iktakahiro/markdown-it-katex'
+import katex from '@traPtitech/markdown-it-katex'
 import katexE from 'katex'
 import mila from 'markdown-it-link-attributes'
 import filter from 'markdown-it-image-filter'
@@ -61,6 +61,7 @@ md.block.State.prototype.skipEmptyLines = function skipEmptyLines(from) {
 md.use(MarkdownItMark)
 md.use(spoiler, true)
 md.use(json)
+md.use(stamp)
 md.use(katex, {
   katex: katexE,
   output: 'html',
