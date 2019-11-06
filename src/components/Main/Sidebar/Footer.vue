@@ -21,4 +21,5 @@ export default {
   position: relative
   width: 100%
   background: $secondary-color
+  contain: content
 </style>

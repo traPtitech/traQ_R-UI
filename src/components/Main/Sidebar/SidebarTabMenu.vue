@@ -97,6 +97,7 @@ export default {
 .sidebar-tab-menu
   user-select: none
   background-color: $secondary-color
+  contain: content
   ul
     height: $navigation-height
     display: flex
