@@ -370,6 +370,7 @@ export default {
 
 .message-user-icon-wrap
   grid-area: user-icon
+  contain: content
 
 .message-user-icon
   width: 40px
@@ -387,6 +388,7 @@ export default {
   justify-content: space-between
   align-items: center
   min-width: 0
+  contain: content
 
 .message-user-info-wrap
   display: flex
@@ -444,6 +446,7 @@ export default {
   grid-area: contents
   display: flex
   flex-flow: column
+  contain: contents
 
 .message-content > p:not(:last-child)
   magin-bottom: 1em

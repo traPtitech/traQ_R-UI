@@ -101,6 +101,7 @@ export default {
   border-radius: 4px
   min-width: 100px
   z-index: $message-context-menu-index
+  contain: content
 
   li
     cursor: pointer
