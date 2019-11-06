@@ -99,6 +99,7 @@ export default {
   justify-content: center
   align-items: center
   animation: fadeIn .2s ease
+  contain: strict
 
 .modal-overlay
   position: fixed

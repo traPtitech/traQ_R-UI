@@ -175,6 +175,7 @@ export default {
 <style lang="sass">
 .channel-wrap
   display: block
+  contain: content
 
 .channel-box
   display: flex

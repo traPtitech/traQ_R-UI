@@ -69,6 +69,7 @@ export default {
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4)
   bottom: $input-height
   z-index: $picker-modal-index
+  contain: strict
 
   +mq(pc)
     right: 20px

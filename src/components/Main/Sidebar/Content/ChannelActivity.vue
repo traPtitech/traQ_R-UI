@@ -28,4 +28,5 @@ export default {
 <style lang="sass">
 .activity-channel
   color: white
+  contain: content
 </style>
