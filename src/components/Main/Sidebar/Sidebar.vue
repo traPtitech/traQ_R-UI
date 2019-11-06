@@ -211,7 +211,6 @@ export default {
   background-color: white
   z-index: $sidebar-index
   width: $sidebar-width
-  contain: strict
   +mq(pc)
     height: 100%
     // height: vh(100)
@@ -254,6 +253,7 @@ export default {
   background-color: $primary-color
   position: relative
   overflow: hidden
+  contain: strict
 
 .filter-and-toggle-wrapper,
 .activity-controll-wrapper
