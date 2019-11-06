@@ -143,6 +143,14 @@
     padding-bottom: 5px;
   }
 
+  .katex-block {
+    overflow: {
+      x: auto;
+      y: hidden;
+    }
+    margin-bottom: 5px;
+  }
+
   .spoiler {
     color: transparent;
     background-color: black;

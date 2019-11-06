@@ -12,6 +12,7 @@
     "serve-https": "vue-cli-service serve --https"
   },
   "dependencies": {
+    "@traPtitech/markdown-it-katex": "github:traPtitech/markdown-it-katex",
     "@ungap/event-target": "^0.1.0",
     "core-js": "^3.3.2",
     "firebase": "^7.2.1",
