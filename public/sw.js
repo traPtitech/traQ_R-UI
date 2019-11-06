@@ -8,7 +8,7 @@ workbox.routing.registerNavigationRoute(
   workbox.precaching.getCacheKeyForURL("/index.html"),
   {
     whitelist: [new RegExp("/channels/"), new RegExp("/users/")],
-    blacklist: [new RegExp("/pipeline")]
+    blacklist: [new RegExp("/pipeline"), new RegExp("/api/")]
   }
 )
 
