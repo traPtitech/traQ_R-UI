@@ -11,7 +11,8 @@
             @click="openUserModal(m.userId)")
           p.attached-message-user-name(@click="openUserModal(m.userId)")
             | {{userDisplayName(m.userId)}}
-        component(:is="renderedBodies[index]" v-bind="$props")
+        div.attached-message-content-wrap
+          component(:is="renderedBodies[index]" v-bind="$props")
         div.attached-message-from
           | from
           router-link.attached-message-from-link(:to="parentChannel(m.parentChannelId).to")
@@ -116,6 +117,10 @@ export default {
 .attached-message-detail-wrap
   display: flex
 
+.attached-message-content-wrap
+  font:
+    size: 0.9em
+
 .attached-message-user-icon
   width: 20px
   height: 20px
@@ -138,7 +143,7 @@ export default {
   font:
     size: 0.8em
   margin:
-    top: 12px
+    top: 6px
 
 .attached-message-from-link
   margin:
