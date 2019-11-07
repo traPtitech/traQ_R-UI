@@ -456,9 +456,10 @@ export default {
   padding: 5px 0 0
   text-align: left
   font-size: 0.9em
-  word-break: break-all
+  word-break: break-word
   word-wrap: break-word
   line-break: loose
+  text-align: justify
   & pre
     white-space: pre-wrap
 
