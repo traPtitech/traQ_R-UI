@@ -290,20 +290,6 @@ class Client {
     return api.readMessages(channelId)
   }
 
-  // Tag: mute
-  @log
-  getMutedChannels() {
-    return api.getMutedChannels()
-  }
-  @log
-  muteChannel(channelId: string) {
-    return api.muteChannel(channelId)
-  }
-  @log
-  unmuteChannel(channelId: string) {
-    return api.unmuteChannel(channelId)
-  }
-
   // Tag: stamp
   @log
   getStampHistory() {
@@ -392,16 +378,7 @@ class Client {
     return api.getFileThumbnail(fileId)
   }
 
-  // Tag: search
-  searchMessage() {
-    Promise.reject(console.error(`not implement`))
-  }
-
   // Tag: heartbeat
-  @log
-  getHeartbeat(channelId: string) {
-    return api.getHeartbeat(channelId)
-  }
   postHeartbeat(status: HeartbeatStatus, channelId: string) {
     return api.postHeartbeat({ status, channelId })
   }
