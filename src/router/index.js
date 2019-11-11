@@ -108,7 +108,6 @@ router.beforeEach(async (to, from, next) => {
     Promise.all([
       store.dispatch('updateClipedMessages'),
       store.dispatch('updateStaredChannels'),
-      store.dispatch('updateMutedChannels'),
       store.dispatch('updateUnreadMessages'),
       store.dispatch('updateGroups'),
       store.dispatch('updateChannelActivity'),

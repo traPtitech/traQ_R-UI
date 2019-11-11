@@ -117,8 +117,6 @@ const store = new Vuex.Store({
     unreadChannelMap: {},
     staredChannels: [],
     staredChannelMap: {},
-    mutedChannels: [],
-    mutedChannelMap: {},
     messages: [],
     channelTopicMap: {},
     currentChannelPinnedMessages: [],
@@ -1013,9 +1011,6 @@ const store = new Vuex.Store({
     },
     updateStaredChannels({ commit }) {
       return loadGeneralData('StaredChannels', client.getStaredChannels, commit)
-    },
-    updateMutedChannels({ commit }) {
-      return loadGeneralData('MutedChannels', client.getMutedChannels, commit)
     },
     getChannelTopic({ commit }, channelId) {
       return client.getChannelTopic(channelId).then(res => {
