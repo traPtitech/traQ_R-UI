@@ -5,6 +5,7 @@
       div.stamp-picker-search-icon
         icon-search(color="gray")
     transition-group.stamp-picker-body.is-scroll(
+      ref="root"
       tag="div"
       :name="stampContainerTransitionName"
       @mouseleave="searchPlaceHolder=defaultString")
@@ -23,7 +24,8 @@
                 @click="addStamp(stamp)"
                 @mouseover="hoverStamp(stamp.name)")
                 div.stamp-picker-stamp-item(
-                  v-lazy:background-image="fileUrl(stamp.fileId)"
+                  loaded="false"
+                  :background-image="fileUrl(stamp.fileId)"
                   :title="`:${stamp.name}:`")
               div.stamp-picker-stamp-item-dummy(v-for="i in 20" :key="i")
         template(
@@ -77,6 +79,8 @@ import IconHeart from '@/components/Icon/IconHeart'
 import IconFlag from '@/components/Icon/IconFlag'
 import IconRegional from '@/components/Icon/IconRegional'
 import IconMembers from '@/components/Icon/IconMembers'
+
+let intersection
 
 export default {
   name: 'StampPicker',
@@ -217,6 +221,7 @@ export default {
   },
   destroyed() {
     this.$store.dispatch('getStampHistory')
+    intersection.disconnect()
   },
   mounted() {
     if (isTouchDevice()) {
@@ -226,6 +231,30 @@ export default {
     if (input) {
       input.focus()
     }
+    this.$nextTick(() => {
+      const $root = this.$refs.root.$el
+      intersection = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.intersectionRatio < 0.1) return
+            const $target = entry.target
+            const url = $target.getAttribute('background-image')
+            $target.style.backgroundImage = `url(${url})`
+            $target.removeAttribute('background-image')
+            $target.setAttribute('loaded', 'true')
+            intersection.unobserve($target)
+          })
+        },
+        {
+          root: $root,
+          threshold: 0.1
+        }
+      )
+      const stamps = $root.querySelectorAll(
+        '.stamp-picker-stamp-item[loaded=false]'
+      )
+      stamps.forEach(stamp => intersection.observe(stamp))
+    })
   }
 }
 </script>
@@ -307,6 +336,7 @@ export default {
   flex-grow: 1
   overflow:
     x: hidden
+  contain: strict
 
 .stamp-picker-body-container
   will-change: transform, opacity
@@ -315,6 +345,7 @@ export default {
   height: 100%
   padding: 6px 12px 6px
   overflow: visible
+  contain: size
 
 .stamp-picker-body-inner-wrapper
   display: flex
@@ -350,6 +381,7 @@ export default {
   margin: 2px
   width: 100%
   height: 100%
+  contain: content
 
 .stamp-picker-stamp-item-dummy
   width: 32px
