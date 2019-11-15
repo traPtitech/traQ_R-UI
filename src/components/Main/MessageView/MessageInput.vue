@@ -213,7 +213,9 @@ export default {
             i = newI
             noExpressionStartIndex = newI
           }
-          newLine += chs.slice(noExpressionStartIndex).join('')
+          newLine += this.replaceMessage(
+            chs.slice(noExpressionStartIndex).join('')
+          )
           return newLine
         })
         .join('\n')
