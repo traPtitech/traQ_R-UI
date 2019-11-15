@@ -1304,4 +1304,8 @@ window.openGroupModal = groupId => {
   store.dispatch('openGroupModal', groupId)
 }
 
+window.closeModal = () => {
+  store.dispatch('modal/close')
+}
+
 export default store
