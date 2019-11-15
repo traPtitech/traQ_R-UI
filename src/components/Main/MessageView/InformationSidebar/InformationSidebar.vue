@@ -339,6 +339,10 @@ export default {
 .information-sidebar-content-body
   margin:
     top: 6px
+  word-break: break-word
+  word-wrap: break-word
+  line-break: loose
+  text-align: justify
 
   .no-topic
     opacity: 0.5
