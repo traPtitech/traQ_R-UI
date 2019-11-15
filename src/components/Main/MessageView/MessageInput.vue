@@ -167,28 +167,53 @@ export default {
       })
       this.uploadedIds = []
       let inCodeBlock = false
+      let inLatexBlock = false
       message = message
         .split('\n')
         .map(line => {
-          if (/^```/.test(line)) {
+          if (!inLatexBlock && /^```/.test(line)) {
             inCodeBlock = !inCodeBlock
           }
-          if (!inCodeBlock) {
-            let inQuote = false
-            return line
-              .split('`')
-              .map(s => {
-                if (inQuote) {
-                  inQuote = false
-                  return s
-                } else {
-                  inQuote = true
-                  return this.replaceStampAltName(
-                    this.replaceGroup(this.replaceChannel(this.replaceUser(s)))
-                  )
+          if (!inCodeBlock && /^\$\$/.test(line)) {
+            inLatexBlock = !inLatexBlock
+          }
+          if (!inCodeBlock && !inLatexBlock) {
+            let newLine = ''
+            let noExpressionStartIndex = 0
+            for (let i = 0; i < line.length; i++) {
+              const ch = line[i]
+              if (ch === '`' || ch === '$') {
+                newLine += this.replaceMessage(
+                  line.slice(noExpressionStartIndex, i)
+                )
+
+                if (ch === '$') {
+                  const backQuoteI = line.indexOf('`', i + 1)
+                  const dollarI = line.indexOf('$', i + 1)
+                  if (
+                    backQuoteI !== -1 &&
+                    dollarI !== -1 &&
+                    backQuoteI < dollarI
+                  ) {
+                    newLine += ch
+                    noExpressionStartIndex = i + 1
+                    continue
+                  }
                 }
-              })
-              .join('`')
+                const newI = line.indexOf(ch, i + 1)
+                if (newI === -1) {
+                  newLine += ch
+                  noExpressionStartIndex = i + 1
+                  continue
+                } else {
+                  newLine += line.slice(i, newI)
+                  i = newI
+                  noExpressionStartIndex = newI
+                }
+              }
+            }
+            newLine += line.slice(noExpressionStartIndex)
+            return newLine
           } else {
             return line
           }
@@ -222,6 +247,11 @@ export default {
           this.postStatus = 'failed'
           this.postLock = false
         })
+    },
+    replaceMessage(message) {
+      return this.replaceStampAltName(
+        this.replaceGroup(this.replaceChannel(this.replaceUser(message)))
+      )
     },
     replaceUser(message) {
       return message.replace(/[@＠]([a-zA-Z0-9+_-]{1,32})/g, (match, name) => {
