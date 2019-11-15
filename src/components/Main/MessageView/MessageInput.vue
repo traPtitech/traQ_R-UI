@@ -177,46 +177,44 @@ export default {
           if (!inCodeBlock && /^\$\$/.test(line)) {
             inLatexBlock = !inLatexBlock
           }
-          if (!inCodeBlock && !inLatexBlock) {
-            let newLine = ''
-            let noExpressionStartIndex = 0
-            for (let i = 0; i < line.length; i++) {
-              const ch = line[i]
-              if (ch === '`' || ch === '$') {
-                newLine += this.replaceMessage(
-                  line.slice(noExpressionStartIndex, i)
-                )
-
-                if (ch === '$') {
-                  const backQuoteI = line.indexOf('`', i + 1)
-                  const dollarI = line.indexOf('$', i + 1)
-                  if (
-                    backQuoteI !== -1 &&
-                    dollarI !== -1 &&
-                    backQuoteI < dollarI
-                  ) {
-                    newLine += ch
-                    noExpressionStartIndex = i + 1
-                    continue
-                  }
-                }
-                const newI = line.indexOf(ch, i + 1)
-                if (newI === -1) {
-                  newLine += ch
-                  noExpressionStartIndex = i + 1
-                  continue
-                } else {
-                  newLine += line.slice(i, newI)
-                  i = newI
-                  noExpressionStartIndex = newI
-                }
-              }
-            }
-            newLine += line.slice(noExpressionStartIndex)
-            return newLine
-          } else {
+          if (inCodeBlock || inLatexBlock) {
             return line
           }
+
+          let newLine = ''
+          let noExpressionStartIndex = 0
+          const chs = [...line]
+          for (let i = 0; i < chs.length; i++) {
+            const ch = chs[i]
+            if (ch !== '`' && ch !== '$') {
+              continue
+            }
+
+            newLine += this.replaceMessage(
+              chs.slice(noExpressionStartIndex, i).join('')
+            )
+
+            if (ch === '$') {
+              const backQuoteI = chs.indexOf('`', i + 1)
+              const dollarI = chs.indexOf('$', i + 1)
+              if (backQuoteI !== -1 && dollarI !== -1 && backQuoteI < dollarI) {
+                newLine += ch
+                noExpressionStartIndex = i + 1
+                continue
+              }
+            }
+            const newI = chs.indexOf(ch, i + 1)
+            if (newI === -1) {
+              newLine += ch
+              noExpressionStartIndex = i + 1
+              continue
+            }
+            newLine += chs.slice(i, newI).join('')
+            i = newI
+            noExpressionStartIndex = newI
+          }
+          newLine += chs.slice(noExpressionStartIndex).join('')
+          return newLine
         })
         .join('\n')
       const postedMessage = !postChannel.dm
