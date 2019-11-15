@@ -166,6 +166,9 @@ export default {
         message += `\n!{"type": "file", "raw": "", "id": "${id}"}`
       })
       this.uploadedIds = []
+
+      // traPtitech/traQ utils/message/replacer.goと同様
+      // --ここから
       let inCodeBlock = false
       let inLatexBlock = false
       message = message
@@ -219,6 +222,7 @@ export default {
           return newLine
         })
         .join('\n')
+      // --ここまで
       const postedMessage = !postChannel.dm
         ? client.postMessage(postChannel.channelId, message)
         : client.postDirectMessage(
