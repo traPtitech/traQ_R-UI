@@ -224,12 +224,11 @@ export default {
     intersection.disconnect()
   },
   mounted() {
-    if (isTouchDevice()) {
-      return
-    }
-    const input = this.$el.querySelector('.stamp-picker-search')
-    if (input) {
-      input.focus()
+    if (!isTouchDevice()) {
+      const input = this.$el.querySelector('.stamp-picker-search')
+      if (input) {
+        input.focus()
+      }
     }
     this.$nextTick(() => {
       const $root = this.$refs.root.$el
@@ -250,10 +249,10 @@ export default {
           threshold: 0.1
         }
       )
-      const stamps = $root.querySelectorAll(
+      const $stamps = $root.querySelectorAll(
         '.stamp-picker-stamp-item[loaded=false]'
       )
-      stamps.forEach(stamp => intersection.observe(stamp))
+      $stamps.forEach($stamp => intersection.observe($stamp))
     })
   }
 }
