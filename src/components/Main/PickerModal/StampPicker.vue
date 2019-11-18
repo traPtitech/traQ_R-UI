@@ -211,12 +211,25 @@ export default {
       if (key === 'Escape') {
         this.search = ''
       }
+    },
+    setIntersectionObserverWatch() {
+      const $root = this.$refs.root.$el
+      const $stamps = $root.querySelectorAll(
+        '.stamp-picker-stamp-item[loaded=false]'
+      )
+      $stamps.forEach($stamp => intersection.observe($stamp))
     }
   },
   watch: {
     currentCategoryIndex(newIndex, oldIndex) {
       this.stampContainerTransitionName =
         newIndex > oldIndex ? 'slide-right' : 'slide-left'
+    },
+    search(search) {
+      if (search !== '') return
+      this.$nextTick(() => {
+        this.setIntersectionObserverWatch()
+      })
     }
   },
   destroyed() {
@@ -249,10 +262,7 @@ export default {
           threshold: 0.1
         }
       )
-      const $stamps = $root.querySelectorAll(
-        '.stamp-picker-stamp-item[loaded=false]'
-      )
-      $stamps.forEach($stamp => intersection.observe($stamp))
+      this.setIntersectionObserverWatch()
     })
   }
 }
