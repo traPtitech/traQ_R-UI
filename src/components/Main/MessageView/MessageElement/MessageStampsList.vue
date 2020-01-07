@@ -3,10 +3,10 @@ div(v-if="hasStamp").message-stamps-list
   template(v-if="!isExpanded")
     transition-group.message-stamps-wrap(name="slide-in" tag="div")
       div.stamp-container(
-        v-for="stamp in stamps" 
-        :key="stamp.stampId" 
-        @click="toggleStamp(stamp.stampId)" 
-        :title="stamp.title" 
+        v-for="stamp in stamps"
+        :key="stamp.stampId"
+        @click="toggleStamp(stamp.stampId)"
+        :title="stamp.title"
         :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
         div.stamp(:style="`background-image: url(${fileUrl(stamp.fileId)});`")
         p.stamp-number
@@ -19,10 +19,10 @@ div(v-if="hasStamp").message-stamps-list
     div
       div.stamps-info-wrap(v-for="stamp in stamps")
         div.stamps-info-stamps-wrap
-          div.stamp-container( 
-            :key="stamp.stampId" 
-            @click="toggleStamp(stamp.stampId)" 
-            :title="stamp.title" 
+          div.stamp-container(
+            :key="stamp.stampId"
+            @click="toggleStamp(stamp.stampId)"
+            :title="stamp.title"
             :class="{'stamp-pressed':isContainSelfStamp(stamp.stampId)}")
             div.stamp(:style="`background-image: url(${fileUrl(stamp.fileId)});`")
             p.stamp-number
@@ -98,9 +98,9 @@ export default {
       Object.keys(map).forEach(key => {
         map[key].title = `:${map[key].name}: from`
         map[key].user.forEach(user => {
-          map[
-            key
-          ].title += ` ${this.$store.state.memberMap[user.userId].name}(${user.count})`
+          map[key].title += ` ${
+            this.$store.state.memberMap[user.userId].name
+          }(${user.count})`
         })
       })
       const stamps = Object.values(map)

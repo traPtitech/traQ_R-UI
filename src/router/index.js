@@ -106,7 +106,6 @@ router.beforeEach(async (to, from, next) => {
 
     // 起動後すぐには必要ないもの
     Promise.all([
-      store.dispatch('updateClipedMessages'),
       store.dispatch('updateStaredChannels'),
       store.dispatch('updateUnreadMessages'),
       store.dispatch('updateGroups'),

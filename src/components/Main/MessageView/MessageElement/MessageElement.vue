@@ -213,9 +213,6 @@ export default {
         this.$store.state.currentChannel.channelId
       )
     },
-    clipMessage() {
-      client.clipMessage('', this.model.messageId)
-    },
     copyMessage() {
       this.$copyText(
         `!{"raw":"","type":"message","id":"${this.model.messageId}"}`

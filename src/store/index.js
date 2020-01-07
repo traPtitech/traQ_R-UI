@@ -113,7 +113,6 @@ const store = new Vuex.Store({
     stampHistory: [],
     currentChannel: {},
     currentChannelUpdateDate: new Date(0),
-    clipedMessages: {},
     unreadChannelMap: {},
     staredChannels: [],
     staredChannelMap: {},
@@ -301,11 +300,6 @@ const store = new Vuex.Store({
     },
     changeMenuContent(state, contentName) {
       state.menuContent = contentName
-    },
-    setClipedMessagesData(state, data) {
-      data.forEach(message => {
-        Vue.set(state.clipedMessages, message.messageId, message)
-      })
     },
     setUnreadMessagesData(state, data) {
       const channelMap = {}
@@ -998,13 +992,6 @@ const store = new Vuex.Store({
       return client.getStampDetail(stampId).then(res => {
         commit('setStampData', state.stampData.concat([res.data]))
       })
-    },
-    updateClipedMessages({ commit }) {
-      return loadGeneralData(
-        'ClipedMessages',
-        client.getAllClipMessages,
-        commit
-      )
     },
     updateUnreadMessages({ commit }) {
       return loadGeneralData('UnreadMessages', client.getUnreadChannels, commit)
