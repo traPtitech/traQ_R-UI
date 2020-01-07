@@ -94,4 +94,5 @@ export default {
     size: contain
     repeat: no-repeat
     position: center
+  image-orientation: from-image
 </style>
