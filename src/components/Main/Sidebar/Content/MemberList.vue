@@ -9,7 +9,8 @@
     :groupId="grade.groupId"
     :filterText="filterText")
   member-group(
-    v-if="bots.length > 0 && !isUnreadFiltered"
+    v-if="bots.length > 0"
+    :filterUnread="isUnreadFiltered"
     :members="bots"
     :groupName="'BOT'"
     :filterText="filterText"
