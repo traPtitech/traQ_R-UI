@@ -60,13 +60,8 @@ class Client {
 
   // Tag: channel
   @log
-  makeChannel(type: string, member: string[], name: string, parent: string) {
-    return api.createChannel({
-      _private: type === 'private',
-      member,
-      name,
-      parent
-    })
+  makeChannel(name: string, parent: string) {
+    return api.createChannel({ name, parent })
   }
   @log
   getChannels() {
@@ -226,44 +221,6 @@ class Client {
   }
   getQRCodeUrl() {
     return `${BASE_PATH}/users/me/qr-code`
-  }
-
-  // Tag: clip
-  @log
-  getAllClipMessages() {
-    return api.getClips()
-  }
-  @log
-  getClipMessages(folderId: string) {
-    return api.getClipFolder(folderId)
-  }
-  @log
-  clipMessage(folderId: string, messageId: string) {
-    return api.clipMessage({ folderId, messageId })
-  }
-  @log
-  unclipMessage(clipId: string) {
-    return api.unclipMessage(clipId)
-  }
-  @log
-  getClipFolders() {
-    return api.getClipFolders()
-  }
-  @log
-  getClipFolderInfo(folderId: string) {
-    return api.getClipFolder(folderId)
-  }
-  @log
-  renameClipFolder(folderId: string, name: string) {
-    return api.editClipFolder(folderId, { name })
-  }
-  @log
-  deleteClipFolder(folderId: string) {
-    return api.deleteClipFolder(folderId)
-  }
-  @log
-  makeClipFolder(name: string) {
-    return api.createClipFolder({ name })
   }
 
   // Tag: star

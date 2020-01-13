@@ -61,8 +61,6 @@ export default {
       this.state = 'processing'
       client
         .makeChannel(
-          'public',
-          [],
           this.channelName,
           this.$store.state.currentChannel.channelId
         )
