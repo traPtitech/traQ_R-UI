@@ -677,12 +677,12 @@ const store = new Vuex.Store({
         const channelLevels = channelName.split('/')
         let channel = null
         let channelId = ''
-        channelLevels.forEach(name => {
+        for (const name of channelLevels) {
           const levelChannels = getters.childrenChannels(channelId)
           channel = levelChannels.find(ch => caseIntensiveEquals(ch.name, name))
           if (channel === undefined) return null
           channelId = channel.channelId
-        })
+        }
         return channel
       }
     },
