@@ -185,5 +185,7 @@ messaging.setBackgroundMessageHandler(async payload => {
   return self.registration.showNotification(
     notificationTitle,
     notificationOptions
-  )
+  ).catch(err => {
+    console.error(err)
+  })
 })
