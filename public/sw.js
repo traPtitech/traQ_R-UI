@@ -127,6 +127,22 @@ self.addEventListener('push', async event => {
 })
 
 self.addEventListener('notificationclick', event => {
+  if (event.reply) {
+    const data = event.notification.data
+    const channelID = data.tag.slice('c:'.length)
+    fetch(`/api/1.0/channels/${channelID}/messages`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        text: event.reply
+      })
+    })
+    return
+  }
+
   event.notification.close()
   event.waitUntil(
     clients
@@ -170,12 +186,22 @@ messaging.setBackgroundMessageHandler(async payload => {
     '[firebase-messaging-sw.js] Received background message ',
     payload
   )
+
   // Customize notification here
-  const notificationTitle = payload.data.title || 'traQ'
+  const title = payload.data.title
+  const notificationTitle = title || 'traQ'
   const notificationOptions = payload.data
   notificationOptions.data = payload.data
   notificationOptions.renotify = true
   notificationOptions.badge = '/static/badge.png'
+  if (title && !['#general', '#random'].includes(title)) {
+    notificationOptions.actions = {
+      action: "reply",
+      type: "text",
+      title: "返信",
+      placeholder: `${title}へ投稿する...`
+    }
+  }
 
   return self.registration.showNotification(
     notificationTitle,
