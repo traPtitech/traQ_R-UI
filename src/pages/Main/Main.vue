@@ -383,8 +383,7 @@ export default {
 
       if (navigator.serviceWorker) {
         const regist = await navigator.serviceWorker.ready
-        const options = { ...payload.data, ...options }
-        options.data = payload.data
+        options.data = options
         options.renotify = true
         options.badge = '/static/badge.png'
         return regist.showNotification(title, options)
