@@ -178,7 +178,7 @@ messaging.setBackgroundMessageHandler(async payload => {
   const notificationTitle = title || 'traQ'
   const notificationOptions = payload.data
   notificationOptions.data = payload.data
-  notificationOptions.renotify = true
+  notificationOptions.renotify = false
   notificationOptions.badge = '/static/badge.png'
   if (title && !['#general', '#random'].includes(title)) {
     const placeholder = `${title}へ${title.includes('#') ? '投稿' : '返信'}する...`
