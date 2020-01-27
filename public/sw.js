@@ -112,7 +112,7 @@ self.addEventListener('notificationclick', event => {
     const data = event.notification.data
     const channelID = data.tag.slice('c:'.length)
     event.waitUntil(
-      fetch(`/api/1.0/channels/${channelID}/messages`, {
+      fetch(`/api/1.0/channels/${channelID}/messages?embed=1`, {
         method: 'POST',
         credentials: 'include',
         headers: {
