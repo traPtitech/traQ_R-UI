@@ -111,18 +111,18 @@ self.addEventListener('notificationclick', event => {
   if (event.reply) {
     const data = event.notification.data
     const channelID = data.tag.slice('c:'.length)
-    event.waitUntil(
-      fetch(`/api/1.0/channels/${channelID}/messages?embed=1`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          text: event.reply
-        })
+    fetch(`/api/1.0/channels/${channelID}/messages?embed=1`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        text: event.reply
       })
-    )
+    }).catch(err => {
+      console.error('[sw] sendReply error:', err)
+    })
     return
   }
 
@@ -190,6 +190,6 @@ messaging.setBackgroundMessageHandler(async payload => {
     notificationTitle,
     notificationOptions
   ).catch(err => {
-    console.error(err)
+    console.error('[sw] showNotification error:', err)
   })
 })
