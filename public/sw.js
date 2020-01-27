@@ -106,28 +106,29 @@ self.addEventListener('push', async event => {
 })
 
 self.addEventListener('notificationclick', event => {
-  event.notification.close()
-
   if (event.reply) {
     const data = event.notification.data
     const channelID = data.tag.slice('c:'.length)
-    fetch(`/api/1.0/channels/${channelID}/messages?embed=1`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        text: event.reply
+    event.waitUntil(
+      fetch(`/api/1.0/channels/${channelID}/messages?embed=1`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text: event.reply
+        })
+      }).catch(err => {
+        console.error('[sw] sendReply error:', err)
+      }).then(() => {
+        // 二回返信することはできない(Chromeの仕様?)ので閉じる
+        return event.notification.close()
       })
-    }).catch(err => {
-      console.error('[sw] sendReply error:', err)
-    }).then(() => {
-      // 二回返信することはできない(Chromeの仕様?)ので閉じる(できなかった)
-      event.notification.close()
-    })
+    )
     return
   }
+  event.notification.close()
 
   event.waitUntil(
     clients
