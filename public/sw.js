@@ -82,48 +82,27 @@ self.addEventListener('fetch', event => {
 
 self.addEventListener('push', async event => {
   const payload = event.data.json()
-  const channelID = payload.data.tag.substr(2)
+  const channelID = payload.data.tag.slice('c:'.length)
 
-  if (payload.data.path.startsWith('/channels')) {
-    await fetch(`/api/1.0/channels/${channelID}/messages?limit=20&offset=0`)
-      .then(res => res.json())
-      .then(data => {
-        return new Promise((resolve, reject) => {
-          openDB().then(db => {
-            console.log(db)
-            const transaction = db.transaction('channelMessages', 'readwrite')
-            const store = transaction.objectStore('channelMessages')
-            const req = store.put({
-              channelId: channelID,
-              data: data.reverse()
-            })
-
-            req.onsuccess = resolve
-            req.onerror = reject
+  await fetch(`/api/1.0/channels/${channelID}/messages?limit=20&offset=0`)
+    .then(res => res.json())
+    .then(data => {
+      return new Promise((resolve, reject) => {
+        openDB().then(db => {
+          console.log(db)
+          const transaction = db.transaction('channelMessages', 'readwrite')
+          const store = transaction.objectStore('channelMessages')
+          const req = store.put({
+            channelId: channelID,
+            data: data.reverse()
           })
+
+          req.onsuccess = resolve
+          req.onerror = reject
         })
       })
-      .catch(console.error)
-  } else {
-    await fetch(`/api/1.0/users/${channelID}/messages?limit=20&offset=0`)
-      .then(res => res.json())
-      .then(data => {
-        return new Promise((resolve, reject) => {
-          openDB().then(db => {
-            const transaction = db.transaction('channelMessages', 'readwrite')
-            const store = transaction.objectStore('channelMessages')
-            const req = store.put({
-              channelId: channelID,
-              data: data.reverse()
-            })
-
-            req.onsuccess = resolve
-            req.onerror = reject
-          })
-        })
-      })
-      .catch(console.error)
-  }
+    })
+    .catch(console.error)
 })
 
 self.addEventListener('notificationclick', event => {
