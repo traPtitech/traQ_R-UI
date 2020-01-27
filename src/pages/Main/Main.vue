@@ -103,13 +103,19 @@ export default {
               client.registerDevice(currentToken)
             })
 
-            messaging.onMessage(payload => {
-              const notification = this.notify(
+            messaging.onMessage(async payload => {
+              const notification = await this.notify(
                 payload.data.title || 'traQ',
                 payload.data
               )
               if (notification) {
-                notification.onclick = () => {
+                notification.onclick = event => {
+                  if (event.reply) {
+                    const data = payload.data
+                    const channelID = data.tag.slice('c:'.length)
+                    client.postMessage(channelID, event.reply, true)
+                    return
+                  }
                   window.focus()
                   this.$router.push(payload.data.path)
                 }
@@ -363,8 +369,23 @@ export default {
     userGroupUpdated() {
       this.$store.dispatch('updateGroups')
     },
-    notify(title, options) {
-      if (window.Notification) {
+    async notify(title, options) {
+      if (title && !['#general', '#random'].includes(title)) {
+        const verb = title.includes('#') ? '投稿' : '返信'
+        options.actions = [
+          {
+            action: 'reply',
+            type: 'text',
+            title: '返信',
+            placeholder: `${title}へ${verb}する...`
+          }
+        ]
+      }
+
+      if (navigator.serviceWorker) {
+        const regist = await navigator.serviceWorker.ready
+        return regist.showNotification(title, options)
+      } else if (window.Notification) {
         if (Notification.permission === 'granted') {
           // eslint-disable-next-line no-new
           return new Notification(title, options)
