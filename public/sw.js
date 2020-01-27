@@ -106,23 +106,26 @@ self.addEventListener('push', async event => {
 })
 
 self.addEventListener('notificationclick', event => {
+  event.notification.close()
+
   if (event.reply) {
     const data = event.notification.data
     const channelID = data.tag.slice('c:'.length)
-    fetch(`/api/1.0/channels/${channelID}/messages`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        text: event.reply
+    event.waitUntil(
+      fetch(`/api/1.0/channels/${channelID}/messages`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text: event.reply
+        })
       })
-    })
+    )
     return
   }
 
-  event.notification.close()
   event.waitUntil(
     clients
       .matchAll({ type: 'window', includeUncontrolled: true })
