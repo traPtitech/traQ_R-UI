@@ -122,6 +122,9 @@ self.addEventListener('notificationclick', event => {
       })
     }).catch(err => {
       console.error('[sw] sendReply error:', err)
+    }).then(() => {
+      // 二回返信することはできない(Chromeの仕様?)ので閉じる
+      event.notification.close()
     })
     return
   }
