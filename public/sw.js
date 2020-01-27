@@ -174,16 +174,18 @@ messaging.setBackgroundMessageHandler(async payload => {
   notificationOptions.renotify = true
   notificationOptions.badge = '/static/badge.png'
   if (title && !['#general', '#random'].includes(title)) {
-    notificationOptions.actions = {
+    notificationOptions.actions = [{
       action: "reply",
       type: "text",
       title: "返信",
       placeholder: `${title}へ投稿する...`
-    }
+    }]
   }
 
   return self.registration.showNotification(
     notificationTitle,
     notificationOptions
-  )
+  ).catch(err => {
+    console.error(err)
+  })
 })
