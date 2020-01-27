@@ -12,7 +12,7 @@
         .user-modal-misc-profile-icon
           IconTwitter
         | {{ twitterId }}
-      a.user-modal-misc-profile(:href="`https://wiki.trapti.tech/${wikiUserPagePath}`" target="_blank" @click.stop="")
+      a.user-modal-misc-profile(:href="`https://wiki.trap.jp/${wikiUserPagePath}`" target="_blank" @click.stop="")
         .user-modal-misc-profile-icon
           IconBook
         | {{ wikiUserPagePath }}

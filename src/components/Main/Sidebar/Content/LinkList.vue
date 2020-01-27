@@ -14,13 +14,13 @@ div.links-list-wrap
         p.link-title
           | Official Website
     li
-      a(href="https://wiki.trapti.tech" target="_blank")
+      a(href="https://wiki.trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogoGrowi(size="20")
         p.link-title
           | Wiki
     li
-      a(href="https://blog.trapti.tech" target="_blank")
+      a(href="https://blog-admin.trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogoGhost(size="20")
         p.link-title

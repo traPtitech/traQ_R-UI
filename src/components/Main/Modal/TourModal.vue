@@ -42,7 +42,7 @@
         p
           | メッセージの右上から、リアクションをつけてみましょう！
   .tour-modal-footer
-    a.tour-link(v-if="page === 0" href="https://wiki.trapti.tech/general/traQ-R" target="_blank")
+    a.tour-link(v-if="page === 0" href="https://wiki.trap.jp/general/traQ-R" target="_blank")
       .tour-link-icon
         icon-book(color="var(--primary-color)" size="16")
       | 詳細
