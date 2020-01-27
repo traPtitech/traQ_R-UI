@@ -111,8 +111,7 @@ export default {
               if (notification) {
                 notification.onclick = event => {
                   if (event.reply) {
-                    const data = payload.data
-                    const channelID = data.tag.slice('c:'.length)
+                    const channelID = payload.data.tag.slice('c:'.length)
                     client.postMessage(channelID, event.reply, true)
                     return
                   }
@@ -384,6 +383,10 @@ export default {
 
       if (navigator.serviceWorker) {
         const regist = await navigator.serviceWorker.ready
+        const options = { ...payload.data, ...options }
+        options.data = payload.data
+        options.renotify = true
+        options.badge = '/static/badge.png'
         return regist.showNotification(title, options)
       } else if (window.Notification) {
         if (Notification.permission === 'granted') {
