@@ -109,7 +109,13 @@ export default {
                 payload.data
               )
               if (notification) {
-                notification.onclick = () => {
+                notification.onclick = event => {
+                  if (event.reply) {
+                    const data = payload.data
+                    const channelID = data.tag.slice('c:'.length)
+                    client.postMessage(channelID, event.reply, true)
+                    return
+                  }
                   window.focus()
                   this.$router.push(payload.data.path)
                 }
@@ -366,6 +372,17 @@ export default {
     notify(title, options) {
       if (window.Notification) {
         if (Notification.permission === 'granted') {
+          if (title && !['#general', '#random'].includes(title)) {
+            const verb = title.includes('#') ? '投稿' : '返信'
+            options.actions = [
+              {
+                action: 'reply',
+                type: 'text',
+                title: '返信',
+                placeholder: `${title}へ${verb}する...`
+              }
+            ]
+          }
           // eslint-disable-next-line no-new
           return new Notification(title, options)
         }

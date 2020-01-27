@@ -109,8 +109,8 @@ class Client {
     return api.getMessages(channelId, limit, offset)
   }
   @log
-  postMessage(channelId: string, text: string) {
-    return api.postMessage(channelId, { text })
+  postMessage(channelId: string, text: string, embed: boolean = false) {
+    return api.postMessage(channelId, { text }, embed ? 1 : undefined)
   }
   @log
   postDirectMessage(userId: string, text: string) {
