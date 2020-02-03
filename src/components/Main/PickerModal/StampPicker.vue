@@ -1,7 +1,7 @@
 <template lang="pug">
   div.stamp-picker-container
     div.stamp-picker-header
-      DebouncedInput.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder" @keydown="searchKeydown")
+      DebouncedInput.stamp-picker-search(v-model="search" :placeholder="searchPlaceHolder" @keydown="searchKeydown" inputmode="url")
       div.stamp-picker-search-icon
         icon-search(color="gray")
     transition-group.stamp-picker-body.is-scroll(
@@ -296,6 +296,7 @@ export default {
     right: 30px
     bottom: 5px
   background: var(--setting-background-color)
+  ime-mode: disabled
 
 .stamp-picker-search-icon
   display: inline-flex
