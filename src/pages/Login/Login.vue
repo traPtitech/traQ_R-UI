@@ -18,6 +18,7 @@
               required
               :disabled="status === 'processing'"
               autofocus
+              autocapitalize="off"
               tabindex="0"
               @keydown.enter="loginPost")
             input.input-reset.login-input(
