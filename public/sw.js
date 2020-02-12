@@ -151,7 +151,7 @@ self.addEventListener('notificationclick', event => {
         body: JSON.stringify({
           text: event.reply
         })
-      })]).then(([me]) => {
+      })]).then(([{ data: me }]) => {
         event.notification.close()
         data.body = `${me.displayName}: ${event.reply}`
         data.icon = `/api/1.0/public/icon/${me.name}`
