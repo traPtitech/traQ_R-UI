@@ -105,6 +105,36 @@ self.addEventListener('push', async event => {
     .catch(console.error)
 })
 
+const showNotification = data => {
+  // Customize notification here
+  const title = data.title
+  const notificationTitle = title || 'traQ'
+  const notificationOptions = data
+  notificationOptions.data = data
+  notificationOptions.renotify = true
+  notificationOptions.badge = '/static/badge.png'
+  if (title && !['#general', '#random'].includes(title)) {
+    const verb = title.includes('#') ? '投稿' : '返信'
+    notificationOptions.actions = [
+      {
+        action: 'reply',
+        type: 'text',
+        title: '返信',
+        placeholder: `${title}へ${verb}する...`
+      }
+    ]
+  }
+
+  return self.registration.showNotification(
+    notificationTitle,
+    notificationOptions
+  ).catch(err => {
+    console.error('[sw] showNotification error:', err)
+  })
+}
+
+const delay = () => new Promise(resolve => setTimeout(resolve, 0))
+
 self.addEventListener('notificationclick', event => {
   if (event.reply) {
     const data = event.notification.data
@@ -119,11 +149,16 @@ self.addEventListener('notificationclick', event => {
         body: JSON.stringify({
           text: event.reply
         })
-      }).catch(err => {
-        console.error('[sw] sendReply error:', err)
       }).then(() => {
-        // 二回返信することはできない(Chromeの仕様?)ので閉じる
-        return event.notification.close()
+        event.notification.close()
+        return showNotification(data)
+      }, err => {
+        console.error('[sw] sendReply error:', err)
+        return showNotification(data).then(delay).then(() => {
+          return self.registration.getNotifications({ tag: data.tag })
+        }).then(
+          notifications => notifications.forEach(notification => notification.close())
+        )
       })
     )
     return
@@ -174,28 +209,5 @@ messaging.setBackgroundMessageHandler(async payload => {
   )
 
   // Customize notification here
-  const title = payload.data.title
-  const notificationTitle = title || 'traQ'
-  const notificationOptions = payload.data
-  notificationOptions.data = payload.data
-  notificationOptions.renotify = true
-  notificationOptions.badge = '/static/badge.png'
-  if (title && !['#general', '#random'].includes(title)) {
-    const verb = title.includes('#') ? '投稿' : '返信'
-    notificationOptions.actions = [
-      {
-        action: 'reply',
-        type: 'text',
-        title: '返信',
-        placeholder: `${title}へ${verb}する...`
-      }
-    ]
-  }
-
-  return self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
-  ).catch(err => {
-    console.error('[sw] showNotification error:', err)
-  })
+  return showNotification(payload.data)
 })
