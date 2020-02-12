@@ -139,8 +139,10 @@ self.addEventListener('notificationclick', event => {
   if (event.reply) {
     const data = event.notification.data
     const channelID = data.tag.slice('c:'.length)
+    // https://crbug.com/1050352#c5
+    // androidでしか通知の再度の発火は発生しない模様
     event.waitUntil(
-      fetch(`/api/1.0/channels/${channelID}/messages?embed=1`, {
+      Promise.all([getMeData(), fetch(`/api/1.0/channels/${channelID}/messages?embed=1`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -149,8 +151,11 @@ self.addEventListener('notificationclick', event => {
         body: JSON.stringify({
           text: event.reply
         })
-      }).then(() => {
+      })]).then(([me]) => {
         event.notification.close()
+        data.body = `${me.displayName}: ${event.reply}`
+        data.icon = `/api/1.0/public/icon/${me.name}`
+        data.silent = true
         return showNotification(data)
       }, err => {
         console.error('[sw] sendReply error:', err)
