@@ -26,7 +26,7 @@ div.links-list-wrap
         p.link-title
           | Blog
     li
-      a(href="https://drive.trapti.tech" target="_blank")
+      a(href="https://drive.trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogoNextCloud(size="26")
         p.link-title
@@ -44,7 +44,7 @@ div.links-list-wrap
         p.link-title
           | Showcase
     li
-      a(href="https://md.trap.jp/" target="_blank")
+      a(href="https://md.trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogoHackMD(size="20")
         p.link-title
