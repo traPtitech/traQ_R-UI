@@ -51,7 +51,19 @@ export default {
     })
     window.addEventListener('beforeunload', () => {
       if (this.$store.getters['rtc/isActive']) {
+        const wasCalling = this.$store.getters['rtc/isCalling']
+
+        // ダイアログで閉じる場合のみやりたいけど
+        // dispatchが非同期なのでunloadイベントでは行えないので
+        // 仕方なく常に切断する(Chromeだと切断されない)
         this.$store.dispatch('rtc/closeConnection')
+
+        if (wasCalling) {
+          const unloadMessage = 'Qall中ですが本当に終了しますか？'
+          event.preventDefault()
+          event.returnValue = unloadMessage
+          return unloadMessage
+        }
       }
     })
   },
