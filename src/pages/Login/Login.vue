@@ -147,7 +147,7 @@ export default {
         .login(this.name, this.pass)
         .then(res => {
           this.status = 'succeed'
-          if (this.$store.state.baseURL === '') {
+          if (this.$route.query.redirect !== undefined) {
             document.location.href = this.redirect
           } else {
             this.$store.commit('loadStart')
