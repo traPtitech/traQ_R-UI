@@ -32,7 +32,7 @@ div.links-list-wrap
         p.link-title
           | Drive
     li
-      a(href="https://git.trapti.tech" target="_blank")
+      a(href="https://git.trap.jp" target="_blank")
         div.link-icon.flex-center
           IconLogoGitea(size="24")
         p.link-title
