@@ -15,7 +15,7 @@
     "@traPtitech/markdown-it-katex": "github:traPtitech/markdown-it-katex",
     "@ungap/event-target": "^0.1.0",
     "core-js": "^3.6.4",
-    "firebase": "^7.9.3",
+    "firebase": "^7.13.2",
     "lodash": "^4.17.15",
     "lottie-web": "^5.6.5",
     "scroll-behavior-polyfill": "^2.0.13",
